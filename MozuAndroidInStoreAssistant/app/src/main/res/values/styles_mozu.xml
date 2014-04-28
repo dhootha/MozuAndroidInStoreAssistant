@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- File created by the Android Action Bar Style Generator
+
+     Copyright (C) 2011 The Android Open Source Project
+     Copyright (C) 2012 readyState Software Ltd
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+  
+          http://www.apache.org/licenses/LICENSE-2.0
+  
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<resources>
+
+    <style name="Theme.Mozu" parent="@android:style/Theme.Holo.Light.DarkActionBar">
+        <item name="android:actionBarItemBackground">@drawable/selectable_background_mozu</item>
+        <item name="android:popupMenuStyle">@style/PopupMenu.Mozu</item>
+        <item name="android:dropDownListViewStyle">@style/DropDownListView.Mozu</item>
+        <item name="android:actionBarTabStyle">@style/ActionBarTabStyle.Mozu</item>
+        <item name="android:actionDropDownStyle">@style/DropDownNav.Mozu</item>
+        <item name="android:actionBarStyle">@style/ActionBar.Solid.Mozu</item>
+        <item name="android:actionModeBackground">@drawable/cab_background_top_mozu</item>
+        <item name="android:actionModeSplitBackground">@drawable/cab_background_bottom_mozu</item>
+        <item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Mozu</item>
+        
+                <!-- Light.DarkActionBar specific -->
+        <item name="android:actionBarWidgetTheme">@style/Theme.Mozu.Widget</item>
+
+        <item name="android:editTextBackground">@drawable/mozu_edit_text_holo_light</item>
+
+        <item name="android:textColorHighlight">#99d2463c</item>
+        <item name="android:textSelectHandleLeft">@drawable/mozu_text_select_handle_left</item>
+        <item name="android:textSelectHandleRight">@drawable/mozu_text_select_handle_right</item>
+        <item name="android:textSelectHandle">@drawable/mozu_text_select_handle_middle</item>
+        <item name="android:autoCompleteTextViewStyle">@style/AutoCompleteTextViewMozu</item>
+        <item name="android:listChoiceIndicatorMultiple">@drawable/mozu_btn_check_holo_light</item>
+        <item name="android:listChoiceIndicatorSingle">@drawable/mozu_btn_radio_holo_light</item>
+        <item name="android:buttonStyle">@style/ButtonMozu</item>
+        <item name="android:imageButtonStyle">@style/ImageButtonMozu</item>
+        <item name="android:dropDownSpinnerStyle">@style/SpinnerMozu</item>
+        <item name="android:progressBarStyleHorizontal">@style/ProgressBarMozu</item>
+        <item name="android:seekBarStyle">@style/SeekBarMozu</item>
+        <item name="android:ratingBarStyle">@style/RatingBarMozu</item>
+        <item name="android:ratingBarStyleIndicator">@style/RatingBarBigMozu</item>
+        <item name="android:ratingBarStyleSmall">@style/RatingBarSmallMozu</item>
+        <item name="android:buttonStyleToggle">@style/ToggleMozu</item>
+        <item name="android:listChoiceBackgroundIndicator">@drawable/mozu_list_selector_holo_light</item>
+        <item name="android:activatedBackgroundIndicator">@drawable/mozu_activated_background_holo_light</item>
+        <item name="android:fastScrollThumbDrawable">@drawable/mozu_fastscroll_thumb_holo</item>
+    </style>
+
+    <style name="Theme.Mozu.NoActionBar" parent="Theme.Mozu">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowTitleSize">0dp</item>
+    </style>
+
+    <style name="ActionBar.Solid.Mozu" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@drawable/ab_solid_mozu</item>
+        <item name="android:backgroundStacked">@drawable/ab_stacked_solid_mozu</item>
+        <item name="android:backgroundSplit">@drawable/ab_bottom_solid_mozu</item>
+        <item name="android:progressBarStyle">@style/ProgressBar.Mozu</item>
+    </style>
+
+    <style name="ActionBar.Transparent.Mozu" parent="@android:style/Widget.Holo.ActionBar">
+        <item name="android:background">@drawable/ab_transparent_mozu</item>
+        <item name="android:progressBarStyle">@style/ProgressBar.Mozu</item>
+    </style>
+
+    <style name="PopupMenu.Mozu" parent="@android:style/Widget.Holo.ListPopupWindow">
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_mozu</item>	
+    </style>
+
+    <style name="DropDownListView.Mozu" parent="@android:style/Widget.Holo.ListView.DropDown">
+        <item name="android:listSelector">@drawable/selectable_background_mozu</item>
+    </style>
+
+    <style name="ActionBarTabStyle.Mozu" parent="@android:style/Widget.Holo.ActionBar.TabView">
+        <item name="android:background">@drawable/tab_indicator_ab_mozu</item>
+    </style>
+
+    <style name="DropDownNav.Mozu" parent="@android:style/Widget.Holo.Spinner">
+        <item name="android:background">@drawable/spinner_background_ab_mozu</item>
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_mozu</item>
+        <item name="android:dropDownSelector">@drawable/selectable_background_mozu</item>
+    </style>
+    
+    <style name="ProgressBar.Mozu" parent="@android:style/Widget.Holo.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/progress_horizontal_mozu</item>
+    </style>
+    
+    <style name="ActionButton.CloseMode.Mozu" parent="@android:style/Widget.Holo.ActionButton.CloseMode">
+        <item name="android:background">@drawable/btn_cab_done_mozu</item>
+    </style>
+
+    <!-- this style is only referenced in a Light.DarkActionBar based theme -->
+    <style name="Theme.Mozu.Widget" parent="@android:style/Theme.Holo">
+        <item name="android:popupMenuStyle">@style/PopupMenu.Mozu</item>
+        <item name="android:dropDownListViewStyle">@style/DropDownListView.Mozu</item>
+    </style>
+
+    <style name="AutoCompleteTextViewMozu" parent="android:Widget.Holo.Light.AutoCompleteTextView">
+        <item name="android:dropDownSelector">@drawable/mozu_list_selector_holo_light</item>
+        <item name="android:background">@drawable/mozu_edit_text_holo_light</item>
+    </style>
+
+    <style name="ButtonMozu" parent="android:Widget.Holo.Light.Button">
+        <item name="android:background">@drawable/mozu_btn_default_holo_light</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="ImageButtonMozu" parent="android:Widget.Holo.Light.ImageButton">
+        <item name="android:background">@drawable/mozu_btn_default_holo_light</item>
+    </style>
+
+    <style name="SpinnerMozu" parent="android:Widget.Holo.Light.Spinner">
+        <item name="android:background">@drawable/mozu_spinner_background_holo_light</item>
+        <item name="android:dropDownSelector">@drawable/mozu_list_selector_holo_light</item>
+    </style>
+
+    <style name="TabMozu">
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:paddingLeft">16dip</item>
+        <item name="android:paddingRight">16dip</item>
+        <item name="android:background">@drawable/mozu_tab_indicator_holo</item>
+        <item name="android:layout_width">0dip</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:minWidth">80dip</item>
+    </style>
+
+    <style name="TabTextMozu">
+        <item name="android:textColor">#000000</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+        <!-- v14 <item name="android:textAllCaps">true</item> -->
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:maxWidth">180dip</item>
+    </style>
+
+    <style name="ProgressBarMozu" parent="android:Widget.Holo.Light.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/mozu_progress_horizontal_holo_light</item>
+        <item name="android:indeterminateDrawable">@drawable/mozu_progress_indeterminate_horizontal_holo_light</item>
+    </style>
+
+    <style name="SeekBarMozu" parent="android:Widget.Holo.Light.SeekBar">
+        <item name="android:progressDrawable">@drawable/mozu_scrubber_progress_horizontal_holo_light</item>
+        <item name="android:indeterminateDrawable">@drawable/mozu_scrubber_progress_horizontal_holo_light</item>
+        <item name="android:thumb">@drawable/mozu_scrubber_control_selector_holo_light</item>
+    </style>
+
+    <style name="RatingBarMozu" parent="android:Widget.Holo.Light.RatingBar">
+        <item name="android:progressDrawable">@drawable/mozu_ratingbar_full_holo_light</item>
+        <item name="android:indeterminateDrawable">@drawable/mozu_ratingbar_full_holo_light</item>
+    </style>
+
+    <style name="RatingBarBigMozu" parent="android:Widget.Holo.Light.RatingBar.Indicator">
+        <item name="android:progressDrawable">@drawable/mozu_ratingbar_holo_light</item>
+        <item name="android:indeterminateDrawable">@drawable/mozu_ratingbar_holo_light</item>
+    </style>
+
+    <style name="RatingBarSmallMozu" parent="android:Widget.Holo.Light.RatingBar.Small">
+        <item name="android:progressDrawable">@drawable/mozu_ratingbar_small_holo_light</item>
+        <item name="android:indeterminateDrawable">@drawable/mozu_ratingbar_small_holo_light</item>
+    </style>
+
+    <style name="ToggleMozu" parent="android:Widget.Holo.Light.Button.Toggle">
+        <item name="android:background">@drawable/mozu_btn_toggle_holo_light</item>
+    </style>
+</resources>
