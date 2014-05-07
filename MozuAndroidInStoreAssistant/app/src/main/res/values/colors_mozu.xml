@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="mozu_color">#d2463c</color>
+
+    <color name="entering_text_color_login">#FFFFFF</color>
+</resources>
