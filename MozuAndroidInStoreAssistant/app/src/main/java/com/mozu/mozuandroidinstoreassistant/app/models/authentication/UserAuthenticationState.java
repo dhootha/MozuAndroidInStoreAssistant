@@ -3,6 +3,8 @@ package com.mozu.mozuandroidinstoreassistant.app.models.authentication;
 
 import android.util.Log;
 
+import com.mozu.api.security.Scope;
+
 public class UserAuthenticationState {
 
     private UserAuthenticationStateMachine mStateMachine;
@@ -22,6 +24,10 @@ public class UserAuthenticationState {
     }
 
     public void signOutUser() {
+        Log.d("UserAuthenticationStateMachine", "No Implementation For This State");
+    }
+
+    public void updateScope(Scope scope) {
         Log.d("UserAuthenticationStateMachine", "No Implementation For This State");
     }
 

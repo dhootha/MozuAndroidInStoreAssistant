@@ -2,6 +2,7 @@ package com.mozu.mozuandroidinstoreassistant.app.models.authentication;
 
 import com.crashlytics.android.Crashlytics;
 import com.mozu.api.security.AuthenticationProfile;
+import com.mozu.mozuandroidinstoreassistant.app.models.UserPreferences;
 import com.mozu.mozuandroidinstoreassistant.app.tasks.ObtainAuthProfileFromDiskAsyncTask;
 import com.mozu.mozuandroidinstoreassistant.app.tasks.UserAuthenticateAsyncTask;
 
@@ -31,6 +32,10 @@ public class UserNotAuthenticatedNoAuthTicket extends UserAuthenticationState im
         getStateMachine().setAuthProfile(profile);
 
         if (profile.getActiveScope() != null)  {
+
+            UserPreferences pref = getStateMachine().getCurrentUsersPreferences();
+            pref.setDefaultTenantId(String.valueOf(profile.getActiveScope().getId()));
+            getStateMachine().updateUserPreferences();
 
             getStateMachine().setCurrentUserAuthState(getStateMachine().userAuthenticatedTenantSet);
         } else {

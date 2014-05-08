@@ -4,12 +4,20 @@
     <string name="app_auth_appid">9e5cf1d59062480da8a9a31800e82134</string>
     <string name="app_auth_shared_secret">6edc19197c504d2ab300a31800e82134</string>
     <string name="service_url">https://home.mozu-qa.com</string>
-
     <string name="app_name">Mozu</string>
     <string name="title_section1">Products</string>
     <string name="title_section2">Orders</string>
     <string name="title_section3">Customers</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_logout">Sign out</string>
     <string name="title_activity_mozu_authentication">MozuAuthenticationActivity</string>
+    <string name="title_activity_choose_tenant_and_site">ChooseTenantAndSiteActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="tenant_selection_dialog_title">Select Tenant...</string>
+    <string name="site_selection_dialog_title">Select Site...</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="set_default_tenant_site_title">Set As Default Store?</string>
+    <string name="set_default_tenant_site_message">Would you like to set this as your default store? (You can change it at any time from the settings)</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
 </resources>
