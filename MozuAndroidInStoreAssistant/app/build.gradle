@@ -65,7 +65,7 @@ dependencies {
     compile 'com.google.android.gms:play-services:4.2.42'
     compile 'com.android.support:appcompat-v7:19.+'
 
-    compile ("com.mozu.api:mozu-api-android:1.7.12@aar"){
+    compile ("com.mozu.api:mozu-api-android:1.7.15@aar"){
         exclude group: 'mysql'
         exclude group: 'xerces'
         exclude group: 'berkeleydb'
@@ -75,7 +75,7 @@ dependencies {
         changing = true
     }
 
-    compile ("com.mozu.api:mozu-api-core:1.7.12")
+    compile ("com.mozu.api:mozu-api-core:1.7.15")
 
     compile 'com.crashlytics.android:crashlytics:1.+'
 
