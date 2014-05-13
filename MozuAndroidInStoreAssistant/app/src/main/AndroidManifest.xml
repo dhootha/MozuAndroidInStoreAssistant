@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name="com.mozu.mozuandroidinstoreassistant.MozuApplication"
@@ -34,6 +35,7 @@
             </intent-filter>
         </activity>
         <meta-data android:name="com.crashlytics.ApiKey" android:value="08ea2133df628f5114adfd1e1cbb80584923ca9a"/>
+        <activity android:name="net.hockeyapp.android.UpdateActivity" />
     </application>
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->

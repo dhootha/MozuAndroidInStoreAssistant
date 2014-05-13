@@ -20,6 +20,8 @@ import android.view.ViewGroup;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 
+import net.hockeyapp.android.UpdateManager;
+
 
 public class MainActivity extends Activity implements ActionBar.TabListener {
 
@@ -42,6 +44,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        UpdateManager.register(this, "4fbc83986e51a19bb0c9137e06e88363");
 
         // Set up the action bar.
         final ActionBar actionBar = getActionBar();

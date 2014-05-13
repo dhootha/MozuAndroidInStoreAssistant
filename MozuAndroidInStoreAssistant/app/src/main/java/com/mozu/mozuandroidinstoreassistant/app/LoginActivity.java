@@ -32,6 +32,8 @@ import com.mozu.mozuandroidinstoreassistant.app.models.authentication.AppAuthent
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 
+import net.hockeyapp.android.UpdateManager;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;

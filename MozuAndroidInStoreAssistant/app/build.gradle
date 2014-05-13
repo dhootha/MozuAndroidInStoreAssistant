@@ -26,12 +26,21 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 19
-        versionCode 1
-        versionName "1.0"
+        versionCode System.getenv("BUILD_NUMBER") as Integer ?: 1
+        versionName "0.9 - Build No. " + System.getenv("BUILD_NUMBER")
+    }
+    signingConfigs {
+        release {
+            storeFile file("../../mozu_android.jks")
+            storePassword "mozumozu"
+            keyAlias "Mozu"
+            keyPassword "mozumozu"
+        }
     }
     buildTypes {
         release {
             runProguard false
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
@@ -41,7 +50,6 @@ android {
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
     }
-
     sourceSets {
         androidTest {
             java.srcDirs = ['src/test/java']
@@ -52,6 +60,7 @@ android {
 dependencies {
     robolectricCompile 'org.robolectric:robolectric:2.0'
     robolectricCompile group: 'junit', name: 'junit', version: '4.+'
+    compile fileTree(dir: 'libs', include: '*.jar')
     compile 'com.android.support:support-v13:19.+'
     compile 'com.google.android.gms:play-services:4.2.42'
     compile 'com.android.support:appcompat-v7:19.+'
