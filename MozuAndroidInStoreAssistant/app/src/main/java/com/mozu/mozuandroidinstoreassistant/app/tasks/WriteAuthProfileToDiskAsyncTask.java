@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 
 import com.crashlytics.android.Crashlytics;
 import com.mozu.api.security.AuthenticationProfile;
-import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticatorAsyncListener;
 import com.mozu.mozuandroidinstoreassistant.app.serialization.CurrentAuthTicketSerializer;
 
 import java.io.IOException;

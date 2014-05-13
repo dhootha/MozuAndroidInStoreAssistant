@@ -21,6 +21,9 @@ public class RefreshAuthProfileAsyncTask extends AsyncTask<Void, Void, Authentic
 
     @Override
     protected AuthenticationProfile doInBackground(Void... params) {
+        if (mAuthTicket == null) {
+            return null;
+        }
 
         return UserAuthenticator.refreshUserAuthTicket(mAuthTicket);
     }

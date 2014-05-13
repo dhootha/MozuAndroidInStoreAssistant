@@ -13,7 +13,7 @@ import java.util.List;
 
 public class UserPreferencesSerializer extends Serializer {
 
-    public static final String USER_PREF_FILE = "3QzKtQign8qK4RHFFdeE.txt";
+    public static final String USER_PREF_FILE = "/3QzKtQign8qK4RHFFdeE.txt";
 
     public UserPreferencesSerializer(Context context) {
         super(context.getFilesDir() + USER_PREF_FILE);

@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="floating_label_color">#D2463C</color>
+    <color name="floating_label_color">@color/mozu_color</color>
 </resources>

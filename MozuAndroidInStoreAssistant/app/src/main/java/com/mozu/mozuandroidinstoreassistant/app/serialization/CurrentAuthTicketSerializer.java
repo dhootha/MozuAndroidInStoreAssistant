@@ -11,7 +11,7 @@ import java.io.InputStream;
 
 public class CurrentAuthTicketSerializer extends Serializer {
 
-    public static final String AUTH_TICKET_FILE = "DoRPN1rKFLy0JsKYrI7F.txt";
+    public static final String AUTH_TICKET_FILE = "/DoRPN1rKFLy0JsKYrI7F.txt";
 
     public CurrentAuthTicketSerializer(Context context) {
         super(context.getFilesDir() + AUTH_TICKET_FILE);

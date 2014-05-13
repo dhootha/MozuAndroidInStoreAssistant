@@ -2,6 +2,7 @@ package com.mozu.mozuandroidinstoreassistant.app.models.authentication;
 
 
 import com.mozu.api.contracts.appdev.AppAuthInfo;
+import com.mozu.mozuandroidinstoreassistant.app.models.UserPreferences;
 
 import java.util.Observable;
 

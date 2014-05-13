@@ -22,7 +22,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.mozu.api.contracts.appdev.AppAuthInfo;
@@ -32,7 +31,6 @@ import com.mozu.mozuandroidinstoreassistant.app.models.authentication.AppAuthent
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.AppAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
-import com.mozu.mozuandroidinstoreassistant.app.tasks.UserAuthenticateAsyncTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -114,7 +112,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
     }
 
     private void setupUserAuth() {
-        mUserAuthStateMachine = UserAuthenticationStateMachineProducer.getInstance(this);
+        mUserAuthStateMachine = UserAuthenticationStateMachineProducer.getInstance(getApplicationContext());
         mUserAuthStateMachine.addObserver(this);
 
         if (!mAppAuthStateMachine.getCurrentAppAuthState().isAuthenticatedState()) {
@@ -203,9 +201,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
         return email.contains("@");
     }
 
-    /**
-     * Shows the progress UI and hides the login form.
-     */
     public void showProgress(final boolean show) {
         int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
@@ -268,14 +263,14 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
     }
 
     public void loginSuccess() {
-        showProgress(false);
+        showProgress(true);
 
-        if (mUserAuthStateMachine.getCurrentUserAuthState().isTenantSelectedState()) {
+        if (mUserAuthStateMachine.getCurrentUserAuthState().isTenantSelectedState() && mUserAuthStateMachine.getCurrentUsersPreferences().getDontAskToSetTenantSiteIfSet()) {
+
             startActivity(new Intent(this, MainActivity.class));
-
         } else {
-            //launch tenant selection
-            Toast.makeText(this, "Tenant Selection Now", Toast.LENGTH_SHORT).show();
+
+            startActivity(new Intent(this, ChooseTenantAndSiteActivity.class));
         }
 
         finish();
@@ -318,15 +313,15 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
     }
 
     private void appAuthenticated() {
-        mLoginFormView.setVisibility(View.VISIBLE);
-        mProgressView.setVisibility(View.GONE);
-        mAppAuthErrorView.setVisibility(View.GONE);
-        mEmailView.requestFocus();
-
         //user is already authenticated
         if (mUserAuthStateMachine.getCurrentUserAuthState().isAuthenticatedState()) {
 
             loginSuccess();
+        } else {
+            mLoginFormView.setVisibility(View.VISIBLE);
+            mProgressView.setVisibility(View.GONE);
+            mAppAuthErrorView.setVisibility(View.GONE);
+            mEmailView.requestFocus();
         }
     }
 
