@@ -146,7 +146,8 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
 
             if (!stateMachine.getCurrentUserAuthState().isAuthenticatedState()) {
 
-                //TODO start login activity
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
             }
 
         }
@@ -169,6 +170,13 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
         mUserAuthStateMachine.setCurrentSite(chosenSite);
 
         showAskToSetDefaultDialog();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Toast.makeText(this, "OnBack", Toast.LENGTH_SHORT).show();
+
+        super.onBackPressed();
     }
 
     private void showAskToSetDefaultDialog() {

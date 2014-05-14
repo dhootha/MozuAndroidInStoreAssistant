@@ -15,9 +15,7 @@ repositories {
     mavenCentral()
     mavenLocal()
     maven { url 'http://download.crashlytics.com/maven' }
-
 }
-
 
 android {
     compileSdkVersion 19

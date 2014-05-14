@@ -1,87 +1,107 @@
 package com.mozu.mozuandroidinstoreassistant.app;
 
-import java.util.Locale;
-
 import android.app.Activity;
-import android.app.ActionBar;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.support.v13.app.FragmentPagerAdapter;
+import android.content.pm.ApplicationInfo;
+import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
-import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 
 import net.hockeyapp.android.UpdateManager;
 
 
-public class MainActivity extends Activity implements ActionBar.TabListener {
+public class MainActivity extends Activity implements View.OnClickListener {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v13.app.FragmentStatePagerAdapter}.
-     */
-    SectionsPagerAdapter mSectionsPagerAdapter;
+    private LinearLayout mSearchMenuLayout;
+    private LinearLayout mProductsLayout;
+    private LinearLayout mOrdersLayout;
+    private LinearLayout mCustomersLayout;
 
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
-    ViewPager mViewPager;
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
+
+    private boolean mWasCreatedInPortrait = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
-        UpdateManager.register(this, "4fbc83986e51a19bb0c9137e06e88363");
 
-        // Set up the action bar.
-        final ActionBar actionBar = getActionBar();
-        actionBar.setDisplayShowHomeEnabled(false);
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
-
-        // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.pager);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
-
-        // When swiping between different sections, select the corresponding
-        // tab. We can also use ActionBar.Tab#select() to do this if we have
-        // a reference to the Tab.
-        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                actionBar.setSelectedNavigationItem(position);
-            }
-        });
-
-        // For each of the sections in the app, add a tab to the action bar.
-        for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
-            // Create a tab with text corresponding to the page title defined by
-            // the adapter. Also specify this Activity object, which implements
-            // the TabListener interface, as the callback (listener) for when
-            // this tab is selected.
-            actionBar.addTab(
-                    actionBar.newTab()
-                            .setText(mSectionsPagerAdapter.getPageTitle(i))
-                            .setTabListener(this));
+        //Only register for updates if not a debug build
+        if ( !(0 != (getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE) )) {
+            UpdateManager.register(this, "4fbc83986e51a19bb0c9137e06e88363");
         }
+
+        mSearchMenuLayout = (LinearLayout) findViewById(R.id.menu_search_layout);
+        mSearchMenuLayout.setOnClickListener(this);
+
+        mProductsLayout = (LinearLayout) findViewById(R.id.menu_products_layout);
+        mProductsLayout.setOnClickListener(this);
+
+        mOrdersLayout = (LinearLayout) findViewById(R.id.menu_orders_layout);
+        mOrdersLayout.setOnClickListener(this);
+
+        mCustomersLayout = (LinearLayout) findViewById(R.id.menu_customers_layout);
+        mCustomersLayout.setOnClickListener(this);
+
+        getActionBar().setTitle(R.string.menu_products_text);
+        getActionBar().setIcon(R.drawable.logo_actionbar);
+        mProductsLayout.setSelected(true);
+
+        mWasCreatedInPortrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT || findViewById(R.id.tablet_landscape) == null;
+
+        if (mWasCreatedInPortrait) {
+            setupLayoutForPortrait();
+        }
+
     }
 
+    private void setupLayoutForPortrait() {
+        //holder, will show whatever fragment is in main content area
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerToggle = new ActionBarDrawerToggle(
+                this,                  /* host Activity */
+                mDrawerLayout,         /* DrawerLayout object */
+                R.drawable.ic_drawer,  /* nav drawer icon to replace 'Up' caret */
+                R.string.drawer_open,  /* "open drawer" description */
+                R.string.drawer_close  /* "close drawer" description */
+        ) {
+
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+            }
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+        };
+
+
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+    }
+
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        if (mWasCreatedInPortrait) {
+            mDrawerToggle.syncState();
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -102,95 +122,36 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
             return true;
+        } else if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-        // When the given tab is selected, switch to the corresponding page in
-        // the ViewPager.
-        mViewPager.setCurrentItem(tab.getPosition());
-    }
+    public void onClick(View v) {
+        mSearchMenuLayout.setSelected(false);
+        mProductsLayout.setSelected(false);
+        mOrdersLayout.setSelected(false);
+        mCustomersLayout.setSelected(false);
 
-    @Override
-    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-    }
-
-    @Override
-    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-    }
-
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
+        if (v.getId() == R.id.menu_search_layout) {
+            getActionBar().setTitle(R.string.menu_search_text);
+            v.setSelected(true);
+        } else if (v.getId() == R.id.menu_products_layout) {
+            getActionBar().setTitle(R.string.menu_products_text);
+            v.setSelected(true);
+        } else if (v.getId() == R.id.menu_orders_layout) {
+            getActionBar().setTitle(R.string.menu_orders_text);
+            v.setSelected(true);
+        } else if (v.getId() == R.id.menu_customers_layout) {
+            getActionBar().setTitle(R.string.menu_customers_text);
+            v.setSelected(true);
         }
 
-        @Override
-        public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
-        }
-
-        @Override
-        public int getCount() {
-            // Show 3 total pages.
-            return 3;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            Locale l = Locale.getDefault();
-            switch (position) {
-                case 0:
-                    return getString(R.string.title_section1).toUpperCase(l);
-                case 1:
-                    return getString(R.string.title_section2).toUpperCase(l);
-                case 2:
-                    return getString(R.string.title_section3).toUpperCase(l);
-            }
-            return null;
+        if (mWasCreatedInPortrait) {
+            mDrawerLayout.closeDrawers();
         }
     }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-
-            return rootView;
-        }
-    }
-
 }

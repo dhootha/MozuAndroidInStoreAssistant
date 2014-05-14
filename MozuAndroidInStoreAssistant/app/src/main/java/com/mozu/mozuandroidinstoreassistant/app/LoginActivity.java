@@ -52,6 +52,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
     private AppAuthenticationStateMachine mAppAuthStateMachine;
     private UserAuthenticationStateMachine mUserAuthStateMachine;
 
+    private boolean mAlreadyAuthed = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -265,6 +267,12 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
     }
 
     public void loginSuccess() {
+        if (mAlreadyAuthed) {
+            return;
+        }
+
+        mAlreadyAuthed = true;
+
         showProgress(true);
 
         if (mUserAuthStateMachine.getCurrentUserAuthState().isTenantSelectedState() && mUserAuthStateMachine.getCurrentUsersPreferences().getDontAskToSetTenantSiteIfSet()) {
@@ -317,7 +325,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
     private void appAuthenticated() {
         //user is already authenticated
         if (mUserAuthStateMachine.getCurrentUserAuthState().isAuthenticatedState()) {
-
             loginSuccess();
         } else {
             mLoginFormView.setVisibility(View.VISIBLE);

@@ -1,22 +1,28 @@
 package com.mozu.mozuandroidinstoreassistant.app.fragments;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.mozu.api.security.Scope;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.TenantAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.serialization.TenantListJsonConverter;
 
+import org.joda.time.DateTime;
+
 import java.util.List;
 
-public class TenantFragment extends DialogFragment implements ListView.OnItemClickListener {
+public class TenantFragment extends DialogFragment implements ListView.OnItemClickListener, Dialog.OnKeyListener {
 
     public static final String TENANTS_AS_JSON = "TENANTS_AS_JSON";
     private TenantSelectionFragmentListener mListener;
@@ -54,6 +60,8 @@ public class TenantFragment extends DialogFragment implements ListView.OnItemCli
 
         getDialog().setTitle(getString(R.string.tenant_selection_dialog_title));
 
+        getDialog().setOnKeyListener(this);
+
         //this is monster hacky, but not sure how else to change the style of this one bar
         int divierId = getDialog().getContext().getResources().getIdentifier("android:id/titleDivider", null, null);
         View divider = getDialog().findViewById(divierId);
@@ -89,11 +97,19 @@ public class TenantFragment extends DialogFragment implements ListView.OnItemCli
 
             mListener.tenantWasChosen(mAdapter.getItem(position));
         }
-
     }
 
     public void setTenants(List<Scope> tenants) {
        mTenants = tenants;
     }
 
+    @Override
+    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP && !event.isCanceled()) {
+            Toast.makeText(getActivity(), "no for real, the real back was pressed" + String.valueOf(new DateTime().getMillis()), Toast.LENGTH_SHORT).show();
+        }
+
+        return false;
+    }
 }
