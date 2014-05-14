@@ -1,18 +1,12 @@
-<android.support.v4.widget.DrawerLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/drawer_layout"
+    android:id="@+id/tablet_landscape"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white">
 
-    <!-- The main content view -->
     <FrameLayout
-        android:id="@+id/content_fragment_holder"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <FrameLayout
-        android:id="@+id/menu_fragment_drawer_holder"
+        android:id="@+id/menu_fragment_holder"
         android:layout_width="140dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
@@ -25,4 +19,10 @@
 
     </FrameLayout>
 
-</android.support.v4.widget.DrawerLayout>
+    <!-- The main content view -->
+    <FrameLayout
+        android:id="@+id/content_fragment_holder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

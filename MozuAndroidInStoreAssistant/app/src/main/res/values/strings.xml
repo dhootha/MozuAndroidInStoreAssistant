@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_auth_appid">9e5cf1d59062480da8a9a31800e82134</string>
-    <string name="app_auth_shared_secret">6edc19197c504d2ab300a31800e82134</string>
+    <string name="app_auth_appid">9249dd36c5d443e4abc6a32a013b4578</string>
+    <string name="app_auth_shared_secret">fd4d5a9b16bf4de6bd32a32a013b4578</string>
     <string name="service_url">https://home.mozu-qa.com</string>
     <string name="app_name">Mozu</string>
     <string name="title_section1">Products</string>
@@ -19,5 +19,11 @@
     <string name="set_default_tenant_site_message">Would you like to set this as your default store? (You can change it at any time from the settings)</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="menu_search_text">Search</string>
+    <string name="menu_products_text">Products</string>
+    <string name="menu_orders_text">Orders</string>
+    <string name="menu_customers_text">Customers</string>
+    <string name="drawer_open">drawer opened</string>
+    <string name="drawer_close">drawer closed</string>
 
 </resources>

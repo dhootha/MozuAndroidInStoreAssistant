@@ -14,7 +14,6 @@ public class UserNotAuthenticatedAuthTicket extends UserAuthenticationState {
         if (!getStateMachine().isAuthProfileStillValid()) {
             CurrentAuthTicketSerializer authTicketStore = new CurrentAuthTicketSerializer(getStateMachine().getContext());
             authTicketStore.deleteFile();
-            getStateMachine().setAuthProfile(null);
 
             getStateMachine().setCurrentUserAuthState(getStateMachine().userNotAuthenticatedNoAuthTicket);
 
