@@ -31,4 +31,9 @@ public class UserNotAuthenticatedAuthTicket extends UserAuthenticationState {
         getStateMachine().refreshAuthProfile();
     }
 
+    @Override
+    public boolean isLoadingState() {
+
+        return true;
+    }
 }

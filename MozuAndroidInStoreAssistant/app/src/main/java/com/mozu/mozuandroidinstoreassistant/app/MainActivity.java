@@ -37,7 +37,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         //Only register for updates if not a debug build
         if ( !(0 != (getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE) )) {
-            UpdateManager.register(this, "4fbc83986e51a19bb0c9137e06e88363");
+            UpdateManager.register(this, getString(R.string.hockey_app_id));
         }
 
         mSearchMenuLayout = (LinearLayout) findViewById(R.id.menu_search_layout);
@@ -119,7 +119,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         int id = item.getItemId();
         if (id == R.id.action_logout) {
             UserAuthenticationStateMachineProducer.getInstance(getApplicationContext()).getCurrentUserAuthState().signOutUser();
-            startActivity(new Intent(this, LoginActivity.class));
             finish();
             return true;
         } else if (mDrawerToggle.onOptionsItemSelected(item)) {

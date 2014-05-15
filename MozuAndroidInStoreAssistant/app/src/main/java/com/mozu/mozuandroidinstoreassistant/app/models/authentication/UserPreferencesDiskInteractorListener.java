@@ -9,4 +9,5 @@ public interface UserPreferencesDiskInteractorListener {
     void finishedReading(List<UserPreferences> prefs);
     void failedToWrite();
 
+    void failedToReadUserPrefs();
 }

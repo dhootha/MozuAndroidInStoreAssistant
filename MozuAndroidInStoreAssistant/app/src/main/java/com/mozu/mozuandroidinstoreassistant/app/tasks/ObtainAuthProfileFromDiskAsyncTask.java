@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 
 import com.crashlytics.android.Crashlytics;
 import com.mozu.api.security.AuthenticationProfile;
+import com.mozu.mozuandroidinstoreassistant.app.models.authentication.AuthProfileDiskInteractorListener;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticatorAsyncListener;
 import com.mozu.mozuandroidinstoreassistant.app.serialization.CurrentAuthTicketSerializer;
 
@@ -12,11 +13,11 @@ import java.io.IOException;
 
 public class ObtainAuthProfileFromDiskAsyncTask extends AsyncTask<Void, Void, AuthenticationProfile> {
 
-    private UserAuthenticatorAsyncListener mListener;
+    private AuthProfileDiskInteractorListener mListener;
     private Context mContext;
     private boolean errored;
 
-    public ObtainAuthProfileFromDiskAsyncTask(UserAuthenticatorAsyncListener listener, Context context) {
+    public ObtainAuthProfileFromDiskAsyncTask(AuthProfileDiskInteractorListener listener, Context context) {
 
         mListener = listener;
         mContext = context;
@@ -46,13 +47,13 @@ public class ObtainAuthProfileFromDiskAsyncTask extends AsyncTask<Void, Void, Au
         mListener.authProfileReadFromDisk(profile);
 
         if (errored) {
-            mListener.errored("could not read auth profile from disk");
+            mListener.failedToReadAuthProfile();
         }
     }
 
     @Override
     protected void onCancelled(AuthenticationProfile profile) {
 
-        mListener.errored("could not read auth profile from disk");
+        mListener.failedToReadAuthProfile();
     }
 }

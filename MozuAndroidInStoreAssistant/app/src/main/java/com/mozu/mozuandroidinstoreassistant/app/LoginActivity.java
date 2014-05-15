@@ -7,6 +7,7 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.pm.ApplicationInfo;
 import android.database.Cursor;
 import android.net.Uri;
 
@@ -16,7 +17,7 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.EditorInfo;;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -39,7 +40,7 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, Observer {
+public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, Observer, OnClickListener {
 
     private static final int CONTACT_LOADER = 0;
 
@@ -52,7 +53,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
     private AppAuthenticationStateMachine mAppAuthStateMachine;
     private UserAuthenticationStateMachine mUserAuthStateMachine;
 
-    private boolean mAlreadyAuthed = false;
+    private boolean mHaveNotAskedToUpdate = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +91,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
         mProgressView = findViewById(R.id.login_progress);
 
         setupAppAuth();
-        setupUserAuth();
     }
 
     private void setupAppAuth() {
@@ -101,17 +101,24 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
         mAppAuthStateMachine = AppAuthenticationStateMachineProducer.getInstance(authInfo, getString(R.string.service_url));
         mAppAuthStateMachine.addObserver(this);
 
-        if (!mAppAuthStateMachine.getCurrentAppAuthState().isAuthenticatedState()) {
-            mLoginFormView.setVisibility(View.GONE);
-            mProgressView.setVisibility(View.VISIBLE);
-            mAppAuthErrorView.setVisibility(View.GONE);
+        if (!mAppAuthStateMachine.getCurrentAppAuthState().isAuthenticatedState() && !mAppAuthStateMachine.getCurrentAppAuthState().isErrorState()) {
+            showProgress(true);
             mAppAuthStateMachine.authenticateApp();
+
+            return;
         }
 
         if (mAppAuthStateMachine.getCurrentAppAuthState().isErrorState()) {
-            mAppAuthErrorView.setVisibility(View.VISIBLE);
+            showErrorAuthenticatingApp();
+
+            return;
         } else {
-            mAppAuthErrorView.setVisibility(View.GONE);
+            showProgress(true);
+        }
+
+        //this means app is already authenticated, so we should auth user
+        if (mUserAuthStateMachine == null) {
+            setupUserAuth();
         }
     }
 
@@ -120,7 +127,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
         mUserAuthStateMachine.addObserver(this);
 
         if (!mAppAuthStateMachine.getCurrentAppAuthState().isAuthenticatedState()) {
-
+            mAppAuthStateMachine.authenticateApp();
             return;
         }
 
@@ -134,17 +141,27 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
 
             loginFailure();
         }
+
+        if (mUserAuthStateMachine.getCurrentUserAuthState().isLoadingState()) {
+            showProgress(true);
+        } else {
+            showProgress(false);
+        }
     }
 
     @Override
     protected void onDestroy() {
         mAppAuthStateMachine.deleteObserver(this);
-        mUserAuthStateMachine.deleteObserver(this);
+
+        if (mUserAuthStateMachine != null) {
+            mUserAuthStateMachine.deleteObserver(this);
+        }
 
         super.onDestroy();
     }
 
     private void populateAutoComplete() {
+
         getLoaderManager().initLoader(CONTACT_LOADER, null, this);
     }
 
@@ -188,6 +205,12 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
             // There was an error; don't attempt login and focus the first
             // form field with an error.
             focusView.requestFocus();
+
+            //Only register for updates if not a debug build
+            if ( !(0 != (getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE) ) && mHaveNotAskedToUpdate) {
+                mHaveNotAskedToUpdate = false;
+                UpdateManager.register(this, getString(R.string.hockey_app_id));
+            }
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
@@ -206,6 +229,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
     }
 
     public void showProgress(final boolean show) {
+        mAppAuthErrorView.setVisibility(View.GONE);
+
         int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
         mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
@@ -224,7 +249,13 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
             }
         });
 
-        mAppAuthErrorView.setVisibility(View.GONE);
+    }
+
+    private void showErrorAuthenticatingApp() {
+        mLoginFormView.setVisibility(View.GONE);
+        mProgressView.setVisibility(View.GONE);
+        mAppAuthErrorView.setVisibility(View.VISIBLE);
+        findViewById(R.id.try_app_auth_again_button).setOnClickListener(this);
     }
 
     @Override
@@ -267,11 +298,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
     }
 
     public void loginSuccess() {
-        if (mAlreadyAuthed) {
-            return;
-        }
-
-        mAlreadyAuthed = true;
 
         showProgress(true);
 
@@ -300,11 +326,18 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
             AppAuthenticationStateMachine machine = (AppAuthenticationStateMachine)observable;
 
             if (machine.getCurrentAppAuthState().isErrorState()) {
-                errorAuthenticatingApp(machine.getCurrentAppAuthState().getErrorMessage());
+                showErrorAuthenticatingApp();
+                return;
             }
 
             if (machine.getCurrentAppAuthState().isAuthenticatedState()) {
                 appAuthenticated();
+
+                if (mUserAuthStateMachine == null) {
+                    setupUserAuth();
+                }
+
+                return;
             }
         }
 
@@ -314,30 +347,40 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
 
             if (machine.getCurrentUserAuthState().isErrorState()) {
                 loginFailure();
+
+                return;
             }
 
             if (machine.getCurrentUserAuthState().isAuthenticatedState()) {
                 loginSuccess();
+
+                return;
+            }
+
+            if (machine.getCurrentUserAuthState().isLoadingState()) {
+                showProgress(true);
+            } else {
+                showProgress(false);
+                mEmailView.requestFocus();
             }
         }
     }
 
     private void appAuthenticated() {
         //user is already authenticated
-        if (mUserAuthStateMachine.getCurrentUserAuthState().isAuthenticatedState()) {
-            loginSuccess();
-        } else {
-            mLoginFormView.setVisibility(View.VISIBLE);
-            mProgressView.setVisibility(View.GONE);
-            mAppAuthErrorView.setVisibility(View.GONE);
-            mEmailView.requestFocus();
+        if (mUserAuthStateMachine == null) {
+            setupUserAuth();
+            return;
         }
     }
 
-    private void errorAuthenticatingApp(String errorMessage) {
-        mLoginFormView.setVisibility(View.GONE);
-        mProgressView.setVisibility(View.GONE);
-        mAppAuthErrorView.setVisibility(View.VISIBLE);
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.try_app_auth_again_button) {
+            showProgress(true);
+            findViewById(R.id.try_app_auth_again_button).setOnClickListener(null);
+            mAppAuthStateMachine.authenticateApp();
+        }
     }
 }
 

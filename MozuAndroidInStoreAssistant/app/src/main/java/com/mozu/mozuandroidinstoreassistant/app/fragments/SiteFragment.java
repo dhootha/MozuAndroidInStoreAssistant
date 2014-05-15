@@ -2,7 +2,9 @@ package com.mozu.mozuandroidinstoreassistant.app.fragments;
 
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +18,7 @@ import com.mozu.mozuandroidinstoreassistant.app.serialization.SiteListJsonConver
 
 import java.util.List;
 
-public class SiteFragment extends DialogFragment implements ListView.OnItemClickListener {
+public class SiteFragment extends DialogFragment implements ListView.OnItemClickListener, DialogInterface.OnKeyListener {
 
     public static final String SITES_AS_JSON = "SITES_AS_JSON";
     private SiteSelectionFragmentListener mListener;
@@ -53,6 +55,8 @@ public class SiteFragment extends DialogFragment implements ListView.OnItemClick
         mListView.setAdapter(mAdapter);
 
         getDialog().setTitle(getString(R.string.site_selection_dialog_title));
+
+        getDialog().setOnKeyListener(this);
 
         //this is monster hacky, but not sure how else to change the style of this one bar
         int divierId = getDialog().getContext().getResources().getIdentifier("android:id/titleDivider", null, null);
@@ -96,4 +100,16 @@ public class SiteFragment extends DialogFragment implements ListView.OnItemClick
        mSites = sites;
     }
 
+    @Override
+    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP && !event.isCanceled()) {
+            //if tenant not chosen then exit out
+
+            mListener.siteNotChosenButExited();
+            return true;
+        }
+
+        return false;
+    }
 }

@@ -8,12 +8,10 @@ import com.mozu.api.contracts.tenant.Site;
 import com.mozu.api.security.AuthenticationProfile;
 import com.mozu.api.security.Scope;
 import com.mozu.mozuandroidinstoreassistant.app.models.UserPreferences;
-import com.mozu.mozuandroidinstoreassistant.app.tasks.ReadUserPrefsFromDiskAsyncTask;
 import com.mozu.mozuandroidinstoreassistant.app.tasks.RefreshAuthProfileAsyncTask;
 import com.mozu.mozuandroidinstoreassistant.app.tasks.WriteAuthProfileToDiskAsyncTask;
 import com.mozu.mozuandroidinstoreassistant.app.tasks.WriteUserPrefsFromDiskAsyncTask;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
@@ -24,6 +22,7 @@ public class UserAuthenticationStateMachine extends Observable implements Refres
     private AuthenticationProfile mAuthProfile;
     private UserAuthInfo mUserAuthInfo;
 
+    protected InitializingStateMachineState initializingStateMachineState;
     protected UserAuthenticatedTenantSet userAuthenticatedTenantSet;
     protected UserAuthenticatedNoTenantSet userAuthenticatedNoTenantSet;
     protected UserNotAuthenticatedAuthTicket userNotAuthenticatedAuthTicket;
@@ -35,17 +34,16 @@ public class UserAuthenticationStateMachine extends Observable implements Refres
     public UserAuthenticationStateMachine(Context context) {
         mContext = context;
 
-        readUserPreferences();
-
         mUserAuthInfo = new UserAuthInfo();
 
+        initializingStateMachineState = new InitializingStateMachineState(this);
         userAuthenticatedTenantSet = new UserAuthenticatedTenantSet(this);
         userAuthenticatedNoTenantSet = new UserAuthenticatedNoTenantSet(this);
         userNotAuthenticatedAuthTicket = new UserNotAuthenticatedAuthTicket(this);
         userNotAuthenticatedNoAuthTicket = new UserNotAuthenticatedNoAuthTicket(this);
         userAuthenticationFailed = new UserAuthenticationFailed(this);
 
-        mCurrentUserAuthState = userNotAuthenticatedNoAuthTicket;
+        mCurrentUserAuthState = initializingStateMachineState;
     }
 
     protected void setCurrentUserAuthState(UserAuthenticationState userAuthState) {
@@ -136,10 +134,6 @@ public class UserAuthenticationStateMachine extends Observable implements Refres
         new WriteUserPrefsFromDiskAsyncTask(this, getContext(), mAllUsersPrefs).execute();
     }
 
-    private void readUserPreferences() {
-        new ReadUserPrefsFromDiskAsyncTask(this, getContext()).execute();
-    }
-
     public UserPreferences getCurrentUsersPreferences() {
 
         for (UserPreferences prefs: mAllUsersPrefs) {
@@ -159,16 +153,21 @@ public class UserAuthenticationStateMachine extends Observable implements Refres
 
     @Override
     public void finishedReading(List<UserPreferences> prefs) {
-        if (prefs == null) {
-            prefs = new ArrayList<UserPreferences>();
-        }
+        mAllUsersPrefs = prefs;
+    }
 
+    protected void setAllUserPrefs(List<UserPreferences> prefs) {
         mAllUsersPrefs = prefs;
     }
 
     @Override
     public void failedToWrite() {
         Log.d("failed to write user prefs", "failed to write user prefs");
+    }
+
+    @Override
+    public void failedToReadUserPrefs() {
+        Log.d("failed to read user prefs", "failed to read user prefs");
     }
 
     public void setCurrentSite(Site site) {
