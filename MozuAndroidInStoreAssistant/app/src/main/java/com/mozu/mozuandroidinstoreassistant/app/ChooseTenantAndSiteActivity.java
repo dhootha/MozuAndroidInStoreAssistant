@@ -150,7 +150,7 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
                 finish();
             }
 
-            if (stateMachine.getCurrentUserAuthState().isAuthenticatedState() && stateMachine.getCurrentUserAuthState().isTenantSelectedState()) {
+            if (stateMachine.getCurrentUserAuthState().isAuthenticatedState() && stateMachine.getCurrentUserAuthState().isTenantSelectedState() && mUserAuthStateMachine.getCurrentUsersPreferences().getDontAskToSetTenantSiteIfSet()) {
 
                 startActivity(new Intent(this, MainActivity.class));
                 finish();
