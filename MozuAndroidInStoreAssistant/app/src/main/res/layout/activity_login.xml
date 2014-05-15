@@ -47,13 +47,22 @@
         <LinearLayout
             android:id="@+id/app_auth_error_layout"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
                 android:text="@string/app_auth_error"/>
+
+            <Button
+                android:id="@+id/try_app_auth_again_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="31dp"
+                android:text="@string/try_again_app_auth_button_text"
+                android:textStyle="bold"/>
 
         </LinearLayout>
 

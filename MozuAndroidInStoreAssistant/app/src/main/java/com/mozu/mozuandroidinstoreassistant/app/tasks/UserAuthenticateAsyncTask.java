@@ -24,6 +24,7 @@ public class UserAuthenticateAsyncTask extends AsyncTask<Void, Void, Authenticat
     public AuthenticationProfile doInBackground(Void... params) {
 
         try {
+
             return UserAuthenticator.authenticate(mAuthInfo, AuthenticationScope.Tenant, null);
         } catch (ApiException e) {
 

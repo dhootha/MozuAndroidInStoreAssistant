@@ -35,6 +35,11 @@ public class UserAuthenticationState {
         return false;
     }
 
+    public boolean isLoadingState() {
+
+        return false;
+    }
+
     public boolean isAuthenticatedState() {
         return false;
     }

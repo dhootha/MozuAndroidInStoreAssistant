@@ -9,6 +9,7 @@ import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserPrefer
 import com.mozu.mozuandroidinstoreassistant.app.serialization.UserPreferencesSerializer;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ReadUserPrefsFromDiskAsyncTask extends AsyncTask<Void, Void, List<UserPreferences>> {
@@ -40,6 +41,10 @@ public class ReadUserPrefsFromDiskAsyncTask extends AsyncTask<Void, Void, List<U
     @Override
     protected void onPostExecute(List<UserPreferences> userPreferences) {
         super.onPostExecute(userPreferences);
+
+        if (userPreferences == null) {
+            userPreferences = new ArrayList<UserPreferences>();
+        }
 
         mListener.finishedReading(userPreferences);
     }

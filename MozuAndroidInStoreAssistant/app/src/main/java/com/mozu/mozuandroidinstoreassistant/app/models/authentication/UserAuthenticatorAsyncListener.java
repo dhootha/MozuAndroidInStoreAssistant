@@ -6,7 +6,5 @@ public interface UserAuthenticatorAsyncListener {
 
     void userAuthenticated(AuthenticationProfile profile);
     void authenticationFailed(String errorMessage);
-    void authProfileReadFromDisk(AuthenticationProfile profile);
 
-    void errored(String errorMessage);
 }

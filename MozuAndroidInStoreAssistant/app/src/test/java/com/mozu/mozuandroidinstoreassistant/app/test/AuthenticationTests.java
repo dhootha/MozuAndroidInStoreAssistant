@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 @RunWith(RobolectricTestRunner.class)
 public class AuthenticationTests {
 
-    @Test
+     @Test
      public void firstTest() throws Exception {
         assertEquals(true, true);
     }

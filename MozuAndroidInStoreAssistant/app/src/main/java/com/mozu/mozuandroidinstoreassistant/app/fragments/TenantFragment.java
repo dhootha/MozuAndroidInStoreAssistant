@@ -107,7 +107,9 @@ public class TenantFragment extends DialogFragment implements ListView.OnItemCli
     public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
 
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP && !event.isCanceled()) {
-            Toast.makeText(getActivity(), "no for real, the real back was pressed" + String.valueOf(new DateTime().getMillis()), Toast.LENGTH_SHORT).show();
+            //if tenant not chosen then exit out
+            getActivity().finish();
+            return true;
         }
 
         return false;

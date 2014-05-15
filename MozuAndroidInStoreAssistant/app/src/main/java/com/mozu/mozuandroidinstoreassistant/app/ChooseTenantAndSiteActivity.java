@@ -81,7 +81,7 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
     }
 
     private void updateAuthTicketToDefaults() {
-        if (mUserAuthStateMachine.getCurrentUsersPreferences().getDefaultTenantId() == null || mUserAuthStateMachine.getCurrentUsersPreferences().getDefaultTenantId().equalsIgnoreCase("")) {
+        if (mUserAuthStateMachine.getCurrentUsersPreferences().getDefaultTenantId() == null || mUserAuthStateMachine.getCurrentUsersPreferences().getDefaultTenantId().equalsIgnoreCase("") || mUserAuthStateMachine.getCurrentUsersPreferences().getDefaultTenantId().equalsIgnoreCase("null")) {
             showTenantChooser();
             return;
         }
@@ -93,7 +93,7 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
         mUserAuthStateMachine.updateScope(scope);
     }
 
-    private void showTenantChooser() {
+    public void showTenantChooser() {
         //only show tenant chooser if there is more than one tenant
         if (mUserAuthStateMachine.getAuthProfile().getAuthorizedScopes().size() == 1) {
             tenantWasChosen(mUserAuthStateMachine.getAuthProfile().getAuthorizedScopes().get(0));
@@ -144,9 +144,15 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
 
             UserAuthenticationStateMachine stateMachine = (UserAuthenticationStateMachine)observable;
 
-            if (!stateMachine.getCurrentUserAuthState().isAuthenticatedState()) {
+            if (!stateMachine.getCurrentUserAuthState().isAuthenticatedState() && stateMachine.getCurrentUserAuthState().isErrorState()) {
 
                 startActivity(new Intent(this, LoginActivity.class));
+                finish();
+            }
+
+            if (stateMachine.getCurrentUserAuthState().isAuthenticatedState() && stateMachine.getCurrentUserAuthState().isTenantSelectedState()) {
+
+                startActivity(new Intent(this, MainActivity.class));
                 finish();
             }
 
@@ -173,10 +179,8 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
     }
 
     @Override
-    public void onBackPressed() {
-        Toast.makeText(this, "OnBack", Toast.LENGTH_SHORT).show();
-
-        super.onBackPressed();
+    public void siteNotChosenButExited() {
+        showTenantChooser();
     }
 
     private void showAskToSetDefaultDialog() {

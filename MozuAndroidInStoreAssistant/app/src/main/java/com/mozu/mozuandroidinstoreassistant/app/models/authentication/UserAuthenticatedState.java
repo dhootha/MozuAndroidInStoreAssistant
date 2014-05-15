@@ -42,6 +42,8 @@ public class UserAuthenticatedState extends UserAuthenticationState implements U
         CurrentAuthTicketSerializer authTicket = new CurrentAuthTicketSerializer(getStateMachine().getContext());
         authTicket.deleteFile();
 
+        getStateMachine().updateUserPreferences();
+
         getStateMachine().setCurrentUserAuthState(getStateMachine().userNotAuthenticatedNoAuthTicket);
     }
 
