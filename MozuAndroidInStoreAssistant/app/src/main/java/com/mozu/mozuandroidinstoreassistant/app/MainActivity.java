@@ -119,6 +119,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         int id = item.getItemId();
         if (id == R.id.action_logout) {
             UserAuthenticationStateMachineProducer.getInstance(getApplicationContext()).getCurrentUserAuthState().signOutUser();
+            startActivity(new Intent(this, LoginActivity.class));
             finish();
             return true;
         } else if (mDrawerToggle.onOptionsItemSelected(item)) {
