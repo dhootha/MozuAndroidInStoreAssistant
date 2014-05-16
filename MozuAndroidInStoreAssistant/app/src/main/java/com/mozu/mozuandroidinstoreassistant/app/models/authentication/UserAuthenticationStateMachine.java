@@ -160,6 +160,11 @@ public class UserAuthenticationStateMachine extends Observable implements Refres
         mAllUsersPrefs = prefs;
     }
 
+    public List<UserPreferences> getAllUserPrefs() {
+
+        return mAllUsersPrefs;
+    }
+
     @Override
     public void failedToWrite() {
         Log.d("failed to write user prefs", "failed to write user prefs");

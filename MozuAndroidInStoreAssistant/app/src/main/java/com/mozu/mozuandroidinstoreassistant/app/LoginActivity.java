@@ -28,6 +28,7 @@ import com.crashlytics.android.Crashlytics;
 import com.mozu.api.contracts.appdev.AppAuthInfo;
 import com.mozu.api.contracts.core.UserAuthInfo;
 import com.mozu.mozuandroidinstoreassistant.app.loaders.ProfileQuery;
+import com.mozu.mozuandroidinstoreassistant.app.models.UserPreferences;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.AppAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.AppAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
@@ -65,7 +66,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
         mAppAuthErrorView = findViewById(R.id.app_auth_error_layout);
 
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -229,6 +229,10 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
     }
 
     public void showProgress(final boolean show) {
+        if (!show) {
+            populateAutoComplete();
+        }
+
         mAppAuthErrorView.setVisibility(View.GONE);
 
         int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
@@ -278,6 +282,10 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
         while (!cursor.isAfterLast()) {
             emails.add(cursor.getString(ProfileQuery.ADDRESS));
             cursor.moveToNext();
+        }
+
+        for (UserPreferences pref: mUserAuthStateMachine.getAllUserPrefs()) {
+            emails.add(pref.getEmail());
         }
 
         addEmailsToAutoComplete(emails);

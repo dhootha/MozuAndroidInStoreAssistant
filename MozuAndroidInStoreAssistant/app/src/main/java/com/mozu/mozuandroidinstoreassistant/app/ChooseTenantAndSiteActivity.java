@@ -5,14 +5,9 @@ import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 
-import com.mozu.api.MozuApiContext;
-import com.mozu.api.contracts.location.Location;
 import com.mozu.api.contracts.tenant.Site;
 import com.mozu.api.contracts.tenant.Tenant;
-import com.mozu.api.resources.commerce.LocationResource;
-import com.mozu.api.resources.platform.SiteDataResource;
 import com.mozu.api.security.Scope;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.SetDefaultFragment;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.SetDefaultFragmentListener;
@@ -151,7 +146,6 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
             }
 
             if (stateMachine.getCurrentUserAuthState().isAuthenticatedState() && stateMachine.getCurrentUserAuthState().isTenantSelectedState() && mUserAuthStateMachine.getCurrentUsersPreferences().getDontAskToSetTenantSiteIfSet()) {
-
                 startActivity(new Intent(this, MainActivity.class));
                 finish();
             }
