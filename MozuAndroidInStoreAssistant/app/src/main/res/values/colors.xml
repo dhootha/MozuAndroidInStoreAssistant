@@ -2,11 +2,12 @@
 <resources>
     <color name="floating_label_color">@color/mozu_color</color>
 
-    <color name="menu_background_default_color">#222222</color>
+    <color name="menu_background_default_color">#FFFFFF</color>
 
-    <color name="selected_menu_item_color">#000000</color>
+    <color name="selected_menu_item_color">#FFFFFF</color>
     <color name="unselected_menu_item_color">@android:color/transparent</color>
 
     <color name="selected_menu_accent_item_color">@color/mozu_color</color>
     <color name="unselected_menu_accent_item_color">@android:color/transparent</color>
+    <color name="main_background">#EEF0F0</color>
 </resources>

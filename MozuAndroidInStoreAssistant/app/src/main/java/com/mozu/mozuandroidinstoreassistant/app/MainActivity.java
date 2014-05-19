@@ -1,6 +1,8 @@
 package com.mozu.mozuandroidinstoreassistant.app;
 
 import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
@@ -10,12 +12,13 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import com.mozu.mozuandroidinstoreassistant.app.fragments.CategoryFragment;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 
 import net.hockeyapp.android.UpdateManager;
-
 
 public class MainActivity extends Activity implements View.OnClickListener {
 
@@ -56,6 +59,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         getActionBar().setIcon(R.drawable.logo_actionbar);
         mProductsLayout.setSelected(true);
 
+        initializeCategoryFragment();
+
         mWasCreatedInPortrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT || findViewById(R.id.tablet_landscape) == null;
 
         if (mWasCreatedInPortrait) {
@@ -73,7 +78,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,                  /* host Activity */
                 mDrawerLayout,         /* DrawerLayout object */
-                R.drawable.ic_drawer,  /* nav drawer icon to replace 'Up' caret */
+                R.drawable.mozu_ic_navigation_drawer,  /* nav drawer icon to replace 'Up' caret */
                 R.string.drawer_open,  /* "open drawer" description */
                 R.string.drawer_close  /* "close drawer" description */
         ) {
@@ -142,6 +147,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         } else if (v.getId() == R.id.menu_products_layout) {
             getActionBar().setTitle(R.string.menu_products_text);
             v.setSelected(true);
+            initializeCategoryFragment();
         } else if (v.getId() == R.id.menu_orders_layout) {
             getActionBar().setTitle(R.string.menu_orders_text);
             v.setSelected(true);
@@ -153,5 +159,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
         if (mWasCreatedInPortrait) {
             mDrawerLayout.closeDrawers();
         }
+    }
+
+    private void initializeCategoryFragment() {
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        CategoryFragment fragment = new CategoryFragment();
+        fragmentTransaction.add(R.id.content_fragment_holder, fragment);
+        fragmentTransaction.commit();
     }
 }

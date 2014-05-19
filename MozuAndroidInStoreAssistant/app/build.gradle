@@ -9,7 +9,6 @@ buildscript {
 }
 apply plugin: 'android'
 apply plugin: 'crashlytics'
-apply plugin: 'robolectric'
 
 repositories {
     mavenCentral()
@@ -26,6 +25,10 @@ android {
         targetSdkVersion 19
         versionCode System.getenv("BUILD_NUMBER") as Integer ?: 1
         versionName "0.9 - Build No. " + System.getenv("BUILD_NUMBER")
+        testPackageName "com.mozu.mozuandroidinstoreassistant.app.test"
+        testInstrumentationRunner "com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"
+        testHandleProfiling true
+        testFunctionalTest true
     }
     signingConfigs {
         release {
@@ -53,28 +56,18 @@ android {
             java.srcDirs = ['src/test/java']
         }
     }
+    testOptions {
+        reportDir = "$project.buildDir/mozu/tests/report"
+    }
 }
 
 dependencies {
-    robolectricCompile 'org.robolectric:robolectric:2.0'
-    robolectricCompile group: 'junit', name: 'junit', version: '4.+'
-    compile fileTree(dir: 'libs', include: '*.jar')
+    compile files('libs/HockeySDK-3.0.2.jar')
     compile 'com.android.support:support-v13:19.+'
     compile 'com.google.android.gms:play-services:4.2.42'
     compile 'com.android.support:appcompat-v7:19.+'
-
-    compile ("com.mozu.api:mozu-api-android:1.7.15@aar"){
-        exclude group: 'mysql'
-        exclude group: 'xerces'
-        exclude group: 'berkeleydb'
-        exclude group: 'hsqldb'
-        exclude group: 'tomcat'
-
-        changing = true
-    }
-
-    compile ("com.mozu.api:mozu-api-core:1.7.15")
-
+    compile 'com.mozu.api:mozu-api-android:1.7.15@aar'
+    compile 'com.mozu.api:mozu-api-core:1.7.15'
     compile 'com.crashlytics.android:crashlytics:1.+'
-
+    androidTestCompile files('libs/espresso-1.1-bundled.jar')
 }
