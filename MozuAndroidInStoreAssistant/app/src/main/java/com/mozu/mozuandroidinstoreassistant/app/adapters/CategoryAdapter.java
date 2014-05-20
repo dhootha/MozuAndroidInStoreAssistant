@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mozu.api.contracts.productadmin.Category;
@@ -31,7 +32,7 @@ public class CategoryAdapter extends ArrayAdapter<Category> {
 
         Category category = getItem(position);
 
-        TextView nameTextView = (TextView) convertView.findViewById(R.id.tenant_name);
+        TextView nameTextView = (TextView) convertView.findViewById(R.id.category_name);
         nameTextView.setText(category.getContent().getName());
 
         return convertView;

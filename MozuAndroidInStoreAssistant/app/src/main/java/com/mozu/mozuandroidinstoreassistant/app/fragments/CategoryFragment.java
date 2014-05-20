@@ -7,7 +7,9 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import com.mozu.api.contracts.productadmin.Category;
 import com.mozu.api.security.AuthenticationProfile;
@@ -20,7 +22,7 @@ import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthen
 
 import java.util.List;
 
-public class CategoryFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Category>> {
+public class CategoryFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Category>>, GridView.OnItemClickListener {
 
     private static final int CATEGORY_LOADER = 0;
 
@@ -82,6 +84,7 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
             }
 
             mGridOfCategories.setAdapter(mCategoryAdapter);
+            mGridOfCategories.setOnItemClickListener(this);
         }
 
     }
@@ -89,5 +92,10 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onLoaderReset(Loader<List<Category>> loader) {
 
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Toast.makeText(getActivity(), String.valueOf(position), Toast.LENGTH_SHORT).show();
     }
 }

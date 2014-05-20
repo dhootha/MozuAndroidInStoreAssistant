@@ -6,9 +6,9 @@
     tools:context="com.mozu.mozuandroidinstoreassistant.app.fragments.TenantFragment">
 
     <GridView
-        android:id="@+id/tenant_list"
+        android:id="@+id/category_grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:numColumns="3"/>
+        android:numColumns="2"/>
 
 </LinearLayout>

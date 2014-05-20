@@ -16,6 +16,9 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.mozu.mozuandroidinstoreassistant.app.fragments.CategoryFragment;
+import com.mozu.mozuandroidinstoreassistant.app.fragments.CustomersFragment;
+import com.mozu.mozuandroidinstoreassistant.app.fragments.OrderFragment;
+import com.mozu.mozuandroidinstoreassistant.app.fragments.SearchFragment;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 
 import net.hockeyapp.android.UpdateManager;
@@ -144,6 +147,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         if (v.getId() == R.id.menu_search_layout) {
             getActionBar().setTitle(R.string.menu_search_text);
             v.setSelected(true);
+            initializeSearchFragment();
         } else if (v.getId() == R.id.menu_products_layout) {
             getActionBar().setTitle(R.string.menu_products_text);
             v.setSelected(true);
@@ -151,9 +155,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
         } else if (v.getId() == R.id.menu_orders_layout) {
             getActionBar().setTitle(R.string.menu_orders_text);
             v.setSelected(true);
+            initializeOrdersFragment();
         } else if (v.getId() == R.id.menu_customers_layout) {
             getActionBar().setTitle(R.string.menu_customers_text);
             v.setSelected(true);
+            initializeCustomersFragment();
         }
 
         if (mWasCreatedInPortrait) {
@@ -163,10 +169,41 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private void initializeCategoryFragment() {
         FragmentManager fragmentManager = getFragmentManager();
+
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         CategoryFragment fragment = new CategoryFragment();
-        fragmentTransaction.add(R.id.content_fragment_holder, fragment);
+        fragmentTransaction.replace(R.id.content_fragment_holder, fragment);
+        fragmentTransaction.commit();
+    }
+
+    private void initializeSearchFragment() {
+        FragmentManager fragmentManager = getFragmentManager();
+
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        SearchFragment fragment = new SearchFragment();
+        fragmentTransaction.replace(R.id.content_fragment_holder, fragment);
+        fragmentTransaction.commit();
+    }
+
+    private void initializeOrdersFragment() {
+        FragmentManager fragmentManager = getFragmentManager();
+
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        OrderFragment fragment = new OrderFragment();
+        fragmentTransaction.replace(R.id.content_fragment_holder, fragment);
+        fragmentTransaction.commit();
+    }
+
+    private void initializeCustomersFragment() {
+        FragmentManager fragmentManager = getFragmentManager();
+
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        CustomersFragment fragment = new CustomersFragment();
+        fragmentTransaction.replace(R.id.content_fragment_holder, fragment);
         fragmentTransaction.commit();
     }
 }
