@@ -14,7 +14,7 @@
         android:background="@drawable/card_background">
 
         <ImageView
-            android:id="@+id/category_image"
+            android:id="@+id/product_image"
             android:layout_width="fill_parent"
             android:layout_height="150dp"
             android:src="@drawable/default_background"
@@ -23,13 +23,13 @@
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="100dp"
-            android:layout_below="@id/category_image">
+            android:layout_below="@id/product_image">
 
             <TextView
-                android:id="@+id/category_name"
+                android:id="@+id/product_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="22sp"
+                android:textSize="14sp"
                 android:maxLines="2"
                 android:layout_margin="10dp"
                 android:ellipsize="end"

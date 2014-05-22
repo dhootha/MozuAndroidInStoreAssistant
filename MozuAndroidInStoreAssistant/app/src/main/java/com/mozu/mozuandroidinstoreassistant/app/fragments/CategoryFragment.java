@@ -1,5 +1,6 @@
 package com.mozu.mozuandroidinstoreassistant.app.fragments;
 
+import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.Loader;
 import android.os.Bundle;
@@ -11,7 +12,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
-import com.mozu.api.contracts.productadmin.Category;
+import com.mozu.api.contracts.productruntime.Category;
 import com.mozu.api.security.AuthenticationProfile;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.CategoryAdapter;
@@ -20,9 +21,11 @@ import com.mozu.mozuandroidinstoreassistant.app.models.UserPreferences;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
-public class CategoryFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Category>>, GridView.OnItemClickListener {
+public class CategoryFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Category>>, AdapterView.OnItemClickListener {
 
     private static final int CATEGORY_LOADER = 0;
 
@@ -31,6 +34,35 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
     private UserAuthenticationStateMachine mUserState;
 
     private CategoryAdapter mCategoryAdapter;
+
+    private List<Category> mAllCategories = new ArrayList<Category>();
+
+    private CategoryFragmentListener mListener = sCategoryListener;
+
+    private Stack<Category> mCategoryStack = new Stack<Category>();
+
+    private static CategoryFragmentListener sCategoryListener = new CategoryFragmentListener() {
+
+        @Override
+        public void onLeafCategoryChosen(Category parent) {
+
+        }
+
+    };
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        mListener = (CategoryFragmentListener) activity;
+    }
+
+    @Override
+    public void onDetach() {
+        mListener = sCategoryListener;
+
+        super.onDetach();
+    }
 
     public CategoryFragment() {
         // Required empty public constructor
@@ -41,6 +73,8 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
         super.onCreate(savedInstanceState);
 
         mUserState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
+
+        setRetainInstance(true);
     }
 
     @Override
@@ -49,6 +83,7 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
         View fragmentView = inflater.inflate(R.layout.fragment_category_product_grid, container, false);
 
         mGridOfCategories = (GridView) fragmentView.findViewById(R.id.category_grid);
+        mGridOfCategories.setOnItemClickListener(this);
 
         return fragmentView;
     }
@@ -80,11 +115,11 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
         if (loader.getId() == CATEGORY_LOADER) {
             if (mCategoryAdapter == null) {
                 mCategoryAdapter = new CategoryAdapter(getActivity());
-                mCategoryAdapter.addAll(data);
+                mAllCategories.addAll(data);
+                initiateAdapterToTopRootCategoires();
             }
 
             mGridOfCategories.setAdapter(mCategoryAdapter);
-            mGridOfCategories.setOnItemClickListener(this);
         }
 
     }
@@ -96,6 +131,55 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Toast.makeText(getActivity(), String.valueOf(position), Toast.LENGTH_SHORT).show();
+
+        //traverse categories adapter, if leaf then, tell activity this is a leaf and to show and retrieve products
+        Category categoryAtPosition = mCategoryAdapter.getItem(position);
+        mCategoryStack.add(categoryAtPosition);
+        initiateAdapterToCategory(categoryAtPosition);
+    }
+
+    private void initiateAdapterToCategory(Category parent) {
+
+        if (parent.getChildrenCategories() == null || parent.getChildrenCategories().size() == 0) {
+            mListener.onLeafCategoryChosen(parent);
+
+            return;
+        }
+
+        mCategoryAdapter.clear();
+        mCategoryAdapter.addAll(parent.getChildrenCategories());
+        mCategoryAdapter.notifyDataSetChanged();
+    }
+
+    private void initiateAdapterToTopRootCategoires() {
+
+        mCategoryAdapter.clear();
+        mCategoryAdapter.addAll(mAllCategories);
+        mCategoryAdapter.notifyDataSetChanged();
+    }
+
+    public boolean shouldHandleBackPressed() {
+
+        //the top node has already been popped off
+        if (mCategoryStack.size() == 1) {
+            return false;
+        }
+
+        //only one level deep in hiearchy, so pop off last item and return true
+        if (mCategoryStack.size() == 2) {
+            mCategoryStack.pop();
+            initiateAdapterToTopRootCategoires();
+
+            return true;
+        }
+
+        if (mCategoryStack.size() > 2) {
+            mCategoryStack.pop();
+            initiateAdapterToCategory(mCategoryStack.peek());
+
+            return true;
+        }
+
+        return false;
     }
 }

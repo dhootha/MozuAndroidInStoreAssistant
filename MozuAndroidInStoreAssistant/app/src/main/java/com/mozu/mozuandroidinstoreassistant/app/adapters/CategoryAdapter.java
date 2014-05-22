@@ -8,9 +8,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.mozu.api.contracts.productadmin.Category;
-import com.mozu.api.security.Scope;
+import com.mozu.api.contracts.productruntime.Category;
 import com.mozu.mozuandroidinstoreassistant.app.R;
+import com.squareup.picasso.Picasso;
 
 public class CategoryAdapter extends ArrayAdapter<Category> {
 
@@ -34,6 +34,16 @@ public class CategoryAdapter extends ArrayAdapter<Category> {
 
         TextView nameTextView = (TextView) convertView.findViewById(R.id.category_name);
         nameTextView.setText(category.getContent().getName());
+
+        ImageView categoryImageView = (ImageView) convertView.findViewById(R.id.category_image);
+        categoryImageView.setImageResource(R.drawable.default_background);
+
+        //load image asynchronously into the view
+        if (category.getContent().getCategoryImages() != null && category.getContent().getCategoryImages().size() > 0) {
+            Picasso.with(getContext())
+                    .load(category.getContent().getCategoryImages().get(0).getImageUrl())
+                    .into(categoryImageView);
+        }
 
         return convertView;
     }

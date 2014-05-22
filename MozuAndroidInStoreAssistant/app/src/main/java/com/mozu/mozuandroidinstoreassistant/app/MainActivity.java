@@ -1,6 +1,7 @@
 package com.mozu.mozuandroidinstoreassistant.app;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -12,18 +13,32 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import com.mozu.api.contracts.productruntime.Category;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.CategoryFragment;
+import com.mozu.mozuandroidinstoreassistant.app.fragments.CategoryFragmentListener;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.CustomersFragment;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.OrderFragment;
+import com.mozu.mozuandroidinstoreassistant.app.fragments.ProductFragment;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.SearchFragment;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 
 import net.hockeyapp.android.UpdateManager;
 
-public class MainActivity extends Activity implements View.OnClickListener {
+public class MainActivity extends Activity implements View.OnClickListener, CategoryFragmentListener {
+
+    private static final String CATEGORY_FRAGMENT = "category_fragment_taggy_tag_tag";
+    private static final String SEARCH_FRAGMENT = "search_fragment_taggy_tag_tag";
+    private static final String PRODUCTS_FRAGMENT = "products_fragment_taggy_tag_tag";
+    private static final String ORDERS_FRAGMENT = "orders_fragment_taggy_tag_tag";
+    private static final String CUSTOMERS_FRAGMENT = "customers_fragment_taggy_tag_tag";
+
+    private static final String CATEGORY_FRAGMENT_BACKSTACK = "category_fragment_taggy_tag_tag_BACKSTACK";
+    private static final String SEARCH_FRAGMENT_BACKSTACK = "search_fragment_taggy_tag_tag_BACKSTACK";
+    private static final String PRODUCTS_FRAGMENT_BACKSTACK = "products_fragment_taggy_tag_tag_BACKSTACK";
+    private static final String ORDERS_FRAGMENT_BACKSTACK = "orders_fragment_taggy_tag_tag_BACKSTACK";
+    private static final String CUSTOMERS_FRAGMENT_BACKSTACK = "customers_fragment_taggy_tag_tag_BACKSTACK";
 
     private LinearLayout mSearchMenuLayout;
     private LinearLayout mProductsLayout;
@@ -42,7 +57,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         setContentView(R.layout.activity_main);
 
         //Only register for updates if not a debug build
-        if ( !(0 != (getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE) )) {
+        if (!(0 != (getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE))) {
             UpdateManager.register(this, getString(R.string.hockey_app_id));
         }
 
@@ -62,7 +77,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
         getActionBar().setIcon(R.drawable.logo_actionbar);
         mProductsLayout.setSelected(true);
 
-        initializeCategoryFragment();
+        if (savedInstanceState == null) {
+            initializeCategoryFragment();
+        }
 
         mWasCreatedInPortrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT || findViewById(R.id.tablet_landscape) == null;
 
@@ -171,9 +188,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
         FragmentManager fragmentManager = getFragmentManager();
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        //fragmentTransaction.setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.enter, R.anim.exit);
 
         CategoryFragment fragment = new CategoryFragment();
-        fragmentTransaction.replace(R.id.content_fragment_holder, fragment);
+        fragmentTransaction.replace(R.id.content_fragment_holder, fragment, CATEGORY_FRAGMENT);
         fragmentTransaction.commit();
     }
 
@@ -205,5 +223,40 @@ public class MainActivity extends Activity implements View.OnClickListener {
         CustomersFragment fragment = new CustomersFragment();
         fragmentTransaction.replace(R.id.content_fragment_holder, fragment);
         fragmentTransaction.commit();
+    }
+
+    private void initializeProductFragment(Category category) {
+        FragmentManager fragmentManager = getFragmentManager();
+
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        //fragmentTransaction.setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.enter, R.anim.exit);
+
+        ProductFragment fragment = new ProductFragment();
+        fragment.setCategoryId(category.getCategoryId());
+        fragmentTransaction.replace(R.id.content_fragment_holder, fragment, PRODUCTS_FRAGMENT);
+        fragmentTransaction.addToBackStack(PRODUCTS_FRAGMENT_BACKSTACK);
+
+        fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        boolean handled = false;
+
+        Fragment categoryFragment = getFragmentManager().findFragmentByTag(CATEGORY_FRAGMENT);
+
+        if (categoryFragment != null && categoryFragment.isVisible()) {
+            handled = ((CategoryFragment)categoryFragment).shouldHandleBackPressed();
+        }
+
+        if (!handled) {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onLeafCategoryChosen(Category leaf) {
+
+        initializeProductFragment(leaf);
     }
 }

@@ -4,11 +4,10 @@ import android.content.AsyncTaskLoader;
 import android.content.Context;
 
 import com.crashlytics.android.Crashlytics;
-import com.mozu.api.DataViewMode;
 import com.mozu.api.MozuApiContext;
-import com.mozu.api.contracts.productadmin.Category;
-import com.mozu.api.contracts.productadmin.CategoryPagedCollection;
-import com.mozu.api.resources.commerce.catalog.admin.CategoryResource;
+import com.mozu.api.contracts.productruntime.Category;
+import com.mozu.api.contracts.productruntime.CategoryCollection;
+import com.mozu.api.resources.commerce.catalog.storefront.CategoryResource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,13 +81,13 @@ public class CategoryLoader extends AsyncTaskLoader<List<Category>> {
     private List<Category> loadCategoriesFromWeb() {
         List<Category> allCategories = new ArrayList<Category>();
 
-        CategoryPagedCollection categoryPagedCollection;
+        CategoryCollection categoryPagedCollection;
 
         CategoryResource categoryResource = new CategoryResource(new MozuApiContext(mTenantId, mSiteId));
 
         //TODO: make it so if this errors the user knows about it
         try {
-            categoryPagedCollection = categoryResource.getCategories(DataViewMode.Live);
+            categoryPagedCollection = categoryResource.getCategoryTree();
 
             allCategories = categoryPagedCollection.getItems();
         } catch (Exception e) {
