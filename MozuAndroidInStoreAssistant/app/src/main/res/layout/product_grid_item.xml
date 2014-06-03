@@ -3,7 +3,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="250dp"
+    android:layout_height="275dp"
     android:gravity="center_vertical"
     android:background="@color/main_background">
 
@@ -22,7 +22,7 @@
 
         <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="100dp"
+            android:layout_height="125dp"
             android:layout_below="@id/product_image">
 
             <TextView
@@ -31,11 +31,52 @@
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
                 android:maxLines="2"
+                android:maxWidth="100dp"
                 android:layout_margin="10dp"
                 android:ellipsize="end"
                 android:textColor="@android:color/black"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"/>
+
+            <TextView
+                android:id="@+id/product_sku"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:maxLines="1"
+                android:maxWidth="75dp"
+                android:layout_margin="10dp"
+                android:ellipsize="end"
+                android:textColor="@android:color/darker_gray"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentBottom="true"/>
+
+            <TextView
+                android:id="@+id/product_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:maxLines="1"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="2dp"
+                android:ellipsize="end"
+                android:textColor="@android:color/darker_gray"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true" />
+
+            <TextView
+                android:id="@+id/product_sale_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:maxLines="1"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="0dp"
+                android:ellipsize="end"
+                android:textColor="@color/mozu_color"
+                android:layout_alignParentRight="true"
+                android:layout_above="@id/product_price" />
 
         </RelativeLayout>
 

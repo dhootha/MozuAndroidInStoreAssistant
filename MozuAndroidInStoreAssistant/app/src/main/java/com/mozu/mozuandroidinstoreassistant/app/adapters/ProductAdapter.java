@@ -13,11 +13,11 @@ import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.models.ImageURLConverter;
 import com.squareup.picasso.Picasso;
 
+import java.text.NumberFormat;
+
 public class ProductAdapter extends ArrayAdapter<Product> {
 
     private ImageURLConverter mUrlConverter;
-    private Integer mTenantId;
-    private Integer mSiteId;
 
     public ProductAdapter(Context context, Integer tenantId, Integer siteId) {
         super(context, R.layout.product_grid_item);
@@ -49,8 +49,20 @@ public class ProductAdapter extends ArrayAdapter<Product> {
         if (product.getContent().getProductImages() != null && product.getContent().getProductImages().size() > 0) {
             Picasso.with(getContext())
                     .load(mUrlConverter.getFullImageUrl(product.getContent().getProductImages().get(0).getImageUrl()))
+                    .fit()
                     .into(productImageView);
         }
+
+        TextView skuTextView = (TextView) convertView.findViewById(R.id.product_sku);
+        skuTextView.setText(product.getProductCode());
+
+        NumberFormat defaultFormat = NumberFormat.getCurrencyInstance();
+
+        TextView priceTextView = (TextView) convertView.findViewById(R.id.product_price);
+        priceTextView.setText(product.getPrice() != null && product.getPrice().getPrice() != null && product.getPrice().getPrice() > 0.0 ? defaultFormat.format(product.getPrice().getPrice()) : "");
+
+        TextView salePriceTextView = (TextView) convertView.findViewById(R.id.product_sale_price);
+        salePriceTextView.setText(product.getPrice() != null && product.getPrice().getSalePrice() != null && product.getPrice().getSalePrice() > 0.0 ? defaultFormat.format(product.getPrice().getSalePrice())  : "");
 
         return convertView;
     }

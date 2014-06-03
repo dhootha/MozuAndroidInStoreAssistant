@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.ProgressBar;
 
 import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.mozuandroidinstoreassistant.app.R;
@@ -32,6 +33,8 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
     private GridView mProductGridView;
 
     private ProductAdapter mAdapter;
+
+    private ProgressBar mProgressBar;
 
     public ProductFragment() {
         // Required empty public constructor
@@ -58,6 +61,10 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         View fragmentView = inflater.inflate(R.layout.fragment_product, container, false);
 
         mProductGridView = (GridView) fragmentView.findViewById(R.id.product_grid);
+        mProgressBar = (ProgressBar) fragmentView.findViewById(R.id.progress);
+
+        mProductGridView.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.VISIBLE);
 
         return fragmentView;
     }
@@ -86,6 +93,9 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
             }
 
             mProductGridView.setAdapter(mAdapter);
+
+            mProductGridView.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.GONE);
         }
     }
 
