@@ -28,6 +28,7 @@ public class UserAuthenticationStateMachine extends Observable implements Refres
     protected UserNotAuthenticatedAuthTicket userNotAuthenticatedAuthTicket;
     protected UserNotAuthenticatedNoAuthTicket userNotAuthenticatedNoAuthTicket;
     protected UserAuthenticationFailed userAuthenticationFailed;
+    protected UserAuthenticationFailedSessionExpired userAuthenticationFailedSessionExpired;
 
     private List<UserPreferences> mAllUsersPrefs;
 
@@ -42,6 +43,7 @@ public class UserAuthenticationStateMachine extends Observable implements Refres
         userNotAuthenticatedAuthTicket = new UserNotAuthenticatedAuthTicket(this);
         userNotAuthenticatedNoAuthTicket = new UserNotAuthenticatedNoAuthTicket(this);
         userAuthenticationFailed = new UserAuthenticationFailed(this);
+        userAuthenticationFailedSessionExpired = new UserAuthenticationFailedSessionExpired(this);
 
         mCurrentUserAuthState = initializingStateMachineState;
     }

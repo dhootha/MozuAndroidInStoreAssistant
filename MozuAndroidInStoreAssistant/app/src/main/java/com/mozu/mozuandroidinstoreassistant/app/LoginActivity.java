@@ -31,6 +31,7 @@ import com.mozu.mozuandroidinstoreassistant.app.loaders.ProfileQuery;
 import com.mozu.mozuandroidinstoreassistant.app.models.UserPreferences;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.AppAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.AppAuthenticationStateMachineProducer;
+import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationFailedSessionExpired;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 
@@ -325,7 +326,12 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
     public void loginFailure() {
         showProgress(false);
 
-        mPasswordView.setError(getString(R.string.login_error));
+        if (mUserAuthStateMachine.getCurrentUserAuthState() instanceof UserAuthenticationFailedSessionExpired) {
+            mPasswordView.setError(getString(R.string.action_sign_in_session_expired));
+        } else {
+            mPasswordView.setError(getString(R.string.login_error));
+        }
+
         mPasswordView.requestFocus();
     }
 
