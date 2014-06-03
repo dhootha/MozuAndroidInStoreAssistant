@@ -15,8 +15,8 @@
     <string name="tenant_selection_dialog_title">Select Tenant...</string>
     <string name="site_selection_dialog_title">Select Site...</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="set_default_tenant_site_title">Set As Default Store?</string>
-    <string name="set_default_tenant_site_message">Would you like to set this as your default store? (You can change it at any time from the settings)</string>
+    <string name="set_default_tenant_site_title">Set as default?</string>
+    <string name="set_default_tenant_site_message">Would you like to set this as your default selection? You can change it at any time under settings.</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="drawer_open">drawer opened</string>
