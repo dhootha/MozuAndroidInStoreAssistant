@@ -7,8 +7,6 @@ public class UserPreferences {
     private String mDefaultSiteId;
     private boolean mDontAskToSetTenantSiteIfSet;
 
-    private boolean mDontAskToSetTenant = false;
-
     public String getEmail() {
 
         return mEmail;

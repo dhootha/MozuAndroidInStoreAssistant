@@ -5,6 +5,7 @@ import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.mozu.api.contracts.tenant.Site;
 import com.mozu.api.contracts.tenant.Tenant;
@@ -70,9 +71,6 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
         if (mTenantFragment != null) {
             mTenantFragment.dismiss();
         }
-
-        //retrieve tenant - TODO - make sure this will live over config changes
-        new RetrieveTenantAsyncTask(chosenScope, this).execute();
     }
 
     private void updateAuthTicketToDefaults() {
@@ -145,9 +143,9 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
                 finish();
             }
 
-            if (stateMachine.getCurrentUserAuthState().isAuthenticatedState() && stateMachine.getCurrentUserAuthState().isTenantSelectedState() && mUserAuthStateMachine.getCurrentUsersPreferences().getDontAskToSetTenantSiteIfSet()) {
-                startActivity(new Intent(this, MainActivity.class));
-                finish();
+            if (stateMachine.getCurrentUserAuthState().isAuthenticatedState() && stateMachine.getCurrentUserAuthState().isTenantSelectedState()) {
+
+                new RetrieveTenantAsyncTask(stateMachine.getAuthProfile().getActiveScope(), this).execute();
             }
 
         }
@@ -157,8 +155,9 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
     @Override
     public void retrievedTenant(Tenant tenant) {
         if (tenant == null) {
-            showAskToSetDefaultDialog();
+            Toast.makeText(this, getString(R.string.tenant_unavailable_for_account), Toast.LENGTH_LONG).show();
 
+            showTenantChooser();
             return;
         }
 

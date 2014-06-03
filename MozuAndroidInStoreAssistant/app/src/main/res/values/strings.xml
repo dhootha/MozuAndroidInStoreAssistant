@@ -19,13 +19,10 @@
     <string name="set_default_tenant_site_message">Would you like to set this as your default store? (You can change it at any time from the settings)</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="menu_search_text">Search</string>
-    <string name="menu_products_text">Products</string>
-    <string name="menu_orders_text">Orders</string>
-    <string name="menu_customers_text">Customers</string>
     <string name="drawer_open">drawer opened</string>
     <string name="drawer_close">drawer closed</string>
     <string name="hockey_app_id">4fbc83986e51a19bb0c9137e06e88363</string>
     <string name="try_again_app_auth_button_text">Try Again</string>
+    <string name="tenant_unavailable_for_account">Current Account Cannot Retrieve This Tenant.</string>
 
 </resources>

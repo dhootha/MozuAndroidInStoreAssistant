@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="menu_search_text">Search</string>
+    <string name="menu_products_text">Products</string>
+    <string name="menu_orders_text">Orders</string>
+    <string name="menu_customers_text">Customers</string>
+</resources>

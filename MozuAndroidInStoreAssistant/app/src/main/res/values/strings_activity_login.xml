@@ -12,5 +12,4 @@
     <string name="error_field_required">This field is required</string>
 
     <string name="app_auth_error">Application Could Not Be Authenticated With The Server. Please try again or contact our support team for further assistance.</string>
-
 </resources>

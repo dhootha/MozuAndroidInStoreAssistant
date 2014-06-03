@@ -3,6 +3,7 @@ package com.mozu.mozuandroidinstoreassistant.app.tasks;
 import android.os.AsyncTask;
 
 import com.crashlytics.android.Crashlytics;
+import com.mozu.api.MozuApiContext;
 import com.mozu.api.contracts.tenant.Tenant;
 import com.mozu.api.resources.platform.TenantResource;
 import com.mozu.api.security.Scope;
@@ -20,8 +21,7 @@ public class RetrieveTenantAsyncTask extends AsyncTask<Void, Void, Tenant> {
 
     @Override
     protected Tenant doInBackground(Void... params) {
-
-        TenantResource tenantResource = new TenantResource();
+        TenantResource tenantResource = new TenantResource(new MozuApiContext());
 
         try {
             return tenantResource.getTenant(mCurrentScope.getId());
