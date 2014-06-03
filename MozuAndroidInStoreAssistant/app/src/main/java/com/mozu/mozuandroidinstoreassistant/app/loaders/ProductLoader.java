@@ -1,6 +1,5 @@
 package com.mozu.mozuandroidinstoreassistant.app.loaders;
 
-import android.content.AsyncTaskLoader;
 import android.content.Context;
 
 import com.crashlytics.android.Crashlytics;
@@ -12,7 +11,7 @@ import com.mozu.api.resources.commerce.catalog.storefront.ProductResource;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductLoader extends AsyncTaskLoader<List<Product>> {
+public class ProductLoader extends InternetConnectedAsyncTaskLoader<List<Product>> {
 
     private List<Product> mProductList;
     private Integer mTenantId;
@@ -35,6 +34,8 @@ public class ProductLoader extends AsyncTaskLoader<List<Product>> {
 
     @Override
     public List<Product> loadInBackground() {
+        super.loadInBackground();
+
         mProductList = loadProductFromWeb();
 
         return mProductList;
