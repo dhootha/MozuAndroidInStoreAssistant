@@ -12,9 +12,17 @@
         android:scaleType="centerCrop"
         android:src="@drawable/login_bg"/>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true">
 
-    <include layout="@layout/logo_login_form" />
+        <include layout="@layout/logo_login_form" />
 
+    </LinearLayout>
 
 </RelativeLayout>
 
