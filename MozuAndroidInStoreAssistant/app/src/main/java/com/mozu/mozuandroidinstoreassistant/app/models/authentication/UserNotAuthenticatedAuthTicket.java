@@ -10,12 +10,19 @@ public class UserNotAuthenticatedAuthTicket extends UserAuthenticationState {
 
     @Override
     public void authenticateUser() {
+        //if the auth ticket
+        if (getStateMachine().getAuthProfile() == null) {
+            getStateMachine().setCurrentUserAuthState(getStateMachine().userNotAuthenticatedNoAuthTicket);
+
+            return;
+        }
+
         //if auth ticket doesnt exist or is expired
         if (!getStateMachine().isAuthProfileStillValid()) {
             CurrentAuthTicketSerializer authTicketStore = new CurrentAuthTicketSerializer(getStateMachine().getContext());
             authTicketStore.deleteFile();
 
-            getStateMachine().setCurrentUserAuthState(getStateMachine().userNotAuthenticatedNoAuthTicket);
+            getStateMachine().setCurrentUserAuthState(getStateMachine().userAuthenticationFailedSessionExpired);
 
             return;
         }
