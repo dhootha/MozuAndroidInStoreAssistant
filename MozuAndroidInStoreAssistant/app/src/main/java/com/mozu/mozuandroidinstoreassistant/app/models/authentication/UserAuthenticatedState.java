@@ -50,7 +50,7 @@ public class UserAuthenticatedState extends UserAuthenticationState implements U
     @Override
     public void updateScope(Scope scope) {
 
-        new UpdateScopeAsyncTask(getStateMachine().getAuthProfile(), this, scope).execute();
+        new UpdateScopeAsyncTask(getStateMachine().getContext(), getStateMachine().getAuthProfile(), this, scope).execute();
     }
 
     @Override

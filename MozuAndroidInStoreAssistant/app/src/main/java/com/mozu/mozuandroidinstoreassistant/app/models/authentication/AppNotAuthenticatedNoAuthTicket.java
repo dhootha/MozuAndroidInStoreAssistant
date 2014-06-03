@@ -17,7 +17,7 @@ public class AppNotAuthenticatedNoAuthTicket extends AppAuthenticationState impl
 
     @Override
     public void authenticateApp() {
-        new AppAuthenticateAsyncTask(mAppAuthInfo, mBaseUrl, this).execute();
+        new AppAuthenticateAsyncTask(getStateMachine().getContext(), mAppAuthInfo, mBaseUrl, this).execute();
     }
 
     @Override

@@ -116,7 +116,7 @@ public class UserAuthenticationStateMachine extends Observable implements Refres
             return;
         }
 
-        new RefreshAuthProfileAsyncTask(this, mAuthProfile.getAuthTicket()).execute();
+        new RefreshAuthProfileAsyncTask(getContext(), this, mAuthProfile.getAuthTicket()).execute();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.mozu.mozuandroidinstoreassistant.app.tasks;
 
+import android.content.Context;
 import android.os.AsyncTask;
 
 import com.crashlytics.android.Crashlytics;
@@ -10,13 +11,15 @@ import com.mozu.api.security.Scope;
 import com.mozu.api.security.UserAuthenticator;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UpdateTenantInfoListener;
 
-public class UpdateScopeAsyncTask extends AsyncTask<Void, Void, AuthenticationProfile> {
+public class UpdateScopeAsyncTask extends InternetConnectedAsyncTask<Void, Void, AuthenticationProfile> {
 
     private AuthenticationProfile mAuthProfile;
     private UpdateTenantInfoListener mUpdateListener;
     private Scope mNewScope;
 
-    public UpdateScopeAsyncTask(AuthenticationProfile authProfile, UpdateTenantInfoListener updateListener, Scope newScope) {
+    public UpdateScopeAsyncTask(Context context, AuthenticationProfile authProfile, UpdateTenantInfoListener updateListener, Scope newScope) {
+        super(context);
+
         mAuthProfile = authProfile;
         mUpdateListener = updateListener;
         mNewScope = newScope;
@@ -24,6 +27,7 @@ public class UpdateScopeAsyncTask extends AsyncTask<Void, Void, AuthenticationPr
 
     @Override
     public AuthenticationProfile doInBackground(Void... params) {
+        super.doInBackground(params);
 
         try {
             mAuthProfile.getAuthTicket().setScope(AuthenticationScope.Tenant);

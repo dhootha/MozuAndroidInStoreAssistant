@@ -1,5 +1,6 @@
 package com.mozu.mozuandroidinstoreassistant.app.tasks;
 
+import android.content.Context;
 import android.os.AsyncTask;
 
 import com.crashlytics.android.Crashlytics;
@@ -9,18 +10,22 @@ import com.mozu.api.resources.platform.TenantResource;
 import com.mozu.api.security.Scope;
 import com.mozu.mozuandroidinstoreassistant.app.TenantResourceAsyncListener;
 
-public class RetrieveTenantAsyncTask extends AsyncTask<Void, Void, Tenant> {
+public class RetrieveTenantAsyncTask extends InternetConnectedAsyncTask<Void, Void, Tenant> {
 
     private TenantResourceAsyncListener mListener;
     private Scope mCurrentScope;
 
-    public RetrieveTenantAsyncTask(Scope scope, TenantResourceAsyncListener listener) {
+    public RetrieveTenantAsyncTask(Context context, Scope scope, TenantResourceAsyncListener listener) {
+        super(context);
+
         mCurrentScope = scope;
         mListener = listener;
     }
 
     @Override
     protected Tenant doInBackground(Void... params) {
+        super.doInBackground(params);
+
         TenantResource tenantResource = new TenantResource(new MozuApiContext());
 
         try {

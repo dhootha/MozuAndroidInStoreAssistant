@@ -145,7 +145,7 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
 
             if (stateMachine.getCurrentUserAuthState().isAuthenticatedState() && stateMachine.getCurrentUserAuthState().isTenantSelectedState()) {
 
-                new RetrieveTenantAsyncTask(stateMachine.getAuthProfile().getActiveScope(), this).execute();
+                new RetrieveTenantAsyncTask(this, stateMachine.getAuthProfile().getActiveScope(), this).execute();
             }
 
         }

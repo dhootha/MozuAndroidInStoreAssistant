@@ -34,7 +34,7 @@ public class TenantAdapter extends ArrayAdapter<Scope> {
         nameTextView.setText(tenant.getName());
 
         TextView idTextView = (TextView) convertView.findViewById(R.id.tenant_id);
-        idTextView.setText(String.valueOf(tenant.getId()));
+        idTextView.setText(String.valueOf("#" + tenant.getId()));
 
         return convertView;
     }

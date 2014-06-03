@@ -101,7 +101,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
         authInfo.setApplicationId(getString(R.string.app_auth_appid));
         authInfo.setSharedSecret(getString(R.string.app_auth_shared_secret));
 
-        mAppAuthStateMachine = AppAuthenticationStateMachineProducer.getInstance(authInfo, getString(R.string.service_url));
+        mAppAuthStateMachine = AppAuthenticationStateMachineProducer.getInstance(this, authInfo, getString(R.string.service_url));
         mAppAuthStateMachine.addObserver(this);
 
         if (!mAppAuthStateMachine.getCurrentAppAuthState().isAuthenticatedState() && !mAppAuthStateMachine.getCurrentAppAuthState().isErrorState()) {
