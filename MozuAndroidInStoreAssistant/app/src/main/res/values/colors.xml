@@ -10,4 +10,6 @@
     <color name="selected_menu_accent_item_color">@color/mozu_color</color>
     <color name="unselected_menu_accent_item_color">@android:color/transparent</color>
     <color name="main_background">#EEF0F0</color>
+    <color name="light_gray">#CCCCCC</color>
+
 </resources>

@@ -13,10 +13,19 @@ import java.util.List;
 
 public class ProductLoader extends InternetConnectedAsyncTaskLoader<List<Product>> {
 
+    private static final int ITEMS_PER_PAGE = 200;
+    public static final String SORT_BY = "productname asc";
+    public static final String FILTER_BY = "categoryId eq ";
+
     private List<Product> mProductList;
     private Integer mTenantId;
     private Integer mSiteId;
     private Integer mCategoryId;
+
+    private int mCurrentPage;
+    private int mTotalPages;
+
+    private boolean mIsLoading;
 
     public ProductLoader(Context context, Integer tenantId, Integer siteId, Integer categoryId) {
         super(context);
@@ -24,6 +33,19 @@ public class ProductLoader extends InternetConnectedAsyncTaskLoader<List<Product
         mTenantId = tenantId;
         mSiteId = siteId;
         mCategoryId = categoryId;
+
+        init();
+    }
+
+    private void init() {
+        cancelLoad();
+
+        mCurrentPage = 0;
+        mTotalPages = 0;
+
+        mIsLoading = false;
+
+        mProductList = new ArrayList<Product>();
     }
 
     @Override
@@ -34,9 +56,13 @@ public class ProductLoader extends InternetConnectedAsyncTaskLoader<List<Product
 
     @Override
     public List<Product> loadInBackground() {
+        mIsLoading = true;
+
         super.loadInBackground();
 
-        mProductList = loadProductFromWeb();
+        mProductList.addAll(loadProductFromWeb());
+
+        mIsLoading = false;
 
         return mProductList;
     }
@@ -62,12 +88,14 @@ public class ProductLoader extends InternetConnectedAsyncTaskLoader<List<Product
 
     @Override
     protected void onStopLoading() {
+        mIsLoading = false;
 
         cancelLoad();
     }
 
     @Override
     public void onCanceled(List<Product> data) {
+        mIsLoading = false;
 
         super.onCanceled(data);
     }
@@ -89,7 +117,11 @@ public class ProductLoader extends InternetConnectedAsyncTaskLoader<List<Product
         ProductResource productResource = new ProductResource(new MozuApiContext(mTenantId, mSiteId));
 
         try {
-            productCollection = productResource.getProducts("categoryId eq " + String.valueOf(mCategoryId), 0, 200, "productname asc");
+            productCollection = productResource.getProducts(FILTER_BY + String.valueOf(mCategoryId), mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, SORT_BY);
+
+            mTotalPages = productCollection.getTotalCount() / ITEMS_PER_PAGE;
+
+            mCurrentPage += 1;
 
             allProducts = productCollection.getItems();
         } catch (Exception e) {
@@ -100,4 +132,13 @@ public class ProductLoader extends InternetConnectedAsyncTaskLoader<List<Product
         return allProducts;
     }
 
+    public boolean hasMoreResults() {
+
+        return mCurrentPage < mTotalPages;
+    }
+
+    public boolean isLoading() {
+
+        return mIsLoading;
+    }
 }

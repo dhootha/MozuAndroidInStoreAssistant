@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.mozu.mozuandroidinstoreassistant.app.fragments.ProductFragment">
+    tools:context="com.mozu.mozuandroidinstoreassistant.app.fragments.ProductFragment"
+    android:background="@color/main_background">
 
     <ProgressBar
         android:id="@+id/progress"
@@ -18,5 +19,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:numColumns="3"/>
+
+    <ListView
+        android:id="@+id/product_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@android:color/black"
+        android:dividerHeight="2dp"
+        android:background="@drawable/card_background"
+        android:visibility="gone"
+        />
 
 </FrameLayout>
