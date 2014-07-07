@@ -4,18 +4,20 @@ import android.content.Context;
 
 import com.crashlytics.android.Crashlytics;
 import com.mozu.api.MozuApiContext;
-import com.mozu.api.contracts.productruntime.ProductCollection;
 import com.mozu.api.contracts.productruntime.Product;
+import com.mozu.api.contracts.productruntime.ProductCollection;
+import com.mozu.api.contracts.productruntime.ProductSearchResult;
 import com.mozu.api.resources.commerce.catalog.storefront.ProductResource;
+import com.mozu.api.resources.commerce.catalog.storefront.ProductSearchResultResource;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductLoader extends InternetConnectedAsyncTaskLoader<List<Product>> {
+public class ProductSearchLoader extends InternetConnectedAsyncTaskLoader<List<Product>> {
 
     private static final int ITEMS_PER_PAGE = 200;
     public static final String SORT_BY = "productname asc";
-    public static final String FILTER_BY = "categoryId eq ";
+    public static final String CATEGORY_FILTER = "categoryId eq ";
 
     private List<Product> mProductList;
     private Integer mTenantId;
@@ -27,12 +29,15 @@ public class ProductLoader extends InternetConnectedAsyncTaskLoader<List<Product
 
     private boolean mIsLoading;
 
-    public ProductLoader(Context context, Integer tenantId, Integer siteId, Integer categoryId) {
+    private String mQueryString;
+
+    public ProductSearchLoader(Context context, Integer tenantId, Integer siteId, Integer categoryId, String queryString) {
         super(context);
 
         mTenantId = tenantId;
         mSiteId = siteId;
         mCategoryId = categoryId;
+        mQueryString = queryString;
 
         init();
     }
@@ -59,6 +64,10 @@ public class ProductLoader extends InternetConnectedAsyncTaskLoader<List<Product
         mIsLoading = true;
 
         super.loadInBackground();
+
+        if (mProductList == null) {
+            init();
+        }
 
         mProductList.addAll(loadProductFromWeb());
 
@@ -112,18 +121,18 @@ public class ProductLoader extends InternetConnectedAsyncTaskLoader<List<Product
     private List<Product> loadProductFromWeb() {
         List<Product> allProducts = new ArrayList<Product>();
 
-        ProductCollection productCollection;
-
-        ProductResource productResource = new ProductResource(new MozuApiContext(mTenantId, mSiteId));
+        ProductSearchResultResource searchResultResource = new ProductSearchResultResource(new MozuApiContext(mTenantId, mSiteId));
 
         try {
-            productCollection = productResource.getProducts(FILTER_BY + String.valueOf(mCategoryId), mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, SORT_BY);
+            ProductSearchResult result = searchResultResource.search(mQueryString, mCategoryId == -1 ? null : CATEGORY_FILTER + String.valueOf(mCategoryId),
+                    null, null, null, null, null, null, null, null, null, null, null,
+                    SORT_BY, ITEMS_PER_PAGE, mCurrentPage * ITEMS_PER_PAGE);
 
-            mTotalPages = productCollection.getTotalCount() / ITEMS_PER_PAGE;
+            mTotalPages = result.getTotalCount() / ITEMS_PER_PAGE;
 
             mCurrentPage += 1;
 
-            allProducts = productCollection.getItems();
+            allProducts = result.getItems();
         } catch (Exception e) {
 
             Crashlytics.logException(e);
@@ -140,5 +149,9 @@ public class ProductLoader extends InternetConnectedAsyncTaskLoader<List<Product
     public boolean isLoading() {
 
         return mIsLoading;
+    }
+
+    public void setSearchQuery(String query) {
+        mQueryString = query;
     }
 }

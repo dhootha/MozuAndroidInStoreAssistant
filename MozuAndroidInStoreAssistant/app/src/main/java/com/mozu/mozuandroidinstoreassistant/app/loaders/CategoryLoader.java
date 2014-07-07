@@ -86,7 +86,6 @@ public class CategoryLoader extends InternetConnectedAsyncTaskLoader<List<Catego
 
         CategoryResource categoryResource = new CategoryResource(new MozuApiContext(mTenantId, mSiteId));
 
-        //TODO: make it so if this errors the user knows about it
         try {
             categoryPagedCollection = categoryResource.getCategoryTree();
 

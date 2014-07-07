@@ -1,14 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/main_background"
     tools:context="com.mozu.mozuandroidinstoreassistant.app.fragments.TenantFragment">
 
     <GridView
         android:id="@+id/category_grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:numColumns="2"/>
+        android:scrollbars="none"
+        android:numColumns="2"
+        />
+
+    <ListView
+        android:id="@+id/category_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:dividerHeight="1dp"
+        android:divider="@color/light_gray"
+        android:scrollbars="none"
+        android:visibility="gone"
+        />
 
 </LinearLayout>

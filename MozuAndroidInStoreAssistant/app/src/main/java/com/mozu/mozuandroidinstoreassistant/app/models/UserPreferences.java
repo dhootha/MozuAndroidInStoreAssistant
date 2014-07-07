@@ -6,6 +6,7 @@ public class UserPreferences {
     private String mDefaultTenantId;
     private String mDefaultSiteId;
     private boolean mDontAskToSetTenantSiteIfSet;
+    private boolean mShowAsGrids;
 
     public String getEmail() {
 
@@ -46,4 +47,13 @@ public class UserPreferences {
 
         return mDontAskToSetTenantSiteIfSet;
     }
+
+    public void setShowAsGrids(boolean showAsGrids) {
+        mShowAsGrids = showAsGrids;
+    }
+
+    public boolean getShowAsGrids() {
+        return mShowAsGrids;
+    }
+
 }

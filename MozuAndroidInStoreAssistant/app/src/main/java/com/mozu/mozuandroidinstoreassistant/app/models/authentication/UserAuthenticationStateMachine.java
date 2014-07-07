@@ -73,6 +73,7 @@ public class UserAuthenticationStateMachine extends Observable implements Refres
         //update scope on preferences
         UserPreferences prefs = getCurrentUsersPreferences();
         prefs.setDefaultTenantId(String.valueOf(scope.getId()));
+        updateUserPreferences();
 
         mCurrentUserAuthState.updateScope(scope);
     }

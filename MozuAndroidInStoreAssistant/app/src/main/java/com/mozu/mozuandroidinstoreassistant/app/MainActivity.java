@@ -1,7 +1,6 @@
 package com.mozu.mozuandroidinstoreassistant.app;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -21,18 +20,21 @@ import com.mozu.mozuandroidinstoreassistant.app.fragments.CategoryFragmentListen
 import com.mozu.mozuandroidinstoreassistant.app.fragments.CustomersFragment;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.OrderFragment;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.ProductFragment;
+import com.mozu.mozuandroidinstoreassistant.app.fragments.ProductFragmentListener;
+import com.mozu.mozuandroidinstoreassistant.app.fragments.ProductSearchFragment;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.SearchFragment;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 
 import net.hockeyapp.android.UpdateManager;
 
-public class MainActivity extends Activity implements View.OnClickListener, CategoryFragmentListener {
+public class MainActivity extends Activity implements View.OnClickListener, CategoryFragmentListener, ProductFragmentListener {
 
     private static final String CATEGORY_FRAGMENT = "category_fragment_taggy_tag_tag";
     private static final String SEARCH_FRAGMENT = "search_fragment_taggy_tag_tag";
     private static final String PRODUCTS_FRAGMENT = "products_fragment_taggy_tag_tag";
     private static final String ORDERS_FRAGMENT = "orders_fragment_taggy_tag_tag";
     private static final String CUSTOMERS_FRAGMENT = "customers_fragment_taggy_tag_tag";
+    private static final String PRODUCTS_SEARCH_FRAGMENT_BACKSTACK = "product_PRODUCTS_SEARCH_FRAGMENT_BACKSTACK";
 
     private static final String CATEGORY_FRAGMENT_BACKSTACK = "category_fragment_taggy_tag_tag_BACKSTACK";
     private static final String SEARCH_FRAGMENT_BACKSTACK = "search_fragment_taggy_tag_tag_BACKSTACK";
@@ -96,11 +98,11 @@ public class MainActivity extends Activity implements View.OnClickListener, Cate
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerToggle = new ActionBarDrawerToggle(
-                this,                  /* host Activity */
-                mDrawerLayout,         /* DrawerLayout object */
-                R.drawable.mozu_ic_navigation_drawer,  /* nav drawer icon to replace 'Up' caret */
-                R.string.drawer_open,  /* "open drawer" description */
-                R.string.drawer_close  /* "close drawer" description */
+                this,
+                mDrawerLayout,
+                R.drawable.mozu_ic_navigation_drawer,
+                R.string.drawer_open,
+                R.string.drawer_close
         ) {
 
             /** Called when a drawer has settled in a completely closed state. */
@@ -131,16 +133,13 @@ public class MainActivity extends Activity implements View.OnClickListener, Cate
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
         if (id == R.id.action_logout) {
             UserAuthenticationStateMachineProducer.getInstance(getApplicationContext()).getCurrentUserAuthState().signOutUser();
@@ -187,10 +186,12 @@ public class MainActivity extends Activity implements View.OnClickListener, Cate
     private void initializeCategoryFragment() {
         FragmentManager fragmentManager = getFragmentManager();
 
+        clearBackstack(fragmentManager);
+
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        //fragmentTransaction.setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.enter, R.anim.exit);
 
         CategoryFragment fragment = new CategoryFragment();
+        fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out);
         fragmentTransaction.replace(R.id.content_fragment_holder, fragment, CATEGORY_FRAGMENT);
         fragmentTransaction.commit();
     }
@@ -198,9 +199,12 @@ public class MainActivity extends Activity implements View.OnClickListener, Cate
     private void initializeSearchFragment() {
         FragmentManager fragmentManager = getFragmentManager();
 
+        clearBackstack(fragmentManager);
+
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         SearchFragment fragment = new SearchFragment();
+        fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out);
         fragmentTransaction.replace(R.id.content_fragment_holder, fragment);
         fragmentTransaction.commit();
     }
@@ -208,9 +212,12 @@ public class MainActivity extends Activity implements View.OnClickListener, Cate
     private void initializeOrdersFragment() {
         FragmentManager fragmentManager = getFragmentManager();
 
+        clearBackstack(fragmentManager);
+
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         OrderFragment fragment = new OrderFragment();
+        fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out);
         fragmentTransaction.replace(R.id.content_fragment_holder, fragment);
         fragmentTransaction.commit();
     }
@@ -218,9 +225,12 @@ public class MainActivity extends Activity implements View.OnClickListener, Cate
     private void initializeCustomersFragment() {
         FragmentManager fragmentManager = getFragmentManager();
 
+        clearBackstack(fragmentManager);
+
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         CustomersFragment fragment = new CustomersFragment();
+        fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out);
         fragmentTransaction.replace(R.id.content_fragment_holder, fragment);
         fragmentTransaction.commit();
     }
@@ -229,34 +239,64 @@ public class MainActivity extends Activity implements View.OnClickListener, Cate
         FragmentManager fragmentManager = getFragmentManager();
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        //fragmentTransaction.setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.enter, R.anim.exit);
 
         ProductFragment fragment = new ProductFragment();
         fragment.setCategoryId(category.getCategoryId());
+        fragmentTransaction.setCustomAnimations(R.animator.slide_right_in, R.animator.scale_fade_out,R.animator.slide_left_in, R.animator.scale_fade_out);
         fragmentTransaction.replace(R.id.content_fragment_holder, fragment, PRODUCTS_FRAGMENT);
         fragmentTransaction.addToBackStack(PRODUCTS_FRAGMENT_BACKSTACK);
+        fragmentTransaction.commit();
+    }
 
+    private void clearBackstack(FragmentManager fragmentManager) {
+        while (getFragmentManager().getBackStackEntryCount() > 0) {
+            fragmentManager.popBackStackImmediate();
+        }
+    }
+
+    private void addChildCategoryFragment(Category category) {
+        FragmentManager fragmentManager = getFragmentManager();
+
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        CategoryFragment fragment = new CategoryFragment();
+        fragment.setCategories(category.getChildrenCategories());
+        fragmentTransaction.addToBackStack(CATEGORY_FRAGMENT + String.valueOf(category.getCategoryId()));
+        fragmentTransaction.setCustomAnimations(R.animator.slide_right_in, R.animator.scale_fade_out,R.animator.slide_left_in, R.animator.scale_fade_out);
+        fragmentTransaction.replace(R.id.content_fragment_holder, fragment, CATEGORY_FRAGMENT + String.valueOf(category.getCategoryId()));
         fragmentTransaction.commit();
     }
 
     @Override
-    public void onBackPressed() {
-        boolean handled = false;
-
-        Fragment categoryFragment = getFragmentManager().findFragmentByTag(CATEGORY_FRAGMENT);
-
-        if (categoryFragment != null && categoryFragment.isVisible()) {
-            handled = ((CategoryFragment)categoryFragment).shouldHandleBackPressed();
-        }
-
-        if (!handled) {
-            super.onBackPressed();
+    public void onCategoryChosen(Category category) {
+        if (category.getChildrenCategories() != null && category.getChildrenCategories().size() > 0) {
+            addChildCategoryFragment(category);
+        } else {
+            initializeProductFragment(category);
         }
     }
 
     @Override
-    public void onLeafCategoryChosen(Category leaf) {
+    public void onSearchPerformedFromCategory(int currentCategoryId, String query) {
+        showProductSearchFragment(currentCategoryId, query);
+    }
 
-        initializeProductFragment(leaf);
+    @Override
+    public void onSearchPerformedFromProduct(int currentCategoryId, String query) {
+        showProductSearchFragment(currentCategoryId, query);
+    }
+
+    private void showProductSearchFragment(int categoryId, String query) {
+        FragmentManager fragmentManager = getFragmentManager();
+
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        ProductSearchFragment fragment = new ProductSearchFragment();
+        fragment.setCategoryId(categoryId);
+        fragment.setQueryString(query);
+        fragmentTransaction.setCustomAnimations(R.animator.slide_right_in, R.animator.scale_fade_out,R.animator.slide_left_in, R.animator.scale_fade_out);
+        fragmentTransaction.replace(R.id.content_fragment_holder, fragment, PRODUCTS_SEARCH_FRAGMENT_BACKSTACK);
+        fragmentTransaction.addToBackStack(PRODUCTS_SEARCH_FRAGMENT_BACKSTACK);
+        fragmentTransaction.commit();
     }
 }

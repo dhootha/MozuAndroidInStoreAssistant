@@ -92,7 +92,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
         mProgressView = findViewById(R.id.login_progress);
 
         showProgress(true);
-
         setupAppAuth();
     }
 

@@ -4,6 +4,6 @@ import com.mozu.api.contracts.productruntime.Category;
 
 public interface CategoryFragmentListener {
 
-    void onLeafCategoryChosen(Category leaf);
-
+    void onCategoryChosen(Category leaf);
+    void onSearchPerformedFromCategory(int currentCategoryId, String query);
 }

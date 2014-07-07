@@ -2,18 +2,24 @@ package com.mozu.mozuandroidinstoreassistant.app.fragments;
 
 import android.app.Activity;
 import android.app.LoaderManager;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Loader;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
+import android.widget.ListView;
+import android.widget.SearchView;
 
 import com.mozu.api.contracts.productruntime.Category;
-import com.mozu.api.security.AuthenticationProfile;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.CategoryAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.loaders.CategoryLoader;
@@ -23,32 +29,29 @@ import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthen
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
-public class CategoryFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Category>>, AdapterView.OnItemClickListener {
+public class CategoryFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Category>>, AdapterView.OnItemClickListener, SearchView.OnQueryTextListener {
 
     private static final int CATEGORY_LOADER = 0;
 
     private GridView mGridOfCategories;
+    private ListView mListOfCategories;
 
     private UserAuthenticationStateMachine mUserState;
 
     private CategoryAdapter mCategoryAdapter;
 
-    private List<Category> mAllCategories = new ArrayList<Category>();
+    private List<Category> mCategories = new ArrayList<Category>();
 
     private CategoryFragmentListener mListener = sCategoryListener;
 
-    private Stack<Category> mCategoryStack = new Stack<Category>();
+    private boolean mIsGridVisible = true;
 
-    private static CategoryFragmentListener sCategoryListener = new CategoryFragmentListener() {
+    private MenuItem mToggleGridItem;
 
-        @Override
-        public void onLeafCategoryChosen(Category parent) {
+    private SearchView mSearchView;
 
-        }
-
-    };
+    private MenuItem mSearchMenuItem;
 
     @Override
     public void onAttach(Activity activity) {
@@ -75,6 +78,7 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
         mUserState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
 
         setRetainInstance(true);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -85,6 +89,9 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
         mGridOfCategories = (GridView) fragmentView.findViewById(R.id.category_grid);
         mGridOfCategories.setOnItemClickListener(this);
 
+        mListOfCategories = (ListView) fragmentView.findViewById(R.id.category_list);
+        mListOfCategories.setOnItemClickListener(this);
+
         return fragmentView;
     }
 
@@ -92,14 +99,92 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        getLoaderManager().initLoader(CATEGORY_LOADER, savedInstanceState, this).forceLoad();
+        //if no categories are set, i.e., they weren't initialized to the fragment
+        // then load top level of categories for drilldown
+        if (mCategories == null || mCategories.size() < 1) {
+
+            getLoaderManager().initLoader(CATEGORY_LOADER, savedInstanceState, this).forceLoad();
+        } else {
+
+            updateListGridsToCategory();
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        UserPreferences prefs = mUserState.getCurrentUsersPreferences();
+
+        inflater.inflate(R.menu.product, menu);
+
+        mToggleGridItem = menu.findItem(R.id.toggle_view);
+
+        mIsGridVisible = prefs.getShowAsGrids();
+
+        if (mIsGridVisible) {
+
+            mToggleGridItem.setIcon(R.drawable.icon_listview_actionbar);
+            mToggleGridItem.setTitle(getString(R.string.view_as_list_menu_item_text));
+        } else {
+
+            mToggleGridItem.setIcon(R.drawable.icon_gridview_actionbar);
+            mToggleGridItem.setTitle(getString(R.string.view_as_grid_menu_item_text));
+        }
+
+        // Get the SearchView and set the searchable configuration
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        mSearchMenuItem = menu.findItem(R.id.action_search);
+        mSearchView = (SearchView) mSearchMenuItem.getActionView();
+
+        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        mSearchView.setOnQueryTextListener(this);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        UserPreferences prefs = mUserState.getCurrentUsersPreferences();
+
+        if (item.getItemId() == R.id.toggle_view) {
+            if (mCategoryAdapter == null) {
+                return false;
+            }
+
+            if (!mIsGridVisible) {
+                mIsGridVisible = true;
+                mListOfCategories.setVisibility(View.GONE);
+                mGridOfCategories.setVisibility(View.VISIBLE);
+                mCategoryAdapter.setIsGrid(true);
+                mCategoryAdapter.notifyDataSetChanged();
+                prefs.setShowAsGrids(true);
+                mUserState.updateUserPreferences();
+
+                mToggleGridItem.setIcon(R.drawable.icon_listview_actionbar);
+                mToggleGridItem.setTitle(getString(R.string.view_as_list_menu_item_text));
+
+                return true;
+
+            } else {
+                mIsGridVisible = false;
+                mListOfCategories.setVisibility(View.VISIBLE);
+                mGridOfCategories.setVisibility(View.GONE);
+                mCategoryAdapter.setIsGrid(false);
+                mCategoryAdapter.notifyDataSetChanged();
+                prefs.setShowAsGrids(false);
+                mUserState.updateUserPreferences();
+
+                mToggleGridItem.setIcon(R.drawable.icon_gridview_actionbar);
+                mToggleGridItem.setTitle(getString(R.string.view_as_grid_menu_item_text));
+
+                return true;
+            }
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public Loader<List<Category>> onCreateLoader(int id, Bundle args) {
 
         if (id == CATEGORY_LOADER) {
-            AuthenticationProfile authProfile = mUserState.getAuthProfile();
             UserPreferences prefs = mUserState.getCurrentUsersPreferences();
 
             //rework this to always have appropriate fragment values
@@ -113,15 +198,38 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
     public void onLoadFinished(Loader<List<Category>> loader, List<Category> data) {
 
         if (loader.getId() == CATEGORY_LOADER) {
-            if (mCategoryAdapter == null) {
-                mCategoryAdapter = new CategoryAdapter(getActivity());
-                mAllCategories.addAll(data);
-                initiateAdapterToTopRootCategoires();
-            }
+            mCategories = data;
+            updateListGridsToCategory();
+        }
+    }
 
-            mGridOfCategories.setAdapter(mCategoryAdapter);
+    public void setCategories(List<Category> categories) {
+
+        mCategories = categories;
+    }
+
+    private void updateListGridsToCategory() {
+        UserPreferences prefs = mUserState.getCurrentUsersPreferences();
+
+        if (mCategoryAdapter == null) {
+            mCategoryAdapter = new CategoryAdapter(getActivity());
+            mCategoryAdapter.addAll(mCategories);
         }
 
+        mGridOfCategories.setAdapter(mCategoryAdapter);
+        mListOfCategories.setAdapter(mCategoryAdapter);
+
+        if (prefs.getShowAsGrids()) {
+            mGridOfCategories.setVisibility(View.VISIBLE);
+            mListOfCategories.setVisibility(View.GONE);
+            mCategoryAdapter.setIsGrid(true);
+            mCategoryAdapter.notifyDataSetChanged();
+        } else {
+            mGridOfCategories.setVisibility(View.GONE);
+            mListOfCategories.setVisibility(View.VISIBLE);
+            mCategoryAdapter.setIsGrid(false);
+            mCategoryAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -134,52 +242,41 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
 
         //traverse categories adapter, if leaf then, tell activity this is a leaf and to show and retrieve products
         Category categoryAtPosition = mCategoryAdapter.getItem(position);
-        mCategoryStack.add(categoryAtPosition);
-        initiateAdapterToCategory(categoryAtPosition);
+        mListener.onCategoryChosen(categoryAtPosition);
     }
 
-    private void initiateAdapterToCategory(Category parent) {
+    private static CategoryFragmentListener sCategoryListener = new CategoryFragmentListener() {
 
-        if (parent.getChildrenCategories() == null || parent.getChildrenCategories().size() == 0) {
-            mListener.onLeafCategoryChosen(parent);
-
-            return;
+        @Override
+        public void onCategoryChosen(Category category) {
+            Log.e("TAG", "not implemented");
         }
 
-        mCategoryAdapter.clear();
-        mCategoryAdapter.addAll(parent.getChildrenCategories());
-        mCategoryAdapter.notifyDataSetChanged();
+        @Override
+        public void onSearchPerformedFromCategory(int currentCategory, String query) {
+            Log.e("TAG", "not implemented");
+        }
+    };
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        mSearchMenuItem.collapseActionView();
+
+        int categoryId = -1;
+
+        if (mCategories != null && mCategories.size() > 0 && mCategories.get(0).getParentCategory() != null) {
+            categoryId = mCategories.get(0).getParentCategory().getCategoryId();
+        }
+
+        mListener.onSearchPerformedFromCategory(categoryId, query);
+
+        return true;
     }
 
-    private void initiateAdapterToTopRootCategoires() {
-
-        mCategoryAdapter.clear();
-        mCategoryAdapter.addAll(mAllCategories);
-        mCategoryAdapter.notifyDataSetChanged();
-    }
-
-    public boolean shouldHandleBackPressed() {
-
-        //the top node has already been popped off
-        if (mCategoryStack.size() == 1) {
-            return false;
-        }
-
-        //only one level deep in hiearchy, so pop off last item and return true
-        if (mCategoryStack.size() == 2) {
-            mCategoryStack.pop();
-            initiateAdapterToTopRootCategoires();
-
-            return true;
-        }
-
-        if (mCategoryStack.size() > 2) {
-            mCategoryStack.pop();
-            initiateAdapterToCategory(mCategoryStack.peek());
-
-            return true;
-        }
+    @Override
+    public boolean onQueryTextChange(String newText) {
 
         return false;
     }
+
 }

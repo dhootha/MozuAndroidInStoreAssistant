@@ -14,6 +14,8 @@ import com.squareup.picasso.Picasso;
 
 public class CategoryAdapter extends ArrayAdapter<Category> {
 
+    private boolean mIsGrid = true;
+
     public CategoryAdapter(Context context) {
         super(context, R.layout.category_grid_item);
     }
@@ -26,8 +28,15 @@ public class CategoryAdapter extends ArrayAdapter<Category> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.category_grid_item, parent, false);
+        if ( convertView == null ||
+             ( mIsGrid && convertView.findViewById(R.id.category_list_layout) != null) ||
+             ( !mIsGrid && convertView.findViewById(R.id.category_grid_layout) != null) ) {
+
+            if (mIsGrid) {
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.category_grid_item, parent, false);
+            } else {
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.category_list_item, parent, false);
+            }
         }
 
         Category category = getItem(position);
@@ -46,6 +55,10 @@ public class CategoryAdapter extends ArrayAdapter<Category> {
         }
 
         return convertView;
+    }
+
+    public void setIsGrid(boolean isGrid) {
+        mIsGrid = isGrid;
     }
 
 }

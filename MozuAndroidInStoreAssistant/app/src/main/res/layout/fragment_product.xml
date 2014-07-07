@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.mozu.mozuandroidinstoreassistant.app.fragments.ProductFragment">
+    tools:context="com.mozu.mozuandroidinstoreassistant.app.fragments.ProductFragment"
+    android:background="@color/main_background">
 
     <ProgressBar
         android:id="@+id/progress"
@@ -11,12 +12,25 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_gravity="center"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        />
 
     <GridView
         android:id="@+id/product_grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:numColumns="2"/>
+        android:scrollbars="none"
+        android:numColumns="2"
+        />
+
+    <ListView
+        android:id="@+id/product_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@color/light_gray"
+        android:dividerHeight="1dp"
+        android:scrollbars="none"
+        android:visibility="gone"
+        />
 
 </FrameLayout>

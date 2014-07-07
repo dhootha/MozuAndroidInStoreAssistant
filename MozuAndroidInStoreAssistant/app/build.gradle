@@ -4,11 +4,10 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
     }
 }
+
 apply plugin: 'android'
-apply plugin: 'crashlytics'
 
 repositories {
     mavenCentral()
@@ -18,29 +17,29 @@ repositories {
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "19.0.3"
-
+    buildToolsVersion '19.1.0'
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 19
-        versionCode System.getenv("BUILD_NUMBER") as Integer ?: 1
         versionName "0.9 - Build No. " + System.getenv("BUILD_NUMBER")
         testPackageName "com.mozu.mozuandroidinstoreassistant.app.test"
-        testInstrumentationRunner "com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"
+        testInstrumentationRunner 'com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner'
         testHandleProfiling true
         testFunctionalTest true
+        testApplicationId 'com.mozu.mozuandroidinstoreassistant.app.test'
     }
     signingConfigs {
         release {
-            storeFile file("../../mozu_android.jks")
-            storePassword "mozumozu"
-            keyAlias "Mozu"
-            keyPassword "mozumozu"
+            storeFile file('../../mozu_android.jks')
+            storePassword 'mozumozu'
+            keyAlias 'Mozu'
+            keyPassword 'mozumozu'
         }
     }
     buildTypes {
         release {
             runProguard false
+            debuggable true
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
@@ -59,16 +58,23 @@ android {
     testOptions {
         reportDir = "$project.buildDir/mozu/tests/report"
     }
+    productFlavors {
+    }
 }
 
 dependencies {
     compile files('libs/HockeySDK-3.0.2.jar')
-    compile 'com.android.support:support-v13:19.+'
-    compile 'com.google.android.gms:play-services:4.2.42'
-    compile 'com.android.support:appcompat-v7:19.+'
+
     compile 'com.mozu.api:mozu-api-android:1.7.15@aar'
     compile 'com.mozu.api:mozu-api-core:1.7.15'
     compile 'com.crashlytics.android:crashlytics:1.+'
     compile 'com.squareup.picasso:picasso:2.2.0'
     androidTestCompile files('libs/espresso-1.1-bundled.jar')
+
+//    compile 'com.android.support:support-v13:20.+'
+//    compile 'com.google.android.gms:play-services:4.2.42'
+//    compile 'com.android.support:appcompat-v7:21.+'
+    compile 'com.android.support:cardview-v7:+'
+    compile 'com.android.support:recyclerview-v7:+'
+    compile 'com.android.support:palette-v7:+'
 }
