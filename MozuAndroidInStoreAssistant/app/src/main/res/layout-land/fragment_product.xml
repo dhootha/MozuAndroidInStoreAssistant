@@ -18,12 +18,14 @@
         android:id="@+id/product_grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:scrollbars="none"
         android:numColumns="3"/>
 
     <ListView
         android:id="@+id/product_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:scrollbars="none"
         android:divider="@android:color/black"
         android:dividerHeight="2dp"
         android:background="@drawable/card_background"

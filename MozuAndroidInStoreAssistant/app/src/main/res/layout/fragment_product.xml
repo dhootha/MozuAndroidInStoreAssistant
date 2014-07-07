@@ -19,6 +19,7 @@
         android:id="@+id/product_grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:scrollbars="none"
         android:numColumns="2"
         />
 
@@ -28,6 +29,7 @@
         android:layout_height="wrap_content"
         android:divider="@color/light_gray"
         android:dividerHeight="1dp"
+        android:scrollbars="none"
         android:visibility="gone"
         />
 

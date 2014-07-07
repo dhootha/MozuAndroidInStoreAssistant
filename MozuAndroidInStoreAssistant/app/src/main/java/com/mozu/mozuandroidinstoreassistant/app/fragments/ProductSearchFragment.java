@@ -1,12 +1,11 @@
 package com.mozu.mozuandroidinstoreassistant.app.fragments;
 
-import android.app.Activity;
+import android.app.Fragment;
 import android.app.LoaderManager;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Loader;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,16 +21,16 @@ import android.widget.SearchView;
 import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.ProductAdapter;
-import com.mozu.mozuandroidinstoreassistant.app.loaders.ProductLoader;
+import com.mozu.mozuandroidinstoreassistant.app.loaders.ProductSearchLoader;
 import com.mozu.mozuandroidinstoreassistant.app.models.UserPreferences;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 
 import java.util.List;
 
-public class ProductFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Product>>, GridView.OnScrollListener, SearchView.OnQueryTextListener {
+public class ProductSearchFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Product>>, GridView.OnScrollListener, SearchView.OnQueryTextListener {
 
-    private static final int PRODUCT_LOADER = 0;
+    private static final int PRODUCT_SEARCH_LOADER = 2;
 
     private UserAuthenticationStateMachine mUserState;
 
@@ -44,7 +43,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
     private ProgressBar mProgressBar;
 
-    private ProductLoader mProductLoader;
+    private ProductSearchLoader mProductSearchLoader;
 
     private boolean mIsGridVisible = true;
 
@@ -54,9 +53,9 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
     private MenuItem mSearchMenuItem;
 
-    private ProductFragmentListener mListener = sProductListener;
+    private String mQueryString;
 
-    public ProductFragment() {
+    public ProductSearchFragment() {
         // Required empty public constructor
     }
 
@@ -71,24 +70,10 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
-        mListener = (ProductFragmentListener) activity;
-    }
-
-    @Override
-    public void onDetach() {
-        mListener = sProductListener;
-
-        super.onDetach();
-    }
-
-    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        getLoaderManager().initLoader(PRODUCT_LOADER, savedInstanceState, this).forceLoad();
+        getLoaderManager().initLoader(PRODUCT_SEARCH_LOADER, savedInstanceState, this).forceLoad();
     }
 
     @Override
@@ -110,10 +95,10 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public Loader<List<Product>> onCreateLoader(int id, Bundle args) {
 
-        if (id == PRODUCT_LOADER) {
+        if (id == PRODUCT_SEARCH_LOADER) {
             UserPreferences prefs = mUserState.getCurrentUsersPreferences();
 
-            return new ProductLoader(getActivity(), prefs.getDefaultTenantId() != null ? Integer.parseInt(prefs.getDefaultTenantId()) : null, prefs.getDefaultSiteId() != null ? Integer.parseInt(prefs.getDefaultSiteId()) : null, mCategoryId);
+            return new ProductSearchLoader(getActivity(), prefs.getDefaultTenantId() != null ? Integer.parseInt(prefs.getDefaultTenantId()) : null, prefs.getDefaultSiteId() != null ? Integer.parseInt(prefs.getDefaultSiteId()) : null, mCategoryId, mQueryString);
         }
 
         return null;
@@ -123,7 +108,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
     public void onLoadFinished(Loader<List<Product>> loader, List<Product> data) {
         UserPreferences prefs = mUserState.getCurrentUsersPreferences();
 
-        if (loader.getId() == PRODUCT_LOADER) {
+        if (loader.getId() == PRODUCT_SEARCH_LOADER) {
             if (mAdapter == null) {
 
                 mAdapter = new ProductAdapter(getActivity(), prefs.getDefaultTenantId() != null ? Integer.parseInt(prefs.getDefaultTenantId()) : null, prefs.getDefaultSiteId() != null ? Integer.parseInt(prefs.getDefaultSiteId()) : null);
@@ -240,6 +225,10 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         mCategoryId = categoryId;
     }
 
+    public void setQueryString(String query) {
+        mQueryString = query;
+    }
+
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
 
@@ -249,37 +238,43 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
         //if the user has scrolled half way through the list and we can load more, then load more
-        if (firstVisibleItem + visibleItemCount > totalItemCount / 2 && getProductLoader() != null && mProductLoader.hasMoreResults() && !mProductLoader.isLoading()) {
+        if (firstVisibleItem + visibleItemCount > totalItemCount / 2 && getProductLoader() != null && mProductSearchLoader.hasMoreResults() && !mProductSearchLoader.isLoading()) {
             getProductLoader().forceLoad();
         }
 
     }
 
-    private ProductLoader getProductLoader() {
-        if (mProductLoader == null) {
+    private ProductSearchLoader getProductLoader() {
+        if (mProductSearchLoader == null) {
 
-            Loader<List<Product>> loader = getLoaderManager().getLoader(PRODUCT_LOADER);
+            Loader<List<Product>> loader = getLoaderManager().getLoader(PRODUCT_SEARCH_LOADER);
 
-            mProductLoader = (ProductLoader) loader;
+            mProductSearchLoader = (ProductSearchLoader) loader;
         }
 
-        return mProductLoader;
+        return mProductSearchLoader;
     }
-
-    private static final ProductFragmentListener sProductListener = new ProductFragmentListener() {
-
-        @Override
-        public void onSearchPerformedFromProduct(int currentCategoryId, String query) {
-
-        }
-
-    };
 
     @Override
     public boolean onQueryTextSubmit(String query) {
         mSearchMenuItem.collapseActionView();
 
-        mListener.onSearchPerformedFromProduct(mCategoryId, query);
+        if (mProductGridView != null && mProductListView != null && mProgressBar != null) {
+            mProductGridView.setAdapter(null);
+            mProductListView.setAdapter(null);
+            mAdapter.clear();
+            mAdapter = null;
+
+            mProductGridView.setVisibility(View.GONE);
+            mProgressBar.setVisibility(View.VISIBLE);
+            mProductListView.setVisibility(View.GONE);
+        }
+
+        mQueryString = query;
+
+        getProductLoader().reset();
+        getProductLoader().setSearchQuery(query);
+        getLoaderManager().restartLoader(PRODUCT_SEARCH_LOADER, null, this).forceLoad();
 
         return true;
     }

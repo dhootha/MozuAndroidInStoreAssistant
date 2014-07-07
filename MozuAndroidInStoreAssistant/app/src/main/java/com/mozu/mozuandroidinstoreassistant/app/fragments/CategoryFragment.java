@@ -2,9 +2,12 @@ package com.mozu.mozuandroidinstoreassistant.app.fragments;
 
 import android.app.Activity;
 import android.app.LoaderManager;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Loader;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.SearchView;
 
 import com.mozu.api.contracts.productruntime.Category;
 import com.mozu.mozuandroidinstoreassistant.app.R;
@@ -26,7 +30,7 @@ import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthen
 import java.util.ArrayList;
 import java.util.List;
 
-public class CategoryFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Category>>, AdapterView.OnItemClickListener {
+public class CategoryFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Category>>, AdapterView.OnItemClickListener, SearchView.OnQueryTextListener {
 
     private static final int CATEGORY_LOADER = 0;
 
@@ -44,6 +48,10 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
     private boolean mIsGridVisible = true;
 
     private MenuItem mToggleGridItem;
+
+    private SearchView mSearchView;
+
+    private MenuItem mSearchMenuItem;
 
     @Override
     public void onAttach(Activity activity) {
@@ -121,6 +129,14 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
             mToggleGridItem.setIcon(R.drawable.icon_gridview_actionbar);
             mToggleGridItem.setTitle(getString(R.string.view_as_grid_menu_item_text));
         }
+
+        // Get the SearchView and set the searchable configuration
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        mSearchMenuItem = menu.findItem(R.id.action_search);
+        mSearchView = (SearchView) mSearchMenuItem.getActionView();
+
+        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        mSearchView.setOnQueryTextListener(this);
     }
 
     @Override
@@ -128,6 +144,10 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
         UserPreferences prefs = mUserState.getCurrentUsersPreferences();
 
         if (item.getItemId() == R.id.toggle_view) {
+            if (mCategoryAdapter == null) {
+                return false;
+            }
+
             if (!mIsGridVisible) {
                 mIsGridVisible = true;
                 mListOfCategories.setVisibility(View.GONE);
@@ -229,7 +249,34 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
 
         @Override
         public void onCategoryChosen(Category category) {
+            Log.e("TAG", "not implemented");
+        }
 
+        @Override
+        public void onSearchPerformedFromCategory(int currentCategory, String query) {
+            Log.e("TAG", "not implemented");
         }
     };
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        mSearchMenuItem.collapseActionView();
+
+        int categoryId = -1;
+
+        if (mCategories != null && mCategories.size() > 0 && mCategories.get(0).getParentCategory() != null) {
+            categoryId = mCategories.get(0).getParentCategory().getCategoryId();
+        }
+
+        mListener.onSearchPerformedFromCategory(categoryId, query);
+
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+
+        return false;
+    }
+
 }

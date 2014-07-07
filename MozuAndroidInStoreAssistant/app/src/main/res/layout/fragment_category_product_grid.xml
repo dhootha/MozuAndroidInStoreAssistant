@@ -11,6 +11,7 @@
         android:id="@+id/category_grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:scrollbars="none"
         android:numColumns="2"
         />
 
@@ -20,6 +21,7 @@
         android:layout_height="match_parent"
         android:dividerHeight="1dp"
         android:divider="@color/light_gray"
+        android:scrollbars="none"
         android:visibility="gone"
         />
 
