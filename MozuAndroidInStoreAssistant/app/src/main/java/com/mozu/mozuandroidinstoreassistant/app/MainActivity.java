@@ -146,7 +146,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Cate
             startActivity(new Intent(this, LoginActivity.class));
             finish();
             return true;
-        } else if (mDrawerToggle.onOptionsItemSelected(item)) {
+        } else if (mDrawerToggle != null && mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
 
