@@ -29,7 +29,6 @@ android {
         testHandleProfiling true
         testFunctionalTest true
         testApplicationId 'com.mozu.mozuandroidinstoreassistant.app.test'
-        ext.betaDistributionEmails="matt_wear@volusion.com, shadaab_kazi@volusion.com, adam_dutton@volusion.com"
     }
     signingConfigs {
         release {
@@ -45,6 +44,7 @@ android {
             debuggable true
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            ext.betaDistributionEmails="matt_wear@volusion.com, shadaab_kazi@volusion.com, adam_dutton@volusion.com"
         }
     }
     packagingOptions {
