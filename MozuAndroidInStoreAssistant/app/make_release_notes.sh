@@ -1,2 +1,2 @@
 rm -f releasenotes.txt
-git log --oneline -1 > releasenotes.txt
+git log --oneline -2 > releasenotes.txt
