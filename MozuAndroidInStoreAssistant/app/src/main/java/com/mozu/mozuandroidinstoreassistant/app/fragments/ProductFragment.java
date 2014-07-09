@@ -18,6 +18,7 @@ import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.mozuandroidinstoreassistant.app.R;
@@ -55,6 +56,8 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
     private MenuItem mSearchMenuItem;
 
     private ProductFragmentListener mListener = sProductListener;
+
+    private TextView mEmptyListMessageView;
 
     public ProductFragment() {
         // Required empty public constructor
@@ -99,9 +102,12 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         mProgressBar = (ProgressBar) fragmentView.findViewById(R.id.progress);
         mProductListView = (ListView) fragmentView.findViewById(R.id.product_list);
 
+        mEmptyListMessageView = (TextView) fragmentView.findViewById(R.id.empty_list);
+
         mProductGridView.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.VISIBLE);
         mProductListView.setVisibility(View.GONE);
+        mEmptyListMessageView.setVisibility(View.GONE);
 
         return fragmentView;
     }
@@ -152,6 +158,14 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
             }
 
             mProgressBar.setVisibility(View.GONE);
+
+            if (mAdapter == null || mAdapter.getCount() < 1) {
+                mProductGridView.setVisibility(View.GONE);
+                mProductListView.setVisibility(View.GONE);
+                mEmptyListMessageView.setVisibility(View.VISIBLE);
+            } else {
+                mEmptyListMessageView.setVisibility(View.GONE);
+            }
         }
     }
 

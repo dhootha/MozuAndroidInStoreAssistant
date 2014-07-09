@@ -28,5 +28,7 @@
     <string name="view_as_list_menu_item_text">View as List</string>
     <string name="view_as_grid_menu_item_text">View as Grid</string>
     <string name="action_search">Search</string>
+    <string name="no_categories_available">No Categories Found</string>
+    <string name="no_products_available">No Products Found Here</string>
 
 </resources>

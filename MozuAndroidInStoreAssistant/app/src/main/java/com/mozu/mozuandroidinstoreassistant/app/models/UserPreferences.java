@@ -6,7 +6,7 @@ public class UserPreferences {
     private String mDefaultTenantId;
     private String mDefaultSiteId;
     private boolean mDontAskToSetTenantSiteIfSet;
-    private boolean mShowAsGrids;
+    private boolean mShowAsGrids = true;
 
     public String getEmail() {
 
