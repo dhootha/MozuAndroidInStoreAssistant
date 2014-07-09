@@ -45,7 +45,7 @@ android {
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             ext.betaDistributionEmails="matt_wear@volusion.com, shadaab_kazi@volusion.com, adam_dutton@volusion.com"
-            ext.betaDistributionReleaseNotesFilePath="releasenotes.txt"
+            ext.betaDistributionReleaseNotesFilePath=file('releasenotes.txt')
         }
     }
     packagingOptions {
