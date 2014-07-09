@@ -18,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.mozu.api.contracts.productruntime.Category;
 import com.mozu.mozuandroidinstoreassistant.app.R;
@@ -52,6 +53,8 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
     private SearchView mSearchView;
 
     private MenuItem mSearchMenuItem;
+
+    private TextView mEmptyListMessageView;
 
     @Override
     public void onAttach(Activity activity) {
@@ -91,6 +94,9 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
 
         mListOfCategories = (ListView) fragmentView.findViewById(R.id.category_list);
         mListOfCategories.setOnItemClickListener(this);
+
+        mEmptyListMessageView = (TextView) fragmentView.findViewById(R.id.empty_list);
+        mEmptyListMessageView.setVisibility(View.GONE);
 
         return fragmentView;
     }
@@ -229,6 +235,14 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
             mListOfCategories.setVisibility(View.VISIBLE);
             mCategoryAdapter.setIsGrid(false);
             mCategoryAdapter.notifyDataSetChanged();
+        }
+
+        if (mCategories == null || mCategories.size() < 1) {
+            mGridOfCategories.setVisibility(View.GONE);
+            mListOfCategories.setVisibility(View.GONE);
+            mEmptyListMessageView.setVisibility(View.VISIBLE);
+        } else {
+            mEmptyListMessageView.setVisibility(View.GONE);
         }
     }
 
