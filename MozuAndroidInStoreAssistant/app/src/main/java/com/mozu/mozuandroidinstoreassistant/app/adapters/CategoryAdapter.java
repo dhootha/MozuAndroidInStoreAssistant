@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.mozu.api.contracts.productruntime.Category;
 import com.mozu.mozuandroidinstoreassistant.app.R;
+import com.mozu.mozuandroidinstoreassistant.app.views.RoundedTransformation;
 import com.squareup.picasso.Picasso;
 
 public class CategoryAdapter extends ArrayAdapter<Category> {
@@ -28,9 +29,9 @@ public class CategoryAdapter extends ArrayAdapter<Category> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if ( convertView == null ||
-             ( mIsGrid && convertView.findViewById(R.id.category_list_layout) != null) ||
-             ( !mIsGrid && convertView.findViewById(R.id.category_grid_layout) != null) ) {
+        if (convertView == null ||
+                (mIsGrid && convertView.findViewById(R.id.category_list_layout) != null) ||
+                (!mIsGrid && convertView.findViewById(R.id.category_grid_layout) != null)) {
 
             if (mIsGrid) {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.category_grid_item, parent, false);
@@ -49,11 +50,21 @@ public class CategoryAdapter extends ArrayAdapter<Category> {
 
         //load image asynchronously into the view
         if (category.getContent().getCategoryImages() != null && category.getContent().getCategoryImages().size() > 0) {
-            Picasso.with(getContext())
-                    .load(category.getContent().getCategoryImages().get(0).getImageUrl())
-                    .into(categoryImageView);
-        }
+            if (mIsGrid) {
 
+                Picasso.with(getContext())
+                        .load(category.getContent().getCategoryImages().get(0).getImageUrl())
+                        .into(categoryImageView);
+
+            } else {
+
+                Picasso.with(getContext())
+                        .load(category.getContent().getCategoryImages().get(0).getImageUrl())
+                        .transform(new RoundedTransformation())
+                        .into(categoryImageView);
+
+            }
+        }
         return convertView;
     }
 
