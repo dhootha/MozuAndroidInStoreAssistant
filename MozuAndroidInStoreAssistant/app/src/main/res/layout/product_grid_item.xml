@@ -18,8 +18,9 @@
             android:id="@+id/product_image"
             android:layout_width="fill_parent"
             android:layout_height="@dimen/product_image_list_height"
-            android:src="@drawable/default_background"
-            android:scaleType="centerCrop" />
+            android:src="@drawable/icon_noproductphoto"
+            android:background="@color/no_photo_color"
+            android:scaleType="center" />
 
         <RelativeLayout
             android:layout_width="fill_parent"

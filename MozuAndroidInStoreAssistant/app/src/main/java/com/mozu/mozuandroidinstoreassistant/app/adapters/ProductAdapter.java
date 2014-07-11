@@ -58,7 +58,7 @@ public class ProductAdapter extends ArrayAdapter<Product> {
         nameTextView.setText(product.getContent().getProductName());
 
         final ImageView productImageView = (ImageView) convertView.findViewById(R.id.product_image);
-        productImageView.setImageResource(R.drawable.default_background);
+        productImageView.setImageResource(R.drawable.icon_noproductphoto);
 
         //load image asynchronously into the view
         if (product.getContent().getProductImages() != null && product.getContent().getProductImages().size() > 0) {
@@ -68,7 +68,6 @@ public class ProductAdapter extends ArrayAdapter<Product> {
                     .resize(mImageWidth, mImageHeight)
                     .into(productImageView);
         }
-
 
         TextView skuTextView = (TextView) convertView.findViewById(R.id.product_sku);
         skuTextView.setText(product.getProductCode());

@@ -187,11 +187,11 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
         if (mIsGridVisible) {
 
-            mToggleGridItem.setIcon(R.drawable.icon_listview_actionbar);
+            mToggleGridItem.setIcon(R.drawable.list);
             mToggleGridItem.setTitle(getString(R.string.view_as_list_menu_item_text));
         } else {
 
-            mToggleGridItem.setIcon(R.drawable.icon_gridview_actionbar);
+            mToggleGridItem.setIcon(R.drawable.grid);
             mToggleGridItem.setTitle(getString(R.string.view_as_grid_menu_item_text));
         }
 
@@ -263,7 +263,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
             prefs.setShowAsGrids(true);
             mUserState.updateUserPreferences();
 
-            mToggleGridItem.setIcon(R.drawable.icon_listview_actionbar);
+            mToggleGridItem.setIcon(R.drawable.list);
             mToggleGridItem.setTitle(getString(R.string.view_as_list_menu_item_text));
 
             return true;
@@ -277,7 +277,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
             prefs.setShowAsGrids(false);
             mUserState.updateUserPreferences();
 
-            mToggleGridItem.setIcon(R.drawable.icon_gridview_actionbar);
+            mToggleGridItem.setIcon(R.drawable.grid);
             mToggleGridItem.setTitle(getString(R.string.view_as_grid_menu_item_text));
 
             return true;

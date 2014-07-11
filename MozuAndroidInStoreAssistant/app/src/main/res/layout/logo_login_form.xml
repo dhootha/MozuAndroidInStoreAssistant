@@ -52,6 +52,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="31dp"
+                android:textColor="@android:color/white"
                 android:text="@string/try_again_app_auth_button_text"
                 android:textStyle="bold" />
 
@@ -118,6 +119,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="31dp"
+                    android:textColor="@android:color/white"
                     android:text="@string/action_sign_in"
                     android:textStyle="bold" />
 
