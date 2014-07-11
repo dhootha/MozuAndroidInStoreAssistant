@@ -1,6 +1,8 @@
 package com.mozu.mozuandroidinstoreassistant.app.serialization;
 
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mozu.api.utils.JsonUtils;
 

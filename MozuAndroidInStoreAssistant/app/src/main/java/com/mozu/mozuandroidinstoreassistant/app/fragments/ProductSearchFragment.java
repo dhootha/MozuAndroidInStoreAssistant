@@ -5,6 +5,7 @@ import android.app.LoaderManager;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Loader;
+import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,14 +23,19 @@ import android.widget.TextView;
 import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.ProductAdapter;
+import com.mozu.mozuandroidinstoreassistant.app.adapters.ProductSearchSuggestionsCursorAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.loaders.ProductSearchLoader;
+import com.mozu.mozuandroidinstoreassistant.app.models.RecentProductSearch;
 import com.mozu.mozuandroidinstoreassistant.app.models.UserPreferences;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class ProductSearchFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Product>>, GridView.OnScrollListener, SearchView.OnQueryTextListener {
+public class ProductSearchFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Product>>, GridView.OnScrollListener, SearchView.OnQueryTextListener, SearchView.OnSuggestionListener {
+
+    public static final int MAX_NUMBER_OF_SEARCHES = 5;
 
     private static final int PRODUCT_SEARCH_LOADER = 2;
 
@@ -189,6 +195,8 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
 
         if (item.getItemId() == R.id.toggle_view) {
             return updateViewToggleState(prefs);
+        } else if (item.getItemId() == R.id.action_search) {
+            showSuggestions();
         }
 
         return super.onOptionsItemSelected(item);
@@ -282,6 +290,7 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
             mProductGridView.setVisibility(View.GONE);
             mProgressBar.setVisibility(View.VISIBLE);
             mProductListView.setVisibility(View.GONE);
+            mEmptyListMessageView.setVisibility(View.GONE);
         }
 
         mQueryString = query;
@@ -290,12 +299,90 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
         getProductLoader().setSearchQuery(query);
         getLoaderManager().restartLoader(PRODUCT_SEARCH_LOADER, null, this).forceLoad();
 
+        saveSearchToList(query);
+
         return true;
+    }
+
+    private void showSuggestions() {
+        UserPreferences prefs = mUserState.getCurrentUsersPreferences();
+
+        List<RecentProductSearch> recentProductSearches = prefs.getRecentProductSearches();
+
+        // Load data from list to cursor
+        String[] columns = new String[] { "_id", "text" };
+        Object[] temp = new Object[] { 0, "default" };
+
+        MatrixCursor cursor = new MatrixCursor(columns);
+
+        if (recentProductSearches == null || recentProductSearches.size() < 1) {
+            return;
+        }
+
+        for(int i = 0; i < recentProductSearches.size(); i++) {
+
+            temp[0] = i;
+            temp[1] = recentProductSearches.get(i);
+
+            cursor.addRow(temp);
+
+        }
+
+        mSearchView.setSuggestionsAdapter(new ProductSearchSuggestionsCursorAdapter(getActivity(), cursor, recentProductSearches));
+
+        mSearchView.setOnSuggestionListener(this);
+    }
+    private void saveSearchToList(String query) {
+        //save search to list
+        UserPreferences prefs = mUserState.getCurrentUsersPreferences();
+
+        List<RecentProductSearch> recentProductSearches = prefs.getRecentProductSearches();
+
+        if (recentProductSearches == null) {
+            recentProductSearches = new ArrayList<RecentProductSearch>();
+        }
+
+        //if search already exists then dont add it again
+        for (int i = 0; i < recentProductSearches.size(); i++) {
+            if (recentProductSearches.get(i).getSearchTerm().equalsIgnoreCase(query)) {
+                recentProductSearches.remove(i);
+                break;
+            }
+        }
+
+        RecentProductSearch search = new RecentProductSearch();
+        search.setSearchTerm(query);
+
+        recentProductSearches.add(0, search);
+
+        if (recentProductSearches.size() > MAX_NUMBER_OF_SEARCHES) {
+            recentProductSearches.remove(recentProductSearches.size() - 1);
+        }
+
+        prefs.setRecentProductSearchs(recentProductSearches);
+
+        mUserState.updateUserPreferences();
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
 
         return false;
+    }
+
+    @Override
+    public boolean onSuggestionSelect(int position) {
+        return false;
+    }
+
+    @Override
+    public boolean onSuggestionClick(int position) {
+        UserPreferences prefs = mUserState.getCurrentUsersPreferences();
+
+        List<RecentProductSearch> recentProductSearches = prefs.getRecentProductSearches();
+
+        onQueryTextSubmit(recentProductSearches.get(position).getSearchTerm());
+
+        return true;
     }
 }
