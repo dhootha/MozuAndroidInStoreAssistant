@@ -5,9 +5,7 @@ import android.content.Context;
 import com.crashlytics.android.Crashlytics;
 import com.mozu.api.MozuApiContext;
 import com.mozu.api.contracts.productruntime.Product;
-import com.mozu.api.contracts.productruntime.ProductCollection;
 import com.mozu.api.contracts.productruntime.ProductSearchResult;
-import com.mozu.api.resources.commerce.catalog.storefront.ProductResource;
 import com.mozu.api.resources.commerce.catalog.storefront.ProductSearchResultResource;
 
 import java.util.ArrayList;
@@ -124,7 +122,7 @@ public class ProductSearchLoader extends InternetConnectedAsyncTaskLoader<List<P
         ProductSearchResultResource searchResultResource = new ProductSearchResultResource(new MozuApiContext(mTenantId, mSiteId));
 
         try {
-            ProductSearchResult result = searchResultResource.search(mQueryString, mCategoryId == -1 ? null : CATEGORY_FILTER + String.valueOf(mCategoryId),
+            ProductSearchResult result = searchResultResource.search(mQueryString, mCategoryId == -1 || mCategoryId == 0 || mCategoryId == null ? null : CATEGORY_FILTER + String.valueOf(mCategoryId),
                     null, null, null, null, null, null, null, null, null, null, null,
                     SORT_BY, ITEMS_PER_PAGE, mCurrentPage * ITEMS_PER_PAGE);
 

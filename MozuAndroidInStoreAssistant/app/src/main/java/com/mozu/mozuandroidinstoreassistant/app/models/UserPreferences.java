@@ -1,5 +1,8 @@
 package com.mozu.mozuandroidinstoreassistant.app.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class UserPreferences {
 
     private String mEmail;
@@ -7,6 +10,8 @@ public class UserPreferences {
     private String mDefaultSiteId;
     private boolean mDontAskToSetTenantSiteIfSet;
     private boolean mShowAsGrids = true;
+
+    private List<RecentProductSearch> mRecentProductSearches;
 
     public String getEmail() {
 
@@ -30,7 +35,7 @@ public class UserPreferences {
 
     public String getDefaultSiteId() {
 
-            return mDefaultSiteId;
+        return mDefaultSiteId;
     }
 
     public void setDefaultSiteId(String siteId) {
@@ -49,11 +54,25 @@ public class UserPreferences {
     }
 
     public void setShowAsGrids(boolean showAsGrids) {
+
         mShowAsGrids = showAsGrids;
     }
 
     public boolean getShowAsGrids() {
+
         return mShowAsGrids;
     }
 
+    public void setRecentProductSearchs(List<RecentProductSearch> recentProductSearchs) {
+
+        mRecentProductSearches = recentProductSearchs;
+    }
+
+    public List<RecentProductSearch> getRecentProductSearches() {
+        if (mRecentProductSearches == null) {
+            mRecentProductSearches = new ArrayList<RecentProductSearch>();
+        }
+
+        return mRecentProductSearches;
+    }
 }

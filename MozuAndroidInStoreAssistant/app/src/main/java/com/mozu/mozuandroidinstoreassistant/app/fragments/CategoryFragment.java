@@ -5,6 +5,7 @@ import android.app.LoaderManager;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Loader;
+import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -23,7 +24,9 @@ import android.widget.TextView;
 import com.mozu.api.contracts.productruntime.Category;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.CategoryAdapter;
+import com.mozu.mozuandroidinstoreassistant.app.adapters.ProductSearchSuggestionsCursorAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.loaders.CategoryLoader;
+import com.mozu.mozuandroidinstoreassistant.app.models.RecentProductSearch;
 import com.mozu.mozuandroidinstoreassistant.app.models.UserPreferences;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
@@ -31,9 +34,10 @@ import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthen
 import java.util.ArrayList;
 import java.util.List;
 
-public class CategoryFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Category>>, AdapterView.OnItemClickListener, SearchView.OnQueryTextListener {
+public class CategoryFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Category>>, AdapterView.OnItemClickListener, SearchView.OnQueryTextListener, SearchView.OnSuggestionListener {
 
     private static final int CATEGORY_LOADER = 0;
+    public static final int MAX_NUMBER_OF_SEARCHES = 5;
 
     private GridView mGridOfCategories;
     private ListView mListOfCategories;
@@ -79,6 +83,8 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
         super.onCreate(savedInstanceState);
 
         mUserState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
+
+
 
         setRetainInstance(true);
         setHasOptionsMenu(true);
@@ -145,6 +151,35 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
         mSearchView.setOnQueryTextListener(this);
     }
 
+    private void showSuggestions() {
+        UserPreferences prefs = mUserState.getCurrentUsersPreferences();
+
+        List<RecentProductSearch> recentProductSearches = prefs.getRecentProductSearches();
+
+        // Load data from list to cursor
+        String[] columns = new String[] { "_id", "text" };
+        Object[] temp = new Object[] { 0, "default" };
+
+        MatrixCursor cursor = new MatrixCursor(columns);
+
+        if (recentProductSearches == null || recentProductSearches.size() < 1) {
+            return;
+        }
+
+        for(int i = 0; i < recentProductSearches.size(); i++) {
+
+            temp[0] = i;
+            temp[1] = recentProductSearches.get(i);
+
+            cursor.addRow(temp);
+
+        }
+
+        mSearchView.setSuggestionsAdapter(new ProductSearchSuggestionsCursorAdapter(getActivity(), cursor, recentProductSearches));
+
+        mSearchView.setOnSuggestionListener(this);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         UserPreferences prefs = mUserState.getCurrentUsersPreferences();
@@ -182,6 +217,8 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
 
                 return true;
             }
+        } else if (item.getItemId() == R.id.action_search) {
+            showSuggestions();
         }
 
         return super.onOptionsItemSelected(item);
@@ -270,6 +307,7 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
         public void onSearchPerformedFromCategory(int currentCategory, String query) {
             Log.e("TAG", "not implemented");
         }
+
     };
 
     @Override
@@ -284,6 +322,36 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
 
         mListener.onSearchPerformedFromCategory(categoryId, query);
 
+        //save search to list
+        UserPreferences prefs = mUserState.getCurrentUsersPreferences();
+
+        List<RecentProductSearch> recentProductSearches = prefs.getRecentProductSearches();
+
+        if (recentProductSearches == null) {
+            recentProductSearches = new ArrayList<RecentProductSearch>();
+        }
+
+        //if search already exists then dont add it again
+        for (int i = 0; i < recentProductSearches.size(); i++) {
+            if (recentProductSearches.get(i).getSearchTerm().equalsIgnoreCase(query)) {
+                recentProductSearches.remove(i);
+                break;
+            }
+        }
+
+        RecentProductSearch search = new RecentProductSearch();
+        search.setSearchTerm(query);
+
+        recentProductSearches.add(0, search);
+
+        if (recentProductSearches.size() > MAX_NUMBER_OF_SEARCHES) {
+            recentProductSearches.remove(recentProductSearches.size() - 1);
+        }
+
+        prefs.setRecentProductSearchs(recentProductSearches);
+
+        mUserState.updateUserPreferences();
+
         return true;
     }
 
@@ -293,4 +361,20 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
         return false;
     }
 
+    @Override
+    public boolean onSuggestionSelect(int position) {
+
+        return false;
+    }
+
+    @Override
+    public boolean onSuggestionClick(int position) {
+        UserPreferences prefs = mUserState.getCurrentUsersPreferences();
+
+        List<RecentProductSearch> recentProductSearches = prefs.getRecentProductSearches();
+
+        onQueryTextSubmit(recentProductSearches.get(position).getSearchTerm());
+
+        return true;
+    }
 }

@@ -21,10 +21,16 @@ public class ProductAdapter extends ArrayAdapter<Product> {
 
     private boolean mIsGrid = true;
 
+    private int mImageWidth;
+    private int mImageHeight;
+
     public ProductAdapter(Context context, Integer tenantId, Integer siteId) {
         super(context, R.layout.product_grid_item);
 
         mUrlConverter = new ImageURLConverter(tenantId, siteId);
+
+        mImageWidth = (int) context.getResources().getDimension(R.dimen.product_image_list_width);
+        mImageHeight = (int) context.getResources().getDimension(R.dimen.product_image_list_height);
     }
 
     @Override
@@ -58,6 +64,8 @@ public class ProductAdapter extends ArrayAdapter<Product> {
         if (product.getContent().getProductImages() != null && product.getContent().getProductImages().size() > 0) {
             Picasso.with(getContext())
                     .load(mUrlConverter.getFullImageUrl(product.getContent().getProductImages().get(0).getImageUrl()))
+                    .centerCrop()
+                    .resize(mImageWidth, mImageHeight)
                     .into(productImageView);
         }
 
