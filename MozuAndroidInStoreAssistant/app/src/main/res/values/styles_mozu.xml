@@ -181,7 +181,7 @@
     </style>
 
     <!--- DONT DELETE -->
-    <style name="DialogMozu" parent="@android:style/Theme.Holo.Dialog">
+    <style name="DialogMozu" parent="@android:style/Theme.Holo.Light.Dialog">
         <item name="android:windowTitleStyle">@style/dialog_title_style</item>
     </style>
 

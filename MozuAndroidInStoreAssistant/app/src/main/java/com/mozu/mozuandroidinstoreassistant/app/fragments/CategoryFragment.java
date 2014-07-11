@@ -38,6 +38,7 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
 
     private static final int CATEGORY_LOADER = 0;
     public static final int MAX_NUMBER_OF_SEARCHES = 5;
+    public static final String NULL = "null";
 
     private GridView mGridOfCategories;
     private ListView mListOfCategories;
@@ -231,7 +232,9 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
             UserPreferences prefs = mUserState.getCurrentUsersPreferences();
 
             //rework this to always have appropriate fragment values
-            return new CategoryLoader(getActivity(), prefs.getDefaultTenantId() != null ? Integer.parseInt(prefs.getDefaultTenantId()) : null, prefs.getDefaultSiteId() != null ? Integer.parseInt(prefs.getDefaultSiteId()) : null);
+            String tenantId = prefs.getDefaultTenantId();
+            String siteId = prefs.getDefaultSiteId();
+            return new CategoryLoader(getActivity(), tenantId != null && !tenantId.equalsIgnoreCase(NULL) ? Integer.parseInt(tenantId) : null, siteId != null && !siteId.equalsIgnoreCase("null") ? Integer.parseInt(siteId) : null);
         }
 
         return null;

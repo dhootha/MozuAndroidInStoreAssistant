@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.models.ImageURLConverter;
+import com.mozu.mozuandroidinstoreassistant.app.views.RoundedTransformation;
 import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
@@ -58,15 +59,25 @@ public class ProductAdapter extends ArrayAdapter<Product> {
         nameTextView.setText(product.getContent().getProductName());
 
         final ImageView productImageView = (ImageView) convertView.findViewById(R.id.product_image);
-        productImageView.setImageResource(R.drawable.icon_noproductphoto);
 
         //load image asynchronously into the view
         if (product.getContent().getProductImages() != null && product.getContent().getProductImages().size() > 0) {
-            Picasso.with(getContext())
-                    .load(mUrlConverter.getFullImageUrl(product.getContent().getProductImages().get(0).getImageUrl()))
-                    .centerCrop()
-                    .resize(mImageWidth, mImageHeight)
-                    .into(productImageView);
+            if (mIsGrid) {
+
+                Picasso.with(getContext())
+                        .load(mUrlConverter.getFullImageUrl(product.getContent().getProductImages().get(0).getImageUrl()))
+                        .placeholder(R.drawable.icon_noproductphoto)
+                        .fit()
+                        .into(productImageView);
+            } else {
+
+                Picasso.with(getContext())
+                        .load(mUrlConverter.getFullImageUrl(product.getContent().getProductImages().get(0).getImageUrl()))
+                        .transform(new RoundedTransformation())
+                        .placeholder(R.drawable.icon_noproductphoto)
+                        .fit()
+                        .into(productImageView);
+            }
         }
 
         TextView skuTextView = (TextView) convertView.findViewById(R.id.product_sku);
