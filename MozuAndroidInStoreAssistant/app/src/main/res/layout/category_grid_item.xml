@@ -18,8 +18,9 @@
             android:id="@+id/category_image"
             android:layout_width="fill_parent"
             android:layout_height="150dp"
-            android:src="@drawable/default_background"
-            android:scaleType="centerCrop" />
+            android:src="@drawable/icon_nocategoryphoto"
+            android:background="@color/no_photo_color"
+            android:scaleType="center" />
 
         <RelativeLayout
             android:layout_width="fill_parent"

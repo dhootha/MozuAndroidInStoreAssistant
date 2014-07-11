@@ -45,7 +45,7 @@ public class CategoryAdapter extends ArrayAdapter<Category> {
         nameTextView.setText(category.getContent().getName());
 
         ImageView categoryImageView = (ImageView) convertView.findViewById(R.id.category_image);
-        categoryImageView.setImageResource(R.drawable.default_background);
+        categoryImageView.setImageResource(R.drawable.icon_nocategoryphoto);
 
         //load image asynchronously into the view
         if (category.getContent().getCategoryImages() != null && category.getContent().getCategoryImages().size() > 0) {
