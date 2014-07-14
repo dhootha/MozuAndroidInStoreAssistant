@@ -38,7 +38,6 @@
             android:name="com.crashlytics.ApiKey"
             android:value="08ea2133df628f5114adfd1e1cbb80584923ca9a" />
 
-        <activity android:name="net.hockeyapp.android.UpdateActivity" />
         <activity
             android:name=".ProductDetailActivity"
             android:label="@string/title_activity_product_detail"

@@ -4,10 +4,10 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
-import android.content.pm.ApplicationInfo;
 import android.database.Cursor;
 import android.net.Uri;
 
@@ -18,6 +18,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -34,8 +35,6 @@ import com.mozu.mozuandroidinstoreassistant.app.models.authentication.AppAuthent
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationFailedSessionExpired;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
-
-import net.hockeyapp.android.UpdateManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +72,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                    hideKeyboard();
                     attemptLogin();
                     return true;
                 }
@@ -84,12 +84,15 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                hideKeyboard();
                 attemptLogin();
             }
         });
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        hideKeyboard();
 
         showProgress(true);
         setupAppAuth();
@@ -207,12 +210,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
             // There was an error; don't attempt login and focus the first
             // form field with an error.
             focusView.requestFocus();
-
-            //Only register for updates if not a debug build
-            if ( !(0 != (getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE) ) && mHaveNotAskedToUpdate) {
-                mHaveNotAskedToUpdate = false;
-                UpdateManager.register(this, getString(R.string.hockey_app_id));
-            }
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
@@ -239,6 +236,10 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
 
         int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
+        if (show) {
+            hideKeyboard();
+        }
+
         mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         mLoginFormView.animate().setDuration(shortAnimTime).alpha(show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
             @Override
@@ -258,6 +259,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
     }
 
     private void showErrorAuthenticatingApp() {
+        hideKeyboard();
         mLoginFormView.setVisibility(View.GONE);
         mProgressView.setVisibility(View.GONE);
         mAppAuthErrorView.setVisibility(View.VISIBLE);
@@ -396,6 +398,11 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
             findViewById(R.id.try_app_auth_again_button).setOnClickListener(null);
             mAppAuthStateMachine.authenticateApp();
         }
+    }
+
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mEmailView.getWindowToken(), 0);
     }
 }
 

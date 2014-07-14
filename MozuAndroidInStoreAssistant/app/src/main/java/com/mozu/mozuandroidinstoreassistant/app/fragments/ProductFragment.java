@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -34,7 +35,7 @@ import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthen
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Product>>, GridView.OnScrollListener, SearchView.OnQueryTextListener, SearchView.OnSuggestionListener {
+public class ProductFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Product>>, GridView.OnScrollListener, SearchView.OnQueryTextListener, SearchView.OnSuggestionListener, AbsListView.OnItemClickListener {
 
     public static final int MAX_NUMBER_OF_SEARCHES = 5;
 
@@ -107,6 +108,9 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         mProductGridView = (GridView) fragmentView.findViewById(R.id.product_grid);
         mProgressBar = (ProgressBar) fragmentView.findViewById(R.id.progress);
         mProductListView = (ListView) fragmentView.findViewById(R.id.product_list);
+
+        mProductListView.setOnItemClickListener(this);
+        mProductGridView.setOnItemClickListener(this);
 
         mEmptyListMessageView = (TextView) fragmentView.findViewById(R.id.empty_list);
 
@@ -326,6 +330,11 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
         }
 
+        @Override
+        public void onProductChoosentFromProuct(String productCode) {
+
+        }
+
     };
 
     @Override
@@ -390,5 +399,10 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         onQueryTextSubmit(recentProductSearches.get(position).getSearchTerm());
 
         return true;
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        mListener.onProductChoosentFromProuct(mAdapter.getItem(position).getProductCode());
     }
 }
