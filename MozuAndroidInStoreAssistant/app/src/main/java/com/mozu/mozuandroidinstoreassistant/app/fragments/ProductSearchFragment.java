@@ -1,5 +1,6 @@
 package com.mozu.mozuandroidinstoreassistant.app.fragments;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.app.SearchManager;
@@ -7,6 +8,7 @@ import android.content.Context;
 import android.content.Loader;
 import android.database.MatrixCursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -33,7 +36,7 @@ import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthen
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductSearchFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Product>>, GridView.OnScrollListener, SearchView.OnQueryTextListener, SearchView.OnSuggestionListener {
+public class ProductSearchFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Product>>, GridView.OnScrollListener, SearchView.OnQueryTextListener, SearchView.OnSuggestionListener, AbsListView.OnItemClickListener {
 
     public static final int MAX_NUMBER_OF_SEARCHES = 5;
 
@@ -64,6 +67,8 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
 
     private TextView mEmptyListMessageView;
 
+    private ProductListListener mListener;
+
     public ProductSearchFragment() {
         // Required empty public constructor
     }
@@ -86,12 +91,34 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        mListener = (ProductListListener) activity;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        mListener = new ProductListListener() {
+            @Override
+            public void onProductSelected(String productCodeSelected) {
+                Log.d("ProductSearchFragment", "WARN WARN WARN ----------- THIS LISTENER NOT CONNECTED TO ANYTHING!!!!");
+            }
+        };
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View fragmentView = inflater.inflate(R.layout.fragment_product, container, false);
 
         mProductGridView = (GridView) fragmentView.findViewById(R.id.product_grid);
         mProgressBar = (ProgressBar) fragmentView.findViewById(R.id.progress);
         mProductListView = (ListView) fragmentView.findViewById(R.id.product_list);
+
+        mProductListView.setOnItemClickListener(this);
+        mProductGridView.setOnItemClickListener(this);
 
         mEmptyListMessageView = (TextView) fragmentView.findViewById(R.id.empty_list);
 
@@ -384,5 +411,10 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
         onQueryTextSubmit(recentProductSearches.get(position).getSearchTerm());
 
         return true;
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        mListener.onProductSelected(mAdapter.getItem(position).getProductCode());
     }
 }

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -21,13 +20,13 @@ import com.mozu.mozuandroidinstoreassistant.app.fragments.CustomersFragment;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.OrderFragment;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.ProductFragment;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.ProductFragmentListener;
+import com.mozu.mozuandroidinstoreassistant.app.fragments.ProductListListener;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.ProductSearchFragment;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.SearchFragment;
+import com.mozu.mozuandroidinstoreassistant.app.models.UserPreferences;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 
-import net.hockeyapp.android.UpdateManager;
-
-public class MainActivity extends Activity implements View.OnClickListener, CategoryFragmentListener, ProductFragmentListener {
+public class MainActivity extends Activity implements View.OnClickListener, CategoryFragmentListener, ProductFragmentListener, ProductListListener {
 
     private static final String CATEGORY_FRAGMENT = "category_fragment_taggy_tag_tag";
     private static final String SEARCH_FRAGMENT = "search_fragment_taggy_tag_tag";
@@ -57,11 +56,6 @@ public class MainActivity extends Activity implements View.OnClickListener, Cate
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-
-        //Only register for updates if not a debug build
-        if (!(0 != (getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE))) {
-            UpdateManager.register(this, getString(R.string.hockey_app_id));
-        }
 
         mSearchMenuLayout = (LinearLayout) findViewById(R.id.menu_search_layout);
         mSearchMenuLayout.setOnClickListener(this);
@@ -298,5 +292,27 @@ public class MainActivity extends Activity implements View.OnClickListener, Cate
         fragmentTransaction.replace(R.id.content_fragment_holder, fragment, PRODUCTS_SEARCH_FRAGMENT_BACKSTACK);
         fragmentTransaction.addToBackStack(PRODUCTS_SEARCH_FRAGMENT_BACKSTACK);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onProductSelected(String productCodeSelected) {
+        onProductChoosen(productCodeSelected);
+    }
+
+    @Override
+    public void onProductChoosentFromProuct(String productCode) {
+        onProductChoosen(productCode);
+    }
+
+    private void onProductChoosen(String productCode) {
+        UserPreferences prefs = UserAuthenticationStateMachineProducer.getInstance(this).getCurrentUsersPreferences();
+
+        Intent intent = new Intent(this, ProductDetailActivity.class);
+
+        intent.putExtra(ProductDetailActivity.PRODUCT_CODE_EXTRA_KEY, productCode);
+        intent.putExtra(ProductDetailActivity.CURRENT_TENANT_ID, Integer.parseInt(prefs.getDefaultTenantId()));
+        intent.putExtra(ProductDetailActivity.CURRENT_SITE_ID, Integer.parseInt(prefs.getDefaultSiteId()));
+
+        startActivity(intent);
     }
 }

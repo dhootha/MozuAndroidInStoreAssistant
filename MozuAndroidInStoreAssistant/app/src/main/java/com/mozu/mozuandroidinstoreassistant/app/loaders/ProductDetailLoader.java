@@ -1,7 +1,7 @@
 package com.mozu.mozuandroidinstoreassistant.app.loaders;
 
+import android.content.AsyncTaskLoader;
 import android.content.Context;
-import android.support.v4.content.AsyncTaskLoader;
 
 import com.crashlytics.android.Crashlytics;
 import com.mozu.api.MozuApiContext;

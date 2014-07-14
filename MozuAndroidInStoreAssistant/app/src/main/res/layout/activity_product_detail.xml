@@ -1,16 +1,65 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:scrollbars="none"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.mozu.mozuandroidinstoreassistant.app.ProductDetailActivity">
+    tools:context="com.mozu.mozuandroidinstoreassistant.app.ProductDetailActivity" >
 
-    <TextView
-        android:text="@string/hello_world"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="com.mozu.mozuandroidinstoreassistant.app.ProductDetailActivity">
 
-</RelativeLayout>
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:scrollbars="none"
+            android:layout_height="368dp"
+            android:padding="10dp"
+            android:background="@drawable/product_detail_images_background">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/mainImageView"
+                    android:layout_width="350dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/main_background"
+                    android:src="@drawable/icon_noproductphoto"
+                    android:scaleType="center"
+                    />
+
+            </LinearLayout>
+
+        </HorizontalScrollView>
+
+        <TextView
+            android:id="@+id/productCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:textSize="20sp"
+            android:textColor="@color/mozu_color"/>
+
+        <TextView
+            android:id="@+id/productName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textSize="40sp"/>
+
+        <TextView
+            android:id="@+id/productDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:textSize="18sp"/>
+
+    </LinearLayout>
+</ScrollView>
