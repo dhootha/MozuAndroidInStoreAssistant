@@ -84,7 +84,7 @@
                         android:inputType="textEmailAddress"
                         android:maxLines="1"
                         android:fontFamily="sans-serif-light"
-                        android:textColor="@color/entering_text_color_login"
+                        android:textColor="@color/mozu_color"
                         android:drawableLeft="@drawable/icon_username_login"
                         android:singleLine="true" />
 
@@ -108,7 +108,7 @@
                         android:nextFocusUp="@id/email"
                         android:maxLines="1"
                         android:fontFamily="sans-serif-light"
-                        android:textColor="@color/entering_text_color_login"
+                        android:textColor="@color/mozu_color"
                         android:drawableLeft="@drawable/icon_password_login"
                         android:singleLine="true" />
 
