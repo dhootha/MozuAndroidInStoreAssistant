@@ -72,7 +72,6 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
         getActionBar().setTitle("");
 
         mMainImageView = (ImageView) findViewById(R.id.mainImageView);
-        mMainImageView.setOnClickListener(this);
         mProductCodeTextView = (TextView) findViewById(R.id.productCode);
         mProductDescription = (TextView) findViewById(R.id.productDescription);
         mProductName = (TextView) findViewById(R.id.productName);
@@ -155,6 +154,7 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
             mProductDescription.setText(mProduct.getContent().getProductFullDescription());
         }
 
+        mMainImageView.setOnClickListener(this);
     }
 
     @Override
