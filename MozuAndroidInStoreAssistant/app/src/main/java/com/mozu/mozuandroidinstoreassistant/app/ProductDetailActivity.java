@@ -2,24 +2,35 @@ package com.mozu.mozuandroidinstoreassistant.app;
 
 import android.app.Activity;
 import android.app.LoaderManager;
+import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mozu.api.contracts.productruntime.Product;
+import com.mozu.api.contracts.productruntime.ProductImage;
 import com.mozu.mozuandroidinstoreassistant.app.loaders.ProductDetailLoader;
 import com.mozu.mozuandroidinstoreassistant.app.models.ImageURLConverter;
 import com.squareup.picasso.Picasso;
 
-public class ProductDetailActivity extends Activity implements LoaderManager.LoaderCallbacks<Product> {
+import java.util.ArrayList;
+import java.util.List;
+
+public class ProductDetailActivity extends Activity implements LoaderManager.LoaderCallbacks<Product>, View.OnClickListener {
 
     public static final String PRODUCT_CODE_EXTRA_KEY = "PRODUCT_CODE";
     public static final String CURRENT_TENANT_ID = "curTenantIdWhenActLoaded";
     public static final String CURRENT_SITE_ID = "curSiteIdWhenActLoaded";
     public static final int LOADER_PRODUCT_DETAIL = 4;
+    public static final int FIRST_SUB_IMAGE = 1;
+    public static final int NUM_OF_COLUMNS_DIVISOR = 2;
 
     private String mProductCode;
 
@@ -35,6 +46,12 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
     private int mSiteId;
 
     private ImageURLConverter mImageUrlConverter;
+
+    private LinearLayout mProductImagesLayout;
+
+    private List<ProductImage> mImages;
+
+    private HorizontalScrollView mHorizontalScrollView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,11 +72,16 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
         getActionBar().setTitle("");
 
         mMainImageView = (ImageView) findViewById(R.id.mainImageView);
+        mMainImageView.setOnClickListener(this);
         mProductCodeTextView = (TextView) findViewById(R.id.productCode);
         mProductDescription = (TextView) findViewById(R.id.productDescription);
         mProductName = (TextView) findViewById(R.id.productName);
 
         mImageUrlConverter = new ImageURLConverter(mTenantId, mSiteId);
+
+        mProductImagesLayout = (LinearLayout) findViewById(R.id.product_images_layout);
+
+        mHorizontalScrollView = (HorizontalScrollView) findViewById(R.id.horizontal_image_preview);
 
         getLoaderManager().initLoader(LOADER_PRODUCT_DETAIL, null, this).forceLoad();
     }
@@ -105,16 +127,33 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
 
         mProduct = data;
 
-        if (mProduct.getContent().getProductImages() != null && mProduct.getContent().getProductImages().size() > 0) {
+        if (mProduct == null) {
+            return;
+        }
+
+        mImages = null;
+
+        if (mProduct.getContent() != null) {
+            mImages = mProduct.getContent().getProductImages();
+        }
+
+        if (mImages != null && mProduct.getContent().getProductImages().size() > 0) {
             Picasso.with(this)
                     .load(mImageUrlConverter.getFullImageUrl(mProduct.getContent().getProductImages().get(0).getImageUrl()))
                     .fit()
                     .into(mMainImageView);
         }
 
+        if (mImages != null && mProduct.getContent().getProductImages().size() > 1) {
+            addSecondaryImagesToLayout(mProduct.getContent().getProductImages());
+        }
+
         mProductCodeTextView.setText(data.getProductCode());
-        mProductName.setText(data.getContent().getProductName());
-        mProductDescription.setText(data.getContent().getProductFullDescription());
+
+        if (mProduct.getContent() != null) {
+            mProductName.setText(mProduct.getContent().getProductName());
+            mProductDescription.setText(mProduct.getContent().getProductFullDescription());
+        }
 
     }
 
@@ -122,4 +161,125 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
     public void onLoaderReset(Loader<Product> loader) {
 
     }
+
+    private void addSecondaryImagesToLayout(List<ProductImage> productImageList) {
+
+        //go through each image
+        for (int i = FIRST_SUB_IMAGE; i <= Math.ceil(productImageList.size() / NUM_OF_COLUMNS_DIVISOR); i++) {
+
+            //add a view to the layout top, bottom, next
+            int imageWidth = (int) getResources().getDimension(R.dimen.main_product_image_size) / NUM_OF_COLUMNS_DIVISOR;
+            int imageHeight = (int) getResources().getDimension(R.dimen.main_product_image_size) / NUM_OF_COLUMNS_DIVISOR;
+
+            int firstImagePosition = i + (i - 1);
+            int secondImagePosition = 2 * i;
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(imageWidth, mProductImagesLayout.getMeasuredHeight());
+
+            LinearLayout layout = new LinearLayout(this);
+            layout.setLayoutParams(params);
+            layout.setOrientation(LinearLayout.VERTICAL);
+
+            //add two image views if you can
+            LinearLayout.LayoutParams imageLayoutParams = new LinearLayout.LayoutParams(imageWidth, imageHeight);
+            int margin = (int) getResources().getDimension(R.dimen.sub_product_image_margin);
+            imageLayoutParams.setMargins(margin, margin, margin, margin);
+
+            //add two text views with the position of the image in question
+            LinearLayout firstImageLayout = new LinearLayout(this);
+            firstImageLayout.setLayoutParams(imageLayoutParams);
+
+            TextView textViewPositionOne = new TextView(this);
+            textViewPositionOne.setText(String.valueOf(firstImagePosition));
+            textViewPositionOne.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
+
+            ImageView imageViewTop = new ImageView(this);
+            imageViewTop.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+            firstImageLayout.setOnClickListener(this);
+
+            firstImageLayout.addView(textViewPositionOne);
+            firstImageLayout.addView(imageViewTop);
+            layout.addView(firstImageLayout);
+
+            Picasso.with(this)
+                    .load(mImageUrlConverter.getFullImageUrl(mProduct.getContent().getProductImages().get(firstImagePosition).getImageUrl()))
+                    .fit()
+                    .into(imageViewTop);
+
+            if (productImageList.size() > secondImagePosition) {
+                LinearLayout secondImageLayout = new LinearLayout(this);
+                secondImageLayout.setLayoutParams(imageLayoutParams);
+
+                ImageView imageViewBottom = new ImageView(this);
+                imageViewBottom.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+                TextView textViewPositionTwo = new TextView(this);
+                textViewPositionTwo.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
+                textViewPositionTwo.setText(String.valueOf(secondImagePosition));
+
+                secondImageLayout.setOnClickListener(this);
+
+                secondImageLayout.addView(textViewPositionTwo);
+                secondImageLayout.addView(imageViewBottom);
+                layout.addView(secondImageLayout);
+
+                Picasso.with(this)
+                        .load(mImageUrlConverter.getFullImageUrl(mProduct.getContent().getProductImages().get(secondImagePosition).getImageUrl()))
+                        .fit()
+                        .into(imageViewBottom);
+            }
+
+            mProductImagesLayout.addView(layout);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == mMainImageView.getId()) {
+            startImageViewPagerActivity(0, v);
+        } else if (v instanceof LinearLayout) {
+            LinearLayout layout = (LinearLayout)v;
+
+            for (int i = 0; i < layout.getChildCount(); i++) {
+                if (layout.getChildAt(i) instanceof TextView) {
+                   TextView positionText = (TextView)layout.getChildAt(i);
+                   startImageViewPagerActivity(Integer.parseInt(positionText.getText().toString()), positionText);
+                }
+            }
+        }
+    }
+
+    private void startImageViewPagerActivity(int index, View view) {
+        Intent intent = new Intent(this, ImagePagerActivity.class);
+
+        ArrayList<String> imageUrls = getImageUrlsArrayList();
+
+        intent.putStringArrayListExtra(ImagePagerActivity.IMAGE_URLS_FOR_PRODUCTS, imageUrls);
+        intent.putExtra(ImagePagerActivity.IMAGE_PAGER_INDEX, index);
+
+        int [] screenLocation = new int[2];
+
+        view.getLocationOnScreen(screenLocation);
+
+        intent.putExtra(ImagePagerActivity.ANIM_START_LEFT, screenLocation[0]);
+        intent.putExtra(ImagePagerActivity.ANIM_START_TOP, screenLocation[1]);
+        intent.putExtra(ImagePagerActivity.ANIM_START_WIDTH, view.getMeasuredWidth());
+        intent.putExtra(ImagePagerActivity.ANIM_START_HEIGHT, view.getMeasuredHeight());
+
+        startActivity(intent);
+
+        overridePendingTransition(0, 0);
+    }
+
+    private ArrayList<String> getImageUrlsArrayList() {
+        ArrayList<String> list = new ArrayList<String>();
+
+        for (int i= 0; i < mImages.size(); i++) {
+            list.add(mImageUrlConverter.getFullImageUrl(mImages.get(i).getImageUrl()));
+        }
+
+        return list;
+    }
+
 }

@@ -46,6 +46,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mozu.mozuandroidinstoreassistant.app.MainActivity" />
         </activity>
+        <activity
+            android:name=".ImagePagerActivity"
+            android:label="@string/title_activity_image_list"
+            android:theme="@style/Transparent">
+        </activity>
     </application>
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->

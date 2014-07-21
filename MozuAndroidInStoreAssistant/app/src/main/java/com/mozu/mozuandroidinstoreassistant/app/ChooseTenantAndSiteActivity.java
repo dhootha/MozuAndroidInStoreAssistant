@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-
 public class ChooseTenantAndSiteActivity extends Activity implements TenantResourceAsyncListener, TenantSelectionFragmentListener, SiteSelectionFragmentListener, SetDefaultFragmentListener, Observer {
 
     private static final String TENANT_FRAGMENT_TAG = "tenants";

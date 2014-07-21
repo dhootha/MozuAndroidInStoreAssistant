@@ -9,6 +9,8 @@
     <dimen name="text_horizontal_margin">10dp</dimen>
     <dimen name="product_image_list_height">150dp</dimen>
     <dimen name="product_image_list_width">150dp</dimen>
+    <dimen name="main_product_image_size">350dp</dimen>
+    <dimen name="sub_product_image_margin">5dp</dimen>
 
     <item name="slide_up_down_fraction" type="dimen" format="float">0.67</item>
 </resources>

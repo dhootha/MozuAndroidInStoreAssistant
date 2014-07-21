@@ -85,8 +85,6 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
 
         mUserState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
 
-
-
         setRetainInstance(true);
         setHasOptionsMenu(true);
     }
@@ -106,6 +104,7 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
         mEmptyListMessageView.setVisibility(View.GONE);
 
         return fragmentView;
+
     }
 
     @Override
