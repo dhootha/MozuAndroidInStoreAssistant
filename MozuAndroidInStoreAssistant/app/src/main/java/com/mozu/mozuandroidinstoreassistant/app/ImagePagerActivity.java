@@ -8,7 +8,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.ViewTreeObserver;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 
@@ -20,8 +19,7 @@ import java.util.ArrayList;
 public class ImagePagerActivity extends Activity implements ViewTreeObserver.OnPreDrawListener {
 
     private static final TimeInterpolator sDecelerator = new DecelerateInterpolator();
-    private static final TimeInterpolator sAccelerator = new AccelerateInterpolator();
-    private static final int ANIM_DURATION = 500;
+    private static final int ANIM_DURATION = 250;
 
     public static final String IMAGE_URLS_FOR_PRODUCTS = "IMAGE_URLS_FOR_PRODUCTS";
     public static final String IMAGE_PAGER_INDEX = "IMAGE_PAGER_INDEX";
