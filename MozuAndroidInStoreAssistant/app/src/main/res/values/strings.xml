@@ -44,5 +44,11 @@
     <string name="prod_detail_msrp_price_label">MSRP</string>
     <string name="prod_detail_map_price_label">MAP</string>
     <string name="prod_detail_includes_label">Includes</string>
+    <string name="upc_label">UPC</string>
+    <string name="pn_label">P/N</string>
+    <string name="distrpn_label">Distr. P/N</string>
+    <string name="avail_label">Availability</string>
+    <string name="taxable_label">Taxable</string>
+    <string name="recurring_label">Recurring</string>
 
 </resources>
