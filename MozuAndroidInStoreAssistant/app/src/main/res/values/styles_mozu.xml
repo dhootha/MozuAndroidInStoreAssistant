@@ -69,6 +69,9 @@
         <item name="android:listChoiceBackgroundIndicator">@drawable/mozu_list_selector_holo_light</item>
         <item name="android:activatedBackgroundIndicator">@drawable/mozu_activated_background_holo_light</item>
         <item name="android:fastScrollThumbDrawable">@drawable/mozu_fastscroll_thumb_holo</item>
+
+        <item name="vpiTabPageIndicatorStyle">@style/CustomTabPageIndicator</item>
+
     </style>
 
     <style name="ActionBar.Solid.Mozu" parent="@android:style/Widget.Holo.Light.ActionBar.Solid">
@@ -193,4 +196,14 @@
         <item name="android:textSize">24sp</item>
     </style>
 
+    <style name="CustomTabPageIndicator" >
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/tab_indicator_ab_mozu_vpi</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.TabPageIndicator</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textColor">#FF555555</item>
+    </style>
 </resources>

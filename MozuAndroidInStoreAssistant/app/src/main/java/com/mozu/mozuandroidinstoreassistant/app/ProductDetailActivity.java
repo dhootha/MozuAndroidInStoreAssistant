@@ -5,6 +5,7 @@ import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,9 +17,11 @@ import android.widget.TextView;
 
 import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.api.contracts.productruntime.ProductImage;
+import com.mozu.mozuandroidinstoreassistant.app.adapters.DetailSectionPagerAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.loaders.ProductDetailLoader;
 import com.mozu.mozuandroidinstoreassistant.app.models.ImageURLConverter;
 import com.squareup.picasso.Picasso;
+import com.viewpagerindicator.TabPageIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +56,12 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
 
     private HorizontalScrollView mHorizontalScrollView;
 
+    private ViewPager mProductSectionViewPager;
+
+    private TabPageIndicator mTabIndicator;
+
+    private List<String> mTitles;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,7 +82,7 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
 
         mMainImageView = (ImageView) findViewById(R.id.mainImageView);
         mProductCodeTextView = (TextView) findViewById(R.id.productCode);
-        mProductDescription = (TextView) findViewById(R.id.productDescription);
+        //mProductDescription = (TextView) findViewById(R.id.productDescription);
         mProductName = (TextView) findViewById(R.id.productName);
 
         mImageUrlConverter = new ImageURLConverter(mTenantId, mSiteId);
@@ -82,9 +91,24 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
 
         mHorizontalScrollView = (HorizontalScrollView) findViewById(R.id.horizontal_image_preview);
 
+        mTitles = new ArrayList<String>();
+        mTitles.add(getString(R.string.overview_tab_name));
+        mTitles.add(getString(R.string.properties_tab_name));
+        mTitles.add(getString(R.string.extras_tab_name));
+        mTitles.add(getString(R.string.shipping_tab_name));
+        mTitles.add(getString(R.string.inventory_tab_name));
+
+        mProductSectionViewPager = (ViewPager) findViewById(R.id.product_detail_sections_viewpager);
+        mTabIndicator = (TabPageIndicator) findViewById(R.id.product_detail_sections);
+
+        DetailSectionPagerAdapter adapter = new DetailSectionPagerAdapter(getFragmentManager(), mProduct, mTitles);
+        mProductSectionViewPager.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+        mTabIndicator.setViewPager(mProductSectionViewPager);
+
         getLoaderManager().initLoader(LOADER_PRODUCT_DETAIL, null, this).forceLoad();
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -151,10 +175,15 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
 
         if (mProduct.getContent() != null) {
             mProductName.setText(mProduct.getContent().getProductName());
-            mProductDescription.setText(mProduct.getContent().getProductFullDescription());
+           // mProductDescription.setText(mProduct.getContent().getProductFullDescription());
         }
 
         mMainImageView.setOnClickListener(this);
+
+        DetailSectionPagerAdapter adapter = new DetailSectionPagerAdapter(getFragmentManager(), mProduct, mTitles);
+
+        mProductSectionViewPager.setAdapter(adapter);
+        mTabIndicator.setViewPager(mProductSectionViewPager);
     }
 
     @Override
