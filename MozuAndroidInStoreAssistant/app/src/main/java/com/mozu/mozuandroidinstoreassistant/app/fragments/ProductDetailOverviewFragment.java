@@ -42,6 +42,12 @@ public class ProductDetailOverviewFragment extends Fragment {
         TextView mapPrice = (TextView) view.findViewById(R.id.map_price);
         TextView includes = (TextView) view.findViewById(R.id.includes);
         TextView description = (TextView) view.findViewById(R.id.product_description);
+        TextView upc = (TextView) view.findViewById(R.id.upc);
+        TextView pn = (TextView) view.findViewById(R.id.pn);
+        TextView distrpn = (TextView) view.findViewById(R.id.distrpn);
+        TextView avail = (TextView) view.findViewById(R.id.availability);
+        TextView taxable = (TextView) view.findViewById(R.id.taxable);
+        TextView recurring = (TextView) view.findViewById(R.id.recurring);
 
         NumberFormat defaultFormat = NumberFormat.getCurrencyInstance();
 
@@ -52,6 +58,15 @@ public class ProductDetailOverviewFragment extends Fragment {
 
         includes.setText(getBundledProductsString());
         description.setText(mProduct.getContent().getMetaTagDescription());
+
+        upc.setText(mProduct.getUpc());
+        pn.setText(mProduct.getMfgPartNumber());
+        distrpn.setText("N/A");
+        //TODO: figure this out
+        avail.setText("24 Hours");
+        taxable.setText(mProduct.getIsTaxable() != null && mProduct.getIsTaxable() ? getString(R.string.yes) : getString(R.string.no));
+        recurring.setText(mProduct.getIsRecurring() != null && mProduct.getIsRecurring() ? getString(R.string.yes) : getString(R.string.no));
+
     }
 
 
