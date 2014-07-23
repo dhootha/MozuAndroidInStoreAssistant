@@ -15,6 +15,10 @@ repositories {
     mavenCentral()
     mavenLocal()
     maven { url 'http://download.crashlytics.com/maven' }
+
+    flatDir {
+        dirs 'libs'
+    }
 }
 
 android {
@@ -65,12 +69,14 @@ android {
 }
 
 dependencies {
+    compile(name:'viewpager', ext:'aar')
     compile 'com.mozu.api:mozu-api-android:1.7.15@aar'
     compile 'com.mozu.api:mozu-api-core:1.7.15'
     compile 'com.crashlytics.android:crashlytics:1.+'
     compile 'com.squareup.picasso:picasso:2.2.0'
 
     compile 'com.android.support:support-v13:19.+'
+    compile 'com.android.support:support-v4:19.+'
     compile 'com.android.support:appcompat-v7:19.+'
 
     compile 'org.joda:joda-convert:1.6'
