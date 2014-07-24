@@ -2,6 +2,10 @@ package com.mozu.mozuandroidinstoreassistant.app.fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +14,7 @@ import android.widget.TextView;
 import com.mozu.api.contracts.productruntime.BundledProduct;
 import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.mozuandroidinstoreassistant.app.R;
+import com.mozu.mozuandroidinstoreassistant.app.views.NoUnderlineClickableSpan;
 
 import java.text.NumberFormat;
 
@@ -18,6 +23,8 @@ public class ProductDetailOverviewFragment extends Fragment {
 
 
     private Product mProduct;
+
+    TextView mDescription;
 
     public ProductDetailOverviewFragment() {
         // Required empty public constructor
@@ -41,11 +48,10 @@ public class ProductDetailOverviewFragment extends Fragment {
         TextView msrpPrice = (TextView) view.findViewById(R.id.msrp_price);
         TextView mapPrice = (TextView) view.findViewById(R.id.map_price);
         TextView includes = (TextView) view.findViewById(R.id.includes);
-        TextView description = (TextView) view.findViewById(R.id.product_description);
+        mDescription = (TextView) view.findViewById(R.id.product_description);
         TextView upc = (TextView) view.findViewById(R.id.upc);
         TextView pn = (TextView) view.findViewById(R.id.pn);
         TextView distrpn = (TextView) view.findViewById(R.id.distrpn);
-        TextView avail = (TextView) view.findViewById(R.id.availability);
         TextView taxable = (TextView) view.findViewById(R.id.taxable);
         TextView recurring = (TextView) view.findViewById(R.id.recurring);
 
@@ -57,13 +63,12 @@ public class ProductDetailOverviewFragment extends Fragment {
         mapPrice.setText(getMAPPriceText(defaultFormat));
 
         includes.setText(getBundledProductsString());
-        description.setText(mProduct.getContent().getMetaTagDescription());
+        mDescription.setText(getSmallDescriptionWithSpannableClick());
+        mDescription.setMovementMethod(LinkMovementMethod.getInstance());
 
         upc.setText(mProduct.getUpc());
         pn.setText(mProduct.getMfgPartNumber());
         distrpn.setText("N/A");
-        //TODO: figure this out
-        avail.setText("24 Hours");
         taxable.setText(mProduct.getIsTaxable() != null && mProduct.getIsTaxable() ? getString(R.string.yes) : getString(R.string.no));
         recurring.setText(mProduct.getIsRecurring() != null && mProduct.getIsRecurring() ? getString(R.string.yes) : getString(R.string.no));
 
@@ -140,4 +145,54 @@ public class ProductDetailOverviewFragment extends Fragment {
 
         return bundledString;
     }
+
+    private SpannableString getSmallDescriptionWithSpannableClick() {
+        if (mProduct.getContent() == null) {
+            return new SpannableString("N/A");
+        }
+
+        String smallDesc = mProduct.getContent().getProductShortDescription();
+        String fullDescpButtonText = getString(R.string.full_description_click_link);
+        smallDesc = smallDesc + fullDescpButtonText;
+
+        SpannableString spannableString = new SpannableString(smallDesc);
+        spannableString.setSpan(mExpandClickableSpan, smallDesc.length() - fullDescpButtonText.length(), smallDesc.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.mozu_color)), smallDesc.length() - fullDescpButtonText.length(), smallDesc.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        return spannableString;
+    }
+
+    private SpannableString getLargeDescriptionWithSpannableClick() {
+        if (mProduct.getContent() == null) {
+            return new SpannableString("N/A");
+        }
+
+        String smallDesc = mProduct.getContent().getProductFullDescription();
+        String showLessButtonText = getString(R.string.show_less_click_link);
+        smallDesc = smallDesc + showLessButtonText;
+
+        SpannableString spannableString = new SpannableString(smallDesc);
+        spannableString.setSpan(mContractClickableSpan, smallDesc.length() - showLessButtonText.length(), smallDesc.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.mozu_color)), smallDesc.length() - showLessButtonText.length(), smallDesc.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        return spannableString;
+    }
+
+    private NoUnderlineClickableSpan mExpandClickableSpan = new NoUnderlineClickableSpan() {
+
+        @Override
+        public void onClick(View widget) {
+            mDescription.setText(getLargeDescriptionWithSpannableClick());
+        }
+
+    };
+
+    private NoUnderlineClickableSpan mContractClickableSpan = new NoUnderlineClickableSpan() {
+
+        @Override
+        public void onClick(View widget) {
+            mDescription.setText(getSmallDescriptionWithSpannableClick());
+        }
+
+    };
 }

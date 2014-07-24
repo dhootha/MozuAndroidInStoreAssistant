@@ -4,12 +4,13 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:minHeight="300dp">
+    android:padding="40dp">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <ListView
+        android:id="@+id/properties_list"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="PRODUCT Properties"/>
+        android:dividerHeight="0dp"
+        android:divider="@android:color/transparent"/>
 
 </LinearLayout>

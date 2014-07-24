@@ -201,6 +201,8 @@
         <item name="android:background">@drawable/tab_indicator_ab_mozu_vpi</item>
         <item name="android:paddingTop">12dp</item>
         <item name="android:paddingBottom">12dp</item>
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingRight">20dp</item>
         <item name="android:textAppearance">@style/TextAppearance.TabPageIndicator</item>
         <item name="android:textSize">15sp</item>
         <item name="android:maxLines">1</item>

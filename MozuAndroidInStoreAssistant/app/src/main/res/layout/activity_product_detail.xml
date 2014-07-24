@@ -67,9 +67,9 @@
         <com.viewpagerindicator.TabPageIndicator
             android:id="@+id/product_detail_sections"
             android:layout_height="wrap_content"
-            android:layout_width="fill_parent"
-            android:layout_marginLeft="24dp"
-            android:layout_marginTop="30dp"/>
+            android:layout_width="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="24dp"/>
 
         <View
             android:layout_width="fill_parent"
@@ -84,15 +84,8 @@
         <android.support.v4.view.ViewPager
             android:id="@+id/product_detail_sections_viewpager"
             android:layout_width="match_parent"
-            android:layout_height="600dp"
+            android:layout_height="20000dp"
             android:layout_marginLeft="0dp"/>
-
-        <!--<TextView-->
-            <!--android:id="@+id/productDescription"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginTop="30dp"-->
-            <!--android:textSize="18sp"/>-->
 
     </LinearLayout>
 </ScrollView>

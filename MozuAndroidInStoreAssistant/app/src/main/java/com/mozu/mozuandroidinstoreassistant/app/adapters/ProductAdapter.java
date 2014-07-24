@@ -67,7 +67,6 @@ public class ProductAdapter extends ArrayAdapter<Product> {
                 Picasso.with(getContext())
                         .load(mUrlConverter.getFullImageUrl(product.getContent().getProductImages().get(0).getImageUrl()))
                         .placeholder(R.drawable.icon_noproductphoto)
-                        .fit()
                         .into(productImageView);
             } else {
 
@@ -75,7 +74,6 @@ public class ProductAdapter extends ArrayAdapter<Product> {
                         .load(mUrlConverter.getFullImageUrl(product.getContent().getProductImages().get(0).getImageUrl()))
                         .transform(new RoundedTransformation())
                         .placeholder(R.drawable.icon_noproductphoto)
-                        .fit()
                         .into(productImageView);
             }
         }

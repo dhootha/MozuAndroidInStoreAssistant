@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.mozuandroidinstoreassistant.app.R;
+import com.mozu.mozuandroidinstoreassistant.app.adapters.ProdDetailPropertiesAdapter;
 
 
 public class ProductDetailPropertiesFragment extends Fragment {
@@ -24,8 +26,16 @@ public class ProductDetailPropertiesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.product_detail_properties_fragment, null);
 
+        if (mProduct != null) {
+            setViewToProduct(view);
+        }
 
         return view;
+    }
+
+    private void setViewToProduct(View view) {
+        ListView list = (ListView) view.findViewById(R.id.properties_list);
+        list.setAdapter(new ProdDetailPropertiesAdapter(getActivity(), mProduct.getProperties()));
     }
 
 
