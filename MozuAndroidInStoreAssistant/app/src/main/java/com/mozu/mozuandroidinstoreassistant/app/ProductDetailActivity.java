@@ -39,7 +39,6 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
 
     private ImageView mMainImageView;
     private TextView mProductCodeTextView;
-    private TextView mProductDescription;
     private TextView mProductName;
 
     private Product mProduct;
@@ -233,7 +232,6 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
 
             Picasso.with(this)
                     .load(mImageUrlConverter.getFullImageUrl(mProduct.getContent().getProductImages().get(firstImagePosition).getImageUrl()))
-                    .fit()
                     .into(imageViewTop);
 
             if (productImageList.size() > secondImagePosition) {
@@ -255,7 +253,6 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
 
                 Picasso.with(this)
                         .load(mImageUrlConverter.getFullImageUrl(mProduct.getContent().getProductImages().get(secondImagePosition).getImageUrl()))
-                        .fit()
                         .into(imageViewBottom);
             }
 

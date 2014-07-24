@@ -1,5 +1,6 @@
 package com.mozu.mozuandroidinstoreassistant.app.fragments;
 
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;

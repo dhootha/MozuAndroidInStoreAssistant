@@ -92,7 +92,7 @@ public class UserAuthenticationStateMachine extends Observable implements Refres
         //save active scope if one exists
         mAuthProfile = profile;
 
-        if (profile.getActiveScope() != null) {
+        if (profile != null && profile.getActiveScope() != null) {
             getCurrentUsersPreferences().setDefaultTenantId(String.valueOf(profile.getActiveScope().getId()));
         }
 
