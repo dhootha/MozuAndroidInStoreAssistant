@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.mozu.api.contracts.productruntime.Product;
@@ -54,6 +55,7 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
     private List<ProductImage> mImages;
 
     private HorizontalScrollView mHorizontalScrollView;
+    private ScrollView mVerticalScrollView;
 
     private ViewPager mProductSectionViewPager;
 
@@ -89,6 +91,7 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
         mProductImagesLayout = (LinearLayout) findViewById(R.id.product_images_layout);
 
         mHorizontalScrollView = (HorizontalScrollView) findViewById(R.id.horizontal_image_preview);
+        mVerticalScrollView = (ScrollView) findViewById(R.id.vertical_image_preview);
 
         mTitles = new ArrayList<String>();
         mTitles.add(getString(R.string.overview_tab_name));
@@ -167,7 +170,11 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
         }
 
         if (mImages != null && mProduct.getContent().getProductImages().size() > 1) {
-            addSecondaryImagesToLayout(mProduct.getContent().getProductImages());
+            if (mHorizontalScrollView != null) {
+                addSecondaryImagesToPortraitLayout(mProduct.getContent().getProductImages());
+            } else {
+                addSecondaryImagesToLandscapeLayout(mProduct.getContent().getProductImages());
+            }
         }
 
         mProductCodeTextView.setText(data.getProductCode());
@@ -190,7 +197,7 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
 
     }
 
-    private void addSecondaryImagesToLayout(List<ProductImage> productImageList) {
+    private void addSecondaryImagesToPortraitLayout(List<ProductImage> productImageList) {
 
         //go through each image
         for (int i = FIRST_SUB_IMAGE; i <= Math.ceil(productImageList.size() / NUM_OF_COLUMNS_DIVISOR); i++) {
@@ -207,6 +214,76 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
             LinearLayout layout = new LinearLayout(this);
             layout.setLayoutParams(params);
             layout.setOrientation(LinearLayout.VERTICAL);
+
+            //add two image views if you can
+            LinearLayout.LayoutParams imageLayoutParams = new LinearLayout.LayoutParams(imageWidth, imageHeight);
+            int margin = (int) getResources().getDimension(R.dimen.sub_product_image_margin);
+            imageLayoutParams.setMargins(margin, margin, margin, margin);
+
+            //add two text views with the position of the image in question
+            LinearLayout firstImageLayout = new LinearLayout(this);
+            firstImageLayout.setLayoutParams(imageLayoutParams);
+
+            TextView textViewPositionOne = new TextView(this);
+            textViewPositionOne.setText(String.valueOf(firstImagePosition));
+            textViewPositionOne.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
+
+            ImageView imageViewTop = new ImageView(this);
+            imageViewTop.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+            firstImageLayout.setOnClickListener(this);
+
+            firstImageLayout.addView(textViewPositionOne);
+            firstImageLayout.addView(imageViewTop);
+            layout.addView(firstImageLayout);
+
+            Picasso.with(this)
+                    .load(mImageUrlConverter.getFullImageUrl(mProduct.getContent().getProductImages().get(firstImagePosition).getImageUrl()))
+                    .into(imageViewTop);
+
+            if (productImageList.size() > secondImagePosition) {
+                LinearLayout secondImageLayout = new LinearLayout(this);
+                secondImageLayout.setLayoutParams(imageLayoutParams);
+
+                ImageView imageViewBottom = new ImageView(this);
+                imageViewBottom.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+                TextView textViewPositionTwo = new TextView(this);
+                textViewPositionTwo.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
+                textViewPositionTwo.setText(String.valueOf(secondImagePosition));
+
+                secondImageLayout.setOnClickListener(this);
+
+                secondImageLayout.addView(textViewPositionTwo);
+                secondImageLayout.addView(imageViewBottom);
+                layout.addView(secondImageLayout);
+
+                Picasso.with(this)
+                        .load(mImageUrlConverter.getFullImageUrl(mProduct.getContent().getProductImages().get(secondImagePosition).getImageUrl()))
+                        .into(imageViewBottom);
+            }
+
+            mProductImagesLayout.addView(layout);
+        }
+    }
+
+    private void addSecondaryImagesToLandscapeLayout(List<ProductImage> productImageList) {
+
+        //go through each image
+        for (int i = FIRST_SUB_IMAGE; i <= Math.ceil(productImageList.size() / NUM_OF_COLUMNS_DIVISOR); i++) {
+
+            //add a view to the layout top, bottom, next
+            int imageWidth = (int) getResources().getDimension(R.dimen.main_product_image_size) / NUM_OF_COLUMNS_DIVISOR;
+            int imageHeight = (int) getResources().getDimension(R.dimen.main_product_image_size) / NUM_OF_COLUMNS_DIVISOR;
+
+            int firstImagePosition = i + (i - 1);
+            int secondImagePosition = 2 * i;
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(mProductImagesLayout.getMeasuredWidth(), imageHeight);
+
+            LinearLayout layout = new LinearLayout(this);
+            layout.setLayoutParams(params);
+            layout.setOrientation(LinearLayout.HORIZONTAL);
 
             //add two image views if you can
             LinearLayout.LayoutParams imageLayoutParams = new LinearLayout.LayoutParams(imageWidth, imageHeight);
