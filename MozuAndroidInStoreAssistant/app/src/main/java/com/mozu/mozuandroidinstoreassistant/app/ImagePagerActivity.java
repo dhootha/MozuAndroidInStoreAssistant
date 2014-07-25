@@ -147,7 +147,7 @@ public class ImagePagerActivity extends Activity implements ViewTreeObserver.OnP
                 setInterpolator(sDecelerator);
 
         // Fade in the black background
-        ObjectAnimator bgAnim = ObjectAnimator.ofInt(mBackground, "alpha", 0, 255);
+        ObjectAnimator bgAnim = ObjectAnimator.ofInt(mBackground, "alpha", 0, 200);
         bgAnim.setDuration(duration);
         bgAnim.start();
     }
