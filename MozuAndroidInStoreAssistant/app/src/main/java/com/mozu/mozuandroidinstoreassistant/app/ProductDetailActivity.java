@@ -100,7 +100,7 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
         mProductSectionViewPager = (ViewPager) findViewById(R.id.product_detail_sections_viewpager);
         mTabIndicator = (TabPageIndicator) findViewById(R.id.product_detail_sections);
 
-        DetailSectionPagerAdapter adapter = new DetailSectionPagerAdapter(getFragmentManager(), mProduct, mTitles);
+        DetailSectionPagerAdapter adapter = new DetailSectionPagerAdapter(getFragmentManager(), mProduct, mTitles, mTenantId, mSiteId);
         mProductSectionViewPager.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
@@ -179,7 +179,7 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
 
         mMainImageView.setOnClickListener(this);
 
-        DetailSectionPagerAdapter adapter = new DetailSectionPagerAdapter(getFragmentManager(), mProduct, mTitles);
+        DetailSectionPagerAdapter adapter = new DetailSectionPagerAdapter(getFragmentManager(), mProduct, mTitles, mTenantId, mSiteId);
 
         mProductSectionViewPager.setAdapter(adapter);
         mTabIndicator.setViewPager(mProductSectionViewPager);
