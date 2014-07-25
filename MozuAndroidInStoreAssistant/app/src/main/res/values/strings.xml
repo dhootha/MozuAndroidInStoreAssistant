@@ -54,5 +54,10 @@
     <string name="show_less_click_link"> - Show Less</string>
     <string name="weight_label">Weight</string>
     <string name="meansurment_label">Measurements</string>
+    <string name="prod_detail_inventory_table_code_header">Code</string>
+    <string name="prod_detail_inventory_table_name_header">Name</string>
+    <string name="prod_detail_inventory_table_available_header">Available</string>
+    <string name="prod_detail_inventory_table_on_hand_header">On Hand</string>
+    <string name="prod_detail_inventory_table_on_reserve_header">On Reserve</string>
 
 </resources>

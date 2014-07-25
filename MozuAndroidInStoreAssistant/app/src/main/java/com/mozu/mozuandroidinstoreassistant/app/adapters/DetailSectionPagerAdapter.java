@@ -25,11 +25,17 @@ public class DetailSectionPagerAdapter extends FragmentStatePagerAdapter {
     private Product mProduct;
     private List<String> mPageTitles;
 
-    public DetailSectionPagerAdapter(FragmentManager manager, Product product, List<String> pageTitles) {
+    private int mTenantId;
+    private int mSiteId;
+
+    public DetailSectionPagerAdapter(FragmentManager manager, Product product, List<String> pageTitles, int tenantId, int siteId) {
         super(manager);
 
         mProduct = product;
         mPageTitles = pageTitles;
+
+        mTenantId = tenantId;
+        mSiteId = siteId;
     }
 
     @Override
@@ -78,6 +84,8 @@ public class DetailSectionPagerAdapter extends FragmentStatePagerAdapter {
             case INVENTORY_TAB_POSITION:
                 ProductDetailInventoryFragment inventoryFragment = new ProductDetailInventoryFragment();
                 inventoryFragment.setProduct(mProduct);
+                inventoryFragment.setTenantId(mTenantId);
+                inventoryFragment.setSiteId(mSiteId);
 
                 return inventoryFragment;
 

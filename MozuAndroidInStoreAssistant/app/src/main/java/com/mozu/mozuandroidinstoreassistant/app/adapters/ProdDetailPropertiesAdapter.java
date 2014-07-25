@@ -50,8 +50,8 @@ public class ProdDetailPropertiesAdapter extends ArrayAdapter<ProductProperty> {
             valueString += value.getStringValue() + ", ";
         }
 
-        if (valueString.length() > 3) {
-            valueString = valueString.substring(0, valueString.length() - 3);
+        if (valueString.length() > 2) {
+            valueString = valueString.substring(0, valueString.length() - 2);
         }
 
         return  valueString;
