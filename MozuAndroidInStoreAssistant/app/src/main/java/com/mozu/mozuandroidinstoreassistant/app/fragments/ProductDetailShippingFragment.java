@@ -19,6 +19,7 @@ public class ProductDetailShippingFragment extends Fragment {
 
     public ProductDetailShippingFragment() {
         // Required empty public constructor
+        setRetainInstance(true);
     }
 
 

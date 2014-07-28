@@ -79,6 +79,7 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
         }
 
         getActionBar().setDisplayShowHomeEnabled(false);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setTitle("");
 
         mMainImageView = (ImageView) findViewById(R.id.mainImageView);
@@ -113,20 +114,6 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.product_detail, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putString(PRODUCT_CODE_EXTRA_KEY, mProductCode);
         outState.putInt(CURRENT_TENANT_ID, mTenantId);
@@ -135,6 +122,18 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
         super.onSaveInstanceState(outState);
     }
 
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public Loader<Product> onCreateLoader(int id, Bundle args) {
