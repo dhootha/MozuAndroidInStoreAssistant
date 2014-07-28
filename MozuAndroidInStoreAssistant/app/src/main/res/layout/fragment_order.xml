@@ -8,46 +8,58 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="120dp"
         android:textSize="40sp"
         android:gravity="center_vertical"
-        android:text="@string/menu_orders_text"/>
+        android:text="@string/menu_orders_text"
+        android:fontFamily="sans-serif-light"/>
 
     <LinearLayout
         android:id="@+id/order_list_header"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp">
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".5"
+            android:textStyle="bold"
+            android:textColor="@android:color/darker_gray"
             android:text="@string/order_list_order_no_header"/>
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textStyle="bold"
+            android:textColor="@android:color/darker_gray"
             android:text="@string/order_list_date_header"/>
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textStyle="bold"
+            android:textColor="@android:color/darker_gray"
             android:text="@string/order_list_order_email_header"/>
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".5"
+            android:textStyle="bold"
+            android:textColor="@android:color/darker_gray"
             android:text="@string/order_list_order_status_header"/>
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight=".5"
             android:gravity="right"
+            android:textStyle="bold"
+            android:textColor="@android:color/darker_gray"
             android:text="@string/order_list_order_total_header"
             android:layout_marginRight="5dp" />
 
