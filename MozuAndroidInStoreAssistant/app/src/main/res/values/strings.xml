@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_auth_appid">9249dd36c5d443e4abc6a32a013b4578</string>
-    <string name="app_auth_shared_secret">fd4d5a9b16bf4de6bd32a32a013b4578</string>
-    <string name="service_url">https://home.mozu-qa.com</string>
+    <string name="app_auth_appid">d24886fc47bb4a8d8292a37600f7b5ee</string>
+    <string name="app_auth_shared_secret">4d81e31fc1db4dd3b7fea37600f7b5ee</string>
+    <string name="service_url">https://home.mozu.com</string>
     <string name="app_name">Mozu</string>
     <string name="title_section1">Products</string>
     <string name="title_section2">Orders</string>
@@ -59,5 +59,12 @@
     <string name="prod_detail_inventory_table_available_header">Available</string>
     <string name="prod_detail_inventory_table_on_hand_header">On Hand</string>
     <string name="prod_detail_inventory_table_on_reserve_header">On Reserve</string>
+    <string name="order_list_order_no_header">Order No.</string>
+    <string name="order_list_order_first_name_header">First Name</string>
+    <string name="order_list_order_last_name_header">Last Name</string>
+    <string name="order_list_order_status_header">Status</string>
+    <string name="order_list_order_total_header">Total</string>
+    <string name="order_list_date_header">Date</string>
+    <string name="order_list_order_email_header">Email</string>
 
 </resources>

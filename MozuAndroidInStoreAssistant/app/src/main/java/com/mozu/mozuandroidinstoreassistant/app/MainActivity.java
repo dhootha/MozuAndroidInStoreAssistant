@@ -40,6 +40,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Cate
     private static final String PRODUCTS_FRAGMENT_BACKSTACK = "products_fragment_taggy_tag_tag_BACKSTACK";
     private static final String ORDERS_FRAGMENT_BACKSTACK = "orders_fragment_taggy_tag_tag_BACKSTACK";
     private static final String CUSTOMERS_FRAGMENT_BACKSTACK = "customers_fragment_taggy_tag_tag_BACKSTACK";
+    private static final String CURRENTLY_SELECTED_NAV_VIEW_ID = "CURRENTLY_SELECTED_NAV_VIEW_ID";
 
     private LinearLayout mSearchMenuLayout;
     private LinearLayout mProductsLayout;
@@ -50,6 +51,8 @@ public class MainActivity extends Activity implements View.OnClickListener, Cate
     private ActionBarDrawerToggle mDrawerToggle;
 
     private boolean mWasCreatedInPortrait = false;
+
+    private int mCurrentlySelectedNavItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +77,10 @@ public class MainActivity extends Activity implements View.OnClickListener, Cate
         mProductsLayout.setSelected(true);
 
         if (savedInstanceState == null) {
+            mCurrentlySelectedNavItem = R.id.menu_products_layout;
             initializeCategoryFragment();
+        } else {
+            updateNavView(savedInstanceState.getInt(CURRENTLY_SELECTED_NAV_VIEW_ID, R.id.menu_products_layout));
         }
 
         mWasCreatedInPortrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT || findViewById(R.id.tablet_landscape) == null;
@@ -149,31 +155,43 @@ public class MainActivity extends Activity implements View.OnClickListener, Cate
 
     @Override
     public void onClick(View v) {
+        updateNavView(v.getId());
+
+        if (v.getId() == R.id.menu_search_layout) {
+            initializeSearchFragment();
+        } else if (v.getId() == R.id.menu_products_layout) {
+            initializeCategoryFragment();
+        } else if (v.getId() == R.id.menu_orders_layout) {
+            initializeOrdersFragment();
+        } else if (v.getId() == R.id.menu_customers_layout) {
+            initializeCustomersFragment();
+        }
+
+        if (mDrawerLayout != null) {
+            mDrawerLayout.closeDrawers();
+        }
+    }
+
+    private void updateNavView(int viewId) {
+        mCurrentlySelectedNavItem = viewId;
+
         mSearchMenuLayout.setSelected(false);
         mProductsLayout.setSelected(false);
         mOrdersLayout.setSelected(false);
         mCustomersLayout.setSelected(false);
 
-        if (v.getId() == R.id.menu_search_layout) {
+        if (viewId == R.id.menu_search_layout) {
             getActionBar().setTitle(R.string.menu_search_text);
-            v.setSelected(true);
-            initializeSearchFragment();
-        } else if (v.getId() == R.id.menu_products_layout) {
+            mSearchMenuLayout.setSelected(true);
+        } else if (viewId == R.id.menu_products_layout) {
             getActionBar().setTitle(R.string.menu_products_text);
-            v.setSelected(true);
-            initializeCategoryFragment();
-        } else if (v.getId() == R.id.menu_orders_layout) {
+            mProductsLayout.setSelected(true);
+        } else if (viewId == R.id.menu_orders_layout) {
             getActionBar().setTitle(R.string.menu_orders_text);
-            v.setSelected(true);
-            initializeOrdersFragment();
-        } else if (v.getId() == R.id.menu_customers_layout) {
+            mOrdersLayout.setSelected(true);
+        } else if (viewId == R.id.menu_customers_layout) {
             getActionBar().setTitle(R.string.menu_customers_text);
-            v.setSelected(true);
-            initializeCustomersFragment();
-        }
-
-        if (mWasCreatedInPortrait) {
-            mDrawerLayout.closeDrawers();
+            mCustomersLayout.setSelected(true);
         }
     }
 
@@ -208,9 +226,13 @@ public class MainActivity extends Activity implements View.OnClickListener, Cate
 
         clearBackstack(fragmentManager);
 
+        UserPreferences prefs = UserAuthenticationStateMachineProducer.getInstance(this).getCurrentUsersPreferences();
+
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         OrderFragment fragment = new OrderFragment();
+        fragment.setTenantId(Integer.parseInt(prefs.getDefaultTenantId()));
+        fragment.setSiteId(Integer.parseInt(prefs.getDefaultSiteId()));
         fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out);
         fragmentTransaction.replace(R.id.content_fragment_holder, fragment);
         fragmentTransaction.commit();
@@ -314,5 +336,13 @@ public class MainActivity extends Activity implements View.OnClickListener, Cate
         intent.putExtra(ProductDetailActivity.CURRENT_SITE_ID, Integer.parseInt(prefs.getDefaultSiteId()));
 
         startActivity(intent);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+
+        outState.putInt(CURRENTLY_SELECTED_NAV_VIEW_ID, mCurrentlySelectedNavItem);
+
+        super.onSaveInstanceState(outState);
     }
 }

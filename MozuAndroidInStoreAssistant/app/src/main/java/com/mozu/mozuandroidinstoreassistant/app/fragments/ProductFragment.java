@@ -35,7 +35,7 @@ import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthen
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Product>>, GridView.OnScrollListener, SearchView.OnQueryTextListener, SearchView.OnSuggestionListener, AbsListView.OnItemClickListener {
+public class ProductFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Product>>, AbsListView.OnScrollListener, SearchView.OnQueryTextListener, SearchView.OnSuggestionListener, AbsListView.OnItemClickListener {
 
     public static final int MAX_NUMBER_OF_SEARCHES = 5;
 
@@ -154,6 +154,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
             }
 
             mProductGridView.setOnScrollListener(this);
+            mProductListView.setOnScrollListener(this);
 
             if (prefs.getShowAsGrids()) {
                 mProductGridView.setVisibility(View.VISIBLE);
