@@ -20,13 +20,15 @@
         <activity
             android:name=".ChooseTenantAndSiteActivity"
             android:label="@string/app_name"
-            android:theme="@style/Theme.Mozu.NoActionBar" >
+            android:theme="@style/Theme.Mozu.NoActionBar"
+            android:launchMode="singleInstance">
         </activity>
         <activity
             android:name=".LoginActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.Mozu.NoActionBar"
-            android:windowSoftInputMode="adjustPan|stateVisible" >
+            android:windowSoftInputMode="adjustPan|stateVisible"
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -41,7 +43,8 @@
         <activity
             android:name=".ProductDetailActivity"
             android:label="@string/title_activity_product_detail"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".MainActivity"
+            android:launchMode="singleInstance">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mozu.mozuandroidinstoreassistant.app.MainActivity" />
@@ -49,7 +52,8 @@
         <activity
             android:name=".ImagePagerActivity"
             android:label="@string/title_activity_image_list"
-            android:theme="@style/Transparent">
+            android:theme="@style/Transparent"
+            android:launchMode="singleInstance">
         </activity>
     </application>
 
