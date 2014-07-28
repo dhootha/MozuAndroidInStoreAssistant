@@ -79,6 +79,7 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
         }
 
         getActionBar().setDisplayShowHomeEnabled(false);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setTitle("");
 
         mMainImageView = (ImageView) findViewById(R.id.mainImageView);
@@ -121,6 +122,18 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
         super.onSaveInstanceState(outState);
     }
 
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public Loader<Product> onCreateLoader(int id, Bundle args) {

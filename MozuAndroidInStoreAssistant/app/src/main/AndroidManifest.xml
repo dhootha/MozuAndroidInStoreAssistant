@@ -41,11 +41,8 @@
 
         <activity
             android:name=".ProductDetailActivity"
-            android:label="@string/title_activity_product_detail"
-            android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.mozu.mozuandroidinstoreassistant.app.MainActivity" />
+            android:label="@string/title_activity_product_detail">
+
         </activity>
         <activity
             android:name=".ImagePagerActivity"
