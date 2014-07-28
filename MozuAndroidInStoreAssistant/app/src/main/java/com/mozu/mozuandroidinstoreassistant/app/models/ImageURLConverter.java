@@ -35,11 +35,13 @@ public class ImageURLConverter {
         TenantResource tenantResource = new TenantResource();
         Tenant tenant = null;
         String imageBaseUrl = null;
+
         try {
             tenant = tenantResource.getTenant(tenantId);
         } catch (Exception e) {
             Crashlytics.logException(e);
         }
+
         if (tenant != null) {
             for (Site site : tenant.getSites()) {
                 if (siteId.equals(site.getId())) {
@@ -47,7 +49,6 @@ public class ImageURLConverter {
                     break;
                 }
             }
-
         }
 
         StringBuilder siteDomainBuilder = new StringBuilder(httpString).append("//").append(imageBaseUrl);
