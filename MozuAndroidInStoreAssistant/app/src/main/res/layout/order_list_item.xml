@@ -5,12 +5,14 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:gravity="center_vertical"
     android:minHeight="?android:attr/listPreferredItemHeight">
 
     <TextView
         android:id="@+id/order_number"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:textStyle="bold"
         android:layout_weight=".5"/>
 
     <TextView
@@ -35,8 +37,10 @@
         android:id="@+id/order_total"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_weight=".5"
         android:gravity="right"
+        android:textStyle="bold"
+        android:textColor="@color/mozu_color"
         android:layout_marginRight="5dp"/>
 
 </LinearLayout>
