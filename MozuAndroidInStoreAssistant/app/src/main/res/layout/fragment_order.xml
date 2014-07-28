@@ -4,6 +4,8 @@
     android:layout_height="match_parent"
     android:background="@color/main_background"
     android:orientation="vertical"
+    android:layout_marginLeft="40dp"
+    android:layout_marginRight="40dp"
     tools:context="com.mozu.mozuandroidinstoreassistant.app.fragments.OrderFragment">
 
     <TextView
@@ -89,6 +91,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:dividerHeight="0dp"
+        android:scrollbars="none"
         android:divider="@android:color/transparent"
         android:visibility="gone"/>
 
