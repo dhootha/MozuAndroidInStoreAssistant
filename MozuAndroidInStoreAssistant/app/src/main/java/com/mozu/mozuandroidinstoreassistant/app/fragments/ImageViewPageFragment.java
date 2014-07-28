@@ -18,6 +18,7 @@ public class ImageViewPageFragment extends Fragment {
 
     public ImageViewPageFragment() {
         // Required empty public constructor
+        setRetainInstance(true);
     }
 
 

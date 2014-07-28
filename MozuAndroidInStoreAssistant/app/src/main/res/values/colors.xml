@@ -14,5 +14,6 @@
     <color name="no_photo_color">#bbbebf</color>
     <color name="divider_black">#28000000</color>
     <color name="divider_white">#E0FFFFFF</color>
+    <color name="semi_transparent_image_view_background">#C8000000</color>
 
 </resources>

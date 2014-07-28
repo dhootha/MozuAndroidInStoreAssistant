@@ -5,6 +5,7 @@ import android.animation.TimeInterpolator;
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.ViewTreeObserver;
@@ -58,7 +59,19 @@ public class ImagePagerActivity extends Activity implements ViewTreeObserver.OnP
         mTopLevelLayout = (FrameLayout) findViewById(R.id.top_level_layout);
 
         mBackground = new ColorDrawable(Color.BLACK);
-        mTopLevelLayout.setBackground(mBackground);
+
+
+        if (Build.VERSION.SDK_INT >= 16) {
+            mTopLevelLayout.setBackground(mBackground);
+
+            // Fade in the black background
+            ObjectAnimator bgAnim = ObjectAnimator.ofInt(mBackground, "alpha", 0, 200);
+            bgAnim.setDuration(ANIM_DURATION);
+            bgAnim.start();
+        } else {
+            mTopLevelLayout.setBackgroundColor(getResources().getColor(R.color.semi_transparent_image_view_background));
+        }
+
 
         mPager = (ViewPager) findViewById(R.id.product_viewpager);
 
@@ -71,10 +84,10 @@ public class ImagePagerActivity extends Activity implements ViewTreeObserver.OnP
     }
 
     private void setupActivityFromInstanceOrIntent(Bundle savedInstanceState) {
-        if (getIntent() != null && getIntent().getStringArrayListExtra(IMAGE_URLS_FOR_PRODUCTS) != null) {
-            mImagesUrls = getIntent().getStringArrayListExtra(IMAGE_URLS_FOR_PRODUCTS);
-        } else if (savedInstanceState != null && savedInstanceState.getStringArrayList(IMAGE_URLS_FOR_PRODUCTS) != null) {
+        if (savedInstanceState != null && savedInstanceState.getStringArrayList(IMAGE_URLS_FOR_PRODUCTS) != null) {
             mImagesUrls = savedInstanceState.getStringArrayList(IMAGE_URLS_FOR_PRODUCTS);
+        } else if (getIntent() != null && getIntent().getStringArrayListExtra(IMAGE_URLS_FOR_PRODUCTS) != null) {
+            mImagesUrls = getIntent().getStringArrayListExtra(IMAGE_URLS_FOR_PRODUCTS);
         }
 
         if (getIntent() != null) {
@@ -86,7 +99,7 @@ public class ImagePagerActivity extends Activity implements ViewTreeObserver.OnP
         }
 
         //load animation related things for first launch
-        if (getIntent() != null) {
+        if (getIntent() != null && savedInstanceState == null) {
             mAnimStartLeft = getIntent().getIntExtra(ANIM_START_LEFT, 0);
             mAnimStartTop = getIntent().getIntExtra(ANIM_START_TOP, 0);
             mAnimStartWidth = getIntent().getIntExtra(ANIM_START_WIDTH, 0);
@@ -145,10 +158,5 @@ public class ImagePagerActivity extends Activity implements ViewTreeObserver.OnP
                 scaleX(1).scaleY(1).
                 translationX(0).translationY(0).
                 setInterpolator(sDecelerator);
-
-        // Fade in the black background
-        ObjectAnimator bgAnim = ObjectAnimator.ofInt(mBackground, "alpha", 0, 200);
-        bgAnim.setDuration(duration);
-        bgAnim.start();
     }
 }
