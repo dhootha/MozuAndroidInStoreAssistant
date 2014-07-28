@@ -15,6 +15,8 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
 
     private static final int ITEMS_PER_PAGE = 200;
 
+    public static final String FILTER_BY = "orderNumber eq ";
+
     private List<Order> mOrdersList;
     private Integer mTenantId;
     private Integer mSiteId;
@@ -23,6 +25,8 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
     private int mTotalPages;
 
     private boolean mIsLoading;
+
+    public String mFilter;
 
     public OrdersLoader(Context context, Integer tenantId, Integer siteId) {
         super(context);
@@ -33,7 +37,7 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
         init();
     }
 
-    private void init() {
+    public void init() {
         cancelLoad();
 
         mCurrentPage = 0;
@@ -113,7 +117,11 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
         OrderResource orderResource = new OrderResource(new MozuApiContext(mTenantId, mSiteId));
 
         try {
-            orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, null, null, null, null);
+            if (mFilter != null && !mFilter.equalsIgnoreCase("")) {
+                orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, null, FILTER_BY + mFilter, null, null);
+            } else {
+                orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, null, null, null, null);
+            }
 
             mTotalPages = orderCollection.getTotalCount() / ITEMS_PER_PAGE;
 
@@ -136,5 +144,13 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
     public boolean isLoading() {
 
         return mIsLoading;
+    }
+
+    public void setFilter(String filter) {
+        mFilter = filter;
+    }
+
+    public void removeFilter() {
+        mFilter = "";
     }
 }

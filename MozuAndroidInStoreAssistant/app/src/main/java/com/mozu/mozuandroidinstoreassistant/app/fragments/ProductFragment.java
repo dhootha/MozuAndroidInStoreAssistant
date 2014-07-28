@@ -204,10 +204,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
         mSearchMenuItem = menu.findItem(R.id.action_search);
         mSearchView = (SearchView) mSearchMenuItem.getActionView();
-
-        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
         mSearchView.setOnQueryTextListener(this);
-
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
     }
 
