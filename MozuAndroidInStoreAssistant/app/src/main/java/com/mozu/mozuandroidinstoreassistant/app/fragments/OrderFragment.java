@@ -44,6 +44,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
 
     public OrderFragment() {
 
+        setRetainInstance(true);
         setHasOptionsMenu(true);
     }
 
