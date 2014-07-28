@@ -113,20 +113,6 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.product_detail, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putString(PRODUCT_CODE_EXTRA_KEY, mProductCode);
         outState.putInt(CURRENT_TENANT_ID, mTenantId);

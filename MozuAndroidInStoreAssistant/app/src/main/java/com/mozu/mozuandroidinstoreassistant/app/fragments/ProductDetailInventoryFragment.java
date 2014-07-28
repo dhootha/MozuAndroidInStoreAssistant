@@ -35,6 +35,7 @@ public class ProductDetailInventoryFragment extends Fragment implements LoaderMa
 
     public ProductDetailInventoryFragment() {
         // Required empty public constructor
+        setRetainInstance(true);
     }
 
 

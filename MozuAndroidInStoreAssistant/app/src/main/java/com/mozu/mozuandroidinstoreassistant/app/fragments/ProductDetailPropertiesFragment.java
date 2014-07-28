@@ -19,6 +19,7 @@ public class ProductDetailPropertiesFragment extends Fragment {
 
     public ProductDetailPropertiesFragment() {
         // Required empty public constructor
+        setRetainInstance(true);
     }
 
 

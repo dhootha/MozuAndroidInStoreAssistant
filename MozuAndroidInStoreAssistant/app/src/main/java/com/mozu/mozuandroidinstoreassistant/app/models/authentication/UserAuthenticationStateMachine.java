@@ -140,7 +140,7 @@ public class UserAuthenticationStateMachine extends Observable implements Refres
     public UserPreferences getCurrentUsersPreferences() {
 
         for (UserPreferences prefs: mAllUsersPrefs) {
-            if (prefs != null && prefs.getEmail() != null && prefs.getEmail().equalsIgnoreCase(mAuthProfile.getUserProfile().getEmailAddress())) {
+            if (prefs != null && prefs.getEmail() != null && mAuthProfile != null && mAuthProfile.getUserProfile() != null && prefs.getEmail().equalsIgnoreCase(mAuthProfile.getUserProfile().getEmailAddress())) {
                 return prefs;
             }
         }
