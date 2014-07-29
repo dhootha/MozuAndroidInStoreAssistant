@@ -66,5 +66,10 @@
     <string name="order_list_order_total_header">Total</string>
     <string name="order_list_date_header">Date</string>
     <string name="order_list_order_email_header">Email</string>
+    <string name="fullfillment_tab_name">Fulfillment</string>
+    <string name="payment_tab_name">Payment</string>
+    <string name="returns_tab_name">Returns</string>
+    <string name="notes_tab_name">Notes</string>
+    <string name="title_activity_order_detail">OrderDetailActivity</string>
 
 </resources>

@@ -18,7 +18,7 @@
             android:layout_weight="1"
             android:padding="5dp"
             android:layout_margin="2dp"
-            android:background="@android:color/darker_gray"
+            android:background="@color/darker_grey"
             android:text="@string/weight_label"
             android:singleLine="true"/>
 
@@ -44,7 +44,7 @@
             android:layout_weight="1"
             android:padding="5dp"
             android:layout_margin="2dp"
-            android:background="@android:color/darker_gray"
+            android:background="@color/darker_grey"
             android:text="@string/meansurment_label"
             android:singleLine="true"/>
 

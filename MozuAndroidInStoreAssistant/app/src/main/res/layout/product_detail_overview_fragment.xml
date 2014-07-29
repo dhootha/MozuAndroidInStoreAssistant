@@ -139,7 +139,7 @@
                 android:layout_height="wrap_content"
                 android:padding="5dp"
                 android:layout_margin="2dp"
-                android:background="@android:color/darker_gray"
+                android:background="@color/darker_grey"
                 android:text="@string/upc_label"
                 android:singleLine="true"/>
 
@@ -148,7 +148,7 @@
                 android:layout_height="wrap_content"
                 android:padding="5dp"
                 android:layout_margin="2dp"
-                android:background="@android:color/darker_gray"
+                android:background="@color/darker_grey"
                 android:text="@string/pn_label"
                 android:singleLine="true"/>
 
@@ -157,7 +157,7 @@
                 android:layout_height="wrap_content"
                 android:padding="5dp"
                 android:layout_margin="2dp"
-                android:background="@android:color/darker_gray"
+                android:background="@color/darker_grey"
                 android:text="@string/distrpn_label"
                 android:singleLine="true"/>
 
@@ -206,7 +206,7 @@
                 android:layout_height="wrap_content"
                 android:padding="5dp"
                 android:layout_margin="2dp"
-                android:background="@android:color/darker_gray"
+                android:background="@color/darker_grey"
                 android:text="@string/taxable_label"
                 android:singleLine="true"/>
             <TextView
@@ -214,7 +214,7 @@
                 android:layout_height="wrap_content"
                 android:padding="5dp"
                 android:layout_margin="2dp"
-                android:background="@android:color/darker_gray"
+                android:background="@color/darker_grey"
                 android:text="@string/recurring_label"
                 android:singleLine="true"/>
 

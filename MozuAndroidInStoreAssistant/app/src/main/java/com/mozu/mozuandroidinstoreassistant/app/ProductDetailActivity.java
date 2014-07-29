@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,7 @@ import android.widget.TextView;
 
 import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.api.contracts.productruntime.ProductImage;
-import com.mozu.mozuandroidinstoreassistant.app.adapters.DetailSectionPagerAdapter;
+import com.mozu.mozuandroidinstoreassistant.app.adapters.ProductDetailSectionPagerAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.loaders.ProductDetailLoader;
 import com.mozu.mozuandroidinstoreassistant.app.models.ImageURLConverter;
 import com.squareup.picasso.Picasso;
@@ -104,9 +103,8 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
         mProductSectionViewPager = (ViewPager) findViewById(R.id.product_detail_sections_viewpager);
         mTabIndicator = (TabPageIndicator) findViewById(R.id.product_detail_sections);
 
-        DetailSectionPagerAdapter adapter = new DetailSectionPagerAdapter(getFragmentManager(), mProduct, mTitles, mTenantId, mSiteId);
+        ProductDetailSectionPagerAdapter adapter = new ProductDetailSectionPagerAdapter(getFragmentManager(), mProduct, mTitles, mTenantId, mSiteId);
         mProductSectionViewPager.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
 
         mTabIndicator.setViewPager(mProductSectionViewPager);
 
@@ -185,7 +183,7 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
 
         mMainImageView.setOnClickListener(this);
 
-        DetailSectionPagerAdapter adapter = new DetailSectionPagerAdapter(getFragmentManager(), mProduct, mTitles, mTenantId, mSiteId);
+        ProductDetailSectionPagerAdapter adapter = new ProductDetailSectionPagerAdapter(getFragmentManager(), mProduct, mTitles, mTenantId, mSiteId);
 
         mProductSectionViewPager.setAdapter(adapter);
         mTabIndicator.setViewPager(mProductSectionViewPager);
