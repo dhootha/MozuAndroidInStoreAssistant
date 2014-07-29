@@ -13,7 +13,7 @@ import com.mozu.mozuandroidinstoreassistant.app.fragments.ProductDetailShippingF
 
 import java.util.List;
 
-public class DetailSectionPagerAdapter extends FragmentStatePagerAdapter {
+public class ProductDetailSectionPagerAdapter extends FragmentStatePagerAdapter {
 
     public static final int NUM_OF_PRODUCT_DETAIL_TABS = 5;
     public static final int OVERVIEW_TAB_POSITION = 0;
@@ -28,7 +28,7 @@ public class DetailSectionPagerAdapter extends FragmentStatePagerAdapter {
     private int mTenantId;
     private int mSiteId;
 
-    public DetailSectionPagerAdapter(FragmentManager manager, Product product, List<String> pageTitles, int tenantId, int siteId) {
+    public ProductDetailSectionPagerAdapter(FragmentManager manager, Product product, List<String> pageTitles, int tenantId, int siteId) {
         super(manager);
 
         mProduct = product;

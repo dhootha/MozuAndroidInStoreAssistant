@@ -50,6 +50,11 @@
             android:theme="@style/Transparent"
             android:launchMode="singleInstance">
         </activity>
+        <activity
+            android:name=".OrderDetailActivity"
+            android:label="@string/title_activity_order_detail">
+
+        </activity>
     </application>
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->

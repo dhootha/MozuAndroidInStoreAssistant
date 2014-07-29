@@ -13,11 +13,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.productruntime.Category;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.CategoryFragment;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.CategoryFragmentListener;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.CustomersFragment;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.OrderFragment;
+import com.mozu.mozuandroidinstoreassistant.app.fragments.OrderListener;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.ProductFragment;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.ProductFragmentListener;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.ProductListListener;
@@ -26,7 +28,7 @@ import com.mozu.mozuandroidinstoreassistant.app.fragments.SearchFragment;
 import com.mozu.mozuandroidinstoreassistant.app.models.UserPreferences;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 
-public class MainActivity extends Activity implements View.OnClickListener, CategoryFragmentListener, ProductFragmentListener, ProductListListener {
+public class MainActivity extends Activity implements View.OnClickListener, CategoryFragmentListener, ProductFragmentListener, ProductListListener, OrderListener {
 
     private static final String CATEGORY_FRAGMENT = "category_fragment_taggy_tag_tag";
     private static final String SEARCH_FRAGMENT = "search_fragment_taggy_tag_tag";
@@ -233,6 +235,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Cate
         OrderFragment fragment = new OrderFragment();
         fragment.setTenantId(Integer.parseInt(prefs.getDefaultTenantId()));
         fragment.setSiteId(Integer.parseInt(prefs.getDefaultSiteId()));
+        fragment.setListener(this);
         fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out);
         fragmentTransaction.replace(R.id.content_fragment_holder, fragment);
         fragmentTransaction.commit();
@@ -344,5 +347,18 @@ public class MainActivity extends Activity implements View.OnClickListener, Cate
         outState.putInt(CURRENTLY_SELECTED_NAV_VIEW_ID, mCurrentlySelectedNavItem);
 
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void orderSelected(Order order) {
+        UserPreferences prefs = UserAuthenticationStateMachineProducer.getInstance(this).getCurrentUsersPreferences();
+
+        Intent intent = new Intent(this, OrderDetailActivity.class);
+
+        intent.putExtra(OrderDetailActivity.ORDER_NUMBER_EXTRA_KEY, order.getId());
+        intent.putExtra(OrderDetailActivity.CURRENT_TENANT_ID, Integer.parseInt(prefs.getDefaultTenantId()));
+        intent.putExtra(OrderDetailActivity.CURRENT_SITE_ID, Integer.parseInt(prefs.getDefaultSiteId()));
+
+        startActivity(intent);
     }
 }

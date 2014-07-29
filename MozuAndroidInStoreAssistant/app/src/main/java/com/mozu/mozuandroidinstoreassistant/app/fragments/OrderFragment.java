@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
@@ -24,7 +25,7 @@ import com.mozu.mozuandroidinstoreassistant.app.loaders.OrdersLoader;
 
 import java.util.List;
 
-public class OrderFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Order>>, AbsListView.OnScrollListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, SearchManager.OnCancelListener, SearchManager.OnDismissListener, MenuItem.OnActionExpandListener {
+public class OrderFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Order>>, AbsListView.OnScrollListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, SearchManager.OnCancelListener, SearchManager.OnDismissListener, MenuItem.OnActionExpandListener, AdapterView.OnItemClickListener {
 
     private static final int LOADER_ORDERS = 523;
 
@@ -41,6 +42,8 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
     private SearchView mSearchView;
 
     private MenuItem mSearchMenuItem;
+
+    private OrderListener mListener;
 
     public OrderFragment() {
 
@@ -60,6 +63,8 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         mProgress.setVisibility(View.VISIBLE);
 
         getLoaderManager().initLoader(LOADER_ORDERS, null, this).forceLoad();
+
+        mOrdersList.setOnItemClickListener(this);
 
         return view;
     }
@@ -207,5 +212,14 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         clearSearchReload();
 
         return true;
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        mListener.orderSelected((Order) parent.getAdapter().getItem(position));
+    }
+
+    public void setListener(OrderListener listener) {
+        mListener = listener;
     }
 }
