@@ -78,6 +78,8 @@ public class OrderDetailSectionPagerAdapter extends FragmentStatePagerAdapter {
             case RETURNS_TABS_POSITION:
                 OrderDetailReturnsFragment returnsFragment = new OrderDetailReturnsFragment();
                 returnsFragment.setOrder(mOrder);
+                returnsFragment.setSiteId(mSiteId);
+                returnsFragment.setTenantId(mTenantId);
 
                 return returnsFragment;
 

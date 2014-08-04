@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.mozuandroidinstoreassistant.app.R;
+import com.mozu.mozuandroidinstoreassistant.app.adapters.OrderDetailNotesAdapter;
 
 
 public class OrderDetailNotesFragment extends Fragment {
@@ -32,6 +34,10 @@ public class OrderDetailNotesFragment extends Fragment {
     }
 
     private void setOrderToViews(View view) {
+
+        ListView noteList = (ListView) view.findViewById(R.id.notes_list);
+
+        noteList.setAdapter(new OrderDetailNotesAdapter(getActivity(), mOrder.getNotes()));
 
     }
 

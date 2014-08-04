@@ -143,7 +143,7 @@ public class OrderDetailActivity extends Activity implements LoaderManager.Loade
         mOrderName.setText(mOrder.getEmail());
         mOrderStatus.setText(mOrder.getStatus());
 
-        mOrderTotal.setText(mNumberFormat.format(mOrder.getTotal()));
+        mOrderTotal.setText(mNumberFormat.format(mOrder.getTotal() != null ? mOrder.getTotal() : 0));
 
         OrderDetailSectionPagerAdapter adapter = new OrderDetailSectionPagerAdapter(getFragmentManager(), mOrder, mTitles, mTenantId, mSiteId);
 

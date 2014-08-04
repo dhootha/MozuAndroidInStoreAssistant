@@ -45,6 +45,8 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
 
         mIsLoading = false;
 
+        mFilter = "";
+
         mOrdersList = new ArrayList<Order>();
     }
 
@@ -105,6 +107,8 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
         onStopLoading();
 
         mOrdersList = null;
+
+        init();
 
         super.onReset();
     }

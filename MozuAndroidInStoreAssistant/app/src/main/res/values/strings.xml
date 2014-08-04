@@ -71,5 +71,23 @@
     <string name="returns_tab_name">Returns</string>
     <string name="notes_tab_name">Notes</string>
     <string name="title_activity_order_detail">OrderDetailActivity</string>
+    <string name="blank_for_alignment">Blank For Alignment</string>
+    <string name="payments_header">Payments</string>
+    <string name="order_total">ORDER TOTAL</string>
+    <string name="payments_received">RECEIVED</string>
+    <string name="balance">BALANCE</string>
+    <string name="returns_header">Returned Items</string>
+    <string name="replaced_total">REPLACED</string>
+    <string name="refunded_total">REFUNDED</string>
+    <string name="total_returned_items">TOTAL</string>
+    <string name="date_return_header">Date</string>
+    <string name="code_return_header">Code</string>
+    <string name="product_return_header">Product</string>
+    <string name="price_return_header">Price</string>
+    <string name="type_return_header">Type</string>
+    <string name="quantity_return_header">Quantity</string>
+    <string name="notes_header">Customer Notes</string>
+    <string name="date_notes_header">Date</string>
+    <string name="comment_notes_header">Comment</string>
 
 </resources>
