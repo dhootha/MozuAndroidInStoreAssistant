@@ -155,9 +155,10 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        getOrdersLoader().setFilter(query);
+
         getOrdersLoader().reset();
         getOrdersLoader().init();
+        getOrdersLoader().setFilter(query);
         getOrdersLoader().startLoading();
         getOrdersLoader().forceLoad();
 
@@ -216,7 +217,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        mListener.orderSelected((Order) parent.getAdapter().getItem(position));
+        mListener.orderSelected((Order)mOrdersList.getAdapter().getItem(position));
     }
 
     public void setListener(OrderListener listener) {
