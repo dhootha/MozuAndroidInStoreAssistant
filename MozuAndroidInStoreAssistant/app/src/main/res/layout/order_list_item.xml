@@ -6,7 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
+    android:background="@android:color/transparent"
     android:minHeight="?android:attr/listPreferredItemHeight">
+
+    <ImageView
+        android:id="@+id/order_image"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:src="@drawable/icon_order_circle"
+        android:layout_weight=".3"/>
 
     <TextView
         android:id="@+id/order_number"
@@ -31,6 +40,7 @@
         android:id="@+id/order_status"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:textStyle="bold"
         android:layout_weight=".5"/>
 
     <TextView
@@ -41,6 +51,6 @@
         android:gravity="right"
         android:textStyle="bold"
         android:textColor="@color/mozu_color"
-        android:layout_marginRight="5dp"/>
+        android:layout_marginRight="15dp"/>
 
 </LinearLayout>

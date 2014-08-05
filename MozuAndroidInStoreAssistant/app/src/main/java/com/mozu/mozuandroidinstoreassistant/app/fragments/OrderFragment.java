@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
@@ -33,7 +34,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
     private int mSiteId;
 
     private ListView mOrdersList;
-    private ProgressBar mProgress;
+    private LinearLayout mProgress;
 
     private OrdersLoader mOrdersLoader;
 
@@ -57,7 +58,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         View view = inflater.inflate(R.layout.fragment_order, container, false);
 
         mOrdersList = (ListView) view.findViewById(R.id.order_list);
-        mProgress = (ProgressBar) view.findViewById(R.id.order_list_progress);
+        mProgress = (LinearLayout) view.findViewById(R.id.order_list_progress);
 
         mOrdersList.setVisibility(View.GONE);
         mProgress.setVisibility(View.VISIBLE);

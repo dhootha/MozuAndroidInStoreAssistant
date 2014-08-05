@@ -89,5 +89,12 @@
     <string name="notes_header">Customer Notes</string>
     <string name="date_notes_header">Date</string>
     <string name="comment_notes_header">Comment</string>
+    <string name="ordered_items_header">Ordered Items</string>
+    <string name="order_item_code_header">Code</string>
+    <string name="order_item_product_header">Product</string>
+    <string name="order_item_price_header">Price</string>
+    <string name="order_item_quantity_header">Quantity</string>
+    <string name="order_item_total_header">Total</string>
+    <string name="total_order_detail_overview">Total:</string>
 
 </resources>
