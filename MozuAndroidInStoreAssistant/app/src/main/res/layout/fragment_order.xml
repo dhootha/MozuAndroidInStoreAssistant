@@ -4,16 +4,19 @@
     android:layout_height="match_parent"
     android:background="@color/main_background"
     android:orientation="vertical"
-    android:layout_marginLeft="40dp"
-    android:layout_marginRight="40dp"
+    android:layout_marginLeft="0dp"
+    android:layout_marginRight="0dp"
     tools:context="com.mozu.mozuandroidinstoreassistant.app.fragments.OrderFragment">
 
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="120dp"
-        android:textSize="40sp"
-        android:gravity="center_vertical"
+        android:textSize="45sp"
+        android:layout_marginLeft="35dp"
+        android:layout_marginBottom="30dp"
+        android:gravity="bottom"
         android:text="@string/menu_orders_text"
+        android:textStyle="bold"
         android:fontFamily="sans-serif-light"/>
 
     <LinearLayout
@@ -22,6 +25,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp">
+
+        <ImageView
+            android:id="@+id/order_image"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:layout_weight=".3"/>
 
         <TextView
             android:layout_width="0dp"
@@ -63,28 +73,37 @@
             android:textStyle="bold"
             android:textColor="@android:color/darker_gray"
             android:text="@string/order_list_order_total_header"
-            android:layout_marginRight="5dp" />
+            android:layout_marginRight="15dp" />
 
     </LinearLayout>
 
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@color/divider_black" />
+    <!--<View-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:background="@color/divider_black" />-->
 
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@color/divider_white" />
+    <!--<View-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:background="@color/divider_white" />-->
 
-    <ProgressBar
+    <LinearLayout
         android:id="@+id/order_list_progress"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_gravity="center"
-        android:visibility="visible" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:visibility="visible"
+        android:gravity="center">
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:background="@android:color/transparent"
+            />
+
+    </LinearLayout>
 
     <ListView
         android:id="@+id/order_list"
@@ -92,6 +111,7 @@
         android:layout_height="wrap_content"
         android:dividerHeight="0dp"
         android:scrollbars="none"
+        android:background="@android:color/white"
         android:divider="@android:color/transparent"
         android:visibility="gone"/>
 

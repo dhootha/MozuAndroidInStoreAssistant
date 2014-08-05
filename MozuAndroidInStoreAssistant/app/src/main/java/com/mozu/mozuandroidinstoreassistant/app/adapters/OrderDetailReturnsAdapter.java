@@ -7,8 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.mozu.api.contracts.commerceruntime.payments.Payment;
-import com.mozu.api.contracts.commerceruntime.returns.Return;
 import com.mozu.api.contracts.commerceruntime.returns.ReturnItem;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.models.ReturnItemForAdapterWrapper;
@@ -52,7 +50,7 @@ public class OrderDetailReturnsAdapter extends ArrayAdapter<ReturnItemForAdapter
         TextView returnQuantity = (TextView) convertView.findViewById(R.id.return_quantity);
 
         android.text.format.DateFormat dateFormat= new android.text.format.DateFormat();
-        String dateString = date != null ? dateFormat.format("MM/dd/yy  hh:mm a", new Date(date.getMillis())).toString() : "";
+        String dateString = date != null ? dateFormat.format("MM/dd/yy", new Date(date.getMillis())).toString() : "";
         returnDate.setText(dateString);
 
         if (returnItem.getProduct() != null) {

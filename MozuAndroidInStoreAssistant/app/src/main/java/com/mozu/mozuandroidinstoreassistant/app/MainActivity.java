@@ -52,7 +52,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Cate
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
 
-    private boolean mWasCreatedInPortrait = false;
+    //private boolean mWasCreatedInPortrait = false;
 
     private int mCurrentlySelectedNavItem;
 
@@ -85,15 +85,12 @@ public class MainActivity extends Activity implements View.OnClickListener, Cate
             updateNavView(savedInstanceState.getInt(CURRENTLY_SELECTED_NAV_VIEW_ID, R.id.menu_products_layout));
         }
 
-        mWasCreatedInPortrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT || findViewById(R.id.tablet_landscape) == null;
+        //mWasCreatedInPortrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
 
-        if (mWasCreatedInPortrait) {
-            setupLayoutForPortrait();
-        }
-
+        setupDrawer();
     }
 
-    private void setupLayoutForPortrait() {
+    private void setupDrawer() {
         //holder, will show whatever fragment is in main content area
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
@@ -127,9 +124,9 @@ public class MainActivity extends Activity implements View.OnClickListener, Cate
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
-        if (mWasCreatedInPortrait) {
+        //if (mWasCreatedInPortrait) {
             mDrawerToggle.syncState();
-        }
+        //}
     }
 
     @Override
@@ -189,7 +186,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Cate
             getActionBar().setTitle(R.string.menu_products_text);
             mProductsLayout.setSelected(true);
         } else if (viewId == R.id.menu_orders_layout) {
-            getActionBar().setTitle(R.string.menu_orders_text);
+            getActionBar().setTitle("");
             mOrdersLayout.setSelected(true);
         } else if (viewId == R.id.menu_customers_layout) {
             getActionBar().setTitle(R.string.menu_customers_text);

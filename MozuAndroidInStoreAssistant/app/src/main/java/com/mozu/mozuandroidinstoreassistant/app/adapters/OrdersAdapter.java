@@ -1,14 +1,19 @@
 package com.mozu.mozuandroidinstoreassistant.app.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.mozuandroidinstoreassistant.app.R;
+import com.mozu.mozuandroidinstoreassistant.app.views.CircularDrawable;
 
 import java.text.NumberFormat;
 import java.util.Date;
