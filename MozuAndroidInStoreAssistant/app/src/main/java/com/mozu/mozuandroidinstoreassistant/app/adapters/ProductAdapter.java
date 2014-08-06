@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.models.ImageURLConverter;
+import com.mozu.mozuandroidinstoreassistant.app.views.CropSquareTransformation;
 import com.mozu.mozuandroidinstoreassistant.app.views.RoundedTransformation;
 import com.squareup.picasso.Picasso;
 
@@ -67,6 +68,7 @@ public class ProductAdapter extends ArrayAdapter<Product> {
                 Picasso.with(getContext())
                         .load(mUrlConverter.getFullImageUrl(product.getContent().getProductImages().get(0).getImageUrl()))
                         .placeholder(R.drawable.icon_noproductphoto)
+                        .fit().centerCrop()
                         .into(productImageView);
             } else {
 
@@ -74,6 +76,7 @@ public class ProductAdapter extends ArrayAdapter<Product> {
                         .load(mUrlConverter.getFullImageUrl(product.getContent().getProductImages().get(0).getImageUrl()))
                         .transform(new RoundedTransformation())
                         .placeholder(R.drawable.icon_noproductphoto)
+                        .fit().centerCrop()
                         .into(productImageView);
             }
         }

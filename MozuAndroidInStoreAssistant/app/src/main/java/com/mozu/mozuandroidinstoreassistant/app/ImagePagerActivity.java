@@ -1,5 +1,6 @@
 package com.mozu.mozuandroidinstoreassistant.app;
 
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.app.Activity;
@@ -9,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.ViewTreeObserver;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 
@@ -20,6 +22,8 @@ import java.util.ArrayList;
 public class ImagePagerActivity extends Activity implements ViewTreeObserver.OnPreDrawListener {
 
     private static final TimeInterpolator sDecelerator = new DecelerateInterpolator();
+    private static final TimeInterpolator sAccelerator = new AccelerateInterpolator();
+
     private static final int ANIM_DURATION = 250;
 
     public static final String IMAGE_URLS_FOR_PRODUCTS = "IMAGE_URLS_FOR_PRODUCTS";
@@ -81,6 +85,23 @@ public class ImagePagerActivity extends Activity implements ViewTreeObserver.OnP
         mPager.setAdapter(mPagerAdapter);
         mPager.setCurrentItem(mIndex);
         mPager.setPageTransformer(true, new ZoomOutPageTransformer());
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+
+        overridePendingTransition(0, 0);
+    }
+
+    @Override
+    public void onBackPressed() {
+        runExitAnimation(new Runnable() {
+            public void run() {
+                // *Now* go ahead and exit the activity
+                finish();
+            }
+        });
     }
 
     private void setupActivityFromInstanceOrIntent(Bundle savedInstanceState) {
@@ -159,4 +180,43 @@ public class ImagePagerActivity extends Activity implements ViewTreeObserver.OnP
                 translationX(0).translationY(0).
                 setInterpolator(sDecelerator);
     }
+
+    public void runExitAnimation(final Runnable endAction) {
+
+        final long duration = (long) ANIM_DURATION;
+
+        mPager.setPivotX(mPager.getWidth() / 2);
+        mPager.setPivotY(mPager.getHeight() / 2);
+        mLeftDelta = 0;
+        mTopDelta = 0;
+
+        mPager.animate().setDuration(duration).
+                scaleX(mWidthScale).scaleY(mHeightScale).
+                translationX(mLeftDelta).translationY(mTopDelta).
+                setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        endAction.run();
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+                        endAction.run();
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
+
+
+        mPager.animate().alpha(0);
+    }
+
 }

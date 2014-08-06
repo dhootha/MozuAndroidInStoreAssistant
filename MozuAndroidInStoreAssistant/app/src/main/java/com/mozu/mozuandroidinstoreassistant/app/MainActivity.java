@@ -75,8 +75,8 @@ public class MainActivity extends Activity implements View.OnClickListener, Cate
         mCustomersLayout.setOnClickListener(this);
 
         getActionBar().setTitle(R.string.menu_products_text);
-        getActionBar().setIcon(getResources().getColor(android.R.color.transparent));
-        getActionBar().setLogo(getResources().getColor(android.R.color.transparent));
+        getActionBar().setIcon(getResources().getDrawable(android.R.color.transparent));
+        getActionBar().setLogo(getResources().getDrawable(android.R.color.transparent));
         getActionBar().setDisplayUseLogoEnabled(false);
         mProductsLayout.setSelected(true);
 
