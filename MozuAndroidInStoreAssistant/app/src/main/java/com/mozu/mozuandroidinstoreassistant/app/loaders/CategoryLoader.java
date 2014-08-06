@@ -92,7 +92,6 @@ public class CategoryLoader extends InternetConnectedAsyncTaskLoader<List<Catego
 
             allCategories = categoryPagedCollection.getItems();
 
-            allCategories.get(0).getContent().getCategoryImages()
         } catch (Exception e) {
 
             Crashlytics.logException(e);
