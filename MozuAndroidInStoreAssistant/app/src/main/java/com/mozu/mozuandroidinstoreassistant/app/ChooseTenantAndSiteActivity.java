@@ -20,6 +20,9 @@ import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthen
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.tasks.RetrieveTenantAsyncTask;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -101,11 +104,43 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
 
             List<Scope> tenants = mUserAuthStateMachine.getAuthProfile().getAuthorizedScopes();
 
+            Collections.sort(tenants, new ScopeComparator());
+
             mTenantFragment = new TenantFragment();
             mTenantFragment.setTenants(tenants);
             mTenantFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogMozu);
             mTenantFragment.show(getFragmentManager(), TENANT_FRAGMENT_TAG);
         }
+    }
+
+    private class ScopeComparator implements Comparator<Scope> {
+
+        @Override
+        public int compare(Scope lhs, Scope rhs) {
+
+            return lhs.getName().compareTo(rhs.getName());
+        }
+
+        @Override
+        public boolean equals(Object object) {
+            return false;
+        }
+
+    }
+
+    private class SiteComparator implements Comparator<Site> {
+
+        @Override
+        public int compare(Site lhs, Site rhs) {
+
+            return lhs.getName().compareTo(rhs.getName());
+        }
+
+        @Override
+        public boolean equals(Object object) {
+            return false;
+        }
+
     }
 
     private void showSiteChooser(List<Site> sites) {
@@ -123,6 +158,9 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
 
         if (mSiteFragment == null) {
             mSiteFragment = new SiteFragment();
+
+            Collections.sort(sites, new SiteComparator());
+
             mSiteFragment.setSites(sites);
             mSiteFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogMozu);
             mSiteFragment.show(getFragmentManager(), SITE_FRAGMENT_TAG);
@@ -166,6 +204,10 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
     @Override
     public void siteWasChosen(Site chosenSite) {
         mUserAuthStateMachine.setCurrentSite(chosenSite);
+
+        if (mSiteFragment != null) {
+            mSiteFragment.dismiss();
+        }
 
         showAskToSetDefaultDialog();
     }

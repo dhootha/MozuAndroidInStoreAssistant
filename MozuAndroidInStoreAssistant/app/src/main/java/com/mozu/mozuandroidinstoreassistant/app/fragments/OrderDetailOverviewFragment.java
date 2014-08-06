@@ -76,6 +76,8 @@ public class OrderDetailOverviewFragment extends Fragment {
                 quantity.setText(N_A);
                 total.setText(N_A);
 
+                mOrderedItemLayout.addView(view);
+
                 continue;
             }
 
