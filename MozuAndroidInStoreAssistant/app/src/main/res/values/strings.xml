@@ -96,5 +96,12 @@
     <string name="order_item_quantity_header">Quantity</string>
     <string name="order_item_total_header">Total</string>
     <string name="total_order_detail_overview">Total:</string>
+    <string name="items_total_detail_overview">Items Total:</string>
+    <string name="discounts_detail_overview">Discounts:</string>
+    <string name="coupons_detail_overview">Coupons</string>
+    <string name="subtotal_detail_overview">Sub-Total:</string>
+    <string name="shipping_detail_overview">Shipping</string>
+    <string name="shipping_discounts_detail_overview">Shipping Discounts:</string>
+    <string name="tax_detail_overview">Tax:</string>
 
 </resources>

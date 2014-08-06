@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.mozu.api.contracts.commerceruntime.discounts.ShippingDiscount;
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.commerceruntime.orders.OrderItem;
 import com.mozu.api.contracts.commerceruntime.products.Product;
@@ -17,12 +19,23 @@ import java.text.NumberFormat;
 import java.util.List;
 
 
-public class OrderDetailOverviewFragment extends Fragment {
+public class OrderDetailOverviewFragment extends Fragment implements View.OnClickListener {
 
     public static final String N_A = "N/A";
     private Order mOrder;
 
     private LinearLayout mOrderedItemLayout;
+    private LinearLayout mDetailLayout;
+
+    private TextView mItemsTotal;
+    private TextView mDiscounts;
+    private TextView mCoupons;
+    private TextView mSubTotal;
+    private TextView mShipping;
+    private TextView mShippingDiscounts;
+    private TextView mTax;
+
+    private ImageView mToggleDetailsView;
 
     private NumberFormat mNumberFormat;
 
@@ -38,6 +51,20 @@ public class OrderDetailOverviewFragment extends Fragment {
         View view = inflater.inflate(R.layout.order_detail_overview_fragment, null);
 
         mOrderedItemLayout = (LinearLayout) view.findViewById(R.id.layout_to_add_ordered_items_to);
+        mDetailLayout = (LinearLayout) view.findViewById(R.id.detail_layout);
+
+        mDetailLayout.setVisibility(View.GONE);
+
+        mItemsTotal = (TextView) view.findViewById(R.id.items_total);
+        mDiscounts = (TextView) view.findViewById(R.id.discounts);
+        mCoupons = (TextView) view.findViewById(R.id.coupons);
+        mSubTotal = (TextView) view.findViewById(R.id.sub_total);
+        mShipping = (TextView) view.findViewById(R.id.shipping_total);
+        mShippingDiscounts = (TextView) view.findViewById(R.id.shipping_discounts_total);
+        mTax = (TextView) view.findViewById(R.id.tax_total);
+
+        mToggleDetailsView = (ImageView) view.findViewById(R.id.toggle_details_view);
+        mToggleDetailsView.setOnClickListener(this);
 
         if (mOrder != null) {
             setOrderToViews(view);
@@ -53,8 +80,29 @@ public class OrderDetailOverviewFragment extends Fragment {
         TextView total = (TextView) view.findViewById(R.id.order_overview_total);
         total.setText(mNumberFormat.format(mOrder.getTotal()));
 
-    }
+        mItemsTotal.setText(mOrder.getTotal() != null ? mNumberFormat.format(mOrder.getTotal()) : "N/A");
+        mDiscounts.setText(mOrder.getDiscountTotal() != null ? mNumberFormat.format(mOrder.getDiscountTotal()) : "N/A");
+        mCoupons.setText("N/A");
+        mSubTotal.setText(mOrder.getSubtotal() != null ? mNumberFormat.format(mOrder.getSubtotal()) : "N/A");
+        mShipping.setText(mOrder.getShippingSubTotal() != null ? mNumberFormat.format(mOrder.getShippingSubTotal()) : "N/A");
 
+        if (mOrder.getShippingDiscounts() != null) {
+            Double shippingDiscountTotal = 0d;
+
+            for (ShippingDiscount discount : mOrder.getShippingDiscounts()) {
+                if (discount.getDiscount() != null) {
+                    shippingDiscountTotal += discount.getDiscount().getImpact();
+                }
+            }
+
+            mShippingDiscounts.setText(mNumberFormat.format(shippingDiscountTotal));
+
+        } else {
+            mShippingDiscounts.setText("N/A");
+        }
+
+        mTax.setText(mOrder.getTaxTotal() != null ? mNumberFormat.format(mOrder.getTaxTotal()) : "N/A");
+    }
 
     private void addOrderedItemLayoutsToView(List<OrderItem> items) {
 
@@ -97,4 +145,16 @@ public class OrderDetailOverviewFragment extends Fragment {
     }
 
 
+    @Override
+    public void onClick(View v) {
+
+        if (mToggleDetailsView.getId() == v.getId()) {
+            if (mDetailLayout.getVisibility() == View.GONE) {
+                mDetailLayout.setVisibility(View.VISIBLE);
+            } else {
+                mDetailLayout.setVisibility(View.GONE);
+            }
+        }
+
+    }
 }
