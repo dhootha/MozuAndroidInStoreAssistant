@@ -75,7 +75,9 @@ public class MainActivity extends Activity implements View.OnClickListener, Cate
         mCustomersLayout.setOnClickListener(this);
 
         getActionBar().setTitle(R.string.menu_products_text);
-        getActionBar().setIcon(R.drawable.logo_actionbar);
+        getActionBar().setIcon(getResources().getColor(android.R.color.transparent));
+        getActionBar().setLogo(getResources().getColor(android.R.color.transparent));
+        getActionBar().setDisplayUseLogoEnabled(false);
         mProductsLayout.setSelected(true);
 
         if (savedInstanceState == null) {
@@ -186,7 +188,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Cate
             getActionBar().setTitle(R.string.menu_products_text);
             mProductsLayout.setSelected(true);
         } else if (viewId == R.id.menu_orders_layout) {
-            getActionBar().setTitle("");
+            getActionBar().setTitle(R.string.menu_orders_text);
             mOrdersLayout.setSelected(true);
         } else if (viewId == R.id.menu_customers_layout) {
             getActionBar().setTitle(R.string.menu_customers_text);

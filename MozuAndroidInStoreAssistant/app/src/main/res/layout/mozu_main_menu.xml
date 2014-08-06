@@ -4,13 +4,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scrollbars="none"
-    android:background="@color/main_background"
+    android:background="@android:color/white"
     tools:showIn="@layout/activity_main">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:background="@drawable/login_bg"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:scaleType="center"
+                android:layout_margin="10dp"
+                android:src="@drawable/logo_menu"/>
+
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/menu_search_layout"
@@ -46,7 +62,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/menu_search_text"
-                    android:textSize="@dimen/menu_text_size" />
+                    android:textSize="@dimen/menu_text_size"
+                    android:fontFamily="sans-serif-medium" />
 
             </LinearLayout>
 
