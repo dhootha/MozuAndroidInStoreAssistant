@@ -162,7 +162,7 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
         if (mImages != null && mProduct.getContent().getProductImages().size() > 0) {
             Picasso.with(this)
                     .load(mImageUrlConverter.getFullImageUrl(mProduct.getContent().getProductImages().get(0).getImageUrl()))
-                    .fit()
+                    .fit().centerCrop()
                     .into(mMainImageView);
         }
 
@@ -236,6 +236,7 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
 
             Picasso.with(this)
                     .load(mImageUrlConverter.getFullImageUrl(mProduct.getContent().getProductImages().get(firstImagePosition).getImageUrl()))
+                    .fit().centerCrop()
                     .into(imageViewTop);
 
             if (productImageList.size() > secondImagePosition) {
@@ -257,6 +258,7 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
 
                 Picasso.with(this)
                         .load(mImageUrlConverter.getFullImageUrl(mProduct.getContent().getProductImages().get(secondImagePosition).getImageUrl()))
+                        .fit().centerCrop()
                         .into(imageViewBottom);
             }
 
@@ -306,6 +308,7 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
 
             Picasso.with(this)
                     .load(mImageUrlConverter.getFullImageUrl(mProduct.getContent().getProductImages().get(firstImagePosition).getImageUrl()))
+                    .fit().centerCrop()
                     .into(imageViewTop);
 
             if (productImageList.size() > secondImagePosition) {
@@ -327,6 +330,7 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
 
                 Picasso.with(this)
                         .load(mImageUrlConverter.getFullImageUrl(mProduct.getContent().getProductImages().get(secondImagePosition).getImageUrl()))
+                        .fit().centerCrop()
                         .into(imageViewBottom);
             }
 
