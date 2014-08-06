@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.crashlytics.android.Crashlytics;
 import com.mozu.api.MozuApiContext;
+import com.mozu.api.clients.commerce.catalog.admin.CategoryClient;
 import com.mozu.api.contracts.productruntime.Category;
 import com.mozu.api.contracts.productruntime.CategoryCollection;
 import com.mozu.api.resources.commerce.catalog.storefront.CategoryResource;
@@ -90,6 +91,8 @@ public class CategoryLoader extends InternetConnectedAsyncTaskLoader<List<Catego
             categoryPagedCollection = categoryResource.getCategoryTree();
 
             allCategories = categoryPagedCollection.getItems();
+
+            allCategories.get(0).getContent().getCategoryImages()
         } catch (Exception e) {
 
             Crashlytics.logException(e);
