@@ -24,7 +24,7 @@ public class OrderDetailPackageAdapter extends ArrayAdapter<Package> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.returns_list_item, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.package_list_item, parent, false);
         }
 
         Package orderPackage = getItem(position);
@@ -33,7 +33,7 @@ public class OrderDetailPackageAdapter extends ArrayAdapter<Package> {
         TextView numOfItems = (TextView) convertView.findViewById(R.id.num_of_items);
         TextView trackingNumber = (TextView) convertView.findViewById(R.id.tracking_number);
 
-        packageName.setText("Package #" + String.valueOf(position));
+        packageName.setText("Package #" + String.valueOf(position + 1));
 
         if (orderPackage.getItems() != null) {
             numOfItems.setText(String.valueOf(orderPackage.getItems().size()));
