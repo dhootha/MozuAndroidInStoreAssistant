@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.mozu.api.contracts.commerceruntime.fulfillment.*;
@@ -12,6 +13,7 @@ import com.mozu.api.contracts.commerceruntime.fulfillment.Package;
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.commerceruntime.orders.OrderItem;
 import com.mozu.mozuandroidinstoreassistant.app.R;
+import com.mozu.mozuandroidinstoreassistant.app.adapters.OrderDetailPackageAdapter;
 
 
 public class OrderDetailFullfillmentFragment extends Fragment {
@@ -23,6 +25,8 @@ public class OrderDetailFullfillmentFragment extends Fragment {
     private TextView mPendingTotal;
     private TextView mFulfilledTotal;
     private TextView mShipmentTotal;
+
+    private ListView mPackageListView;
 
     public OrderDetailFullfillmentFragment() {
         // Required empty public constructor
@@ -37,6 +41,8 @@ public class OrderDetailFullfillmentFragment extends Fragment {
         mPendingTotal = (TextView) view.findViewById(R.id.shipment_pending_total);
         mFulfilledTotal = (TextView) view.findViewById(R.id.shipment_fulfilled_total);
         mShipmentTotal = (TextView) view.findViewById(R.id.shipment_total);
+
+        mPackageListView = (ListView) view.findViewById(R.id.shipment_list);
 
         if (mOrder != null) {
             setOrderToViews(view);
@@ -68,6 +74,7 @@ public class OrderDetailFullfillmentFragment extends Fragment {
         mFulfilledTotal.setText(String.valueOf(fulfilledCount));
         mShipmentTotal.setText(String.valueOf(pendingCount + fulfilledCount));
 
+        mPackageListView.setAdapter(new OrderDetailPackageAdapter(getActivity(), mOrder.getPackages()));
     }
 
 
