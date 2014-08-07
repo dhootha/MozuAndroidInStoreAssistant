@@ -20,6 +20,7 @@ import com.mozu.api.contracts.productruntime.ProductImage;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.ProductDetailSectionPagerAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.loaders.ProductDetailLoader;
 import com.mozu.mozuandroidinstoreassistant.app.models.ImageURLConverter;
+import com.mozu.mozuandroidinstoreassistant.app.views.HeightWrappingViewPager;
 import com.squareup.picasso.Picasso;
 import com.viewpagerindicator.TabPageIndicator;
 
@@ -56,7 +57,7 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
     private HorizontalScrollView mHorizontalScrollView;
     private ScrollView mVerticalScrollView;
 
-    private ViewPager mProductSectionViewPager;
+    private HeightWrappingViewPager mProductSectionViewPager;
 
     private TabPageIndicator mTabIndicator;
 
@@ -100,7 +101,7 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
         mTitles.add(getString(R.string.shipping_tab_name));
         mTitles.add(getString(R.string.inventory_tab_name));
 
-        mProductSectionViewPager = (ViewPager) findViewById(R.id.product_detail_sections_viewpager);
+        mProductSectionViewPager = (HeightWrappingViewPager) findViewById(R.id.product_detail_sections_viewpager);
         mTabIndicator = (TabPageIndicator) findViewById(R.id.product_detail_sections);
 
         ProductDetailSectionPagerAdapter adapter = new ProductDetailSectionPagerAdapter(getFragmentManager(), mProduct, mTitles, mTenantId, mSiteId);

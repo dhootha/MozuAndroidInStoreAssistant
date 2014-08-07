@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.OrderDetailSectionPagerAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.loaders.OrderDetailLoader;
+import com.mozu.mozuandroidinstoreassistant.app.views.HeightWrappingViewPager;
 import com.viewpagerindicator.TabPageIndicator;
 
 import java.text.NumberFormat;
@@ -39,7 +40,7 @@ public class OrderDetailActivity extends Activity implements LoaderManager.Loade
 
     private int mSiteId;
 
-    private ViewPager mOrderViewPager;
+    private HeightWrappingViewPager mOrderViewPager;
 
     private TabPageIndicator mTabIndicator;
 
@@ -79,7 +80,7 @@ public class OrderDetailActivity extends Activity implements LoaderManager.Loade
         mTitles.add(getString(R.string.returns_tab_name));
         mTitles.add(getString(R.string.notes_tab_name));
 
-        mOrderViewPager = (ViewPager) findViewById(R.id.order_detail_sections_viewpager);
+        mOrderViewPager = (HeightWrappingViewPager) findViewById(R.id.order_detail_sections_viewpager);
         mTabIndicator = (TabPageIndicator) findViewById(R.id.order_detail_sections);
 
         OrderDetailSectionPagerAdapter adapter = new OrderDetailSectionPagerAdapter(getFragmentManager(), mOrder, mTitles, mTenantId, mSiteId);
