@@ -103,5 +103,9 @@
     <string name="shipping_detail_overview">Shipping</string>
     <string name="shipping_discounts_detail_overview">Shipping Discounts:</string>
     <string name="tax_detail_overview">Tax:</string>
+    <string name="direct_ship_header">Direct Ship Items</string>
+    <string name="shipment_pending_total">Pending</string>
+    <string name="shipment_fulfilled_total">Fulfilled</string>
+    <string name="shipment_total">Total</string>
 
 </resources>
