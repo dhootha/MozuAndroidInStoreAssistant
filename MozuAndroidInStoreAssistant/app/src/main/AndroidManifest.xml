@@ -19,15 +19,15 @@
         <activity
             android:name=".ChooseTenantAndSiteActivity"
             android:label="@string/app_name"
-            android:theme="@style/Theme.Mozu.NoActionBar"
-            android:launchMode="singleInstance">
+            android:launchMode="singleInstance"
+            android:theme="@style/Theme.Mozu.NoActionBar" >
         </activity>
         <activity
             android:name=".LoginActivity"
             android:label="@string/app_name"
+            android:launchMode="singleInstance"
             android:theme="@style/Theme.Mozu.NoActionBar"
-            android:windowSoftInputMode="adjustPan|stateVisible"
-            android:launchMode="singleInstance">
+            android:windowSoftInputMode="adjustPan|stateVisible" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -41,19 +41,17 @@
 
         <activity
             android:name=".ProductDetailActivity"
-            android:label="@string/title_activity_product_detail">
-
+            android:label="@string/title_activity_product_detail" >
         </activity>
         <activity
             android:name=".ImagePagerActivity"
             android:label="@string/title_activity_image_list"
-            android:theme="@style/Transparent"
-            android:launchMode="singleInstance">
+            android:launchMode="singleInstance"
+            android:theme="@style/Transparent" >
         </activity>
         <activity
             android:name=".OrderDetailActivity"
-            android:label="@string/title_activity_order_detail">
-
+            android:label="@string/title_activity_order_detail" >
         </activity>
     </application>
 

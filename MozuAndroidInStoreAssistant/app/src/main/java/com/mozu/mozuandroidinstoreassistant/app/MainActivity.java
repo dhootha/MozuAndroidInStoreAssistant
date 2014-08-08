@@ -28,7 +28,7 @@ import com.mozu.mozuandroidinstoreassistant.app.fragments.SearchFragment;
 import com.mozu.mozuandroidinstoreassistant.app.models.UserPreferences;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 
-public class MainActivity extends Activity implements View.OnClickListener, CategoryFragmentListener, ProductFragmentListener, ProductListListener, OrderListener {
+public class MainActivity extends AuthActivity implements View.OnClickListener, CategoryFragmentListener, ProductFragmentListener, ProductListListener, OrderListener {
 
     private static final String CATEGORY_FRAGMENT = "category_fragment_taggy_tag_tag";
     private static final String SEARCH_FRAGMENT = "search_fragment_taggy_tag_tag";
@@ -90,6 +90,37 @@ public class MainActivity extends Activity implements View.OnClickListener, Cate
         //mWasCreatedInPortrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
 
         setupDrawer();
+    }
+
+    @Override
+    public void loginSuccess() {
+
+    }
+
+    @Override
+    public void loginFailure() {
+        startLoginScreen();
+    }
+
+    @Override
+    public void authError() {
+       startLoginScreen();
+    }
+
+    @Override
+    public void loadingState() {
+
+    }
+
+    @Override
+    public void stoppedLoading() {
+
+    }
+
+    private void startLoginScreen() {
+        Intent loginIntent = new Intent(this, LoginActivity.class);
+        startActivity(loginIntent);
+        finish();
     }
 
     private void setupDrawer() {

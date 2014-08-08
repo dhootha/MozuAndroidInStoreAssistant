@@ -2,7 +2,6 @@ package com.mozu.mozuandroidinstoreassistant.app;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
 import android.content.CursorLoader;
@@ -26,22 +25,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
-import com.mozu.api.contracts.appdev.AppAuthInfo;
 import com.mozu.api.contracts.core.UserAuthInfo;
 import com.mozu.mozuandroidinstoreassistant.app.loaders.ProfileQuery;
 import com.mozu.mozuandroidinstoreassistant.app.models.UserPreferences;
-import com.mozu.mozuandroidinstoreassistant.app.models.authentication.AppAuthenticationStateMachine;
-import com.mozu.mozuandroidinstoreassistant.app.models.authentication.AppAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationFailedSessionExpired;
-import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
-import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
-public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, Observer, OnClickListener {
+public class LoginActivity extends AuthActivity implements LoaderCallbacks<Cursor>, OnClickListener {
 
     private static final int CONTACT_LOADER = 0;
 
@@ -51,14 +43,10 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
     private View mLoginFormView;
     private View mAppAuthErrorView;
 
-    private AppAuthenticationStateMachine mAppAuthStateMachine;
-    private UserAuthenticationStateMachine mUserAuthStateMachine;
-
-    private boolean mHaveNotAskedToUpdate = true;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Crashlytics.start(this);
 
         setContentView(R.layout.activity_login);
@@ -95,72 +83,10 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
         hideKeyboard();
 
         showProgress(true);
-        setupAppAuth();
-    }
-
-    private void setupAppAuth() {
-        AppAuthInfo authInfo = new AppAuthInfo();
-        authInfo.setApplicationId(getString(R.string.app_auth_appid));
-        authInfo.setSharedSecret(getString(R.string.app_auth_shared_secret));
-
-        mAppAuthStateMachine = AppAuthenticationStateMachineProducer.getInstance(this, authInfo, getString(R.string.service_url));
-        mAppAuthStateMachine.addObserver(this);
-
-        if (!mAppAuthStateMachine.getCurrentAppAuthState().isAuthenticatedState() && !mAppAuthStateMachine.getCurrentAppAuthState().isErrorState()) {
-            showProgress(true);
-            mAppAuthStateMachine.authenticateApp();
-
-            return;
-        }
-
-        if (mAppAuthStateMachine.getCurrentAppAuthState().isErrorState()) {
-            showErrorAuthenticatingApp();
-
-            return;
-        } else {
-            showProgress(true);
-        }
-
-        //this means app is already authenticated, so we should auth user
-        if (mUserAuthStateMachine == null) {
-            setupUserAuth();
-        }
-    }
-
-    private void setupUserAuth() {
-        mUserAuthStateMachine = UserAuthenticationStateMachineProducer.getInstance(getApplicationContext());
-        mUserAuthStateMachine.addObserver(this);
-
-        if (!mAppAuthStateMachine.getCurrentAppAuthState().isAuthenticatedState()) {
-            mAppAuthStateMachine.authenticateApp();
-            return;
-        }
-
-        //user is already authenticated
-        if (mUserAuthStateMachine.getCurrentUserAuthState().isAuthenticatedState()) {
-
-            loginSuccess();
-        }
-
-        if (mUserAuthStateMachine.getCurrentUserAuthState().isErrorState()) {
-
-            loginFailure();
-        }
-
-        if (mUserAuthStateMachine.getCurrentUserAuthState().isLoadingState()) {
-            showProgress(true);
-        } else {
-            showProgress(false);
-        }
     }
 
     @Override
     protected void onDestroy() {
-        mAppAuthStateMachine.deleteObserver(this);
-
-        if (mUserAuthStateMachine != null) {
-            mUserAuthStateMachine.deleteObserver(this);
-        }
 
         super.onDestroy();
     }
@@ -169,7 +95,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
 
         getLoaderManager().initLoader(CONTACT_LOADER, null, this);
     }
-
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -217,8 +142,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
             UserAuthInfo authInfo = new UserAuthInfo();
             authInfo.setEmailAddress(email);
             authInfo.setPassword(password);
-            mUserAuthStateMachine.setUserAuthInfo(authInfo);
-            mUserAuthStateMachine.authenticateUser();
+            super.setUserAuthInfo(authInfo);
+            super.authenticateUser();
         }
     }
 
@@ -288,7 +213,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
             cursor.moveToNext();
         }
 
-        for (UserPreferences pref: mUserAuthStateMachine.getAllUserPrefs()) {
+        for (UserPreferences pref: getUserAuthStateMachine().getAllUserPrefs()) {
             emails.add(pref.getEmail());
         }
 
@@ -313,7 +238,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
 
         showProgress(true);
 
-        if (mUserAuthStateMachine.getCurrentUserAuthState().isTenantSelectedState() && mUserAuthStateMachine.getCurrentUsersPreferences().getDontAskToSetTenantSiteIfSet()) {
+        if (getUserAuthStateMachine().getCurrentUserAuthState().isTenantSelectedState() && getUserAuthStateMachine().getCurrentUsersPreferences().getDontAskToSetTenantSiteIfSet()) {
 
             startActivity(new Intent(this, MainActivity.class));
         } else {
@@ -327,7 +252,10 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
     public void loginFailure() {
         showProgress(false);
 
-        if (mUserAuthStateMachine.getCurrentUserAuthState() instanceof UserAuthenticationFailedSessionExpired) {
+        //ewww, don't like this check here, not polymorphic and not cohesive to this class. This is the only activity
+        //currently that contains showing this error, and I don't have time to come up with something else right now
+        //I will keep it this way for now and readdress in a bit
+        if (getUserAuthStateMachine().getCurrentUserAuthState() instanceof UserAuthenticationFailedSessionExpired) {
             mPasswordView.setError(getString(R.string.action_sign_in_session_expired));
         } else {
             mPasswordView.setError(getString(R.string.login_error));
@@ -337,58 +265,18 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
     }
 
     @Override
-    public void update(Observable observable, Object data) {
-        if (observable instanceof AppAuthenticationStateMachine) {
-
-            AppAuthenticationStateMachine machine = (AppAuthenticationStateMachine)observable;
-
-            if (machine.getCurrentAppAuthState().isErrorState()) {
-                showErrorAuthenticatingApp();
-                return;
-            }
-
-            if (machine.getCurrentAppAuthState().isAuthenticatedState()) {
-                appAuthenticated();
-
-                if (mUserAuthStateMachine == null) {
-                    setupUserAuth();
-                }
-
-                return;
-            }
-        }
-
-        if (observable instanceof UserAuthenticationStateMachine) {
-
-            UserAuthenticationStateMachine machine = (UserAuthenticationStateMachine)observable;
-
-            if (machine.getCurrentUserAuthState().isErrorState()) {
-                loginFailure();
-
-                return;
-            }
-
-            if (machine.getCurrentUserAuthState().isAuthenticatedState()) {
-                loginSuccess();
-
-                return;
-            }
-
-            if (machine.getCurrentUserAuthState().isLoadingState()) {
-                showProgress(true);
-            } else {
-                showProgress(false);
-                mEmailView.requestFocus();
-            }
-        }
+    public void loadingState() {
+        showProgress(true);
     }
 
-    private void appAuthenticated() {
-        //user is already authenticated
-        if (mUserAuthStateMachine == null) {
-            setupUserAuth();
-            return;
-        }
+    @Override
+    public void stoppedLoading() {
+        showProgress(false);
+    }
+
+    @Override
+    public void authError() {
+        showErrorAuthenticatingApp();
     }
 
     @Override
@@ -396,7 +284,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
         if (v.getId() == R.id.try_app_auth_again_button) {
             showProgress(true);
             findViewById(R.id.try_app_auth_again_button).setOnClickListener(null);
-            mAppAuthStateMachine.authenticateApp();
+            getAppAuthStateMachine().authenticateApp();
         }
     }
 
@@ -404,6 +292,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(mEmailView.getWindowToken(), 0);
     }
+
 }
 
 
