@@ -48,7 +48,7 @@ android {
             debuggable true
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-            ext.betaDistributionEmails="matt_wear@volusion.com, shadaab_kazi@volusion.com, adam_dutton@volusion.com"
+            ext.betaDistributionEmails="matt_wear@volusion.com, shadaab_kazi@volusion.com, adam_dutton@volusion.com,santhosh_mankala@volusion.com"
             ext.betaDistributionReleaseNotesFilePath=file('releasenotes.txt')
         }
     }
@@ -70,8 +70,8 @@ android {
 
 dependencies {
     compile(name:'viewpager', ext:'aar')
-    compile 'com.mozu.api:mozu-api-android:1.7.15@aar'
-    compile 'com.mozu.api:mozu-api-core:1.7.15'
+    compile 'com.mozu:mozu-api-android:1.7.19@aar'
+    compile 'com.mozu:mozu-api-core:1.7.19'
     compile 'com.crashlytics.android:crashlytics:1.+'
     compile 'com.squareup.picasso:picasso:2.3.3'
 
