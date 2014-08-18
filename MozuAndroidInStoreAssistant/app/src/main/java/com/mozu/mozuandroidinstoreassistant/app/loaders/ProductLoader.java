@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.crashlytics.android.Crashlytics;
 import com.mozu.api.MozuApiContext;
+import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.productruntime.ProductCollection;
 import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.api.resources.commerce.catalog.storefront.ProductResource;
@@ -62,6 +63,13 @@ public class ProductLoader extends InternetConnectedAsyncTaskLoader<List<Product
 
         mProductList.addAll(loadProductFromWeb());
 
+        List<Product> tmpProduct = new ArrayList<Product>();
+        tmpProduct.addAll(mProductList);
+
+        mProductList = null;
+
+        mProductList = new ArrayList<Product>(tmpProduct);
+
         mIsLoading = false;
 
         return mProductList;
@@ -119,7 +127,7 @@ public class ProductLoader extends InternetConnectedAsyncTaskLoader<List<Product
         try {
             productCollection = productResource.getProducts(FILTER_BY + String.valueOf(mCategoryId), mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, SORT_BY);
 
-            mTotalPages = productCollection.getTotalCount() / ITEMS_PER_PAGE;
+            mTotalPages = (int) Math.ceil(productCollection.getTotalCount() * 1.0f / ITEMS_PER_PAGE * 1.0f);
 
             mCurrentPage += 1;
 

@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.mozuandroidinstoreassistant.app.R;
@@ -26,7 +27,7 @@ import com.mozu.mozuandroidinstoreassistant.app.loaders.OrdersLoader;
 
 import java.util.List;
 
-public class OrderFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Order>>, AbsListView.OnScrollListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, SearchManager.OnCancelListener, SearchManager.OnDismissListener, MenuItem.OnActionExpandListener, AdapterView.OnItemClickListener {
+public class OrderFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Order>>, AbsListView.OnScrollListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, SearchManager.OnCancelListener, SearchManager.OnDismissListener, MenuItem.OnActionExpandListener, AdapterView.OnItemClickListener, View.OnClickListener {
 
     private static final int LOADER_ORDERS = 523;
 
@@ -46,6 +47,12 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private OrderListener mListener;
 
+    private TextView mOrderNumberHeader;
+    private TextView mOrderDateHeader;
+    private TextView mOrderEmailHeader;
+    private TextView mOrderStatusHeader;
+    private TextView mOrderTotalHeader;
+
     public OrderFragment() {
 
         setRetainInstance(true);
@@ -56,6 +63,18 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_order, container, false);
+
+        mOrderNumberHeader = (TextView) view.findViewById(R.id.order_number_header);
+        mOrderDateHeader = (TextView) view.findViewById(R.id.order_date_header);
+        mOrderEmailHeader = (TextView) view.findViewById(R.id.order_email_header);
+        mOrderStatusHeader = (TextView) view.findViewById(R.id.order_status_header);
+        mOrderTotalHeader = (TextView) view.findViewById(R.id.order_total_header);
+
+        mOrderNumberHeader.setOnClickListener(this);
+        mOrderDateHeader.setOnClickListener(this);
+        mOrderEmailHeader.setOnClickListener(this);
+        mOrderStatusHeader.setOnClickListener(this);
+        mOrderTotalHeader.setOnClickListener(this);
 
         mOrdersList = (ListView) view.findViewById(R.id.order_list);
         mProgress = (LinearLayout) view.findViewById(R.id.order_list_progress);
@@ -223,5 +242,29 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
 
     public void setListener(OrderListener listener) {
         mListener = listener;
+    }
+
+    @Override
+    public void onClick(View v) {
+
+        if (v.getId() == mOrderNumberHeader.getId()) {
+            getOrdersLoader().orderByNumber();
+            clearSearchReload();
+        } else if (v.getId() == mOrderDateHeader.getId()) {
+//NOT CURRENTLY A WAY TO SORT BY DATE CREATED SINCE THIS IS AUDIT INFO
+//            getOrdersLoader().orderByDate();
+//            clearSearchReload();
+        } else if (v.getId() == mOrderEmailHeader.getId()) {
+//NOT CURRENTLY A WAY TO SORT BY EMAIL
+//            getOrdersLoader().orderByEmail();
+//            clearSearchReload();
+        } else if (v.getId() == mOrderStatusHeader.getId()) {
+            getOrdersLoader().orderByStatus();
+            clearSearchReload();
+        } else if (v.getId() == mOrderTotalHeader.getId()) {
+            getOrdersLoader().orderByTotal();
+            clearSearchReload();
+        }
+
     }
 }

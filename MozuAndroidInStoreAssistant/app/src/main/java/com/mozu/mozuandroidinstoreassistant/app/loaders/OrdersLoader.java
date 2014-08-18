@@ -15,7 +15,16 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
 
     private static final int ITEMS_PER_PAGE = 200;
 
-    public static final String FILTER_BY = "orderNumber eq ";
+    public static final String ORDER_ID_FILTER_BY = "orderNumber eq ";
+    public static final String ORDER_STATUS_FILTER_BY = "status eq ";
+
+    public static final String ORDER_ORDER_NUMBER = "orderNumber";
+    public static final String ORDER_ORDER_DATE = "orderDate";
+    public static final String ORDER_ORDER_EMAIL = "email";
+    public static final String ORDER_ORDER_STATUS = "status";
+    public static final String ORDER_ORDER_TOAL = "total";
+
+    public String mCurrentOrder = "";
 
     private List<Order> mOrdersList;
     private Integer mTenantId;
@@ -48,6 +57,7 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
         mFilter = "";
 
         mOrdersList = new ArrayList<Order>();
+
     }
 
     @Override
@@ -63,6 +73,13 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
         super.loadInBackground();
 
         mOrdersList.addAll(loadOrdersFromWeb());
+
+        List<Order> tmpOrder = new ArrayList<Order>();
+        tmpOrder.addAll(mOrdersList);
+
+        mOrdersList = null;
+
+        mOrdersList = new ArrayList<Order>(tmpOrder);
 
         mIsLoading = false;
 
@@ -122,12 +139,12 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
 
         try {
             if (mFilter != null && !mFilter.equalsIgnoreCase("")) {
-                orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, null, FILTER_BY + mFilter, null, null);
+                orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, null, ORDER_ID_FILTER_BY + mFilter, null, null);
             } else {
-                orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, null, null, null, null);
+                orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mCurrentOrder, null, null, null);
             }
 
-            mTotalPages = orderCollection.getTotalCount() / ITEMS_PER_PAGE;
+            mTotalPages = (int) Math.ceil(orderCollection.getTotalCount() * 1.0f / ITEMS_PER_PAGE * 1.0f);
 
             mCurrentPage += 1;
 
@@ -156,5 +173,39 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
 
     public void removeFilter() {
         mFilter = "";
+    }
+
+    public void orderByNumber() {
+
+        mCurrentOrder = ORDER_ORDER_NUMBER;
+    }
+
+    //date is the default and there is no way through the api/sdk to
+    //tell the orders to sort by a date
+//NOT CURRENTLY A WAY TO SORT BY DATE CREATED SINCE THIS IS AUDIT INFO
+//    public void orderByDate() {
+//
+//        mCurrentOrder = ORDER_ORDER_DATE;
+//    }
+
+    //NOT CURRENTLY A WAY TO SORT BY EMAIL
+//    public void orderByEmail() {
+//
+//        mCurrentOrder = ORDER_ORDER_EMAIL;
+//    }
+
+    public void orderByStatus() {
+
+        mCurrentOrder = ORDER_ORDER_STATUS;
+    }
+
+    public void orderByTotal() {
+
+        mCurrentOrder = ORDER_ORDER_TOAL;
+    }
+
+    public void clearOrdering() {
+
+        mCurrentOrder = "";
     }
 }
