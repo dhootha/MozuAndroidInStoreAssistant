@@ -34,6 +34,7 @@
             android:layout_weight=".3"/>
 
         <TextView
+            android:id="@+id/order_number_header"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".3"
@@ -42,6 +43,7 @@
             android:text="@string/order_list_order_no_header"/>
 
         <TextView
+            android:id="@+id/order_date_header"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".7"
@@ -50,6 +52,7 @@
             android:text="@string/order_list_date_header"/>
 
         <TextView
+            android:id="@+id/order_email_header"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -58,6 +61,7 @@
             android:text="@string/order_list_order_email_header"/>
 
         <TextView
+            android:id="@+id/order_status_header"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".5"
@@ -66,6 +70,7 @@
             android:text="@string/order_list_order_status_header"/>
 
         <TextView
+            android:id="@+id/order_total_header"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".3"
