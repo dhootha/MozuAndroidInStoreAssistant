@@ -8,17 +8,6 @@
     android:layout_marginRight="0dp"
     tools:context="com.mozu.mozuandroidinstoreassistant.app.fragments.OrderFragment">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="120dp"
-        android:textSize="45sp"
-        android:layout_marginLeft="35dp"
-        android:layout_marginBottom="30dp"
-        android:gravity="bottom"
-        android:text="@string/menu_orders_text"
-        android:textStyle="bold"
-        android:fontFamily="sans-serif-light"/>
-
     <LinearLayout
         android:id="@+id/order_list_header"
         android:orientation="horizontal"
