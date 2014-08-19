@@ -9,8 +9,11 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
+import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.OrderDetailSectionPagerAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.loaders.OrderDetailLoader;
+import com.mozu.mozuandroidinstoreassistant.app.tasks.CustomerAsyncListener;
+import com.mozu.mozuandroidinstoreassistant.app.tasks.RetrieveCustomerAsyncTask;
 import com.mozu.mozuandroidinstoreassistant.app.views.HeightWrappingViewPager;
 import com.viewpagerindicator.TabPageIndicator;
 
@@ -19,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class OrderDetailActivity extends Activity implements LoaderManager.LoaderCallbacks<Order> {
+public class OrderDetailActivity extends Activity implements LoaderManager.LoaderCallbacks<Order>, CustomerAsyncListener {
 
     public static final String ORDER_NUMBER_EXTRA_KEY = "ORDER_NUMBER";
     public static final String CURRENT_TENANT_ID = "curTenantIdWhenActLoaded";
@@ -135,13 +138,15 @@ public class OrderDetailActivity extends Activity implements LoaderManager.Loade
             return;
         }
 
+        new RetrieveCustomerAsyncTask(this, this, mSiteId, mTenantId, mOrder.getCustomerAccountId()).execute();
+
         mOrderNumberTextView.setText(String.valueOf(mOrder.getOrderNumber()));
 
         android.text.format.DateFormat dateFormat= new android.text.format.DateFormat();
         String date = mOrder.getSubmittedDate() != null ? dateFormat.format("MM/dd/yy  hh:mm a", new Date(mOrder.getSubmittedDate().getMillis())).toString() : "";
 
         mOrderDate.setText(date);
-        mOrderName.setText(mOrder.getEmail());
+
         mOrderStatus.setText(mOrder.getStatus());
 
         mOrderTotal.setText(mNumberFormat.format(mOrder.getTotal() != null ? mOrder.getTotal() : 0));
@@ -150,6 +155,7 @@ public class OrderDetailActivity extends Activity implements LoaderManager.Loade
 
         mOrderViewPager.setAdapter(adapter);
         mTabIndicator.setViewPager(mOrderViewPager);
+
     }
 
     @Override
@@ -157,4 +163,14 @@ public class OrderDetailActivity extends Activity implements LoaderManager.Loade
 
     }
 
+
+    @Override
+    public void customerRetreived(CustomerAccount customer) {
+        mOrderName.setText(customer.getFirstName() + " " + customer.getLastName());
+    }
+
+    @Override
+    public void onError(String errorMessage) {
+        mOrderName.setText(getString(R.string.error_message_for_order_customer_name));
+    }
 }

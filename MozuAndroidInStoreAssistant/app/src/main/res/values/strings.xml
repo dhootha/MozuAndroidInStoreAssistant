@@ -108,5 +108,6 @@
     <string name="shipment_fulfilled_total">Fulfilled</string>
     <string name="shipment_total">Total</string>
     <string name="title_activity_auth">AuthActivity</string>
+    <string name="error_message_for_order_customer_name">N/A - Could Not Retreive</string>
 
 </resources>
