@@ -137,7 +137,7 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
         OrderResource orderResource = new OrderResource(new MozuApiContext(mTenantId, mSiteId));
 
         try {
-            if (TextUtils.isEmpty(mSearchQueryFilter)) {
+            if (!TextUtils.isEmpty(mSearchQueryFilter)) {
                 orderCollection = searchOrders(orderResource);
             } else {
                 orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mCurrentOrderBy, null, null, null);
@@ -164,6 +164,7 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
         } else {
             orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, null, null, mSearchQueryFilter, null);
         }
+
         return orderCollection;
     }
 
