@@ -251,11 +251,10 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
             getOrdersLoader().orderByNumber();
             clearSearchReload();
         } else if (v.getId() == mOrderDateHeader.getId()) {
-//NOT CURRENTLY A WAY TO SORT BY DATE CREATED SINCE THIS IS AUDIT INFO
-//            getOrdersLoader().orderByDate();
-//            clearSearchReload();
+            getOrdersLoader().orderByDate();
+            clearSearchReload();
         } else if (v.getId() == mOrderEmailHeader.getId()) {
-//NOT CURRENTLY A WAY TO SORT BY EMAIL
+//TODO: NOT CURRENTLY A WAY TO SORT BY EMAIL
 //            getOrdersLoader().orderByEmail();
 //            clearSearchReload();
         } else if (v.getId() == mOrderStatusHeader.getId()) {
