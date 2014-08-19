@@ -1,12 +1,14 @@
 package com.mozu.mozuandroidinstoreassistant.app.loaders;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.crashlytics.android.Crashlytics;
 import com.mozu.api.MozuApiContext;
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.commerceruntime.orders.OrderCollection;
 import com.mozu.api.resources.commerce.OrderResource;
+import com.mozu.mozuandroidinstoreassistant.app.models.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,16 +17,15 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
 
     private static final int ITEMS_PER_PAGE = 200;
 
-    public static final String ORDER_ID_FILTER_BY = "orderNumber eq ";
-    public static final String ORDER_STATUS_FILTER_BY = "status eq ";
+    private static final String ORDER_ID_FILTER_BY = "orderNumber eq ";
 
-    public static final String ORDER_ORDER_NUMBER = "orderNumber";
-    public static final String ORDER_ORDER_DATE = "orderDate";
-    public static final String ORDER_ORDER_EMAIL = "email";
-    public static final String ORDER_ORDER_STATUS = "status";
-    public static final String ORDER_ORDER_TOAL = "total";
+    private static final String ORDER_ORDER_NUMBER = "orderNumber";
+    private static final String ORDER_ORDER_DATE = "orderDate";
+    private static final String ORDER_ORDER_EMAIL = "email";
+    private static final String ORDER_ORDER_STATUS = "status";
+    private static final String ORDER_ORDER_TOAL = "total";
 
-    public String mCurrentOrder = "";
+    public String mCurrentOrderBy = "";
 
     private List<Order> mOrdersList;
     private Integer mTenantId;
@@ -35,14 +36,12 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
 
     private boolean mIsLoading;
 
-    public String mFilter;
+    public String mSearchQueryFilter;
 
     public OrdersLoader(Context context, Integer tenantId, Integer siteId) {
         super(context);
-
         mTenantId = tenantId;
         mSiteId = siteId;
-
         init();
     }
 
@@ -54,7 +53,7 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
 
         mIsLoading = false;
 
-        mFilter = "";
+        mSearchQueryFilter = "";
 
         mOrdersList = new ArrayList<Order>();
 
@@ -138,10 +137,10 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
         OrderResource orderResource = new OrderResource(new MozuApiContext(mTenantId, mSiteId));
 
         try {
-            if (mFilter != null && !mFilter.equalsIgnoreCase("")) {
-                orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, null, ORDER_ID_FILTER_BY + mFilter, null, null);
+            if (TextUtils.isEmpty(mSearchQueryFilter)) {
+                orderCollection = searchOrders(orderResource);
             } else {
-                orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mCurrentOrder, null, null, null);
+                orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mCurrentOrderBy, null, null, null);
             }
 
             mTotalPages = (int) Math.ceil(orderCollection.getTotalCount() * 1.0f / ITEMS_PER_PAGE * 1.0f);
@@ -157,6 +156,17 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
         return allOrders;
     }
 
+    private OrderCollection searchOrders(OrderResource orderResource) throws Exception {
+        OrderCollection orderCollection;
+
+        if (StringUtils.isNumber(mSearchQueryFilter)) {
+            orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, null, ORDER_ID_FILTER_BY + mSearchQueryFilter, null, null);
+        } else {
+            orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, null, null, mSearchQueryFilter, null);
+        }
+        return orderCollection;
+    }
+
     public boolean hasMoreResults() {
 
         return mCurrentPage < mTotalPages;
@@ -168,44 +178,44 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
     }
 
     public void setFilter(String filter) {
-        mFilter = filter;
+        mSearchQueryFilter = filter;
     }
 
     public void removeFilter() {
-        mFilter = "";
+        mSearchQueryFilter = "";
     }
 
     public void orderByNumber() {
 
-        mCurrentOrder = ORDER_ORDER_NUMBER;
+        mCurrentOrderBy = ORDER_ORDER_NUMBER;
     }
 
     //date is the default and there is no way through the api/sdk to
     //tell the orders to sort by a date
-//NOT CURRENTLY A WAY TO SORT BY DATE CREATED SINCE THIS IS AUDIT INFO
-//    public void orderByDate() {
-//
-//        mCurrentOrder = ORDER_ORDER_DATE;
-//    }
+    //so we are just removing the sort filter and resorting
+    public void orderByDate() {
 
-    //NOT CURRENTLY A WAY TO SORT BY EMAIL
+        clearOrdering();
+    }
+
+//TODO: NOT CURRENTLY A WAY TO SORT BY EMAIL
 //    public void orderByEmail() {
 //
-//        mCurrentOrder = ORDER_ORDER_EMAIL;
+//        mCurrentOrderBy = ORDER_ORDER_EMAIL;
 //    }
 
     public void orderByStatus() {
 
-        mCurrentOrder = ORDER_ORDER_STATUS;
+        mCurrentOrderBy = ORDER_ORDER_STATUS;
     }
 
     public void orderByTotal() {
 
-        mCurrentOrder = ORDER_ORDER_TOAL;
+        mCurrentOrderBy = ORDER_ORDER_TOAL;
     }
 
     public void clearOrdering() {
 
-        mCurrentOrder = "";
+        mCurrentOrderBy = "";
     }
 }

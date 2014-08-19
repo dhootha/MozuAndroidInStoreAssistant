@@ -1,19 +1,13 @@
 package com.mozu.mozuandroidinstoreassistant.app.adapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.mozuandroidinstoreassistant.app.R;
-import com.mozu.mozuandroidinstoreassistant.app.views.CircularDrawable;
 
 import java.text.NumberFormat;
 import java.util.Date;
@@ -30,30 +24,31 @@ public class OrdersAdapter extends ArrayAdapter<Order> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView == null) {
+        OrderViewHolder viewHolder;
+
+        if (convertView != null) {
+            viewHolder = (OrderViewHolder) convertView.getTag();
+        } else {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.order_list_item, parent, false);
+            viewHolder = new OrderViewHolder(convertView);
+            convertView.setTag(viewHolder);
         }
 
         Order order = getItem(position);
 
-        TextView orderNo = (TextView) convertView.findViewById(R.id.order_number);
-        TextView orderDate = (TextView) convertView.findViewById(R.id.order_date);
-        TextView email = (TextView) convertView.findViewById(R.id.order_email);
-        TextView status = (TextView) convertView.findViewById(R.id.order_status);
-        TextView total = (TextView) convertView.findViewById(R.id.order_total);
-
-        orderNo.setText(String.valueOf(order.getOrderNumber()));
+        viewHolder.orderNumber.setText(String.valueOf(order.getOrderNumber()));
 
         android.text.format.DateFormat dateFormat= new android.text.format.DateFormat();
         String date = order.getSubmittedDate() != null ? dateFormat.format("MM/dd/yy  hh:mm a", new Date(order.getSubmittedDate().getMillis())).toString() : "";
 
-        orderDate.setText(date);
-        email.setText(order.getEmail());
-        status.setText(order.getStatus());
+        viewHolder.orderDate.setText(date);
+        viewHolder.email.setText(order.getEmail());
+        viewHolder.status.setText(order.getStatus());
 
-        total.setText(mNumberFormat.format(order.getTotal()));
+        viewHolder.total.setText(mNumberFormat.format(order.getTotal()));
 
         return convertView;
     }
+
 
 }
