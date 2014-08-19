@@ -2,9 +2,11 @@ package com.mozu.mozuandroidinstoreassistant.app.fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,7 +66,7 @@ public class ProductDetailOverviewFragment extends Fragment {
         mapPrice.setText(getMAPPriceText(defaultFormat));
 
         includes.setText(getBundledProductsString());
-        mDescription.setText(getSmallDescriptionWithSpannableClick());
+        mDescription.setText(getDescriptionWithSpannableClick(false));
         mDescription.setMovementMethod(LinkMovementMethod.getInstance());
 
         upc.setText(mProduct.getUpc());
@@ -147,35 +149,30 @@ public class ProductDetailOverviewFragment extends Fragment {
         return bundledString;
     }
 
-    private SpannableString getSmallDescriptionWithSpannableClick() {
+
+
+    private SpannableString getDescriptionWithSpannableClick(boolean showLargeDescription){
         if (mProduct.getContent() == null) {
             return new SpannableString("N/A");
         }
 
-        String smallDesc = mProduct.getContent().getProductShortDescription();
-        String fullDescpButtonText = getString(R.string.full_description_click_link);
-        smallDesc = smallDesc + fullDescpButtonText;
-
-        SpannableString spannableString = new SpannableString(smallDesc);
-        spannableString.setSpan(mExpandClickableSpan, smallDesc.length() - fullDescpButtonText.length(), smallDesc.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        spannableString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.mozu_color)), smallDesc.length() - fullDescpButtonText.length(), smallDesc.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        return spannableString;
-    }
-
-    private SpannableString getLargeDescriptionWithSpannableClick() {
-        if (mProduct.getContent() == null) {
-            return new SpannableString("N/A");
+        String desc;
+        String buttonText;
+        ClickableSpan clickableSpan;
+        if (showLargeDescription) {
+            desc = mProduct.getContent().getProductFullDescription();
+            buttonText = getString(R.string.show_less_click_link);
+            clickableSpan = mContractClickableSpan;
+        } else {
+            desc = mProduct.getContent().getProductShortDescription();
+            buttonText = getString(R.string.full_description_click_link);
+            clickableSpan = mExpandClickableSpan;
         }
-
-        String smallDesc = mProduct.getContent().getProductFullDescription();
-        String showLessButtonText = getString(R.string.show_less_click_link);
-        smallDesc = smallDesc + showLessButtonText;
-
-        SpannableString spannableString = new SpannableString(smallDesc);
-        spannableString.setSpan(mContractClickableSpan, smallDesc.length() - showLessButtonText.length(), smallDesc.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        spannableString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.mozu_color)), smallDesc.length() - showLessButtonText.length(), smallDesc.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
+        desc = desc + buttonText;
+        Spanned spanedText = Html.fromHtml(desc);
+        SpannableString spannableString = new SpannableString(spanedText);
+        spannableString.setSpan(clickableSpan, spanedText.length() - buttonText.length(), spanedText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.mozu_color)), spanedText.length() - buttonText.length(), spanedText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return spannableString;
     }
 
@@ -183,7 +180,7 @@ public class ProductDetailOverviewFragment extends Fragment {
 
         @Override
         public void onClick(View widget) {
-            mDescription.setText(getLargeDescriptionWithSpannableClick());
+            mDescription.setText(getDescriptionWithSpannableClick(true));
         }
 
     };
@@ -192,7 +189,7 @@ public class ProductDetailOverviewFragment extends Fragment {
 
         @Override
         public void onClick(View widget) {
-            mDescription.setText(getSmallDescriptionWithSpannableClick());
+            mDescription.setText(getDescriptionWithSpannableClick(false));
         }
 
     };
