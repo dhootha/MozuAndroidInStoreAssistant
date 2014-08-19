@@ -2,6 +2,7 @@ package com.mozu.mozuandroidinstoreassistant.app.fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import com.mozu.api.contracts.commerceruntime.discounts.ShippingDiscount;
 import com.mozu.api.contracts.commerceruntime.orders.Order;
+import com.mozu.api.contracts.commerceruntime.orders.OrderAttribute;
 import com.mozu.api.contracts.commerceruntime.orders.OrderItem;
 import com.mozu.api.contracts.commerceruntime.products.Product;
 import com.mozu.mozuandroidinstoreassistant.app.R;
@@ -26,6 +28,9 @@ public class OrderDetailOverviewFragment extends Fragment implements View.OnClic
 
     private LinearLayout mOrderedItemLayout;
     private LinearLayout mDetailLayout;
+
+    private LinearLayout mOrderAttributeItemLayout;
+    private LinearLayout mAttributesHeaderLayout;
 
     private TextView mItemsTotal;
     private TextView mDiscounts;
@@ -53,6 +58,9 @@ public class OrderDetailOverviewFragment extends Fragment implements View.OnClic
         mOrderedItemLayout = (LinearLayout) view.findViewById(R.id.layout_to_add_ordered_items_to);
         mDetailLayout = (LinearLayout) view.findViewById(R.id.detail_layout);
 
+        mOrderAttributeItemLayout = (LinearLayout) view.findViewById(R.id.layout_to_add_order_attributes_to);
+        mAttributesHeaderLayout = (LinearLayout) view.findViewById(R.id.attributes_header_layout);
+
         mDetailLayout.setVisibility(View.GONE);
 
         mItemsTotal = (TextView) view.findViewById(R.id.items_total);
@@ -76,6 +84,7 @@ public class OrderDetailOverviewFragment extends Fragment implements View.OnClic
     private void setOrderToViews(View view) {
 
         addOrderedItemLayoutsToView(mOrder.getItems());
+        addOrderAttributesLayoutsToView(mOrder.getAttributes());
 
         TextView total = (TextView) view.findViewById(R.id.order_overview_total);
         total.setText(mNumberFormat.format(mOrder.getTotal()));
@@ -102,6 +111,56 @@ public class OrderDetailOverviewFragment extends Fragment implements View.OnClic
         }
 
         mTax.setText(mOrder.getTaxTotal() != null ? mNumberFormat.format(mOrder.getTaxTotal()) : "N/A");
+    }
+
+    private void addOrderAttributesLayoutsToView(List<OrderAttribute> attributes) {
+
+        if (attributes == null || attributes.size() < 1) {
+            mAttributesHeaderLayout.setVisibility(View.GONE);
+            mOrderAttributeItemLayout.setVisibility(View.GONE);
+
+            return;
+        }
+
+        mAttributesHeaderLayout.setVisibility(View.VISIBLE);
+        mOrderAttributeItemLayout.setVisibility(View.VISIBLE);
+
+
+        for(OrderAttribute attribute: attributes) {
+            View view = LayoutInflater.from(getActivity()).inflate(R.layout.order_attribute_list_item, mOrderAttributeItemLayout, false);
+
+            TextView label = (TextView) view.findViewById(R.id.attribute_label);
+            TextView value = (TextView) view.findViewById(R.id.attribute_value);
+
+            label.setVisibility(View.VISIBLE);
+            value.setVisibility(View.VISIBLE);
+
+            if (TextUtils.isEmpty(attribute.getFullyQualifiedName())) {
+                label.setText("N/A");
+            } else {
+                label.setText(attribute.getFullyQualifiedName());
+            }
+
+            String valueStr = getStringValueFromAttributesValues(attribute.getValues());
+
+            if (TextUtils.isEmpty(valueStr)) {
+                value.setText("N/A");
+            } else {
+                value.setText(valueStr);
+            }
+
+            mOrderAttributeItemLayout.addView(view);
+        }
+    }
+
+    private String getStringValueFromAttributesValues(List<Object> values) {
+        String valueString = "";
+
+        for (Object obj: values) {
+            valueString += obj.toString() + " ";
+        }
+
+        return valueString;
     }
 
     private void addOrderedItemLayoutsToView(List<OrderItem> items) {
