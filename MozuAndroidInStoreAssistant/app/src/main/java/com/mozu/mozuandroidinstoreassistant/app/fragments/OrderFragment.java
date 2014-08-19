@@ -247,23 +247,30 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onClick(View v) {
 
+        determineSortActionForView(v);
+
+    }
+
+    private void determineSortActionForView(View v) {
+
         if (v.getId() == mOrderNumberHeader.getId()) {
             getOrdersLoader().orderByNumber();
-            clearSearchReload();
         } else if (v.getId() == mOrderDateHeader.getId()) {
             getOrdersLoader().orderByDate();
-            clearSearchReload();
         } else if (v.getId() == mOrderEmailHeader.getId()) {
-//TODO: NOT CURRENTLY A WAY TO SORT BY EMAIL
-//            getOrdersLoader().orderByEmail();
-//            clearSearchReload();
+            //TODO: NOT CURRENTLY A WAY TO SORT BY EMAIL
+            //            getOrdersLoader().orderByEmail();
+            //            clearSearchReload();
         } else if (v.getId() == mOrderStatusHeader.getId()) {
             getOrdersLoader().orderByStatus();
-            clearSearchReload();
         } else if (v.getId() == mOrderTotalHeader.getId()) {
             getOrdersLoader().orderByTotal();
-            clearSearchReload();
+        } else {
+            // if the view wasn't a sort column we don't need to do anyting else
+            return;
         }
+
+        clearSearchReload();
 
     }
 }
