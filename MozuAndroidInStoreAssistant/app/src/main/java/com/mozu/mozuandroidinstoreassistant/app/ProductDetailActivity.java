@@ -103,15 +103,15 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
 
         mProductSectionViewPager = (HeightWrappingViewPager) findViewById(R.id.product_detail_sections_viewpager);
         mTabIndicator = (TabPageIndicator) findViewById(R.id.product_detail_sections);
+        mMainImageView.setOnClickListener(this);
 
-        ProductDetailSectionPagerAdapter adapter = new ProductDetailSectionPagerAdapter(getFragmentManager(), mProduct, mTitles, mTenantId, mSiteId);
-        mProductSectionViewPager.setAdapter(adapter);
+        if (getLoaderManager().getLoader(LOADER_PRODUCT_DETAIL) == null) {
+            getLoaderManager().initLoader(LOADER_PRODUCT_DETAIL, null, this).forceLoad();
+        } else {
+            getLoaderManager().initLoader(LOADER_PRODUCT_DETAIL, null, this);
+        }
 
-        mTabIndicator.setViewPager(mProductSectionViewPager);
-
-        getLoaderManager().initLoader(LOADER_PRODUCT_DETAIL, null, this).forceLoad();
     }
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putString(PRODUCT_CODE_EXTRA_KEY, mProductCode);
@@ -182,10 +182,7 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
            // mProductDescription.setText(mProduct.getContent().getProductFullDescription());
         }
 
-        mMainImageView.setOnClickListener(this);
-
         ProductDetailSectionPagerAdapter adapter = new ProductDetailSectionPagerAdapter(getFragmentManager(), mProduct, mTitles, mTenantId, mSiteId);
-
         mProductSectionViewPager.setAdapter(adapter);
         mTabIndicator.setViewPager(mProductSectionViewPager);
     }
@@ -201,13 +198,16 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
         for (int i = FIRST_SUB_IMAGE; i <= Math.ceil(productImageList.size() / NUM_OF_COLUMNS_DIVISOR); i++) {
 
             //add a view to the layout top, bottom, next
-            int imageWidth = (int) getResources().getDimension(R.dimen.main_product_image_size) / NUM_OF_COLUMNS_DIVISOR;
-            int imageHeight = (int) getResources().getDimension(R.dimen.main_product_image_size) / NUM_OF_COLUMNS_DIVISOR;
+            int productImageWidth = (int) getResources().getDimension(R.dimen.main_product_image_size);
+            int productImageHeight = (int) getResources().getDimension(R.dimen.main_product_image_size);
+
+            int imageWidth = productImageWidth / NUM_OF_COLUMNS_DIVISOR;
+            int imageHeight = productImageHeight / NUM_OF_COLUMNS_DIVISOR;
 
             int firstImagePosition = i + (i - 1);
             int secondImagePosition = 2 * i;
 
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(imageWidth, mProductImagesLayout.getMeasuredHeight());
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(imageWidth, productImageHeight);
 
             LinearLayout layout = new LinearLayout(this);
             layout.setLayoutParams(params);
@@ -272,14 +272,17 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
         //go through each image
         for (int i = FIRST_SUB_IMAGE; i <= Math.ceil(productImageList.size() / NUM_OF_COLUMNS_DIVISOR); i++) {
 
+            int productImageWidth = (int) getResources().getDimension(R.dimen.main_product_image_size);
+            int productImageHeight = (int) getResources().getDimension(R.dimen.main_product_image_size);
+
             //add a view to the layout top, bottom, next
-            int imageWidth = (int) getResources().getDimension(R.dimen.main_product_image_size) / NUM_OF_COLUMNS_DIVISOR;
-            int imageHeight = (int) getResources().getDimension(R.dimen.main_product_image_size) / NUM_OF_COLUMNS_DIVISOR;
+            int imageWidth = productImageWidth / NUM_OF_COLUMNS_DIVISOR;
+            int imageHeight = productImageHeight / NUM_OF_COLUMNS_DIVISOR;
 
             int firstImagePosition = i + (i - 1);
             int secondImagePosition = 2 * i;
 
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(mProductImagesLayout.getMeasuredWidth(), imageHeight);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(productImageWidth, imageHeight);
 
             LinearLayout layout = new LinearLayout(this);
             layout.setLayoutParams(params);
