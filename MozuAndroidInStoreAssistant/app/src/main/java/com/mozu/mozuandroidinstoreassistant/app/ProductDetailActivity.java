@@ -103,7 +103,6 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
 
         mProductSectionViewPager = (HeightWrappingViewPager) findViewById(R.id.product_detail_sections_viewpager);
         mTabIndicator = (TabPageIndicator) findViewById(R.id.product_detail_sections);
-        setUpViewPager();
         mMainImageView.setOnClickListener(this);
 
         if (getLoaderManager().getLoader(LOADER_PRODUCT_DETAIL) == null) {
@@ -182,12 +181,7 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
             mProductName.setText(mProduct.getContent().getProductName());
            // mProductDescription.setText(mProduct.getContent().getProductFullDescription());
         }
-        setUpViewPager();
 
-    }
-
-
-    private void setUpViewPager(){
         ProductDetailSectionPagerAdapter adapter = new ProductDetailSectionPagerAdapter(getFragmentManager(), mProduct, mTitles, mTenantId, mSiteId);
         mProductSectionViewPager.setAdapter(adapter);
         mTabIndicator.setViewPager(mProductSectionViewPager);
