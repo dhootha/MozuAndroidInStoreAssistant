@@ -1,6 +1,7 @@
 package com.mozu.mozuandroidinstoreassistant.app.models.authentication;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.mozu.api.contracts.core.UserAuthInfo;
@@ -31,8 +32,10 @@ public class UserAuthenticationStateMachine extends Observable implements Refres
     protected UserAuthenticationFailedSessionExpired userAuthenticationFailedSessionExpired;
 
     private List<UserPreferences> mAllUsersPrefs;
+    private Integer mTenantId;
+    private Integer mSiteId;
 
-    public UserAuthenticationStateMachine(Context context) {
+    protected UserAuthenticationStateMachine(Context context) {
         mContext = context;
 
         mUserAuthInfo = new UserAuthInfo();
@@ -70,10 +73,7 @@ public class UserAuthenticationStateMachine extends Observable implements Refres
     }
 
     public void updateScope(Scope scope) {
-        //update scope on preferences
-        UserPreferences prefs = getCurrentUsersPreferences();
-        prefs.setDefaultTenantId(String.valueOf(scope.getId()));
-        updateUserPreferences();
+        setTenantId(scope);
 
         mCurrentUserAuthState.updateScope(scope);
     }
@@ -93,7 +93,7 @@ public class UserAuthenticationStateMachine extends Observable implements Refres
         mAuthProfile = profile;
 
         if (profile != null && profile.getActiveScope() != null) {
-            getCurrentUsersPreferences().setDefaultTenantId(String.valueOf(profile.getActiveScope().getId()));
+            setTenantId(profile.getActiveScope());
         }
 
         updateUserPreferences();
@@ -178,9 +178,49 @@ public class UserAuthenticationStateMachine extends Observable implements Refres
         Log.d("failed to read user prefs", "failed to read user prefs");
     }
 
-    public void setCurrentSite(Site site) {
-        getCurrentUsersPreferences().setDefaultSiteId(String.valueOf(site.getId()));
 
+    public void setTenantId(Scope scope){
+        if (scope != null) {
+            mTenantId = scope.getId();
+        } else {
+            mTenantId = null;
+        }
+    }
+
+    public void setCurrentSiteId(Site site){
+        if (site != null) {
+            mSiteId = site.getId();
+        }else {
+            mSiteId = null;
+        }
+    }
+
+    public void persistSiteTenantId(){
+        getCurrentUsersPreferences().setDefaultTenantId(String.valueOf(mTenantId));
+        getCurrentUsersPreferences().setDefaultSiteId(String.valueOf(mSiteId));
         updateUserPreferences();
+    }
+
+    public Integer getTenantId(){
+        if (mTenantId == null) {
+            if (!TextUtils.isEmpty(getCurrentUsersPreferences().getDefaultTenantId()) && !getCurrentUsersPreferences().getDefaultTenantId().equalsIgnoreCase("null")) {
+                return Integer.parseInt(getCurrentUsersPreferences().getDefaultTenantId());
+            }
+        }
+        return mTenantId;
+    }
+
+    public Integer getSiteId(){
+        if (mSiteId == null) {
+            if (!TextUtils.isEmpty(getCurrentUsersPreferences().getDefaultSiteId()) && !getCurrentUsersPreferences().getDefaultSiteId().equalsIgnoreCase("null")) {
+                return Integer.parseInt(getCurrentUsersPreferences().getDefaultSiteId());
+            }
+        }
+        return mSiteId;
+    }
+
+    public void resetTenantSiteId(){
+        mSiteId = null;
+        mTenantId = null;
     }
 }

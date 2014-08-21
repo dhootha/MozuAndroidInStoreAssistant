@@ -137,7 +137,7 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
         if (id == PRODUCT_SEARCH_LOADER) {
             UserPreferences prefs = mUserState.getCurrentUsersPreferences();
 
-            return new ProductSearchLoader(getActivity(), prefs.getDefaultTenantId() != null ? Integer.parseInt(prefs.getDefaultTenantId()) : null, prefs.getDefaultSiteId() != null ? Integer.parseInt(prefs.getDefaultSiteId()) : null, mCategoryId, mQueryString);
+            return new ProductSearchLoader(getActivity(), mUserState.getTenantId(), mUserState.getSiteId(), mCategoryId, mQueryString);
         }
 
         return null;
@@ -150,7 +150,7 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
         if (loader.getId() == PRODUCT_SEARCH_LOADER) {
             if (mAdapter == null) {
 
-                mAdapter = new ProductAdapter(getActivity(), prefs.getDefaultTenantId() != null ? Integer.parseInt(prefs.getDefaultTenantId()) : null, prefs.getDefaultSiteId() != null ? Integer.parseInt(prefs.getDefaultSiteId()) : null);
+                mAdapter = new ProductAdapter(getActivity(), mUserState.getTenantId(), mUserState.getSiteId());
             }
 
             mAdapter.clear();

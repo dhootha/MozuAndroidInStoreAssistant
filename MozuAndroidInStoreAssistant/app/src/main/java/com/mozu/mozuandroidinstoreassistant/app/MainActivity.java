@@ -25,7 +25,7 @@ import com.mozu.mozuandroidinstoreassistant.app.fragments.ProductFragmentListene
 import com.mozu.mozuandroidinstoreassistant.app.fragments.ProductListListener;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.ProductSearchFragment;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.SearchFragment;
-import com.mozu.mozuandroidinstoreassistant.app.models.UserPreferences;
+import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 
 public class MainActivity extends AuthActivity implements View.OnClickListener, CategoryFragmentListener, ProductFragmentListener, ProductListListener, OrderListener {
@@ -257,14 +257,13 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         FragmentManager fragmentManager = getFragmentManager();
 
         clearBackstack(fragmentManager);
-
-        UserPreferences prefs = UserAuthenticationStateMachineProducer.getInstance(this).getCurrentUsersPreferences();
+        UserAuthenticationStateMachine userStateMachine = UserAuthenticationStateMachineProducer.getInstance(this);
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         OrderFragment fragment = new OrderFragment();
-        fragment.setTenantId(Integer.parseInt(prefs.getDefaultTenantId()));
-        fragment.setSiteId(Integer.parseInt(prefs.getDefaultSiteId()));
+        fragment.setTenantId(userStateMachine.getTenantId());
+        fragment.setSiteId(userStateMachine.getSiteId());
         fragment.setListener(this);
         fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out);
         fragmentTransaction.replace(R.id.content_fragment_holder, fragment);
@@ -360,13 +359,13 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
     }
 
     private void onProductChoosen(String productCode) {
-        UserPreferences prefs = UserAuthenticationStateMachineProducer.getInstance(this).getCurrentUsersPreferences();
 
         Intent intent = new Intent(this, ProductDetailActivity.class);
+        UserAuthenticationStateMachine userAuthenticationStateMachine = UserAuthenticationStateMachineProducer.getInstance(this);
 
         intent.putExtra(ProductDetailActivity.PRODUCT_CODE_EXTRA_KEY, productCode);
-        intent.putExtra(ProductDetailActivity.CURRENT_TENANT_ID, Integer.parseInt(prefs.getDefaultTenantId()));
-        intent.putExtra(ProductDetailActivity.CURRENT_SITE_ID, Integer.parseInt(prefs.getDefaultSiteId()));
+        intent.putExtra(ProductDetailActivity.CURRENT_TENANT_ID, userAuthenticationStateMachine.getTenantId());
+        intent.putExtra(ProductDetailActivity.CURRENT_SITE_ID, userAuthenticationStateMachine.getSiteId());
 
         startActivity(intent);
     }
@@ -381,13 +380,13 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
 
     @Override
     public void orderSelected(Order order) {
-        UserPreferences prefs = UserAuthenticationStateMachineProducer.getInstance(this).getCurrentUsersPreferences();
+        UserAuthenticationStateMachine userAuthenticationStateMachine = UserAuthenticationStateMachineProducer.getInstance(this);
 
         Intent intent = new Intent(this, OrderDetailActivity.class);
 
         intent.putExtra(OrderDetailActivity.ORDER_NUMBER_EXTRA_KEY, order.getId());
-        intent.putExtra(OrderDetailActivity.CURRENT_TENANT_ID, Integer.parseInt(prefs.getDefaultTenantId()));
-        intent.putExtra(OrderDetailActivity.CURRENT_SITE_ID, Integer.parseInt(prefs.getDefaultSiteId()));
+        intent.putExtra(OrderDetailActivity.CURRENT_TENANT_ID, userAuthenticationStateMachine.getTenantId());
+        intent.putExtra(OrderDetailActivity.CURRENT_SITE_ID, userAuthenticationStateMachine.getSiteId());
 
         startActivity(intent);
     }

@@ -127,9 +127,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
     public Loader<List<Product>> onCreateLoader(int id, Bundle args) {
 
         if (id == PRODUCT_LOADER) {
-            UserPreferences prefs = mUserState.getCurrentUsersPreferences();
-
-            return new ProductLoader(getActivity(), prefs.getDefaultTenantId() != null ? Integer.parseInt(prefs.getDefaultTenantId()) : null, prefs.getDefaultSiteId() != null ? Integer.parseInt(prefs.getDefaultSiteId()) : null, mCategoryId);
+            return new ProductLoader(getActivity(), mUserState.getTenantId(), mUserState.getSiteId(), mCategoryId);
         }
 
         return null;
@@ -142,7 +140,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         if (loader.getId() == PRODUCT_LOADER) {
             if (mAdapter == null) {
 
-                mAdapter = new ProductAdapter(getActivity(), prefs.getDefaultTenantId() != null ? Integer.parseInt(prefs.getDefaultTenantId()) : null, prefs.getDefaultSiteId() != null ? Integer.parseInt(prefs.getDefaultSiteId()) : null);
+                mAdapter = new ProductAdapter(getActivity(), mUserState.getTenantId(), mUserState.getTenantId());
             }
 
             mAdapter.clear();
