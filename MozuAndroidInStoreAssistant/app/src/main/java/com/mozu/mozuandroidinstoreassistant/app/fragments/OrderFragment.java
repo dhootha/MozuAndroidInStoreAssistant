@@ -4,6 +4,7 @@ import android.app.LoaderManager;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Loader;
+import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -16,23 +17,30 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.OrdersAdapter;
+import com.mozu.mozuandroidinstoreassistant.app.adapters.SearchSuggestionsCursorAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.loaders.OrdersLoader;
+import com.mozu.mozuandroidinstoreassistant.app.models.RecentSearch;
+import com.mozu.mozuandroidinstoreassistant.app.models.UserPreferences;
+import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
+import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class OrderFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Order>>, AbsListView.OnScrollListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, SearchManager.OnCancelListener, SearchManager.OnDismissListener, MenuItem.OnActionExpandListener, AdapterView.OnItemClickListener, View.OnClickListener {
+public class OrderFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Order>>, AbsListView.OnScrollListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, SearchManager.OnCancelListener, SearchManager.OnDismissListener, SearchView.OnSuggestionListener, MenuItem.OnActionExpandListener, AdapterView.OnItemClickListener, View.OnClickListener {
+
+    public static final int MAX_NUMBER_OF_ORDER_SEARCHES = 5;
 
     private static final int LOADER_ORDERS = 523;
 
-    private Integer mTenantId;
-    private Integer mSiteId;
+    private int mTenantId;
+    private int mSiteId;
 
     private ListView mOrdersList;
     private LinearLayout mProgress;
@@ -52,7 +60,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
     private TextView mOrderEmailHeader;
     private TextView mOrderStatusHeader;
     private TextView mOrderTotalHeader;
-
+    
     public OrderFragment() {
 
         setRetainInstance(true);
@@ -101,16 +109,90 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         mSearchView.setOnQueryTextListener(this);
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
         mSearchView.setOnCloseListener(this);
+        mSearchView.setQueryHint(getString(R.string.order_search_hint_text));
+        
         mSearchMenuItem.setOnActionExpandListener(this);
         searchManager.setOnCancelListener(this);
         searchManager.setOnDismissListener(this);
     }
 
-    public void setTenantId(Integer tenantId) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_search) {
+            showSuggestions();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void showSuggestions() {
+        UserPreferences prefs = UserAuthenticationStateMachineProducer.getInstance(getActivity()).getCurrentUsersPreferences();
+
+        List<RecentSearch> recentOrderSearches = prefs.getRecentOrderSearches();
+
+        // Load data from list to cursor
+        String[] columns = new String[] { "_id", "text" };
+        Object[] temp = new Object[] { 0, "default" };
+
+        MatrixCursor cursor = new MatrixCursor(columns);
+
+        if (recentOrderSearches == null || recentOrderSearches.size() < 1) {
+            return;
+        }
+
+        for(int i = 0; i < recentOrderSearches.size(); i++) {
+
+            temp[0] = i;
+            temp[1] = recentOrderSearches.get(i);
+
+            cursor.addRow(temp);
+
+        }
+
+        mSearchView.setSuggestionsAdapter(new SearchSuggestionsCursorAdapter(getActivity(), cursor, recentOrderSearches));
+
+        mSearchView.setOnSuggestionListener(this);
+    }
+
+    private void saveSearchToList(String query) {
+        UserAuthenticationStateMachine userState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
+
+        //save search to list
+        UserPreferences prefs = userState.getCurrentUsersPreferences();
+
+        List<RecentSearch> recentOrderSearches = prefs.getRecentOrderSearches();
+
+        if (recentOrderSearches == null) {
+            recentOrderSearches = new ArrayList<RecentSearch>();
+        }
+
+        //if search already exists then dont add it again
+        for (int i = 0; i < recentOrderSearches.size(); i++) {
+            if (recentOrderSearches.get(i).getSearchTerm().equalsIgnoreCase(query)) {
+                recentOrderSearches.remove(i);
+                break;
+            }
+        }
+
+        RecentSearch search = new RecentSearch();
+        search.setSearchTerm(query);
+
+        recentOrderSearches.add(0, search);
+
+        if (recentOrderSearches.size() > MAX_NUMBER_OF_ORDER_SEARCHES) {
+            recentOrderSearches.remove(recentOrderSearches.size() - 1);
+        }
+
+        prefs.setRecentProductSearchs(recentOrderSearches);
+
+        userState.updateUserPreferences();
+    }
+
+    public void setTenantId(int tenantId) {
         mTenantId = tenantId;
     }
 
-    public void setSiteId(Integer siteId) {
+    public void setSiteId(int siteId) {
         mSiteId = siteId;
     }
 
@@ -184,6 +266,8 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
 
         mProgress.setVisibility(View.VISIBLE);
         mOrdersList.setVisibility(View.GONE);
+
+        saveSearchToList(query);
 
         return true;
     }
@@ -271,6 +355,27 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         }
 
         clearSearchReload();
+    }
 
+    @Override
+    public boolean onSuggestionSelect(int position) {
+        return false;
+    }
+
+    @Override
+    public boolean onSuggestionClick(int position) {
+        UserAuthenticationStateMachine userState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
+
+        UserPreferences prefs = userState.getCurrentUsersPreferences();
+
+        List<RecentSearch> recentProductSearches = prefs.getRecentProductSearches();
+
+        String searchTerm = recentProductSearches.get(position).getSearchTerm();
+
+        mSearchView.setQuery(searchTerm, false);
+
+        onQueryTextSubmit(searchTerm);
+
+        return true;
     }
 }

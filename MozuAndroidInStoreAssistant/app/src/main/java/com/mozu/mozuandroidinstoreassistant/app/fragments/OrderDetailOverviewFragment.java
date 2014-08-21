@@ -1,5 +1,6 @@
 package com.mozu.mozuandroidinstoreassistant.app.fragments;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -10,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.mozu.api.contracts.commerceruntime.discounts.AppliedProductDiscount;
+import com.mozu.api.contracts.commerceruntime.discounts.Discount;
 import com.mozu.api.contracts.commerceruntime.discounts.ShippingDiscount;
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.commerceruntime.orders.OrderAttribute;
@@ -165,6 +168,8 @@ public class OrderDetailOverviewFragment extends Fragment implements View.OnClic
 
     private void addOrderedItemLayoutsToView(List<OrderItem> items) {
 
+        int i = 0;
+
         for(OrderItem item: items) {
             View view = LayoutInflater.from(getActivity()).inflate(R.layout.ordered_item_list_item, mOrderedItemLayout, false);
 
@@ -173,6 +178,7 @@ public class OrderDetailOverviewFragment extends Fragment implements View.OnClic
             TextView price = (TextView) view.findViewById(R.id.ordered_item_price);
             TextView quantity = (TextView) view.findViewById(R.id.ordered_item_quantity);
             TextView total = (TextView) view.findViewById(R.id.ordered_item_total);
+            ImageView discountInfo = (ImageView) view.findViewById(R.id.discount_info_image);
 
             Product product = item.getProduct();
 
@@ -194,7 +200,20 @@ public class OrderDetailOverviewFragment extends Fragment implements View.OnClic
             quantity.setText(String.valueOf(item.getQuantity()));
             total.setText(mNumberFormat.format(item.getTotal()));
 
+            if (item.getProductDiscounts() != null && item.getProductDiscounts().size() > 0) {
+                view.setOnClickListener(this);
+
+                view.setTag(i);
+
+                discountInfo.setVisibility(View.VISIBLE);
+            } else {
+                discountInfo.setVisibility(View.INVISIBLE);
+            }
+
+            i++;
+
             mOrderedItemLayout.addView(view);
+
         }
 
     }
@@ -202,7 +221,6 @@ public class OrderDetailOverviewFragment extends Fragment implements View.OnClic
     public void setOrder(Order order) {
         mOrder = order;
     }
-
 
     @Override
     public void onClick(View v) {
@@ -213,7 +231,54 @@ public class OrderDetailOverviewFragment extends Fragment implements View.OnClic
             } else {
                 mDetailLayout.setVisibility(View.GONE);
             }
+        } else {
+            determineShowDiscountInfo(v);
         }
 
+    }
+
+    private void determineShowDiscountInfo(View v) {
+        int index;
+
+        //try to parse the tag as an index, if it does not parse then we know it is not an index
+        try {
+
+            index = Integer.parseInt(String.valueOf(v.getTag()));
+
+        } catch (Exception e) {
+
+           index = -1;
+        }
+
+        if (index != -1 && mOrder != null && mOrder.getItems() != null && mOrder.getItems().size() > 0) {
+            OrderItem item = mOrder.getItems().get(index);
+
+            LinearLayout discountsView = new LinearLayout(getActivity());
+            discountsView.setOrientation(LinearLayout.VERTICAL);
+            discountsView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+            for (AppliedProductDiscount productDiscount: item.getProductDiscounts()) {
+                Discount discount = productDiscount.getDiscount();
+
+                View eachDiscountView = LayoutInflater.from(getActivity()).inflate(R.layout.ordered_item_discount_list_item, discountsView, false);
+
+                TextView discountName = (TextView) eachDiscountView.findViewById(R.id.discount_name);
+                TextView discountAmount = (TextView) eachDiscountView.findViewById(R.id.discount_price);
+                TextView discountTotal = (TextView) eachDiscountView.findViewById(R.id.discount_total);
+
+                discountName.setText(discount.getName());
+                discountAmount.setText(mNumberFormat.format(productDiscount.getImpactPerUnit() * -1));
+                discountTotal.setText(mNumberFormat.format(productDiscount.getImpact() * -1));
+
+                discountsView.addView(eachDiscountView);
+            }
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+            builder.setView(discountsView);
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
     }
 }

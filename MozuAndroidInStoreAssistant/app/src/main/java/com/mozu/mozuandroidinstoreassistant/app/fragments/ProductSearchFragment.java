@@ -26,9 +26,9 @@ import android.widget.TextView;
 import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.ProductAdapter;
-import com.mozu.mozuandroidinstoreassistant.app.adapters.ProductSearchSuggestionsCursorAdapter;
+import com.mozu.mozuandroidinstoreassistant.app.adapters.SearchSuggestionsCursorAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.loaders.ProductSearchLoader;
-import com.mozu.mozuandroidinstoreassistant.app.models.RecentProductSearch;
+import com.mozu.mozuandroidinstoreassistant.app.models.RecentSearch;
 import com.mozu.mozuandroidinstoreassistant.app.models.UserPreferences;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
@@ -334,7 +334,7 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
     private void showSuggestions() {
         UserPreferences prefs = mUserState.getCurrentUsersPreferences();
 
-        List<RecentProductSearch> recentProductSearches = prefs.getRecentProductSearches();
+        List<RecentSearch> recentProductSearches = prefs.getRecentProductSearches();
 
         // Load data from list to cursor
         String[] columns = new String[] { "_id", "text" };
@@ -355,18 +355,19 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
 
         }
 
-        mSearchView.setSuggestionsAdapter(new ProductSearchSuggestionsCursorAdapter(getActivity(), cursor, recentProductSearches));
+        mSearchView.setSuggestionsAdapter(new SearchSuggestionsCursorAdapter(getActivity(), cursor, recentProductSearches));
 
         mSearchView.setOnSuggestionListener(this);
     }
+
     private void saveSearchToList(String query) {
         //save search to list
         UserPreferences prefs = mUserState.getCurrentUsersPreferences();
 
-        List<RecentProductSearch> recentProductSearches = prefs.getRecentProductSearches();
+        List<RecentSearch> recentProductSearches = prefs.getRecentProductSearches();
 
         if (recentProductSearches == null) {
-            recentProductSearches = new ArrayList<RecentProductSearch>();
+            recentProductSearches = new ArrayList<RecentSearch>();
         }
 
         //if search already exists then dont add it again
@@ -377,7 +378,7 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
             }
         }
 
-        RecentProductSearch search = new RecentProductSearch();
+        RecentSearch search = new RecentSearch();
         search.setSearchTerm(query);
 
         recentProductSearches.add(0, search);
@@ -406,7 +407,7 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
     public boolean onSuggestionClick(int position) {
         UserPreferences prefs = mUserState.getCurrentUsersPreferences();
 
-        List<RecentProductSearch> recentProductSearches = prefs.getRecentProductSearches();
+        List<RecentSearch> recentProductSearches = prefs.getRecentProductSearches();
 
         onQueryTextSubmit(recentProductSearches.get(position).getSearchTerm());
 

@@ -9,15 +9,15 @@ import android.widget.CursorAdapter;
 import android.widget.TextView;
 
 import com.mozu.mozuandroidinstoreassistant.app.R;
-import com.mozu.mozuandroidinstoreassistant.app.models.RecentProductSearch;
+import com.mozu.mozuandroidinstoreassistant.app.models.RecentSearch;
 
 import java.util.List;
 
-public class ProductSearchSuggestionsCursorAdapter extends CursorAdapter {
+public class SearchSuggestionsCursorAdapter extends CursorAdapter {
 
-    private List<RecentProductSearch> mItems;
+    private List<RecentSearch> mItems;
 
-    public ProductSearchSuggestionsCursorAdapter(Context context, Cursor cursor, List<RecentProductSearch> items) {
+    public SearchSuggestionsCursorAdapter(Context context, Cursor cursor, List<RecentSearch> items) {
         super(context, cursor, false);
 
         mItems = items;

@@ -110,5 +110,6 @@
     <string name="title_activity_auth">AuthActivity</string>
     <string name="error_message_for_order_customer_name">N/A - Could Not Retreive</string>
     <string name="attributes_items_header">Attributes</string>
+    <string name="order_search_hint_text">Search by Order No. or Email Address</string>
 
 </resources>
