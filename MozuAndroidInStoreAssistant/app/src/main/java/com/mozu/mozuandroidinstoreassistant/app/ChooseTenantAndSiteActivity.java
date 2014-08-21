@@ -50,7 +50,7 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
 
         mUserAuthStateMachine.addObserver(this);
 
-        if (!mUserAuthStateMachine.getCurrentUsersPreferences().getDontAskToSetTenantSiteIfSet()) {
+        if (mUserAuthStateMachine.getTenantId() != null && mUserAuthStateMachine.getSiteId() != null) {
             showTenantChooser();
         } else {
             updateAuthTicketToDefaults();
@@ -203,7 +203,7 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
 
     @Override
     public void siteWasChosen(Site chosenSite) {
-        mUserAuthStateMachine.setCurrentSite(chosenSite);
+        mUserAuthStateMachine.setCurrentSiteId(chosenSite);
 
         if (mSiteFragment != null) {
             mSiteFragment.dismiss();
@@ -237,18 +237,13 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
 
     @Override
     public void setChosenTenantSiteAsDefault() {
-        mUserAuthStateMachine.getCurrentUsersPreferences().setDontAskToSetTenantSiteIfSet(true);
-        mUserAuthStateMachine.updateUserPreferences();
-
+        mUserAuthStateMachine.persistSiteTenantId();
         startActivity(new Intent(this, MainActivity.class));
         finish();
     }
 
     @Override
     public void doNotSetDefault() {
-        mUserAuthStateMachine.getCurrentUsersPreferences().setDontAskToSetTenantSiteIfSet(false);
-        mUserAuthStateMachine.updateUserPreferences();
-
         startActivity(new Intent(this, MainActivity.class));
         finish();
     }
