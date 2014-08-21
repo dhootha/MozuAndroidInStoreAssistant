@@ -1,21 +1,16 @@
 package com.mozu.mozuandroidinstoreassistant.app.fragments;
 
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.mozu.api.contracts.commerceruntime.discounts.AppliedDiscount;
 import com.mozu.api.contracts.commerceruntime.discounts.AppliedProductDiscount;
 import com.mozu.api.contracts.commerceruntime.discounts.Discount;
 import com.mozu.api.contracts.commerceruntime.discounts.ShippingDiscount;
