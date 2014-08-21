@@ -218,4 +218,9 @@ public class UserAuthenticationStateMachine extends Observable implements Refres
         }
         return mSiteId;
     }
+
+    public void resetTenantSiteId(){
+        mSiteId = null;
+        mTenantId = null;
+    }
 }
