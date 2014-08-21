@@ -238,7 +238,7 @@ public class LoginActivity extends AuthActivity implements LoaderCallbacks<Curso
 
         showProgress(true);
 
-        if (getUserAuthStateMachine().getCurrentUserAuthState().isTenantSelectedState() && getUserAuthStateMachine().getCurrentUsersPreferences().getDontAskToSetTenantSiteIfSet()) {
+        if (getUserAuthStateMachine().getCurrentUserAuthState().isTenantSelectedState() && getUserAuthStateMachine().getTenantId() != null && getUserAuthStateMachine().getSiteId() != null) {
 
             startActivity(new Intent(this, MainActivity.class));
         } else {

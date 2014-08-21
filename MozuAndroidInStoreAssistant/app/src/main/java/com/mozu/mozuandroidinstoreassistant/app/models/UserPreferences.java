@@ -8,7 +8,6 @@ public class UserPreferences {
     private String mEmail;
     private String mDefaultTenantId;
     private String mDefaultSiteId;
-    private boolean mDontAskToSetTenantSiteIfSet;
     private boolean mShowAsGrids = true;
 
     private List<RecentProductSearch> mRecentProductSearches;
@@ -43,15 +42,6 @@ public class UserPreferences {
         mDefaultSiteId = siteId;
     }
 
-    public void setDontAskToSetTenantSiteIfSet(boolean dontAsk) {
-
-        mDontAskToSetTenantSiteIfSet = dontAsk;
-    }
-
-    public boolean getDontAskToSetTenantSiteIfSet() {
-
-        return mDontAskToSetTenantSiteIfSet;
-    }
 
     public void setShowAsGrids(boolean showAsGrids) {
 

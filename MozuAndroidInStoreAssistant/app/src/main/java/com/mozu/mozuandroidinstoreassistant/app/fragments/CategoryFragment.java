@@ -228,12 +228,10 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
     public Loader<List<Category>> onCreateLoader(int id, Bundle args) {
 
         if (id == CATEGORY_LOADER) {
-            UserPreferences prefs = mUserState.getCurrentUsersPreferences();
-
             //rework this to always have appropriate fragment values
-            String tenantId = prefs.getDefaultTenantId();
-            String siteId = prefs.getDefaultSiteId();
-            return new CategoryLoader(getActivity(), tenantId != null && !tenantId.equalsIgnoreCase(NULL) ? Integer.parseInt(tenantId) : null, siteId != null && !siteId.equalsIgnoreCase("null") ? Integer.parseInt(siteId) : null);
+            Integer tenantId = mUserState.getTenantId();
+            Integer siteId = mUserState.getSiteId();
+            return new CategoryLoader(getActivity(), tenantId , siteId);
         }
 
         return null;
