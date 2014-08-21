@@ -45,6 +45,7 @@ public class UserAuthenticatedState extends UserAuthenticationState implements U
         getStateMachine().updateUserPreferences();
 
         getStateMachine().setCurrentUserAuthState(getStateMachine().userNotAuthenticatedNoAuthTicket);
+        getStateMachine().resetTenantSiteId();
     }
 
     @Override
