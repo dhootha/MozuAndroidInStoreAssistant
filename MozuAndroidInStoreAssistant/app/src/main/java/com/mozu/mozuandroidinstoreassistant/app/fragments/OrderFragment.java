@@ -39,8 +39,8 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private static final int LOADER_ORDERS = 523;
 
-    private int mTenantId;
-    private int mSiteId;
+    private Integer mTenantId;
+    private Integer mSiteId;
 
     private ListView mOrdersList;
     private LinearLayout mProgress;
@@ -188,11 +188,11 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         userState.updateUserPreferences();
     }
 
-    public void setTenantId(int tenantId) {
+    public void setTenantId(Integer tenantId) {
         mTenantId = tenantId;
     }
 
-    public void setSiteId(int siteId) {
+    public void setSiteId(Integer siteId) {
         mSiteId = siteId;
     }
 
