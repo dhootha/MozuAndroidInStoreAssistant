@@ -1,6 +1,6 @@
 package com.mozu.mozuandroidinstoreassistant.app.models;
 
-public class RecentProductSearch {
+public class RecentSearch {
 
     private String mSearchTerm;
 

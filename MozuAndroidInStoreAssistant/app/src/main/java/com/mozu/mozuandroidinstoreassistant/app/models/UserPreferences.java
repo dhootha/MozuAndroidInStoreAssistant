@@ -11,7 +11,9 @@ public class UserPreferences {
     private boolean mDontAskToSetTenantSiteIfSet;
     private boolean mShowAsGrids = true;
 
-    private List<RecentProductSearch> mRecentProductSearches;
+    private List<RecentSearch> mRecentProductSearches;
+
+    private List<RecentSearch> mRecentOrderSearches;
 
     public String getEmail() {
 
@@ -63,16 +65,29 @@ public class UserPreferences {
         return mShowAsGrids;
     }
 
-    public void setRecentProductSearchs(List<RecentProductSearch> recentProductSearchs) {
+    public void setRecentProductSearchs(List<RecentSearch> recentProductSearchs) {
 
         mRecentProductSearches = recentProductSearchs;
     }
 
-    public List<RecentProductSearch> getRecentProductSearches() {
+    public List<RecentSearch> getRecentProductSearches() {
         if (mRecentProductSearches == null) {
-            mRecentProductSearches = new ArrayList<RecentProductSearch>();
+            mRecentProductSearches = new ArrayList<RecentSearch>();
         }
 
         return mRecentProductSearches;
+    }
+
+    public void setRecentOrderSearchs(List<RecentSearch> recentOrderSearchs) {
+
+        mRecentOrderSearches = recentOrderSearchs;
+    }
+
+    public List<RecentSearch> getRecentOrderSearches() {
+        if (mRecentOrderSearches == null) {
+            mRecentOrderSearches = new ArrayList<RecentSearch>();
+        }
+
+        return mRecentOrderSearches;
     }
 }
