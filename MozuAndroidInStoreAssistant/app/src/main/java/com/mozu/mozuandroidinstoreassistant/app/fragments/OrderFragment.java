@@ -221,7 +221,10 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     public void setTenantId(Integer tenantId) {
+<<<<<<< HEAD
 
+=======
+>>>>>>> Merge branch 'master' into B-27699
         mTenantId = tenantId;
     }
 
