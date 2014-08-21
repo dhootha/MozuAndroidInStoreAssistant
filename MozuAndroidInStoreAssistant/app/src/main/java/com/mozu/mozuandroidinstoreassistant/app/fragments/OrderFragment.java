@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -35,7 +36,9 @@ import java.util.List;
 
 public class OrderFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Order>>, AbsListView.OnScrollListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, SearchManager.OnCancelListener, SearchManager.OnDismissListener, SearchView.OnSuggestionListener, MenuItem.OnActionExpandListener, AdapterView.OnItemClickListener, View.OnClickListener {
 
-    public static final int MAX_NUMBER_OF_ORDER_SEARCHES = 5;
+    private static final int MAX_NUMBER_OF_ORDER_SEARCHES = 5;
+
+    private static final String CURRENT_SORT_COLUMN_EXTRA = "currensortcolumnextra";
 
     private static final int LOADER_ORDERS = 523;
 
@@ -60,7 +63,15 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
     private TextView mOrderEmailHeader;
     private TextView mOrderStatusHeader;
     private TextView mOrderTotalHeader;
-    
+
+    private ImageView mOrderNumberHeaderSortImage;
+    private ImageView mOrderDateHeaderSortImage;
+    private ImageView mOrderEmailHeaderSortImage;
+    private ImageView mOrderStatusHeaderSortImage;
+    private ImageView mOrderTotalHeaderSortImage;
+
+    private int mResourceOfCurrentSelectedColumn = -1;
+
     public OrderFragment() {
 
         setRetainInstance(true);
@@ -78,6 +89,12 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         mOrderStatusHeader = (TextView) view.findViewById(R.id.order_status_header);
         mOrderTotalHeader = (TextView) view.findViewById(R.id.order_total_header);
 
+        mOrderNumberHeaderSortImage = (ImageView) view.findViewById(R.id.order_number_header_sort_image);
+        mOrderDateHeaderSortImage = (ImageView) view.findViewById(R.id.order_date_header_sort_image);
+        mOrderEmailHeaderSortImage = (ImageView) view.findViewById(R.id.order_email_header_sort_image);
+        mOrderStatusHeaderSortImage = (ImageView) view.findViewById(R.id.order_status_header_sort_image);
+        mOrderTotalHeaderSortImage = (ImageView) view.findViewById(R.id.order_total_header_sort_image);
+
         mOrderNumberHeader.setOnClickListener(this);
         mOrderDateHeader.setOnClickListener(this);
         mOrderEmailHeader.setOnClickListener(this);
@@ -94,7 +111,22 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
 
         mOrdersList.setOnItemClickListener(this);
 
+        if (savedInstanceState != null) {
+            mResourceOfCurrentSelectedColumn = savedInstanceState.getInt(CURRENT_SORT_COLUMN_EXTRA, -1);
+        }
+
+        if (mResourceOfCurrentSelectedColumn != -1) {
+            initializeSortColumn();
+        }
+
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putInt(CURRENT_SORT_COLUMN_EXTRA, mResourceOfCurrentSelectedColumn);
+
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -110,7 +142,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
         mSearchView.setOnCloseListener(this);
         mSearchView.setQueryHint(getString(R.string.order_search_hint_text));
-        
+
         mSearchMenuItem.setOnActionExpandListener(this);
         searchManager.setOnCancelListener(this);
         searchManager.setOnDismissListener(this);
@@ -337,24 +369,96 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private void determineSortActionForView(View v) {
 
+        setTextViewNormalStyle(mOrderNumberHeader);
+        setTextViewNormalStyle(mOrderDateHeader);
+        setTextViewNormalStyle(mOrderEmailHeader);
+        setTextViewNormalStyle(mOrderStatusHeader);
+        setTextViewNormalStyle(mOrderTotalHeader);
+
+        mOrderNumberHeaderSortImage.setVisibility(View.INVISIBLE);
+        mOrderDateHeaderSortImage.setVisibility(View.INVISIBLE);
+        mOrderEmailHeaderSortImage.setVisibility(View.INVISIBLE);
+        mOrderStatusHeaderSortImage.setVisibility(View.INVISIBLE);
+        mOrderTotalHeaderSortImage.setVisibility(View.INVISIBLE);
+
+
         if (v.getId() == mOrderNumberHeader.getId()) {
             getOrdersLoader().orderByNumber();
+            setTextViewBoldStyle(mOrderNumberHeader);
+            mResourceOfCurrentSelectedColumn = mOrderNumberHeader.getId();
+            mOrderNumberHeaderSortImage.setVisibility(View.VISIBLE);
         } else if (v.getId() == mOrderDateHeader.getId()) {
             getOrdersLoader().orderByDate();
+            setTextViewBoldStyle(mOrderDateHeader);
+            mResourceOfCurrentSelectedColumn = mOrderDateHeader.getId();
+            mOrderDateHeaderSortImage.setVisibility(View.VISIBLE);
         } else if (v.getId() == mOrderEmailHeader.getId()) {
             //TODO: NOT CURRENTLY A WAY TO SORT BY EMAIL
             //            getOrdersLoader().orderByEmail();
             //            clearSearchReload();
+            return;
         } else if (v.getId() == mOrderStatusHeader.getId()) {
             getOrdersLoader().orderByStatus();
+            setTextViewBoldStyle(mOrderStatusHeader);
+            mResourceOfCurrentSelectedColumn = mOrderStatusHeader.getId();
+            mOrderStatusHeaderSortImage.setVisibility(View.VISIBLE);
         } else if (v.getId() == mOrderTotalHeader.getId()) {
             getOrdersLoader().orderByTotal();
+            setTextViewBoldStyle(mOrderTotalHeader);
+            mResourceOfCurrentSelectedColumn = mOrderTotalHeader.getId();
+            mOrderTotalHeaderSortImage.setVisibility(View.VISIBLE);
         } else {
             // if the view wasn't a sort column we don't need to do anyting else
             return;
         }
 
         clearSearchReload();
+    }
+
+    private void initializeSortColumn() {
+
+        setTextViewNormalStyle(mOrderNumberHeader);
+        setTextViewNormalStyle(mOrderDateHeader);
+        setTextViewNormalStyle(mOrderEmailHeader);
+        setTextViewNormalStyle(mOrderStatusHeader);
+        setTextViewNormalStyle(mOrderTotalHeader);
+
+        mOrderNumberHeaderSortImage.setVisibility(View.INVISIBLE);
+        mOrderDateHeaderSortImage.setVisibility(View.INVISIBLE);
+        mOrderEmailHeaderSortImage.setVisibility(View.INVISIBLE);
+        mOrderStatusHeaderSortImage.setVisibility(View.INVISIBLE);
+        mOrderTotalHeaderSortImage.setVisibility(View.INVISIBLE);
+
+        if (mResourceOfCurrentSelectedColumn == mOrderNumberHeader.getId()) {
+
+            setTextViewBoldStyle(mOrderNumberHeader);
+            mOrderNumberHeaderSortImage.setVisibility(View.VISIBLE);
+        } else if (mResourceOfCurrentSelectedColumn == mOrderDateHeader.getId()) {
+
+            setTextViewBoldStyle(mOrderDateHeader);
+            mOrderDateHeaderSortImage.setVisibility(View.VISIBLE);
+        } else if (mResourceOfCurrentSelectedColumn == mOrderEmailHeader.getId()) {
+
+            return;
+        } else if (mResourceOfCurrentSelectedColumn == mOrderStatusHeader.getId()) {
+
+            setTextViewBoldStyle(mOrderStatusHeader);
+            mOrderStatusHeaderSortImage.setVisibility(View.VISIBLE);
+        } else if (mResourceOfCurrentSelectedColumn == mOrderTotalHeader.getId()) {
+
+            setTextViewBoldStyle(mOrderTotalHeader);
+            mOrderTotalHeaderSortImage.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void setTextViewBoldStyle(TextView textView) {
+        textView.setTextAppearance(getActivity(), R.style.boldText);
+        textView.setBackgroundResource(android.R.color.transparent);
+    }
+
+    private void setTextViewNormalStyle(TextView textView) {
+        textView.setTextAppearance(getActivity(), R.style.normalText);
+        textView.setBackgroundResource(android.R.color.transparent);
     }
 
     @Override
