@@ -83,27 +83,26 @@ public class ProductDetailOverviewFragment extends Fragment {
     }
 
     private String getUPC(Product product){
-        if(TextUtils.isEmpty(product.getUpc())) {
+        if (TextUtils.isEmpty(product.getUpc())) {
             return "N/A";
-        }
-        else {
+        } else {
             return product.getUpc();
         }
     }
 
     private String getPartNumber(Product product){
-            if(TextUtils.isEmpty(product.getMfgPartNumber())){
-                return "N/A";
-            }else{
-                return product.getMfgPartNumber();
-            }
+        if (TextUtils.isEmpty(product.getMfgPartNumber())) {
+            return "N/A";
+        } else {
+            return product.getMfgPartNumber();
+        }
     }
     public void setProduct(Product product) {
         mProduct = product;
     }
 
     private boolean hasSalePrice(Product product){
-        if (mProduct.getPrice() != null && mProduct.getPrice().getSalePrice() != null) {
+        if (product.getPrice() != null && product.getPrice().getSalePrice() != null) {
             return true;
         }
         return false;
