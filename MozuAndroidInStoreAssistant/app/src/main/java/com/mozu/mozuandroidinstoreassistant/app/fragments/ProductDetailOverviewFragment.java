@@ -71,7 +71,7 @@ public class ProductDetailOverviewFragment extends Fragment {
         mapPrice.setText(getMAPPriceText(defaultFormat));
 
         includes.setText(getBundledProductsString());
-        mDescription.setText(getDescriptionWithSpannableClick(true));
+        mDescription.setText(getDescriptionWithSpannableClick(false));
         mDescription.setMovementMethod(LinkMovementMethod.getInstance());
 
         upc.setText(getUPC(mProduct));
