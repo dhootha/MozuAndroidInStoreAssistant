@@ -19,8 +19,6 @@ import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.views.NoUnderlineClickableSpan;
 
-import org.w3c.dom.Text;
-
 import java.text.NumberFormat;
 
 
