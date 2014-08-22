@@ -50,7 +50,7 @@
     <string name="avail_label">Availability</string>
     <string name="taxable_label">Taxable</string>
     <string name="recurring_label">Recurring</string>
-    <string name="full_description_click_link">... Full Description</string>
+    <string name="full_description_click_link">... Read More</string>
     <string name="show_less_click_link"> - Show Less</string>
     <string name="weight_label">Weight</string>
     <string name="meansurment_label">Measurements</string>
