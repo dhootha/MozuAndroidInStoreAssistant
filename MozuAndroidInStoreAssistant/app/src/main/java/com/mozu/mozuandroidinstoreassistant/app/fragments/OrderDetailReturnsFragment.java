@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -29,12 +30,15 @@ public class OrderDetailReturnsFragment extends Fragment implements LoaderManage
     public static final String REFUND = "Refund";
     public static final String UNKNOWN = "Unknown";
 
+    private LinearLayout mListOfReturnsLayout;
+
     private Order mOrder;
     private List<Return> mReturns;
 
     private TextView mReplacedTotal;
     private TextView mRefundedTotal;
     private TextView mTotal;
+    private TextView mEmptyReturnsMessage;
 
     private ListView mItemList;
 
@@ -63,9 +67,11 @@ public class OrderDetailReturnsFragment extends Fragment implements LoaderManage
             return;
         }
 
+        mListOfReturnsLayout = (LinearLayout) view.findViewById(R.id.list_of_returns_layout);
         mReplacedTotal = (TextView) view.findViewById(R.id.replaced_total);
         mRefundedTotal = (TextView) view.findViewById(R.id.refunded_total);
         mTotal = (TextView) view.findViewById(R.id.total_returned);
+        mEmptyReturnsMessage = (TextView) view.findViewById(R.id.empty_returns_message);
 
         List<ReturnItemForAdapterWrapper> items = new ArrayList<ReturnItemForAdapterWrapper>();
         int replacedCount = 0;
@@ -92,6 +98,14 @@ public class OrderDetailReturnsFragment extends Fragment implements LoaderManage
 
         mItemList = (ListView) view.findViewById(R.id.returns_list);
         mItemList.setAdapter(new OrderDetailReturnsAdapter(getActivity(), items));
+
+        if (replacedCount + refundedCount < 1) {
+            mListOfReturnsLayout.setVisibility(View.INVISIBLE);
+            mEmptyReturnsMessage.setVisibility(View.VISIBLE);
+        } else {
+            mListOfReturnsLayout.setVisibility(View.VISIBLE);
+            mEmptyReturnsMessage.setVisibility(View.GONE);
+        }
 
         mReplacedTotal.setText(String.valueOf(replacedCount));
         mRefundedTotal.setText(String.valueOf(refundedCount));
