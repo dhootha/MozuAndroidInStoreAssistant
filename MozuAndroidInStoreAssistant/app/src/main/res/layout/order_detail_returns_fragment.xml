@@ -115,11 +115,20 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/empty_returns_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:text="@string/empty_order_items_text"
+        android:visibility="gone"/>
+
     <LinearLayout
+        android:id="@+id/list_of_returns_layout"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         android:layout_marginTop="20dp"
         android:background="@drawable/product_detail_images_background">
 

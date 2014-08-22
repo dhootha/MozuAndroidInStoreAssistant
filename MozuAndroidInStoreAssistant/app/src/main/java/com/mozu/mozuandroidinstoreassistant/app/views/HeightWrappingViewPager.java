@@ -8,6 +8,8 @@ import android.view.View;
 
 public class HeightWrappingViewPager extends ViewPager {
 
+    private static final int PADDING_TO_ADD_TO_HEIGHT = 100;
+
     public HeightWrappingViewPager(Context context) {
         super(context);
     }
@@ -47,6 +49,7 @@ public class HeightWrappingViewPager extends ViewPager {
 
             fragmentHeight = fHeight > fragmentHeight ? fHeight : fragmentHeight;
 
+            fragmentHeight += PADDING_TO_ADD_TO_HEIGHT;
         }
 
         if (wrapHeight) {

@@ -155,6 +155,7 @@ public class OrderDetailActivity extends Activity implements LoaderManager.Loade
 
         mOrderViewPager.setAdapter(adapter);
         mTabIndicator.setViewPager(mOrderViewPager);
+        mTabIndicator.setCurrentItem(0);
 
     }
 
