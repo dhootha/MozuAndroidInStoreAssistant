@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
@@ -17,6 +18,8 @@ import com.mozu.api.contracts.productruntime.BundledProduct;
 import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.views.NoUnderlineClickableSpan;
+
+import org.w3c.dom.Text;
 
 import java.text.NumberFormat;
 
@@ -73,15 +76,30 @@ public class ProductDetailOverviewFragment extends Fragment {
         mDescription.setText(getDescriptionWithSpannableClick(false));
         mDescription.setMovementMethod(LinkMovementMethod.getInstance());
 
-        upc.setText(mProduct.getUpc());
-        pn.setText(mProduct.getMfgPartNumber());
+        upc.setText(getUPC(mProduct));
+        pn.setText(getPartNumber(mProduct));
         distrpn.setText("N/A");
         taxable.setText(mProduct.getIsTaxable() != null && mProduct.getIsTaxable() ? getString(R.string.yes) : getString(R.string.no));
         recurring.setText(mProduct.getIsRecurring() != null && mProduct.getIsRecurring() ? getString(R.string.yes) : getString(R.string.no));
 
     }
 
+    private String getUPC(Product product){
+        if(TextUtils.isEmpty(product.getUpc())) {
+            return "N/A";
+        }
+        else {
+            return product.getUpc();
+        }
+    }
 
+    private String getPartNumber(Product product){
+            if(TextUtils.isEmpty(product.getMfgPartNumber())){
+                return "N/A";
+            }else{
+                return product.getMfgPartNumber();
+            }
+    }
     public void setProduct(Product product) {
         mProduct = product;
     }
