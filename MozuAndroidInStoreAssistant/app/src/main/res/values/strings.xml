@@ -111,6 +111,7 @@
     <string name="error_message_for_order_customer_name">N/A - Could Not Retreive</string>
     <string name="attributes_items_header">Attributes</string>
     <string name="order_search_hint_text">Search by Order No. or Email Address</string>
-    <string name="empty_order_items_text">No Items To Display</string>
+    <string name="empty_order_items_text">No Items To Display.</string>
+    <string name="empty_payments_message_string">No Payments Exist.</string>
 
 </resources>

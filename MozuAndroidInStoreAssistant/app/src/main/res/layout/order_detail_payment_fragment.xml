@@ -115,6 +115,15 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/empty_payments_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
+        android:text="@string/empty_payments_message_string"
+        android:visibility="gone"/>
+
     <ListView
         android:id="@+id/payments_list"
         android:layout_width="match_parent"

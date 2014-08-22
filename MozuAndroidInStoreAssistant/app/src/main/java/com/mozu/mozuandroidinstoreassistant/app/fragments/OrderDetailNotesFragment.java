@@ -21,7 +21,6 @@ public class OrderDetailNotesFragment extends Fragment {
         setRetainInstance(true);
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.order_detail_notes_fragment, null);
@@ -36,11 +35,8 @@ public class OrderDetailNotesFragment extends Fragment {
     private void setOrderToViews(View view) {
 
         ListView noteList = (ListView) view.findViewById(R.id.notes_list);
-
         noteList.setAdapter(new OrderDetailNotesAdapter(getActivity(), mOrder.getNotes()));
-
     }
-
 
     public void setOrder(Order order) {
         mOrder = order;
