@@ -59,8 +59,12 @@ public class ProductDetailOverviewFragment extends Fragment {
         TextView recurring = (TextView) view.findViewById(R.id.recurring);
 
         NumberFormat defaultFormat = NumberFormat.getCurrencyInstance();
-
-        mainPrice.setText(getSalePriceText(defaultFormat));
+        if (hasSalePrice(mProduct)) {
+            mainPrice.setVisibility(View.VISIBLE);
+            mainPrice.setText(getSalePriceText(defaultFormat));
+        } else {
+            mainPrice.setVisibility(View.GONE);
+        }
         regPrice.setText(getRegularPriceText(defaultFormat));
         msrpPrice.setText(getMSRPPriceText(defaultFormat));
         mapPrice.setText(getMAPPriceText(defaultFormat));
@@ -82,11 +86,16 @@ public class ProductDetailOverviewFragment extends Fragment {
         mProduct = product;
     }
 
+    private boolean hasSalePrice(Product product){
+        if (mProduct.getPrice() != null && mProduct.getPrice().getSalePrice() != null) {
+            return true;
+        }
+        return false;
+    }
+
     private String getSalePriceText(NumberFormat format) {
         String saleString = "N/A";
-
-        if (mProduct.getPrice() != null && mProduct.getPrice().getSalePrice() != null) {
-
+        if (hasSalePrice(mProduct)) {
             saleString = format.format(mProduct.getPrice().getSalePrice());
         }
 
