@@ -29,6 +29,8 @@ public class ProductDetailOverviewFragment extends Fragment {
 
     TextView mDescription;
 
+    private static final int MAX_DESC_LENGTH = 500;
+
     public ProductDetailOverviewFragment() {
         // Required empty public constructor
         setRetainInstance(true);
@@ -180,24 +182,24 @@ public class ProductDetailOverviewFragment extends Fragment {
             return new SpannableString("N/A");
         }
 
-        String desc;
+        String desc = mProduct.getContent().getProductFullDescription();
         String buttonText;
         ClickableSpan clickableSpan;
+        SpannableString spannableString;
+        Spanned spannedText = Html.fromHtml(desc);
         if (showLargeDescription) {
-            desc = mProduct.getContent().getProductFullDescription();
             buttonText = getString(R.string.show_less_click_link);
             clickableSpan = mContractClickableSpan;
+            spannableString = new SpannableString(spannedText);
         } else {
-            desc = mProduct.getContent().getProductShortDescription();
             buttonText = getString(R.string.full_description_click_link);
             clickableSpan = mExpandClickableSpan;
+            spannableString = new SpannableString(spannedText.subSequence(0, MAX_DESC_LENGTH));
         }
-        desc = desc + buttonText;
-        Spanned spanedText = Html.fromHtml(desc);
-        SpannableString spannableString = new SpannableString(spanedText);
-        spannableString.setSpan(clickableSpan, spanedText.length() - buttonText.length(), spanedText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        spannableString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.mozu_color)), spanedText.length() - buttonText.length(), spanedText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        return spannableString;
+        SpannableString linkSpan = new SpannableString(buttonText);
+        linkSpan.setSpan(clickableSpan, 0, buttonText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        linkSpan.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.mozu_color)), 0, buttonText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return new SpannableString(TextUtils.concat(spannableString,linkSpan));
     }
 
     private NoUnderlineClickableSpan mExpandClickableSpan = new NoUnderlineClickableSpan() {
