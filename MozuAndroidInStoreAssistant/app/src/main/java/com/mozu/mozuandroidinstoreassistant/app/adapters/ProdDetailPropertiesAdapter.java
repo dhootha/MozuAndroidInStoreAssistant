@@ -51,11 +51,11 @@ public class ProdDetailPropertiesAdapter extends ArrayAdapter<ProductProperty> {
     private String getPropValues(ProductProperty property) {
         String valueString = "";
 
-        for (ProductPropertyValue value: property.getValues()) {
+        for (ProductPropertyValue value : property.getValues()) {
             if (value.getStringValue() != null) {
-                valueString += value.getStringValue() + ", ";
+                valueString += capitalizeFirstLetter(value.getStringValue() + ", ");
             } else if (value.getValue() != null) {
-                valueString += value.getValue().toString() + ", ";
+                valueString += capitalizeFirstLetter(value.getValue().toString() + ", ");
             }
         }
 
@@ -63,6 +63,10 @@ public class ProdDetailPropertiesAdapter extends ArrayAdapter<ProductProperty> {
             valueString = valueString.substring(0, valueString.length() - 2);
         }
 
-        return  valueString;
+        return valueString;
+    }
+
+    private String capitalizeFirstLetter(String inputString){
+        return Character.toUpperCase(inputString.charAt(0)) + inputString.substring(1);
     }
 }
