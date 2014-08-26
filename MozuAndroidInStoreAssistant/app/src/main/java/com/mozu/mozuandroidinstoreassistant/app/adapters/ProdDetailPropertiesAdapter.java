@@ -34,7 +34,12 @@ public class ProdDetailPropertiesAdapter extends ArrayAdapter<ProductProperty> {
 
         if (property.getAttributeDetail() != null) {
             label.setText(property.getAttributeDetail().getName());
-            value.setText(getPropValues(property));
+            String valueText = getPropValues(property);
+            if (valueText.isEmpty()) {
+                value.setText("N/A");
+            } else {
+                value.setText(valueText);
+            }
         } else {
             label.setText("N/A");
             value.setText("N/A");
@@ -47,7 +52,11 @@ public class ProdDetailPropertiesAdapter extends ArrayAdapter<ProductProperty> {
         String valueString = "";
 
         for (ProductPropertyValue value: property.getValues()) {
-            valueString += value.getStringValue() + ", ";
+            if (value.getStringValue() != null) {
+                valueString += value.getStringValue() + ", ";
+            } else if (value.getValue() != null) {
+                valueString += value.getValue().toString() + ", ";
+            }
         }
 
         if (valueString.length() > 2) {

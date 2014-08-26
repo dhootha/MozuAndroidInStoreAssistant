@@ -97,7 +97,6 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
         mTitles = new ArrayList<String>();
         mTitles.add(getString(R.string.overview_tab_name));
         mTitles.add(getString(R.string.properties_tab_name));
-        mTitles.add(getString(R.string.extras_tab_name));
         mTitles.add(getString(R.string.shipping_tab_name));
         mTitles.add(getString(R.string.inventory_tab_name));
 
