@@ -20,7 +20,6 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -56,6 +55,8 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
     private ProductAdapter mAdapter;
 
     @InjectView(R.id.progress) LinearLayout mProgressBar;
+
+    @InjectView(R.id.product_list_headers) LinearLayout mHeadersView;
 
     private ProductSearchLoader mProductSearchLoader;
 
@@ -131,6 +132,7 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
         mProductGridView.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.VISIBLE);
         mProductListView.setVisibility(View.GONE);
+        mHeadersView.setVisibility(View.GONE);
 
         return fragmentView;
     }
@@ -171,10 +173,12 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
             if (prefs.getShowAsGrids()) {
                 mProductGridView.setVisibility(View.VISIBLE);
                 mProductListView.setVisibility(View.GONE);
+                mHeadersView.setVisibility(View.GONE);
                 mAdapter.setIsGrid(true);
                 mAdapter.notifyDataSetChanged();
             } else {
                 mProductListView.setVisibility(View.VISIBLE);
+                mHeadersView.setVisibility(View.VISIBLE);
                 mProductGridView.setVisibility(View.GONE);
                 mAdapter.setIsGrid(false);
                 mAdapter.notifyDataSetChanged();
@@ -242,6 +246,7 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
         if (!mIsGridVisible) {
             mIsGridVisible = true;
             mProductListView.setVisibility(View.GONE);
+            mHeadersView.setVisibility(View.GONE);
             mProductGridView.setVisibility(View.VISIBLE);
             mProgressBar.setVisibility(View.GONE);
             mAdapter.setIsGrid(true);
@@ -256,6 +261,7 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
         } else {
             mIsGridVisible = false;
             mProductListView.setVisibility(View.VISIBLE);
+            mHeadersView.setVisibility(View.VISIBLE);
             mProductGridView.setVisibility(View.GONE);
             mProgressBar.setVisibility(View.GONE);
             mAdapter.setIsGrid(false);
@@ -322,6 +328,8 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
             mProductGridView.setVisibility(View.GONE);
             mProgressBar.setVisibility(View.VISIBLE);
             mProductListView.setVisibility(View.GONE);
+            mHeadersView.setVisibility(View.GONE);
+            
             mEmptyListMessageView.setVisibility(View.GONE);
         }
 
