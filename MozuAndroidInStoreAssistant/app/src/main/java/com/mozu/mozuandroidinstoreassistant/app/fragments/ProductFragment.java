@@ -35,6 +35,9 @@ import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthen
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 public class ProductFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Product>>, AbsListView.OnScrollListener, SearchView.OnQueryTextListener, SearchView.OnSuggestionListener, AbsListView.OnItemClickListener {
 
     public static final int MAX_NUMBER_OF_SEARCHES = 5;
@@ -45,12 +48,12 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
     private Integer mCategoryId;
 
-    private GridView mProductGridView;
-    private ListView mProductListView;
+    @InjectView(R.id.product_grid) GridView mProductGridView;
+    @InjectView(R.id.product_list) ListView mProductListView;
 
     private ProductAdapter mAdapter;
 
-    private ProgressBar mProgressBar;
+    @InjectView(R.id.progress) ProgressBar mProgressBar;
 
     private ProductLoader mProductLoader;
 
@@ -64,7 +67,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
     private ProductFragmentListener mListener = sProductListener;
 
-    private TextView mEmptyListMessageView;
+    @InjectView(R.id.empty_list) TextView mEmptyListMessageView;
 
     public ProductFragment() {
         // Required empty public constructor
@@ -105,14 +108,10 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View fragmentView = inflater.inflate(R.layout.fragment_product, container, false);
 
-        mProductGridView = (GridView) fragmentView.findViewById(R.id.product_grid);
-        mProgressBar = (ProgressBar) fragmentView.findViewById(R.id.progress);
-        mProductListView = (ListView) fragmentView.findViewById(R.id.product_list);
+        ButterKnife.inject(this, fragmentView);
 
         mProductListView.setOnItemClickListener(this);
         mProductGridView.setOnItemClickListener(this);
-
-        mEmptyListMessageView = (TextView) fragmentView.findViewById(R.id.empty_list);
 
         mProductGridView.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.VISIBLE);

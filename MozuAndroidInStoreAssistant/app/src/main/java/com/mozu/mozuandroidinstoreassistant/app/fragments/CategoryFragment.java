@@ -34,14 +34,17 @@ import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthen
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 public class CategoryFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Category>>, AdapterView.OnItemClickListener, SearchView.OnQueryTextListener, SearchView.OnSuggestionListener {
 
     private static final int CATEGORY_LOADER = 0;
     public static final int MAX_NUMBER_OF_SEARCHES = 5;
     public static final String NULL = "null";
 
-    private GridView mGridOfCategories;
-    private ListView mListOfCategories;
+    @InjectView(R.id.category_grid) GridView mGridOfCategories;
+    @InjectView(R.id.category_list) ListView mListOfCategories;
 
     private UserAuthenticationStateMachine mUserState;
 
@@ -59,7 +62,7 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
 
     private MenuItem mSearchMenuItem;
 
-    private TextView mEmptyListMessageView;
+    @InjectView(R.id.empty_list) TextView mEmptyListMessageView;
 
     @Override
     public void onAttach(Activity activity) {
@@ -94,13 +97,11 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
 
         View fragmentView = inflater.inflate(R.layout.fragment_category_product_grid, container, false);
 
-        mGridOfCategories = (GridView) fragmentView.findViewById(R.id.category_grid);
-        mGridOfCategories.setOnItemClickListener(this);
+        ButterKnife.inject(this, fragmentView);
 
-        mListOfCategories = (ListView) fragmentView.findViewById(R.id.category_list);
+        mGridOfCategories.setOnItemClickListener(this);
         mListOfCategories.setOnItemClickListener(this);
 
-        mEmptyListMessageView = (TextView) fragmentView.findViewById(R.id.empty_list);
         mEmptyListMessageView.setVisibility(View.GONE);
 
         return fragmentView;
