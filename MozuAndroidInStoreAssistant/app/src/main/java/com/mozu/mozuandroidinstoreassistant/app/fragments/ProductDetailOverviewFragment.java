@@ -19,6 +19,7 @@ import com.mozu.api.contracts.productruntime.BundledProduct;
 import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.api.contracts.productruntime.ProductOption;
 import com.mozu.mozuandroidinstoreassistant.app.R;
+import com.mozu.mozuandroidinstoreassistant.app.htmlutils.HTMLTagHandler;
 import com.mozu.mozuandroidinstoreassistant.app.views.NoUnderlineClickableSpan;
 import com.mozu.mozuandroidinstoreassistant.app.views.ProductOptionsLayout;
 
@@ -210,19 +211,20 @@ public class ProductDetailOverviewFragment extends Fragment {
         String buttonText;
         ClickableSpan clickableSpan;
         SpannableString spannableString;
-        Spanned spannedText = Html.fromHtml(desc);
         if (showLargeDescription) {
             buttonText = getString(R.string.show_less_click_link);
             clickableSpan = mContractClickableSpan;
+            Spanned spannedText = Html.fromHtml(desc,null,new HTMLTagHandler());
             spannableString = new SpannableString(spannedText);
         } else {
             buttonText = getString(R.string.full_description_click_link);
             clickableSpan = mExpandClickableSpan;
-            if (spannedText.length() > MAX_DESC_LENGTH) {
-                spannableString = new SpannableString(spannedText.subSequence(0, MAX_DESC_LENGTH));
-            } else {
-                spannableString = new SpannableString(spannedText);
+
+            if (desc.length() > MAX_DESC_LENGTH) {
+                desc = desc.subSequence(0, MAX_DESC_LENGTH).toString();
             }
+            Spanned spannedText = Html.fromHtml(desc,null,new HTMLTagHandler());
+            spannableString = new SpannableString(spannedText);
         }
         SpannableString linkSpan = new SpannableString(buttonText);
         linkSpan.setSpan(clickableSpan, 0, buttonText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
