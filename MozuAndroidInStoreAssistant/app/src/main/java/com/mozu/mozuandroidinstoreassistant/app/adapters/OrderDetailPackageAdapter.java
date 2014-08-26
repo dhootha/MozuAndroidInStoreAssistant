@@ -14,7 +14,6 @@ import java.util.List;
 
 public class OrderDetailPackageAdapter extends ArrayAdapter<Package> {
 
-
     public OrderDetailPackageAdapter(Context context, List<Package> packages) {
         super(context, R.layout.package_list_item);
 
