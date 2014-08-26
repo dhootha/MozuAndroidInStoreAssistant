@@ -4,21 +4,15 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.mozu.api.contracts.productruntime.Category;
 import com.mozu.mozuandroidinstoreassistant.app.R;
-import com.mozu.mozuandroidinstoreassistant.app.views.RoundedTransformation;
 import com.squareup.picasso.Picasso;
 
-public class CategoryAdapter extends ArrayAdapter<Category> {
-
-    private boolean mIsGrid = true;
+public class CategoryAdapter extends GridToggleArrayAdapter<Category> {
 
     public CategoryAdapter(Context context) {
-        super(context, R.layout.category_grid_item);
+        super(context, R.layout.category_grid_item, R.layout.category_list_item);
     }
 
     @Override
@@ -29,47 +23,36 @@ public class CategoryAdapter extends ArrayAdapter<Category> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView == null ||
-                (mIsGrid && convertView.findViewById(R.id.category_list_layout) != null) ||
-                (!mIsGrid && convertView.findViewById(R.id.category_grid_layout) != null)) {
+        CategoryViewHolder viewHolder;
 
-            if (mIsGrid) {
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.category_grid_item, parent, false);
-            } else {
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.category_list_item, parent, false);
-            }
+        if (convertView == null ||
+            (isGrid() && convertView.getId() != getGridResource()) ||
+            (!isGrid() && convertView.getId() != getListResource())) {
+
+            convertView = LayoutInflater.from(getContext()).inflate(getCurrentResource(), parent, false);
+            viewHolder = new CategoryViewHolder(convertView);
+            convertView.setTag(viewHolder);
+        } else {
+            viewHolder = (CategoryViewHolder) convertView.getTag();
         }
 
         Category category = getItem(position);
 
-        TextView nameTextView = (TextView) convertView.findViewById(R.id.category_name);
-        nameTextView.setText(category.getContent().getName());
+        viewHolder.categoryName.setText(category.getContent().getName());
 
-        ImageView categoryImageView = (ImageView) convertView.findViewById(R.id.category_image);
-        categoryImageView.setImageResource(R.drawable.icon_nocategoryphoto);
+        viewHolder.categoryImage.setImageResource(R.drawable.icon_nocategoryphoto);
 
         //load image asynchronously into the view
         if (category.getContent().getCategoryImages() != null && category.getContent().getCategoryImages().size() > 0) {
-            if (mIsGrid) {
 
-                Picasso.with(getContext())
-                        .load(category.getContent().getCategoryImages().get(0).getImageUrl())
-                        .into(categoryImageView);
+            Picasso.with(getContext())
+                    .load(category.getContent().getCategoryImages().get(0).getImageUrl())
+                    .fit().centerCrop()
+                    .into(viewHolder.categoryImage);
 
-            } else {
-
-                Picasso.with(getContext())
-                        .load(category.getContent().getCategoryImages().get(0).getImageUrl())
-                        .transform(new RoundedTransformation())
-                        .into(categoryImageView);
-
-            }
         }
-        return convertView;
-    }
 
-    public void setIsGrid(boolean isGrid) {
-        mIsGrid = isGrid;
+        return convertView;
     }
 
 }

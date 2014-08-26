@@ -14,7 +14,7 @@
             android:layout_height="75dp"
             android:src="@drawable/icon_nocategoryphoto"
             android:background="@color/no_photo_color"
-            android:scaleType="center" />
+            android:scaleType="centerInside" />
 
         <TextView
             android:id="@+id/category_name"
