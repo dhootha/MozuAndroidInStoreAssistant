@@ -34,7 +34,11 @@ import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthen
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrderFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Order>>, AbsListView.OnScrollListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, SearchManager.OnCancelListener, SearchManager.OnDismissListener, SearchView.OnSuggestionListener, MenuItem.OnActionExpandListener, AdapterView.OnItemClickListener, View.OnClickListener {
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+
+public class OrderFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Order>>, AbsListView.OnScrollListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, SearchManager.OnCancelListener, SearchManager.OnDismissListener, SearchView.OnSuggestionListener, MenuItem.OnActionExpandListener, AdapterView.OnItemClickListener {
 
     private static final int MAX_NUMBER_OF_ORDER_SEARCHES = 5;
 
@@ -45,8 +49,8 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
     private Integer mTenantId;
     private Integer mSiteId;
 
-    private ListView mOrdersList;
-    private LinearLayout mProgress;
+    @InjectView(R.id.order_list) ListView mOrdersList;
+    @InjectView(R.id.order_list_progress) LinearLayout mProgress;
 
     private OrdersLoader mOrdersLoader;
 
@@ -58,17 +62,17 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private OrderListener mListener;
 
-    private TextView mOrderNumberHeader;
-    private TextView mOrderDateHeader;
-    private TextView mOrderEmailHeader;
-    private TextView mOrderStatusHeader;
-    private TextView mOrderTotalHeader;
+    @InjectView(R.id.order_number_header) TextView mOrderNumberHeader;
+    @InjectView(R.id.order_date_header) TextView mOrderDateHeader;
+    @InjectView(R.id.order_email_header) TextView mOrderEmailHeader;
+    @InjectView(R.id.order_status_header) TextView mOrderStatusHeader;
+    @InjectView(R.id.order_total_header) TextView mOrderTotalHeader;
 
-    private ImageView mOrderNumberHeaderSortImage;
-    private ImageView mOrderDateHeaderSortImage;
-    private ImageView mOrderEmailHeaderSortImage;
-    private ImageView mOrderStatusHeaderSortImage;
-    private ImageView mOrderTotalHeaderSortImage;
+    @InjectView(R.id.order_number_header_sort_image) ImageView mOrderNumberHeaderSortImage;
+    @InjectView(R.id.order_date_header_sort_image) ImageView mOrderDateHeaderSortImage;
+    @InjectView(R.id.order_email_header_sort_image) ImageView mOrderEmailHeaderSortImage;
+    @InjectView(R.id.order_status_header_sort_image) ImageView mOrderStatusHeaderSortImage;
+    @InjectView(R.id.order_total_header_sort_image) ImageView mOrderTotalHeaderSortImage;
 
     private int mResourceOfCurrentSelectedColumn = -1;
 
@@ -82,27 +86,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_order, container, false);
-
-        mOrderNumberHeader = (TextView) view.findViewById(R.id.order_number_header);
-        mOrderDateHeader = (TextView) view.findViewById(R.id.order_date_header);
-        mOrderEmailHeader = (TextView) view.findViewById(R.id.order_email_header);
-        mOrderStatusHeader = (TextView) view.findViewById(R.id.order_status_header);
-        mOrderTotalHeader = (TextView) view.findViewById(R.id.order_total_header);
-
-        mOrderNumberHeaderSortImage = (ImageView) view.findViewById(R.id.order_number_header_sort_image);
-        mOrderDateHeaderSortImage = (ImageView) view.findViewById(R.id.order_date_header_sort_image);
-        mOrderEmailHeaderSortImage = (ImageView) view.findViewById(R.id.order_email_header_sort_image);
-        mOrderStatusHeaderSortImage = (ImageView) view.findViewById(R.id.order_status_header_sort_image);
-        mOrderTotalHeaderSortImage = (ImageView) view.findViewById(R.id.order_total_header_sort_image);
-
-        mOrderNumberHeader.setOnClickListener(this);
-        mOrderDateHeader.setOnClickListener(this);
-        mOrderEmailHeader.setOnClickListener(this);
-        mOrderStatusHeader.setOnClickListener(this);
-        mOrderTotalHeader.setOnClickListener(this);
-
-        mOrdersList = (ListView) view.findViewById(R.id.order_list);
-        mProgress = (LinearLayout) view.findViewById(R.id.order_list_progress);
+        ButterKnife.inject(this, view);
 
         mOrdersList.setVisibility(View.GONE);
         mProgress.setVisibility(View.VISIBLE);
@@ -360,14 +344,8 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         mListener = listener;
     }
 
-    @Override
-    public void onClick(View v) {
-
-        determineSortActionForView(v);
-
-    }
-
-    private void determineSortActionForView(View v) {
+    @OnClick({R.id.order_number_header, R.id.order_date_header, R.id.order_email_header,R.id.order_status_header,R.id.order_total_header})
+    public void determineSortActionForView(View v) {
 
         setTextViewNormalStyle(mOrderNumberHeader);
         setTextViewNormalStyle(mOrderDateHeader);

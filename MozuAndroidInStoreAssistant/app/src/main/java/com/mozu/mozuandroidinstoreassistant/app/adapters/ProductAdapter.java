@@ -17,17 +17,19 @@ import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
 
-public class ProductAdapter extends ArrayAdapter<Product> {
+public class ProductAdapter extends GridToggleArrayAdapter<Product> {
 
     private ImageURLConverter mUrlConverter;
-
-    private boolean mIsGrid = true;
 
     private int mImageWidth;
     private int mImageHeight;
 
+    private NumberFormat mNumberFormat;
+
     public ProductAdapter(Context context, Integer tenantId, Integer siteId) {
-        super(context, R.layout.product_grid_item);
+        super(context, R.layout.product_grid_item, R.layout.product_list_item);
+
+        mNumberFormat = NumberFormat.getCurrencyInstance();
 
         mUrlConverter = new ImageURLConverter(tenantId, siteId);
 
@@ -43,60 +45,38 @@ public class ProductAdapter extends ArrayAdapter<Product> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if ( convertView == null ||
-           ( mIsGrid && convertView.findViewById(R.id.product_list_layout) != null) ||
-           ( !mIsGrid && convertView.findViewById(R.id.product_grid_layout) != null) ) {
+        ProductViewHolder viewHolder;
 
-            if (mIsGrid) {
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.product_grid_item, parent, false);
-            } else {
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.product_list_item, parent, false);
-            }
+        if ( convertView == null ||
+           ( isGrid() && convertView.getId() == getGridResource()) ||
+           ( !isGrid() && convertView.getId() == getListResource()) ) {
+
+           convertView = LayoutInflater.from(getContext()).inflate(getCurrentResource(), parent, false);
+           viewHolder = new ProductViewHolder(convertView);
+           convertView.setTag(viewHolder);
+        } else {
+            viewHolder = (ProductViewHolder) convertView.getTag();
         }
 
         final Product product = getItem(position);
 
-        TextView nameTextView = (TextView) convertView.findViewById(R.id.product_name);
-        nameTextView.setText(product.getContent().getProductName());
-
-        final ImageView productImageView = (ImageView) convertView.findViewById(R.id.product_image);
+        viewHolder.productName.setText(product.getContent().getProductName());
 
         //load image asynchronously into the view
         if (product.getContent().getProductImages() != null && product.getContent().getProductImages().size() > 0) {
-            if (mIsGrid) {
 
-                Picasso.with(getContext())
-                        .load(mUrlConverter.getFullImageUrl(product.getContent().getProductImages().get(0).getImageUrl()))
-                        .placeholder(R.drawable.icon_noproductphoto)
-                        .fit().centerCrop()
-                        .into(productImageView);
-            } else {
-
-                Picasso.with(getContext())
-                        .load(mUrlConverter.getFullImageUrl(product.getContent().getProductImages().get(0).getImageUrl()))
-                        .transform(new RoundedTransformation())
-                        .placeholder(R.drawable.icon_noproductphoto)
-                        .fit().centerCrop()
-                        .into(productImageView);
-            }
+            Picasso.with(getContext())
+                    .load(mUrlConverter.getFullImageUrl(product.getContent().getProductImages().get(0).getImageUrl()))
+                    .placeholder(R.drawable.icon_noproductphoto)
+                    .fit().centerCrop()
+                    .into(viewHolder.productImage);
         }
 
-        TextView skuTextView = (TextView) convertView.findViewById(R.id.product_sku);
-        skuTextView.setText(product.getProductCode());
-
-        NumberFormat defaultFormat = NumberFormat.getCurrencyInstance();
-
-        TextView priceTextView = (TextView) convertView.findViewById(R.id.product_price);
-        priceTextView.setText(product.getPrice() != null && product.getPrice().getPrice() != null && product.getPrice().getPrice() > 0.0 ? defaultFormat.format(product.getPrice().getPrice()) : "");
-
-        TextView salePriceTextView = (TextView) convertView.findViewById(R.id.product_sale_price);
-        salePriceTextView.setText(product.getPrice() != null && product.getPrice().getSalePrice() != null && product.getPrice().getSalePrice() > 0.0 ? defaultFormat.format(product.getPrice().getSalePrice())  : "");
+        viewHolder.productSku.setText(product.getProductCode());
+        viewHolder.productPrice.setText(product.getPrice() != null && product.getPrice().getPrice() != null && product.getPrice().getPrice() > 0.0 ? mNumberFormat.format(product.getPrice().getPrice()) : "");
+        viewHolder.productSalePrice.setText(product.getPrice() != null && product.getPrice().getSalePrice() != null && product.getPrice().getSalePrice() > 0.0 ? mNumberFormat.format(product.getPrice().getSalePrice())  : "");
 
         return convertView;
-    }
-
-    public void setIsGrid(boolean isGrid) {
-        mIsGrid = isGrid;
     }
 
 }
