@@ -15,12 +15,11 @@ import java.util.List;
 
 public class ProductDetailSectionPagerAdapter extends FragmentStatePagerAdapter {
 
-    public static final int NUM_OF_PRODUCT_DETAIL_TABS = 5;
+    public static final int NUM_OF_PRODUCT_DETAIL_TABS = 4;
     public static final int OVERVIEW_TAB_POSITION = 0;
     public static final int PROPERTIES_TAB_POSITION = 1;
-    public static final int EXTRAS_TAB_POSITION = 2;
-    public static final int SHIPPING_TABS_POSITION = 3;
-    public static final int INVENTORY_TAB_POSITION = 4;
+    public static final int SHIPPING_TABS_POSITION =2;
+    public static final int INVENTORY_TAB_POSITION = 3;
 
     private Product mProduct;
     private List<String> mPageTitles;
@@ -68,12 +67,6 @@ public class ProductDetailSectionPagerAdapter extends FragmentStatePagerAdapter 
                 propertiesFragment.setProduct(mProduct);
 
                 return propertiesFragment;
-
-            case EXTRAS_TAB_POSITION:
-                ProductDetailExtrasFragment extrasFragment = new ProductDetailExtrasFragment();
-                extrasFragment.setProduct(mProduct);
-
-                return extrasFragment;
 
             case SHIPPING_TABS_POSITION:
                 ProductDetailShippingFragment shippingFragment = new ProductDetailShippingFragment();
