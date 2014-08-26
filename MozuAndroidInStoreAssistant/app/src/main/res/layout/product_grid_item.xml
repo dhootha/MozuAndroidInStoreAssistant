@@ -43,7 +43,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/icon_inventory"
+                android:src="@drawable/icon_overflow"
                 android:layout_alignParentRight="true"
                 android:layout_margin="10dp"
                 android:layout_alignTop="@id/product_name"/>
