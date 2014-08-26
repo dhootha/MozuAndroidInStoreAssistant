@@ -33,6 +33,7 @@ public class ProductDetailOverviewFragment extends Fragment {
     TextView mDescription;
 
     private static final int MAX_DESC_LENGTH = 500;
+    private static final String PRODUCT_CONFIGURABLE = "Configurable";
 
     public ProductDetailOverviewFragment() {
         // Required empty public constructor
@@ -63,6 +64,7 @@ public class ProductDetailOverviewFragment extends Fragment {
         TextView distrpn = (TextView) view.findViewById(R.id.distrpn);
         TextView taxable = (TextView) view.findViewById(R.id.taxable);
         TextView recurring = (TextView) view.findViewById(R.id.recurring);
+        LinearLayout includesLayout = (LinearLayout)view.findViewById(R.id.includesLayout);
 
         NumberFormat defaultFormat = NumberFormat.getCurrencyInstance();
         if (hasSalePrice(mProduct)) {
@@ -74,8 +76,12 @@ public class ProductDetailOverviewFragment extends Fragment {
         regPrice.setText(getRegularPriceText(defaultFormat));
         msrpPrice.setText(getMSRPPriceText(defaultFormat));
         mapPrice.setText(getMAPPriceText(defaultFormat));
-
-        includes.setText(getBundledProductsString());
+        if (isProductConfigurable(mProduct)) {
+            includesLayout.setVisibility(View.GONE);
+        } else {
+            includesLayout.setVisibility(View.VISIBLE);
+            includes.setText(getBundledProductsString());
+        }
         mDescription.setText(getDescriptionWithSpannableClick(false));
         mDescription.setMovementMethod(LinkMovementMethod.getInstance());
 
@@ -96,6 +102,10 @@ public class ProductDetailOverviewFragment extends Fragment {
 
         }
 
+    }
+
+    private boolean isProductConfigurable(Product product){
+        return PRODUCT_CONFIGURABLE.equalsIgnoreCase(product.getProductUsage());
     }
 
     private String getUPC(Product product){
