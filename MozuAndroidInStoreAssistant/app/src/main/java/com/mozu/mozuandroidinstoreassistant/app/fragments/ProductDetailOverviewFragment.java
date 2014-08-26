@@ -12,12 +12,15 @@ import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mozu.api.contracts.productruntime.BundledProduct;
 import com.mozu.api.contracts.productruntime.Product;
+import com.mozu.api.contracts.productruntime.ProductOption;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.views.NoUnderlineClickableSpan;
+import com.mozu.mozuandroidinstoreassistant.app.views.ProductOptionsLayout;
 
 import java.text.NumberFormat;
 
@@ -81,6 +84,17 @@ public class ProductDetailOverviewFragment extends Fragment {
         distrpn.setText("N/A");
         taxable.setText(mProduct.getIsTaxable() != null && mProduct.getIsTaxable() ? getString(R.string.yes) : getString(R.string.no));
         recurring.setText(mProduct.getIsRecurring() != null && mProduct.getIsRecurring() ? getString(R.string.yes) : getString(R.string.no));
+        if (mProduct.getOptions() != null && !mProduct.getOptions().isEmpty()) {
+            LinearLayout layout = (LinearLayout) view.findViewById(R.id.options_layout);
+            layout.setVisibility(View.VISIBLE);
+            for(ProductOption option: mProduct.getOptions()){
+                ProductOptionsLayout optionsLayout = new ProductOptionsLayout(getActivity());
+                optionsLayout.setTitle(option.getAttributeDetail().getName());
+                optionsLayout.setSpinnerOptions(option.getValues());
+                layout.addView(optionsLayout);
+            }
+
+        }
 
     }
 
@@ -194,7 +208,11 @@ public class ProductDetailOverviewFragment extends Fragment {
         } else {
             buttonText = getString(R.string.full_description_click_link);
             clickableSpan = mExpandClickableSpan;
-            spannableString = new SpannableString(spannedText.subSequence(0, MAX_DESC_LENGTH));
+            if (spannedText.length() > MAX_DESC_LENGTH) {
+                spannableString = new SpannableString(spannedText.subSequence(0, MAX_DESC_LENGTH));
+            } else {
+                spannableString = new SpannableString(spannedText);
+            }
         }
         SpannableString linkSpan = new SpannableString(buttonText);
         linkSpan.setSpan(clickableSpan, 0, buttonText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
