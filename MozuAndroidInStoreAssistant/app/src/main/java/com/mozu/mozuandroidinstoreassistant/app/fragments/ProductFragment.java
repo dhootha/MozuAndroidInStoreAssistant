@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
@@ -51,9 +52,11 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
     @InjectView(R.id.product_grid) GridView mProductGridView;
     @InjectView(R.id.product_list) ListView mProductListView;
 
+    @InjectView(R.id.product_list_headers) LinearLayout mHeadersView;
+
     private ProductAdapter mAdapter;
 
-    @InjectView(R.id.progress) ProgressBar mProgressBar;
+    @InjectView(R.id.progress) LinearLayout mProgressBar;
 
     private ProductLoader mProductLoader;
 
@@ -116,6 +119,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         mProductGridView.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.VISIBLE);
         mProductListView.setVisibility(View.GONE);
+        mHeadersView.setVisibility(View.GONE);
         mEmptyListMessageView.setVisibility(View.GONE);
 
         return fragmentView;
@@ -156,11 +160,13 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
             if (prefs.getShowAsGrids()) {
                 mProductGridView.setVisibility(View.VISIBLE);
                 mProductListView.setVisibility(View.GONE);
+                mHeadersView.setVisibility(View.GONE);
                 mAdapter.setIsGrid(true);
                 mAdapter.notifyDataSetChanged();
             } else {
                 mProductListView.setVisibility(View.VISIBLE);
                 mProductGridView.setVisibility(View.GONE);
+                mHeadersView.setVisibility(View.VISIBLE);
                 mAdapter.setIsGrid(false);
                 mAdapter.notifyDataSetChanged();
             }
@@ -170,6 +176,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
             if (mAdapter == null || mAdapter.getCount() < 1) {
                 mProductGridView.setVisibility(View.GONE);
                 mProductListView.setVisibility(View.GONE);
+                mHeadersView.setVisibility(View.GONE);
                 mEmptyListMessageView.setVisibility(View.VISIBLE);
             } else {
                 mEmptyListMessageView.setVisibility(View.GONE);
@@ -255,6 +262,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         if (!mIsGridVisible) {
             mIsGridVisible = true;
             mProductListView.setVisibility(View.GONE);
+            mHeadersView.setVisibility(View.GONE);
             mProductGridView.setVisibility(View.VISIBLE);
             mProgressBar.setVisibility(View.GONE);
             mAdapter.setIsGrid(true);
@@ -269,6 +277,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         } else {
             mIsGridVisible = false;
             mProductListView.setVisibility(View.VISIBLE);
+            mHeadersView.setVisibility(View.VISIBLE);
             mProductGridView.setVisibility(View.GONE);
             mProgressBar.setVisibility(View.GONE);
             mAdapter.setIsGrid(false);

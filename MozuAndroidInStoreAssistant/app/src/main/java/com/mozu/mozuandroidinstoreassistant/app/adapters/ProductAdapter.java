@@ -14,6 +14,7 @@ import com.mozu.mozuandroidinstoreassistant.app.models.ImageURLConverter;
 import com.mozu.mozuandroidinstoreassistant.app.views.CropSquareTransformation;
 import com.mozu.mozuandroidinstoreassistant.app.views.RoundedTransformation;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 
 import java.text.NumberFormat;
 
@@ -65,16 +66,21 @@ public class ProductAdapter extends GridToggleArrayAdapter<Product> {
         //load image asynchronously into the view
         if (product.getContent().getProductImages() != null && product.getContent().getProductImages().size() > 0) {
 
-            Picasso.with(getContext())
-                    .load(mUrlConverter.getFullImageUrl(product.getContent().getProductImages().get(0).getImageUrl()))
-                    .placeholder(R.drawable.icon_noproductphoto)
-                    .fit().centerCrop()
-                    .into(viewHolder.productImage);
+            RequestCreator creator = Picasso.with(getContext())
+                    .load(mUrlConverter.getFullImageUrl(product.getContent().getProductImages().get(0).getImageUrl()));
+
+            if (!isGrid()) {
+                creator = creator.transform(new RoundedTransformation());
+            } else {
+                creator = creator.placeholder(R.drawable.icon_noproductphoto);
+            }
+
+            creator.fit().centerCrop().into(viewHolder.productImage);
         }
 
         viewHolder.productSku.setText(product.getProductCode());
         viewHolder.productPrice.setText(product.getPrice() != null && product.getPrice().getPrice() != null && product.getPrice().getPrice() > 0.0 ? mNumberFormat.format(product.getPrice().getPrice()) : "");
-        viewHolder.productSalePrice.setText(product.getPrice() != null && product.getPrice().getSalePrice() != null && product.getPrice().getSalePrice() > 0.0 ? mNumberFormat.format(product.getPrice().getSalePrice())  : "");
+        viewHolder.productSalePrice.setText(product.getPrice() != null && product.getPrice().getSalePrice() != null && product.getPrice().getSalePrice() > 0.0 ? mNumberFormat.format(product.getPrice().getSalePrice()) : "");
 
         return convertView;
     }

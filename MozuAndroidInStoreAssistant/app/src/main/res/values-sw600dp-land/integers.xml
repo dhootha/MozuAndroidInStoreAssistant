@@ -14,12 +14,5 @@
 -->
 
 <resources>
-
-    <integer name="slide_up_down_duration">200</integer>
-    <integer name="half_slide_up_down_duration">150</integer>
-    <integer name="slide_up_down_final_value">150</integer>
-    <integer name="card_flip_time_full">500</integer>
-    <integer name="card_flip_time_half">250</integer>
-
-    <integer name="num_of_columns_in_grid">2</integer>
+    <integer name="num_of_columns_in_grid">4</integer>
 </resources>
