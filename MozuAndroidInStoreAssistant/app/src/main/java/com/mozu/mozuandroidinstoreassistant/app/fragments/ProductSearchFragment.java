@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
@@ -36,6 +37,9 @@ import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthen
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 public class ProductSearchFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Product>>, GridView.OnScrollListener, SearchView.OnQueryTextListener, SearchView.OnSuggestionListener, AbsListView.OnItemClickListener {
 
     public static final int MAX_NUMBER_OF_SEARCHES = 5;
@@ -51,7 +55,7 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
 
     private ProductAdapter mAdapter;
 
-    private ProgressBar mProgressBar;
+    @InjectView(R.id.progress) LinearLayout mProgressBar;
 
     private ProductSearchLoader mProductSearchLoader;
 
@@ -113,8 +117,9 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View fragmentView = inflater.inflate(R.layout.fragment_product, container, false);
 
+        ButterKnife.inject(this, fragmentView);
+
         mProductGridView = (GridView) fragmentView.findViewById(R.id.product_grid);
-        mProgressBar = (ProgressBar) fragmentView.findViewById(R.id.progress);
         mProductListView = (ListView) fragmentView.findViewById(R.id.product_list);
 
         mProductListView.setOnItemClickListener(this);

@@ -56,7 +56,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
     private ProductAdapter mAdapter;
 
-    @InjectView(R.id.progress) ProgressBar mProgressBar;
+    @InjectView(R.id.progress) LinearLayout mProgressBar;
 
     private ProductLoader mProductLoader;
 
