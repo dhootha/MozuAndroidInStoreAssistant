@@ -56,7 +56,6 @@ public class ProdDetailLocationInventoryAdapter extends ArrayAdapter<LocationInv
     }
 
     private class LocationNameFetchTask extends AsyncTask<String,Void,String>{
-        private String mLocationCode;
         private  final WeakReference<TextView> mTextViewReference;
         private LocationNameFetchTask(TextView textView){
             mTextViewReference = new WeakReference<TextView>(textView);
@@ -72,7 +71,6 @@ public class ProdDetailLocationInventoryAdapter extends ArrayAdapter<LocationInv
             }
         }
         @Override
-        // Once the image is downloaded, associates it to the imageView
         protected void onPostExecute(String locationName) {
             if (isCancelled()) {
                 locationName = null;
