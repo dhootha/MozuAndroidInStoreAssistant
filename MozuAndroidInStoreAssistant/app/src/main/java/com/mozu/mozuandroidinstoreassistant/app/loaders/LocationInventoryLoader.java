@@ -3,10 +3,11 @@ package com.mozu.mozuandroidinstoreassistant.app.loaders;
 import android.content.Context;
 
 import com.crashlytics.android.Crashlytics;
+import com.mozu.api.DataViewMode;
 import com.mozu.api.MozuApiContext;
-import com.mozu.api.contracts.productruntime.LocationInventoryCollection;
+import com.mozu.api.contracts.productadmin.LocationInventoryCollection;
 import com.mozu.api.contracts.productruntime.Product;
-import com.mozu.api.resources.commerce.catalog.storefront.ProductResource;
+import com.mozu.api.resources.commerce.catalog.admin.products.LocationInventoryResource;
 
 public class LocationInventoryLoader extends InternetConnectedAsyncTaskLoader<LocationInventoryCollection> {
 
@@ -71,12 +72,10 @@ public class LocationInventoryLoader extends InternetConnectedAsyncTaskLoader<Lo
 
     private LocationInventoryCollection loadLocationInventoryCollectionFromWeb() {
         LocationInventoryCollection inventoryCollection = null;
-
-        ProductResource productResource = new ProductResource(new MozuApiContext(mTenantId, mSiteId));
+        LocationInventoryResource inventoryResource = new LocationInventoryResource(new MozuApiContext(mTenantId, mSiteId));
 
         try {
-
-            inventoryCollection = productResource.getProductInventory(mProduct.getProductCode());
+            inventoryCollection = inventoryResource.getLocationInventories(DataViewMode.Live, mProduct.getProductCode());
         } catch (Exception e) {
 
             Crashlytics.logException(e);

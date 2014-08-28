@@ -71,6 +71,8 @@
         <item name="android:fastScrollThumbDrawable">@drawable/mozu_fastscroll_thumb_holo</item>
 
         <item name="vpiTabPageIndicatorStyle">@style/CustomTabPageIndicator</item>
+        <item name="android:dialogTheme">@style/DialogMozu</item>
+        <item name="android:alertDialogTheme">@style/DialogMozu</item>
 
     </style>
 

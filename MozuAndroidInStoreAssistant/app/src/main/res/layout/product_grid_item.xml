@@ -87,6 +87,13 @@
                 android:textColor="@color/mozu_color"
                 android:layout_alignParentRight="true"
                 android:layout_above="@id/product_price" />
+            <ImageView
+                android:id="@+id/product_image_inventory"
+                android:visibility="gone"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:src="@drawable/mozu_btn_inventory"/>
 
         </RelativeLayout>
 

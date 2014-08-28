@@ -76,13 +76,19 @@
             android:textColor="@color/mozu_color"/>
 
     </LinearLayout>
-
-    <ImageView
-        android:id="@+id/product_image_inventory_header"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
         android:layout_weight=".2"
-        android:src="@drawable/icon_inventory"/>
+        android:orientation="horizontal"
+        android:gravity="right|center_vertical">
+
+    <ImageView
+        android:id="@+id/product_image_inventory"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:src="@drawable/mozu_btn_inventory"/>
+        </LinearLayout>
 
 </LinearLayout>

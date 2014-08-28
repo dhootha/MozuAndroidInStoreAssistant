@@ -143,7 +143,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         if (loader.getId() == PRODUCT_LOADER) {
             if (mAdapter == null) {
 
-                mAdapter = new ProductAdapter(getActivity(), mUserState.getTenantId(), mUserState.getTenantId());
+                mAdapter = new ProductAdapter(getActivity(), mUserState.getTenantId(), mUserState.getSiteId());
             }
 
             mAdapter.clear();
