@@ -1,5 +1,8 @@
 package com.mozu.mozuandroidinstoreassistant.app.adapters;
 
+import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +13,7 @@ import android.widget.TextView;
 
 import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.mozuandroidinstoreassistant.app.R;
+import com.mozu.mozuandroidinstoreassistant.app.fragments.ProductDetailInventoryFragment;
 import com.mozu.mozuandroidinstoreassistant.app.models.ImageURLConverter;
 import com.mozu.mozuandroidinstoreassistant.app.views.CropSquareTransformation;
 import com.mozu.mozuandroidinstoreassistant.app.views.RoundedTransformation;
@@ -22,10 +26,11 @@ public class ProductAdapter extends GridToggleArrayAdapter<Product> {
 
     private ImageURLConverter mUrlConverter;
 
-    private int mImageWidth;
-    private int mImageHeight;
 
     private NumberFormat mNumberFormat;
+    private Integer mTenantId;
+    private Integer mSiteId;
+    private Context mContext;
 
     public ProductAdapter(Context context, Integer tenantId, Integer siteId) {
         super(context, R.layout.product_grid_item, R.layout.product_list_item);
@@ -33,9 +38,9 @@ public class ProductAdapter extends GridToggleArrayAdapter<Product> {
         mNumberFormat = NumberFormat.getCurrencyInstance();
 
         mUrlConverter = new ImageURLConverter(tenantId, siteId);
-
-        mImageWidth = (int) context.getResources().getDimension(R.dimen.product_image_list_width);
-        mImageHeight = (int) context.getResources().getDimension(R.dimen.product_image_list_height);
+        mTenantId = tenantId;
+        mSiteId = siteId;
+        mContext = context;
     }
 
     @Override
@@ -81,7 +86,16 @@ public class ProductAdapter extends GridToggleArrayAdapter<Product> {
         viewHolder.productSku.setText(product.getProductCode());
         viewHolder.productPrice.setText(product.getPrice() != null && product.getPrice().getPrice() != null && product.getPrice().getPrice() > 0.0 ? mNumberFormat.format(product.getPrice().getPrice()) : "");
         viewHolder.productSalePrice.setText(product.getPrice() != null && product.getPrice().getSalePrice() != null && product.getPrice().getSalePrice() > 0.0 ? mNumberFormat.format(product.getPrice().getSalePrice()) : "");
-
+        viewHolder.productInventory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ProductDetailInventoryFragment inventoryFragment = new ProductDetailInventoryFragment();
+                inventoryFragment.setProduct(product);
+                inventoryFragment.setTenantId(mTenantId);
+                inventoryFragment.setSiteId(mSiteId);
+                inventoryFragment.show(((Activity)mContext).getFragmentManager(),"inventory_fragment");
+            }
+        });
         return convertView;
     }
 

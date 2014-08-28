@@ -5,10 +5,40 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="40dp">
+    <LinearLayout
+        android:id="@+id/dialog_header"
+        android:layout_width="750dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"
+        android:visibility="gone"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:fontFamily="sans-serif-light"
+            android:textSize="20sp"
+            android:layout_marginBottom="20dp"
+            android:layout_height="wrap_content"
+            android:text="@string/inventory_tab_name" />
+        <TextView
+            android:id="@+id/productCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="@color/mozu_color"/>
+
+        <TextView
+            android:id="@+id/productName"
+            android:layout_width="match_parent"
+            android:singleLine="true"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textSize="40sp"/>
+        </LinearLayout>
 
     <LinearLayout
         android:id="@+id/inventory_header"
         android:orientation="horizontal"
+        android:layout_marginBottom="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -41,6 +71,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/prod_detail_inventory_table_on_reserve_header"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            />
+
+
 
     </LinearLayout>
 

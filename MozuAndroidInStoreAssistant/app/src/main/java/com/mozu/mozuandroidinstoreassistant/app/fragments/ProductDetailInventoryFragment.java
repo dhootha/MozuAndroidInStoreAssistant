@@ -1,17 +1,21 @@
 package com.mozu.mozuandroidinstoreassistant.app.fragments;
 
-import android.app.Fragment;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.LoaderManager;
 import android.content.Loader;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
-import com.mozu.api.contracts.productruntime.LocationInventory;
-import com.mozu.api.contracts.productruntime.LocationInventoryCollection;
+import com.mozu.api.contracts.productadmin.LocationInventory;
+import com.mozu.api.contracts.productadmin.LocationInventoryCollection;
 import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.ProdDetailLocationInventoryAdapter;
@@ -20,7 +24,7 @@ import com.mozu.mozuandroidinstoreassistant.app.loaders.LocationInventoryLoader;
 import java.util.List;
 
 
-public class ProductDetailInventoryFragment extends Fragment implements LoaderManager.LoaderCallbacks<LocationInventoryCollection> {
+public class ProductDetailInventoryFragment extends DialogFragment implements LoaderManager.LoaderCallbacks<LocationInventoryCollection> {
 
     private static final int LOADER_PRODUCT_INVENTORY = 123;
     private Product mProduct;
@@ -32,6 +36,7 @@ public class ProductDetailInventoryFragment extends Fragment implements LoaderMa
 
     private ListView mInventoryList;
     private ProgressBar mProgress;
+    private LinearLayout mDialogLayout;
 
     public ProductDetailInventoryFragment() {
         // Required empty public constructor
@@ -52,6 +57,16 @@ public class ProductDetailInventoryFragment extends Fragment implements LoaderMa
             getLoaderManager().initLoader(LOADER_PRODUCT_INVENTORY, null, this).forceLoad();
         }
 
+        if (getShowsDialog()) {
+            mDialogLayout = (LinearLayout) view.findViewById(R.id.dialog_header);
+            mDialogLayout.setVisibility(View.VISIBLE);
+
+            TextView productCode = (TextView)mDialogLayout.findViewById(R.id.productCode);
+            TextView productName = (TextView)mDialogLayout.findViewById(R.id.productName);
+            productCode.setText(mProduct.getProductCode());
+            productName.setText(mProduct.getContent().getProductName());
+
+        }
         return view;
     }
 
@@ -62,7 +77,7 @@ public class ProductDetailInventoryFragment extends Fragment implements LoaderMa
         mInventoryList.setVisibility(View.VISIBLE);
 
         ListView inventoryList = (ListView) view.findViewById(R.id.inventory_list);
-        inventoryList.setAdapter(new ProdDetailLocationInventoryAdapter(getActivity(), mInventory));
+        inventoryList.setAdapter(new ProdDetailLocationInventoryAdapter(getActivity(), mInventory,mTenantId,mSiteId));
 
     }
 
@@ -81,6 +96,13 @@ public class ProductDetailInventoryFragment extends Fragment implements LoaderMa
     @Override
     public Loader<LocationInventoryCollection> onCreateLoader(int id, Bundle args) {
         return new LocationInventoryLoader(getActivity(), mTenantId, mSiteId, mProduct);
+    }
+
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        return dialog;
     }
 
     @Override

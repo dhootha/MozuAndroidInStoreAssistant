@@ -16,6 +16,8 @@ public class ProductViewHolder {
     @InjectView(R.id.product_sku) TextView productSku;
     @InjectView(R.id.product_price) TextView productPrice;
     @InjectView(R.id.product_sale_price) TextView productSalePrice;
+    @InjectView(R.id.product_image_inventory) ImageView productInventory;
+
 
     public ProductViewHolder(View view) {
         ButterKnife.inject(this, view);
