@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,6 +20,7 @@ import com.mozu.mozuandroidinstoreassistant.app.fragments.ProductDetailInventory
 import com.mozu.mozuandroidinstoreassistant.app.models.ImageURLConverter;
 import com.mozu.mozuandroidinstoreassistant.app.views.CropSquareTransformation;
 import com.mozu.mozuandroidinstoreassistant.app.views.RoundedTransformation;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
@@ -51,7 +55,7 @@ public class ProductAdapter extends GridToggleArrayAdapter<Product> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ProductViewHolder viewHolder;
+        final ProductViewHolder viewHolder;
 
         if ( convertView == null ||
            ( isGrid() && convertView.getId() == getGridResource()) ||
@@ -75,12 +79,27 @@ public class ProductAdapter extends GridToggleArrayAdapter<Product> {
                     .load(mUrlConverter.getFullImageUrl(product.getContent().getProductImages().get(0).getImageUrl()));
 
             if (!isGrid()) {
-                creator = creator.transform(new RoundedTransformation());
+                creator = creator.transform(new RoundedTransformation()).fit().centerCrop();
             } else {
-                creator = creator.placeholder(R.drawable.icon_noproductphoto);
+                creator = creator.placeholder(R.drawable.icon_noproductphoto).fit().centerInside();
             }
 
-            creator.fit().centerCrop().into(viewHolder.productImage);
+            viewHolder.productImage.setBackgroundColor(getContext().getResources().getColor(R.color.darker_grey));
+
+            creator.into(viewHolder.productImage, new Callback() {
+
+                @Override
+                public void onSuccess() {
+
+                    Bitmap bitmap = ((BitmapDrawable) viewHolder.productImage.getDrawable()).getBitmap();
+                    viewHolder.productImage.setBackgroundColor(bitmap.getPixel(0, 0));
+
+                }
+
+                @Override
+                public void onError() {}
+
+            });
         }
 
         viewHolder.productSku.setText(product.getProductCode());
