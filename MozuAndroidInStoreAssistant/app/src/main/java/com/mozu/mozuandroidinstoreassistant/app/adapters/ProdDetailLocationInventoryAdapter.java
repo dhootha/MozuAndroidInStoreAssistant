@@ -55,6 +55,4 @@ public class ProdDetailLocationInventoryAdapter extends ArrayAdapter<LocationInv
         return convertView;
     }
 
-
-
 }

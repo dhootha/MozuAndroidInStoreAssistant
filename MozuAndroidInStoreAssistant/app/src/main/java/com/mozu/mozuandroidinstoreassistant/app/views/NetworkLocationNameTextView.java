@@ -40,7 +40,9 @@ public class NetworkLocationNameTextView extends TextView implements LocationNam
 
         mTask.cancel(true);
 
-        mTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        mTask = new LocationNameFetchTask(this, mTenantId, mSiteId);
+
+        mTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, locationCode);
     }
 
     @Override

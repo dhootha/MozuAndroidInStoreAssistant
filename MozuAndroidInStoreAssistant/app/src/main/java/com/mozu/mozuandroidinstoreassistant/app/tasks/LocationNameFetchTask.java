@@ -28,15 +28,16 @@ public class LocationNameFetchTask extends AsyncTask<String,Void,String> {
             return location.getName();
         } catch (Exception e) {
             Crashlytics.logException(e);
-            return null;
         }
+
+        return null;
     }
 
     @Override
     protected void onPostExecute(String locationName) {
         if (isCancelled()) {
 
-            locationName = null;
+            return;
         }
 
         if (mListener != null) {
