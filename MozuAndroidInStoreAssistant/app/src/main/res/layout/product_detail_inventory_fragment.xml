@@ -71,14 +71,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/prod_detail_inventory_table_on_reserve_header"/>
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            />
-
-
-
     </LinearLayout>
 
     <View

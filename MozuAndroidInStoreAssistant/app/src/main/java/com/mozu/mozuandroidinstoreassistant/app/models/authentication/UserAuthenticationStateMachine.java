@@ -147,9 +147,10 @@ public class UserAuthenticationStateMachine extends Observable implements Refres
 
         //didn't find prefs for this user, create new one and add it
         UserPreferences prefs = new UserPreferences();
-        prefs.setEmail(mAuthProfile.getUserProfile().getEmailAddress());
-
-        mAllUsersPrefs.add(prefs);
+        if (mAuthProfile.getUserProfile() != null) {
+            prefs.setEmail(mAuthProfile.getUserProfile().getEmailAddress());
+            mAllUsersPrefs.add(prefs);
+        }
 
         return prefs;
     }

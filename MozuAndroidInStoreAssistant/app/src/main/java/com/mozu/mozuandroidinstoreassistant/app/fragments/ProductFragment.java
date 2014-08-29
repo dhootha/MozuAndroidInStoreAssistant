@@ -1,6 +1,7 @@
 package com.mozu.mozuandroidinstoreassistant.app.fragments;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.app.LoaderManager;
 import android.app.SearchManager;
 import android.content.Context;
@@ -32,6 +33,7 @@ import com.mozu.mozuandroidinstoreassistant.app.models.RecentSearch;
 import com.mozu.mozuandroidinstoreassistant.app.models.UserPreferences;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
+import com.mozu.mozuandroidinstoreassistant.app.tasks.InventoryButtonClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,9 +41,10 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class ProductFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Product>>, AbsListView.OnScrollListener, SearchView.OnQueryTextListener, SearchView.OnSuggestionListener, AbsListView.OnItemClickListener {
+public class ProductFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Product>>, AbsListView.OnScrollListener, SearchView.OnQueryTextListener, SearchView.OnSuggestionListener, AbsListView.OnItemClickListener,InventoryButtonClickListener {
 
     public static final int MAX_NUMBER_OF_SEARCHES = 5;
+
 
     private static final int PRODUCT_LOADER = 0;
 
@@ -67,6 +70,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
     private SearchView mSearchView;
 
     private MenuItem mSearchMenuItem;
+    private final static String PRODUCT_INVENTORY_DIALOG_TAG = "product_inventory_tag";
 
     private ProductFragmentListener mListener = sProductListener;
 
@@ -143,7 +147,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         if (loader.getId() == PRODUCT_LOADER) {
             if (mAdapter == null) {
 
-                mAdapter = new ProductAdapter(getActivity(), mUserState.getTenantId(), mUserState.getSiteId());
+                mAdapter = new ProductAdapter(getActivity(), mUserState.getTenantId(), mUserState.getSiteId(), this);
             }
 
             mAdapter.clear();
@@ -408,5 +412,18 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         mListener.onProductChoosentFromProuct(mAdapter.getItem(position).getProductCode());
+    }
+
+    @Override
+    public void onClick(Product product) {
+        FragmentManager manager = getFragmentManager();
+        ProductDetailInventoryFragment inventoryFragment = (ProductDetailInventoryFragment) manager.findFragmentByTag(PRODUCT_INVENTORY_DIALOG_TAG);
+        if (inventoryFragment == null) {
+            inventoryFragment = new ProductDetailInventoryFragment();
+            inventoryFragment.setProduct(product);
+            inventoryFragment.setTenantId(mUserState.getTenantId());
+            inventoryFragment.setSiteId(mUserState.getSiteId());
+        }
+        inventoryFragment.show(manager, PRODUCT_INVENTORY_DIALOG_TAG);
     }
 }
