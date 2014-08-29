@@ -1,24 +1,16 @@
 package com.mozu.mozuandroidinstoreassistant.app.adapters;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.mozuandroidinstoreassistant.app.R;
-import com.mozu.mozuandroidinstoreassistant.app.fragments.ProductDetailInventoryFragment;
 import com.mozu.mozuandroidinstoreassistant.app.models.ImageURLConverter;
-import com.mozu.mozuandroidinstoreassistant.app.views.CropSquareTransformation;
+import com.mozu.mozuandroidinstoreassistant.app.tasks.InventoryButtonClickListener;
 import com.mozu.mozuandroidinstoreassistant.app.views.RoundedTransformation;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -32,19 +24,15 @@ public class ProductAdapter extends GridToggleArrayAdapter<Product> {
 
 
     private NumberFormat mNumberFormat;
-    private Integer mTenantId;
-    private Integer mSiteId;
-    private Context mContext;
+    private InventoryButtonClickListener mInventoryClickListener;
 
-    public ProductAdapter(Context context, Integer tenantId, Integer siteId) {
+    public ProductAdapter(Context context, Integer tenantId, Integer siteId,InventoryButtonClickListener inventoryClickListener) {
         super(context, R.layout.product_grid_item, R.layout.product_list_item);
 
         mNumberFormat = NumberFormat.getCurrencyInstance();
 
         mUrlConverter = new ImageURLConverter(tenantId, siteId);
-        mTenantId = tenantId;
-        mSiteId = siteId;
-        mContext = context;
+        mInventoryClickListener = inventoryClickListener;
     }
 
     @Override
@@ -108,11 +96,7 @@ public class ProductAdapter extends GridToggleArrayAdapter<Product> {
         viewHolder.productInventory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ProductDetailInventoryFragment inventoryFragment = new ProductDetailInventoryFragment();
-                inventoryFragment.setProduct(product);
-                inventoryFragment.setTenantId(mTenantId);
-                inventoryFragment.setSiteId(mSiteId);
-                inventoryFragment.show(((Activity)mContext).getFragmentManager(),"inventory_fragment");
+                mInventoryClickListener.onClick(product);
             }
         });
         return convertView;
