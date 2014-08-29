@@ -38,7 +38,7 @@ public class ProductLoader extends InternetConnectedAsyncTaskLoader<List<Product
         init();
     }
 
-    private void init() {
+    public void init() {
         cancelLoad();
 
         mCurrentPage = 0;

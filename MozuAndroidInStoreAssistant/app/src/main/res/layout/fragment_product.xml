@@ -142,24 +142,39 @@
 
     </LinearLayout>
 
-    <GridView
-        android:id="@+id/product_grid"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/product_grid_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="none"
-        android:numColumns="@integer/num_of_columns_in_grid"
-        />
+        android:visibility="gone">
 
-    <ListView
-        android:id="@+id/product_list"
+        <GridView
+            android:id="@+id/product_grid"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            android:numColumns="@integer/num_of_columns_in_grid"
+            />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/product_list_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"
-        android:background="@android:color/white"
-        android:scrollbars="none"
-        android:visibility="gone"
-        />
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <ListView
+            android:id="@+id/product_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="0dp"
+            android:background="@android:color/white"
+            android:scrollbars="none"
+            />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <TextView
         android:id="@+id/empty_list"
