@@ -9,6 +9,7 @@ import android.content.Loader;
 import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -41,7 +42,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class ProductFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Product>>, AbsListView.OnScrollListener, SearchView.OnQueryTextListener, SearchView.OnSuggestionListener, AbsListView.OnItemClickListener,InventoryButtonClickListener {
+public class ProductFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Product>>, AbsListView.OnScrollListener, SearchView.OnQueryTextListener, SearchView.OnSuggestionListener, AbsListView.OnItemClickListener, InventoryButtonClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     public static final int MAX_NUMBER_OF_SEARCHES = 5;
 
@@ -52,8 +53,13 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
     private Integer mCategoryId;
 
+    private boolean mIsRefreshing = false;
+
     @InjectView(R.id.product_grid) GridView mProductGridView;
     @InjectView(R.id.product_list) ListView mProductListView;
+
+    @InjectView(R.id.product_grid_container) SwipeRefreshLayout mProductGridPullToRefresh;
+    @InjectView(R.id.product_list_container) SwipeRefreshLayout mProductListPullToRefresh;
 
     @InjectView(R.id.product_list_headers) LinearLayout mHeadersView;
 
@@ -117,12 +123,24 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
         ButterKnife.inject(this, fragmentView);
 
+        mProductGridPullToRefresh.setOnRefreshListener(this);
+        mProductGridPullToRefresh.setColorScheme(R.color.mozu_color,
+                android.R.color.white,
+                R.color.mozu_color,
+                android.R.color.white);
+
+        mProductListPullToRefresh.setOnRefreshListener(this);
+        mProductListPullToRefresh.setColorScheme(R.color.mozu_color,
+                android.R.color.white,
+                R.color.mozu_color,
+                android.R.color.white);
+
         mProductListView.setOnItemClickListener(this);
         mProductGridView.setOnItemClickListener(this);
 
-        mProductGridView.setVisibility(View.GONE);
+        mProductGridPullToRefresh.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.VISIBLE);
-        mProductListView.setVisibility(View.GONE);
+        mProductListPullToRefresh.setVisibility(View.GONE);
         mHeadersView.setVisibility(View.GONE);
         mEmptyListMessageView.setVisibility(View.GONE);
 
@@ -134,6 +152,8 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
     public Loader<List<Product>> onCreateLoader(int id, Bundle args) {
 
         if (id == PRODUCT_LOADER) {
+            mProductGridPullToRefresh.setRefreshing(true);
+            mProductListPullToRefresh.setRefreshing(true);
             return new ProductLoader(getActivity(), mUserState.getTenantId(), mUserState.getSiteId(), mCategoryId);
         }
 
@@ -145,6 +165,16 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         UserPreferences prefs = mUserState.getCurrentUsersPreferences();
 
         if (loader.getId() == PRODUCT_LOADER) {
+            mProductGridPullToRefresh.setRefreshing(false);
+            mProductListPullToRefresh.setRefreshing(false);
+
+            if (mIsRefreshing) {
+                mIsRefreshing = false;
+                mAdapter = null;
+                mProductGridView.setAdapter(null);
+                mProductListView.setAdapter(null);
+            }
+
             if (mAdapter == null) {
 
                 mAdapter = new ProductAdapter(getActivity(), mUserState.getTenantId(), mUserState.getSiteId(), this);
@@ -162,14 +192,14 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
             mProductListView.setOnScrollListener(this);
 
             if (prefs.getShowAsGrids()) {
-                mProductGridView.setVisibility(View.VISIBLE);
-                mProductListView.setVisibility(View.GONE);
+                mProductGridPullToRefresh.setVisibility(View.VISIBLE);
+                mProductListPullToRefresh.setVisibility(View.GONE);
                 mHeadersView.setVisibility(View.GONE);
                 mAdapter.setIsGrid(true);
                 mAdapter.notifyDataSetChanged();
             } else {
-                mProductListView.setVisibility(View.VISIBLE);
-                mProductGridView.setVisibility(View.GONE);
+                mProductListPullToRefresh.setVisibility(View.VISIBLE);
+                mProductGridPullToRefresh.setVisibility(View.GONE);
                 mHeadersView.setVisibility(View.VISIBLE);
                 mAdapter.setIsGrid(false);
                 mAdapter.notifyDataSetChanged();
@@ -178,8 +208,8 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
             mProgressBar.setVisibility(View.GONE);
 
             if (mAdapter == null || mAdapter.getCount() < 1) {
-                mProductGridView.setVisibility(View.GONE);
-                mProductListView.setVisibility(View.GONE);
+                mProductGridPullToRefresh.setVisibility(View.GONE);
+                mProductListPullToRefresh.setVisibility(View.GONE);
                 mHeadersView.setVisibility(View.GONE);
                 mEmptyListMessageView.setVisibility(View.VISIBLE);
             } else {
@@ -224,6 +254,10 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
             return updateViewToggleState(prefs);
         } else if (item.getItemId() == R.id.action_search) {
             showSuggestions();
+        } else if (item.getItemId() == R.id.refresh_product) {
+            mProductGridPullToRefresh.setRefreshing(true);
+            mProductListPullToRefresh.setRefreshing(true);
+            onRefresh();
         }
 
         return super.onOptionsItemSelected(item);
@@ -265,9 +299,9 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
         if (!mIsGridVisible) {
             mIsGridVisible = true;
-            mProductListView.setVisibility(View.GONE);
+            mProductListPullToRefresh.setVisibility(View.GONE);
             mHeadersView.setVisibility(View.GONE);
-            mProductGridView.setVisibility(View.VISIBLE);
+            mProductGridPullToRefresh.setVisibility(View.VISIBLE);
             mProgressBar.setVisibility(View.GONE);
             mAdapter.setIsGrid(true);
             mAdapter.notifyDataSetChanged();
@@ -280,9 +314,9 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
             return true;
         } else {
             mIsGridVisible = false;
-            mProductListView.setVisibility(View.VISIBLE);
+            mProductListPullToRefresh.setVisibility(View.VISIBLE);
             mHeadersView.setVisibility(View.VISIBLE);
-            mProductGridView.setVisibility(View.GONE);
+            mProductGridPullToRefresh.setVisibility(View.GONE);
             mProgressBar.setVisibility(View.GONE);
             mAdapter.setIsGrid(false);
             mAdapter.notifyDataSetChanged();
@@ -298,7 +332,8 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public void onLoaderReset(Loader<List<Product>> loader) {
-
+        mProductGridPullToRefresh.setRefreshing(false);
+        mProductListPullToRefresh.setRefreshing(false);
     }
 
     public void setCategoryId(Integer categoryId) {
@@ -411,6 +446,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
         mListener.onProductChoosentFromProuct(mAdapter.getItem(position).getProductCode());
     }
 
@@ -426,4 +462,16 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         }
         inventoryFragment.show(manager, PRODUCT_INVENTORY_DIALOG_TAG);
     }
+
+    public void onRefresh() {
+        mSearchMenuItem.collapseActionView();
+
+        mIsRefreshing = true;
+
+        getProductLoader().reset();
+        getProductLoader().init();
+        getProductLoader().startLoading();
+        getProductLoader().forceLoad();
+    }
+
 }

@@ -117,5 +117,6 @@
     <string name="product_name_header">Name</string>
     <string name="product_price_header">Price</string>
     <string name="product_sales_price_header">Sale Price</string>
+    <string name="refresh_product_menu_item_text">Refresh Products</string>
 
 </resources>
