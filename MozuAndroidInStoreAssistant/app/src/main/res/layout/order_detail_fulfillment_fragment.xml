@@ -121,8 +121,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:scrollbars="none"
-        android:dividerHeight="0dp"
-        android:divider="@android:color/transparent"
+        android:dividerHeight="1dp"
+        android:divider="@color/light_gray"
         android:background="@drawable/product_detail_images_background"/>
 
 </LinearLayout>

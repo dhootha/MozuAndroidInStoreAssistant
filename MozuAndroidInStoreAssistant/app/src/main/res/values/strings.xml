@@ -118,5 +118,10 @@
     <string name="product_price_header">Price</string>
     <string name="product_sales_price_header">Sale Price</string>
     <string name="refresh_product_menu_item_text">Refresh Products</string>
+    <string name="pending_items_direct_ship_label_unpackaged">Pending Items</string>
+    <string name="pending_items_direct_ship_label_fulfilled">Shipped Items</string>
+    <string name="pending_items_direct_ship_label_not_fulfilled">Created Items</string>
+    <string name="package_number_string">Package #</string>
+    <string name="fulfillment_items_label">item(s)</string>
 
 </resources>

@@ -75,7 +75,7 @@ public class LocationInventoryLoader extends InternetConnectedAsyncTaskLoader<Lo
         LocationInventoryResource inventoryResource = new LocationInventoryResource(new MozuApiContext(mTenantId, mSiteId));
 
         try {
-            inventoryCollection = inventoryResource.getLocationInventories(DataViewMode.Live, mProduct.getProductCode());
+            inventoryCollection = inventoryResource.getLocationInventories(mProduct.getProductCode());
         } catch (Exception e) {
 
             Crashlytics.logException(e);

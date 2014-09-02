@@ -125,7 +125,7 @@ public class ProductLoader extends InternetConnectedAsyncTaskLoader<List<Product
         ProductResource productResource = new ProductResource(new MozuApiContext(mTenantId, mSiteId));
 
         try {
-            productCollection = productResource.getProducts(FILTER_BY + String.valueOf(mCategoryId), mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, SORT_BY);
+            productCollection = productResource.getProducts(FILTER_BY + String.valueOf(mCategoryId), mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, SORT_BY, null);
 
             mTotalPages = (int) Math.ceil(productCollection.getTotalCount() * 1.0f / ITEMS_PER_PAGE * 1.0f);
 

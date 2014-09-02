@@ -13,7 +13,11 @@ import com.mozu.api.contracts.commerceruntime.fulfillment.Package;
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.commerceruntime.orders.OrderItem;
 import com.mozu.mozuandroidinstoreassistant.app.R;
-import com.mozu.mozuandroidinstoreassistant.app.adapters.OrderDetailPackageAdapter;
+import com.mozu.mozuandroidinstoreassistant.app.adapters.OrderDetailDirectShipFulfillmentAdapter;
+import com.mozu.mozuandroidinstoreassistant.app.models.FulfillmentItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class OrderDetailFullfillmentFragment extends Fragment {
@@ -56,25 +60,82 @@ public class OrderDetailFullfillmentFragment extends Fragment {
         int pendingCount = 0;
         int fulfilledCount = 0;
 
+        List<FulfillmentItem> fulfillmentItemList = new ArrayList<FulfillmentItem>();
+
+        List<String> alreadyPackagedItems = new ArrayList<String>();
+
+        int packageCount = 0;
+
         for (Package orderPackage: mOrder.getPackages()) {
+            packageCount++;
+
+            FulfillmentItem fulfillmentItem = new FulfillmentItem();
+            fulfillmentItem.setPackaged(true);
+            fulfillmentItem.setOrderPackage(orderPackage);
 
             String status = orderPackage.getStatus();
 
+            for (PackageItem packageItem: orderPackage.getItems()) {
+                alreadyPackagedItems.add(packageItem.getProductCode());
+            }
+
             if (status.equalsIgnoreCase(PENDING)) {
                 pendingCount++;
+
+                fulfillmentItem.setFullfilled(false);
             }
 
             if (status.equalsIgnoreCase(FULFILLED)) {
                 fulfilledCount++;
+
+                fulfillmentItem.setFullfilled(true);
+
+                for (Shipment shipment: mOrder.getShipments()) {
+                    if (shipment.getId().equalsIgnoreCase(orderPackage.getShipmentId())) {
+                        fulfillmentItem.setShipment(shipment);
+
+                        break;
+                    }
+                }
             }
 
+            fulfillmentItem.setPackageNumber(getActivity().getString(R.string.package_number_string) + String.valueOf(packageCount));
+
+            fulfillmentItemList.add(fulfillmentItem);
+        }
+
+        //find all the items that have not been packaged yet
+        List<OrderItem> orderItemsNotPackaged = new ArrayList<OrderItem>(mOrder.getItems());
+
+        for (String productCode: alreadyPackagedItems) {
+
+            for (int i = 0; i < orderItemsNotPackaged.size(); i++) {
+                OrderItem orderItem = orderItemsNotPackaged.get(i);
+
+                if (productCode.equalsIgnoreCase(orderItem.getProduct().getProductCode())) {
+
+                    orderItemsNotPackaged.remove(i);
+                    i--;
+                }
+
+            }
+
+        }
+
+        for (OrderItem orderItem: orderItemsNotPackaged) {
+            FulfillmentItem fulfillmentItem = new FulfillmentItem();
+            fulfillmentItem.setPackaged(false);
+            fulfillmentItem.setFullfilled(false);
+            fulfillmentItem.setNonPackgedItem(orderItem);
+
+            fulfillmentItemList.add(0, fulfillmentItem);
         }
 
         mPendingTotal.setText(String.valueOf(pendingCount));
         mFulfilledTotal.setText(String.valueOf(fulfilledCount));
         mShipmentTotal.setText(String.valueOf(pendingCount + fulfilledCount));
 
-        mPackageListView.setAdapter(new OrderDetailPackageAdapter(getActivity(), mOrder.getPackages()));
+        mPackageListView.setAdapter(new OrderDetailDirectShipFulfillmentAdapter(getActivity(), fulfillmentItemList));
     }
 
 
