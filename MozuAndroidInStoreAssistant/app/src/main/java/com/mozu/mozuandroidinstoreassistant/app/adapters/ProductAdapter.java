@@ -1,11 +1,18 @@
 package com.mozu.mozuandroidinstoreassistant.app.adapters;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.mozuandroidinstoreassistant.app.R;
@@ -25,10 +32,11 @@ public class ProductAdapter extends GridToggleArrayAdapter<Product> {
 
     private NumberFormat mNumberFormat;
     private InventoryButtonClickListener mInventoryClickListener;
+    private Context mContext;
 
     public ProductAdapter(Context context, Integer tenantId, Integer siteId,InventoryButtonClickListener inventoryClickListener) {
         super(context, R.layout.product_grid_item, R.layout.product_list_item);
-
+        mContext = context;
         mNumberFormat = NumberFormat.getCurrencyInstance();
 
         mUrlConverter = new ImageURLConverter(tenantId, siteId);
@@ -96,7 +104,31 @@ public class ProductAdapter extends GridToggleArrayAdapter<Product> {
         viewHolder.productInventory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mInventoryClickListener.onClick(product);
+                if (isGrid()) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    builder.setItems(R.array.product_overflow_options, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int position) {
+                            if (position == 0) {
+                                mInventoryClickListener.onClick(product);
+                            }
+                        }
+                    });
+                    Dialog dialog = builder.create();
+                    dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+                    dialog.show();
+                    WindowManager.LayoutParams lParams = dialog.getWindow().getAttributes();
+                    int[] coordinates = new int[]{0,0};
+                    lParams.gravity = Gravity.TOP | Gravity.LEFT;
+                    view.getLocationOnScreen(coordinates);
+                    lParams.x = (int) (coordinates[0] - view.getX());
+                    lParams.y = (int) (coordinates[1] - view.getY());
+                    lParams.width = 600;
+                    lParams.height = 400;
+                    dialog.getWindow().setAttributes(lParams);
+
+                } else {
+                    mInventoryClickListener.onClick(product);
+                }
             }
         });
         return convertView;
