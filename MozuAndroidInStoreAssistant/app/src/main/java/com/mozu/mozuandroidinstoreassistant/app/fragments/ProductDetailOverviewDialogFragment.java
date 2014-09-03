@@ -1,7 +1,8 @@
 package com.mozu.mozuandroidinstoreassistant.app.fragments;
 
 import android.app.DialogFragment;
-import android.app.Fragment;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.SpannableString;
@@ -13,41 +14,70 @@ import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.mozu.api.contracts.productruntime.BundledProduct;
-import com.mozu.api.contracts.productruntime.Product;
-import com.mozu.api.contracts.productruntime.ProductOption;
+import com.mozu.api.contracts.commerceruntime.products.BundledProduct;
+import com.mozu.api.contracts.commerceruntime.products.Product;
+import com.mozu.api.contracts.commerceruntime.products.ProductOption;
+import com.mozu.api.contracts.productruntime.ProductOptionValue;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.htmlutils.HTMLTagHandler;
+import com.mozu.mozuandroidinstoreassistant.app.models.ImageURLConverter;
 import com.mozu.mozuandroidinstoreassistant.app.views.NoUnderlineClickableSpan;
 import com.mozu.mozuandroidinstoreassistant.app.views.ProductOptionsLayout;
+import com.mozu.mozuandroidinstoreassistant.app.views.RoundedTransformation;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 
-public class ProductDetailOverviewFragment extends Fragment {
-
-
-    private Product mProduct;
-
-    TextView mDescription;
+public class ProductDetailOverviewDialogFragment extends DialogFragment {
 
     private static final int MAX_DESC_LENGTH = 500;
     private static final String PRODUCT_CONFIGURABLE = "Configurable";
 
-    public ProductDetailOverviewFragment() {
+    private Product mProduct;
+
+    private int mTenantId;
+    private int mSiteId;
+
+    @InjectView(R.id.main_price) TextView mMainPrice;
+    @InjectView(R.id.regular_price) TextView mRegPrice;
+    @InjectView(R.id.msrp_price) TextView mMsrpPrice;
+    @InjectView(R.id.map_price) TextView mMapPrice;
+    @InjectView(R.id.includes) TextView mIncludes;
+    @InjectView(R.id.product_description) TextView mDescription;
+    @InjectView(R.id.includesLayout) LinearLayout mIncludesLayout;
+    @InjectView(R.id.main_product_image) ImageView mMainProductImage;
+
+    private ImageURLConverter mImageUrlConverter;
+
+    public ProductDetailOverviewDialogFragment() {
         // Required empty public constructor
+
+        setStyle(STYLE_NO_TITLE, 0);
+
         setRetainInstance(true);
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.product_detail_overview_fragment, null);
+        View view = inflater.inflate(R.layout.product_detail_overview_dialog_fragment, null);
+
+        ButterKnife.inject(this, view);
 
         if (mProduct != null) {
+            mImageUrlConverter = new ImageURLConverter(mTenantId, mSiteId);
+
             setProductOverviewViews(view);
         }
 
@@ -55,77 +85,83 @@ public class ProductDetailOverviewFragment extends Fragment {
     }
 
     private void setProductOverviewViews(View view) {
-        TextView mainPrice = (TextView) view.findViewById(R.id.main_price);
-        TextView regPrice = (TextView) view.findViewById(R.id.regular_price);
-        TextView msrpPrice = (TextView) view.findViewById(R.id.msrp_price);
-        TextView mapPrice = (TextView) view.findViewById(R.id.map_price);
-        TextView includes = (TextView) view.findViewById(R.id.includes);
-        mDescription = (TextView) view.findViewById(R.id.product_description);
-        TextView upc = (TextView) view.findViewById(R.id.upc);
-        TextView pn = (TextView) view.findViewById(R.id.pn);
-        TextView distrpn = (TextView) view.findViewById(R.id.distrpn);
-        TextView taxable = (TextView) view.findViewById(R.id.taxable);
-        TextView recurring = (TextView) view.findViewById(R.id.recurring);
-        LinearLayout includesLayout = (LinearLayout)view.findViewById(R.id.includesLayout);
-
         NumberFormat defaultFormat = NumberFormat.getCurrencyInstance();
+
+        setImage();
+
         if (hasSalePrice(mProduct)) {
-            mainPrice.setVisibility(View.VISIBLE);
-            mainPrice.setText(getSalePriceText(defaultFormat));
+            mMainPrice.setVisibility(View.VISIBLE);
+            mMainPrice.setText(getSalePriceText(defaultFormat));
         } else {
-            mainPrice.setVisibility(View.GONE);
+            mMainPrice.setVisibility(View.GONE);
         }
-        regPrice.setText(getRegularPriceText(defaultFormat));
-        msrpPrice.setText(getMSRPPriceText(defaultFormat));
-        mapPrice.setText(getMAPPriceText(defaultFormat));
+
+        mRegPrice.setText(getRegularPriceText(defaultFormat));
+        mMsrpPrice.setText(getMSRPPriceText(defaultFormat));
+        mMapPrice.setText(getMAPPriceText(defaultFormat));
+
         if (isProductConfigurable(mProduct)) {
-            includesLayout.setVisibility(View.GONE);
+            mIncludesLayout.setVisibility(View.GONE);
         } else {
-            includesLayout.setVisibility(View.VISIBLE);
-            includes.setText(getBundledProductsString());
+            mIncludesLayout.setVisibility(View.VISIBLE);
+            mIncludes.setText(getBundledProductsString());
         }
+
         mDescription.setText(getDescriptionWithSpannableClick(false));
         mDescription.setMovementMethod(LinkMovementMethod.getInstance());
 
-        upc.setText(getUPC(mProduct));
-        pn.setText(getPartNumber(mProduct));
-        distrpn.setText("N/A");
-        taxable.setText(mProduct.getIsTaxable() != null && mProduct.getIsTaxable() ? getString(R.string.yes) : getString(R.string.no));
-        recurring.setText(mProduct.getIsRecurring() != null && mProduct.getIsRecurring() ? getString(R.string.yes) : getString(R.string.no));
+        showProductOptionsIfNecessary(view);
+    }
+
+    private void setImage() {
+        RequestCreator creator = Picasso.with(getActivity())
+                .load(mImageUrlConverter.getFullImageUrl(mProduct.getImageUrl()));
+
+        creator = creator.placeholder(R.drawable.icon_noproductphoto).fit().centerInside();
+
+        mMainProductImage.setBackgroundColor(getActivity().getResources().getColor(R.color.darker_grey));
+
+        creator.into(mMainProductImage, new Callback() {
+
+            @Override
+            public void onSuccess() {
+                Bitmap bitmap = ((BitmapDrawable) mMainProductImage.getDrawable()).getBitmap();
+                mMainProductImage.setBackgroundColor(bitmap.getPixel(0, 0));
+            }
+
+            @Override
+            public void onError() {}
+
+        });
+    }
+
+    private void showProductOptionsIfNecessary(View view) {
         if (mProduct.getOptions() != null && !mProduct.getOptions().isEmpty()) {
             LinearLayout layout = (LinearLayout) view.findViewById(R.id.options_layout);
             layout.setVisibility(View.VISIBLE);
+
             for(ProductOption option: mProduct.getOptions()){
                 ProductOptionsLayout optionsLayout = new ProductOptionsLayout(getActivity());
-                optionsLayout.setTitle(option.getAttributeDetail().getName());
-                optionsLayout.setSpinnerOptions(option.getValues());
+                optionsLayout.setTitle(option.getName());
+
+                List<ProductOptionValue> optionValues = new ArrayList<ProductOptionValue>();
+
+                ProductOptionValue value = new ProductOptionValue();
+                value.setValue(option.getValue());
+
+                optionsLayout.setSpinnerOptions(optionValues);
                 layout.addView(optionsLayout);
             }
-
         }
-
     }
 
     private boolean isProductConfigurable(Product product){
         return PRODUCT_CONFIGURABLE.equalsIgnoreCase(product.getProductUsage());
     }
 
-    private String getUPC(Product product){
-        if (TextUtils.isEmpty(product.getUpc())) {
-            return "N/A";
-        } else {
-            return product.getUpc();
-        }
-    }
 
-    private String getPartNumber(Product product){
-        if (TextUtils.isEmpty(product.getMfgPartNumber())) {
-            return "N/A";
-        } else {
-            return product.getMfgPartNumber();
-        }
-    }
     public void setProduct(Product product) {
+
         mProduct = product;
     }
 
@@ -133,6 +169,7 @@ public class ProductDetailOverviewFragment extends Fragment {
         if (product.getPrice() != null && product.getPrice().getSalePrice() != null) {
             return true;
         }
+
         return false;
     }
 
@@ -170,12 +207,6 @@ public class ProductDetailOverviewFragment extends Fragment {
     private String getMAPPriceText(NumberFormat format) {
         String mapString = "N/A";
 
-//MAP Price unprovided currently
-//        if (mProduct.getPrice() != null && mProduct.getPrice(). != null) {
-//
-//            mapString = format.format(mProduct.getPrice().getSalePrice());
-//        }
-
         return mapString;
     }
 
@@ -189,9 +220,7 @@ public class ProductDetailOverviewFragment extends Fragment {
         bundledString = "";
 
         for (BundledProduct bundable: mProduct.getBundledProducts()) {
-            if (bundable.getContent() != null) {
-                bundledString += bundable.getContent().getProductName() + ", ";
-            }
+            bundledString += bundable.getName() + ", ";
         }
 
         if (bundledString.length() > 3) {
@@ -202,14 +231,15 @@ public class ProductDetailOverviewFragment extends Fragment {
     }
 
     private SpannableString getDescriptionWithSpannableClick(boolean showLargeDescription){
-        if (mProduct.getContent() == null) {
+        if (mProduct == null) {
             return new SpannableString("N/A");
         }
 
-        String desc = mProduct.getContent().getProductFullDescription();
+        String desc = mProduct.getDescription();
         String buttonText;
         ClickableSpan clickableSpan;
         SpannableString spannableString;
+
         if (showLargeDescription) {
             buttonText = getString(R.string.show_less_click_link);
             clickableSpan = mContractClickableSpan;
@@ -222,13 +252,20 @@ public class ProductDetailOverviewFragment extends Fragment {
             if (desc.length() > MAX_DESC_LENGTH) {
                 desc = desc.subSequence(0, MAX_DESC_LENGTH).toString();
             }
+
             Spanned spannedText = Html.fromHtml(desc,null,new HTMLTagHandler());
             spannableString = new SpannableString(spannedText);
         }
-        SpannableString linkSpan = new SpannableString(buttonText);
-        linkSpan.setSpan(clickableSpan, 0, buttonText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        linkSpan.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.mozu_color)), 0, buttonText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        return new SpannableString(TextUtils.concat(spannableString,linkSpan));
+
+        //never show the spannable link if the description isn't long enough
+        SpannableString linkSpan = new SpannableString("");
+        if (desc.length() > MAX_DESC_LENGTH) {
+            linkSpan = new SpannableString(buttonText);
+            linkSpan.setSpan(clickableSpan, 0, buttonText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            linkSpan.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.mozu_color)), 0, buttonText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+        return new SpannableString(TextUtils.concat(spannableString, linkSpan));
     }
 
     private NoUnderlineClickableSpan mExpandClickableSpan = new NoUnderlineClickableSpan() {
@@ -248,4 +285,12 @@ public class ProductDetailOverviewFragment extends Fragment {
         }
 
     };
+
+    public void setTenantId(int tenantId) {
+        mTenantId = tenantId;
+    }
+
+    public void setSiteId(int siteId) {
+        mSiteId = siteId;
+    }
 }

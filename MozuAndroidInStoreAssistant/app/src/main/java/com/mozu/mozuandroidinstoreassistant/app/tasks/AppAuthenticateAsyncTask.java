@@ -4,12 +4,15 @@ import android.content.Context;
 
 import com.crashlytics.android.Crashlytics;
 import com.mozu.api.ApiException;
+import com.mozu.api.MozuConfig;
 import com.mozu.api.contracts.appdev.AppAuthInfo;
 import com.mozu.api.security.AppAuthenticator;
+import com.mozu.api.security.RefreshInterval;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.AppAuthenticatorAsyncListener;
 
 public class AppAuthenticateAsyncTask extends InternetConnectedAsyncTask<Void, Void, Boolean> {
 
+    public static final int HOUR_OF_MILLIS = 3600000;
     private AppAuthenticatorAsyncListener mListener;
     private AppAuthInfo mAppAuthInfo;
     private String mBaseUrl;
@@ -27,7 +30,8 @@ public class AppAuthenticateAsyncTask extends InternetConnectedAsyncTask<Void, V
         super.doInBackground(params);
 
         try {
-            AppAuthenticator.initialize(mAppAuthInfo, mBaseUrl);
+            MozuConfig.setBaseUrl(mBaseUrl);
+            AppAuthenticator.initialize(mAppAuthInfo, new RefreshInterval(HOUR_OF_MILLIS, HOUR_OF_MILLIS));
         } catch (ApiException e) {
 
             Crashlytics.logException(e);

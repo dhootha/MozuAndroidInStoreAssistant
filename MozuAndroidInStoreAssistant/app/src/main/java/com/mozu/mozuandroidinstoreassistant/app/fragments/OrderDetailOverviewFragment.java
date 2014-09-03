@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.mozu.api.contracts.commerceruntime.discounts.AppliedLineItemProductDiscount;
 import com.mozu.api.contracts.commerceruntime.discounts.AppliedProductDiscount;
 import com.mozu.api.contracts.commerceruntime.discounts.Discount;
 import com.mozu.api.contracts.commerceruntime.discounts.ShippingDiscount;
@@ -257,7 +258,7 @@ public class OrderDetailOverviewFragment extends Fragment implements View.OnClic
             discountsView.setOrientation(LinearLayout.VERTICAL);
             discountsView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
-            for (AppliedProductDiscount productDiscount: item.getProductDiscounts()) {
+            for (AppliedLineItemProductDiscount productDiscount: item.getProductDiscounts()) {
                 Discount discount = productDiscount.getDiscount();
 
                 View eachDiscountView = LayoutInflater.from(getActivity()).inflate(R.layout.ordered_item_discount_list_item, discountsView, false);

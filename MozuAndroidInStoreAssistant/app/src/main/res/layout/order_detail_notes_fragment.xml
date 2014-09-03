@@ -111,6 +111,7 @@
         android:id="@+id/empty_notes_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:gravity="center_vertical|center_horizontal"
         android:text="@string/empty_order_items_text"
         android:visibility="gone"/>

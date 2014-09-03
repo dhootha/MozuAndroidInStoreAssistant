@@ -16,4 +16,9 @@
     <color name="divider_white">#E0FFFFFF</color>
     <color name="semi_transparent_image_view_background">#C8000000</color>
     <color name="darker_grey">#E1E3E4</color>
+
+    <color name="first_color_swipe_refresh">@color/mozu_color</color>
+    <color name="second_color_swipe_refresh">#FFFFFF</color>
+    <color name="third_color_swipe_refresh">@color/mozu_color</color>
+    <color name="fourth_color_swipe_refresh">#000000</color>
 </resources>

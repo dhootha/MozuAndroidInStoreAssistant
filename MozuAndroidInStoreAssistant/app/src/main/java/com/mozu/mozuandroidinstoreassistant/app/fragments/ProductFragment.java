@@ -123,16 +123,16 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         ButterKnife.inject(this, fragmentView);
 
         mProductGridPullToRefresh.setOnRefreshListener(this);
-        mProductGridPullToRefresh.setColorScheme(R.color.mozu_color,
-                android.R.color.white,
-                R.color.mozu_color,
-                android.R.color.white);
+        mProductGridPullToRefresh.setColorScheme(R.color.first_color_swipe_refresh,
+                R.color.second_color_swipe_refresh,
+                R.color.third_color_swipe_refresh,
+                R.color.fourth_color_swipe_refresh);
 
         mProductListPullToRefresh.setOnRefreshListener(this);
-        mProductListPullToRefresh.setColorScheme(R.color.mozu_color,
-                android.R.color.white,
-                R.color.mozu_color,
-                android.R.color.white);
+        mProductListPullToRefresh.setColorScheme(R.color.first_color_swipe_refresh,
+                R.color.second_color_swipe_refresh,
+                R.color.third_color_swipe_refresh,
+                R.color.fourth_color_swipe_refresh);
 
         mProductListView.setOnItemClickListener(this);
         mProductGridView.setOnItemClickListener(this);

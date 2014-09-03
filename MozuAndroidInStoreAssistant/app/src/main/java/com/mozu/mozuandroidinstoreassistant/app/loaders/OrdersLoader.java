@@ -140,7 +140,7 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
             if (!TextUtils.isEmpty(mSearchQueryFilter)) {
                 orderCollection = searchOrders(orderResource);
             } else {
-                orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mCurrentOrderBy, null, null, null);
+                orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mCurrentOrderBy, null, null, null, null);
             }
 
             mTotalPages = (int) Math.ceil(orderCollection.getTotalCount() * 1.0f / ITEMS_PER_PAGE * 1.0f);
@@ -160,9 +160,9 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
         OrderCollection orderCollection;
 
         if (StringUtils.isNumber(mSearchQueryFilter)) {
-            orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, null, ORDER_ID_FILTER_BY + mSearchQueryFilter, null, null);
+            orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, null, ORDER_ID_FILTER_BY + mSearchQueryFilter, null, null, null);
         } else {
-            orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, null, null, mSearchQueryFilter, null);
+            orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, null, null, mSearchQueryFilter, null, null);
         }
 
         return orderCollection;
