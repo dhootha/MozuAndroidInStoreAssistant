@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -65,7 +66,13 @@ public class ProductDetailInventoryFragment extends DialogFragment implements Lo
             TextView productName = (TextView)mDialogLayout.findViewById(R.id.productName);
             productCode.setText(mProduct.getProductCode());
             productName.setText(mProduct.getContent().getProductName());
-
+            ImageView dismissView = (ImageView) mDialogLayout.findViewById(R.id.imageView_close);
+            dismissView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                        getDialog().dismiss();
+                }
+            });
         }
         return view;
     }
