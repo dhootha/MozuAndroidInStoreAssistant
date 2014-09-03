@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -136,12 +137,34 @@ public class OrderDetailFullfillmentFragment extends Fragment {
         mShipmentTotal.setText(String.valueOf(pendingCount + fulfilledCount));
 
         mPackageListView.setAdapter(new OrderDetailDirectShipFulfillmentAdapter(getActivity(), fulfillmentItemList));
+        mPackageListView.setOnItemClickListener(mDirectShipClickListener);
     }
 
 
     public void setOrder(Order order) {
+
         mOrder = order;
     }
 
+    private AdapterView.OnItemClickListener mDirectShipClickListener = new AdapterView.OnItemClickListener() {
 
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            FulfillmentItem item = (FulfillmentItem) parent.getItemAtPosition(position);
+
+            if (!item.isPackaged()) {
+
+                showProductDetailDialog(item.getNonPackgedItem());
+            }
+
+        }
+
+    };
+
+    private void showProductDetailDialog(OrderItem item) {
+
+
+
+    }
 }
