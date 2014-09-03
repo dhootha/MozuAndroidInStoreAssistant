@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 
@@ -42,15 +43,19 @@ public class LoginActivity extends AuthActivity implements LoaderCallbacks<Curso
     private View mProgressView;
     private View mLoginFormView;
     private View mAppAuthErrorView;
+    private  List<String> mEmails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         Crashlytics.start(this);
-
         setContentView(R.layout.activity_login);
+        setUpViews();
+        showProgress(true);
+    }
 
+    private void setUpViews(){
         mAppAuthErrorView = findViewById(R.id.app_auth_error_layout);
 
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
@@ -81,8 +86,9 @@ public class LoginActivity extends AuthActivity implements LoaderCallbacks<Curso
         mProgressView = findViewById(R.id.login_progress);
 
         hideKeyboard();
-
-        showProgress(true);
+        if (mEmails != null) {
+            addEmailsToAutoComplete(mEmails);
+        }
     }
 
     @Override
@@ -204,20 +210,27 @@ public class LoginActivity extends AuthActivity implements LoaderCallbacks<Curso
     }
 
     @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        setContentView(R.layout.activity_login);
+        setUpViews();
+    }
+
+    @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        List<String> emails = new ArrayList<String>();
+        mEmails = new ArrayList<String>();
         cursor.moveToFirst();
 
         while (!cursor.isAfterLast()) {
-            emails.add(cursor.getString(ProfileQuery.ADDRESS));
+            mEmails.add(cursor.getString(ProfileQuery.ADDRESS));
             cursor.moveToNext();
         }
 
         for (UserPreferences pref: getUserAuthStateMachine().getAllUserPrefs()) {
-            emails.add(pref.getEmail());
+            mEmails.add(pref.getEmail());
         }
 
-        addEmailsToAutoComplete(emails);
+        addEmailsToAutoComplete(mEmails);
     }
 
     @Override
