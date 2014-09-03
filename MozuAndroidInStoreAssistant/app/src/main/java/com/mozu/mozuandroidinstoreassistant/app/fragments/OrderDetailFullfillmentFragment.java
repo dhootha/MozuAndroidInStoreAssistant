@@ -1,6 +1,7 @@
 package com.mozu.mozuandroidinstoreassistant.app.fragments;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,9 +14,12 @@ import com.mozu.api.contracts.commerceruntime.fulfillment.*;
 import com.mozu.api.contracts.commerceruntime.fulfillment.Package;
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.commerceruntime.orders.OrderItem;
+import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.OrderDetailDirectShipFulfillmentAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.models.FulfillmentItem;
+import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
+import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +29,7 @@ public class OrderDetailFullfillmentFragment extends Fragment {
 
     public static final String PENDING = "Pending";
     public static final String FULFILLED = "Fulfilled";
+    private static final String PRODUCT_DIALOG_TAG = "prod_detail_fragment";
     private Order mOrder;
 
     private TextView mPendingTotal;
@@ -163,8 +168,19 @@ public class OrderDetailFullfillmentFragment extends Fragment {
     };
 
     private void showProductDetailDialog(OrderItem item) {
+        FragmentManager manager = getFragmentManager();
+        ProductDetailOverviewDialogFragment productOverviewFragment = (ProductDetailOverviewDialogFragment) manager.findFragmentByTag(PRODUCT_DIALOG_TAG);
 
+        UserAuthenticationStateMachine userState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
 
+        if (productOverviewFragment == null) {
+            productOverviewFragment = new ProductDetailOverviewDialogFragment();
+            productOverviewFragment.setProduct(item.getProduct());
+            productOverviewFragment.setTenantId(userState.getTenantId());
+            productOverviewFragment.setSiteId(userState.getSiteId());
+        }
+
+        productOverviewFragment.show(manager, PRODUCT_DIALOG_TAG);
 
     }
 }

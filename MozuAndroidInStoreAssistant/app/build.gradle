@@ -70,8 +70,8 @@ android {
 
 dependencies {
     compile(name:'viewpager', ext:'aar')
-    compile 'com.mozu:mozu-api-android:1.9.0-RC1@aar'
-    compile 'com.mozu:mozu-api-core:1.9.0-RC1'
+    compile 'com.mozu:mozu-api-android:1.11.0-RC2@aar'
+    compile 'com.mozu:mozu-api-core:1.11.0-RC2'
     compile 'com.crashlytics.android:crashlytics:1.+'
     compile 'com.squareup.picasso:picasso:2.3.3'
 
