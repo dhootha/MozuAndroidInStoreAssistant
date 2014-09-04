@@ -27,7 +27,6 @@ import com.mozu.mozuandroidinstoreassistant.app.htmlutils.HTMLTagHandler;
 import com.mozu.mozuandroidinstoreassistant.app.models.ImageURLConverter;
 import com.mozu.mozuandroidinstoreassistant.app.views.NoUnderlineClickableSpan;
 import com.mozu.mozuandroidinstoreassistant.app.views.ProductOptionsLayout;
-import com.mozu.mozuandroidinstoreassistant.app.views.RoundedTransformation;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
@@ -49,6 +48,7 @@ public class ProductDetailOverviewDialogFragment extends DialogFragment {
 
     private int mTenantId;
     private int mSiteId;
+    private String mSiteDomain;
 
     @InjectView(R.id.main_price) TextView mMainPrice;
     @InjectView(R.id.regular_price) TextView mRegPrice;
@@ -58,6 +58,8 @@ public class ProductDetailOverviewDialogFragment extends DialogFragment {
     @InjectView(R.id.product_description) TextView mDescription;
     @InjectView(R.id.includesLayout) LinearLayout mIncludesLayout;
     @InjectView(R.id.main_product_image) ImageView mMainProductImage;
+    @InjectView(R.id.sku) TextView mSku;
+    @InjectView(R.id.name) TextView mName;
 
     private ImageURLConverter mImageUrlConverter;
 
@@ -76,7 +78,7 @@ public class ProductDetailOverviewDialogFragment extends DialogFragment {
         ButterKnife.inject(this, view);
 
         if (mProduct != null) {
-            mImageUrlConverter = new ImageURLConverter(mTenantId, mSiteId);
+            mImageUrlConverter = new ImageURLConverter(mSiteDomain);
 
             setProductOverviewViews(view);
         }
@@ -88,6 +90,9 @@ public class ProductDetailOverviewDialogFragment extends DialogFragment {
         NumberFormat defaultFormat = NumberFormat.getCurrencyInstance();
 
         setImage();
+
+        mSku.setText(mProduct.getProductCode());
+        mName.setText(mProduct.getName());
 
         if (hasSalePrice(mProduct)) {
             mMainPrice.setVisibility(View.VISIBLE);
@@ -114,8 +119,14 @@ public class ProductDetailOverviewDialogFragment extends DialogFragment {
     }
 
     private void setImage() {
+        String imageUrl = mImageUrlConverter.getFullImageUrl(mProduct.getImageUrl());
+
+        if (TextUtils.isEmpty(imageUrl)) {
+            return;
+        }
+
         RequestCreator creator = Picasso.with(getActivity())
-                .load(mImageUrlConverter.getFullImageUrl(mProduct.getImageUrl()));
+                .load(imageUrl);
 
         creator = creator.placeholder(R.drawable.icon_noproductphoto).fit().centerInside();
 
@@ -148,6 +159,8 @@ public class ProductDetailOverviewDialogFragment extends DialogFragment {
 
                 ProductOptionValue value = new ProductOptionValue();
                 value.setValue(option.getValue());
+                value.setStringValue(option.getStringValue());
+                optionValues.add(value);
 
                 optionsLayout.setSpinnerOptions(optionValues);
                 layout.addView(optionsLayout);
@@ -292,5 +305,9 @@ public class ProductDetailOverviewDialogFragment extends DialogFragment {
 
     public void setSiteId(int siteId) {
         mSiteId = siteId;
+    }
+
+    public void setSiteDomain(String siteDomain){
+        mSiteDomain = siteDomain;
     }
 }

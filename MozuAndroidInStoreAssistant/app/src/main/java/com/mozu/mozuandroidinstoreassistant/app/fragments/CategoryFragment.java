@@ -31,6 +31,7 @@ import com.mozu.mozuandroidinstoreassistant.app.models.RecentSearch;
 import com.mozu.mozuandroidinstoreassistant.app.models.UserPreferences;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
+import com.mozu.mozuandroidinstoreassistant.app.tasks.CategoryImageUpdateTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -145,7 +146,7 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
         }
 
         if(BuildConfig.DEBUG){
-            menu.add(0,100,Menu.NONE,"Load Category Images");
+            menu.add(0, 100, Menu.NONE, "Load Category Images");
         }
 
         // Get the SearchView and set the searchable configuration
@@ -235,8 +236,15 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
 
 
     private void loadCategoryImages(List<Category> mCategories){
-
-
+        int count = 0;
+        for(Category category:mCategories) {
+            if(count > 5)
+                break;
+            if (category.getContent().getCategoryImages() == null || category.getContent().getCategoryImages().size() <= 0) {
+                new CategoryImageUpdateTask(mUserState.getTenantId(), mUserState.getSiteId()).execute(category.getCategoryId());
+                count++;
+            }
+        }
     }
 
 
@@ -273,7 +281,7 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
         if (mCategoryAdapter == null) {
             Integer tenantId = mUserState.getTenantId();
             Integer siteId = mUserState.getSiteId();
-            mCategoryAdapter = new CategoryAdapter(getActivity(),tenantId,siteId);
+            mCategoryAdapter = new CategoryAdapter(getActivity(),mUserState.getSiteDomain());
             mCategoryAdapter.addAll(mCategories);
         }
 

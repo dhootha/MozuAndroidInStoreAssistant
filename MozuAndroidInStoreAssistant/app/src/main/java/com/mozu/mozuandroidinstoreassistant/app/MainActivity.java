@@ -366,6 +366,8 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         intent.putExtra(ProductDetailActivity.PRODUCT_CODE_EXTRA_KEY, productCode);
         intent.putExtra(ProductDetailActivity.CURRENT_TENANT_ID, userAuthenticationStateMachine.getTenantId());
         intent.putExtra(ProductDetailActivity.CURRENT_SITE_ID, userAuthenticationStateMachine.getSiteId());
+        intent.putExtra(ProductDetailActivity.CURRENT_SITE_NAME, userAuthenticationStateMachine.getSiteDomain());
+
 
         startActivity(intent);
     }

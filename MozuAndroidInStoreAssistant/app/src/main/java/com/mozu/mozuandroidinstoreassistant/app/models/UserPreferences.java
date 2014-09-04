@@ -8,6 +8,7 @@ public class UserPreferences {
     private String mEmail;
     private String mDefaultTenantId;
     private String mDefaultSiteId;
+    private String mDefaultSiteDomain;
     private boolean mShowAsGrids = true;
 
     private List<RecentSearch> mRecentProductSearches;
@@ -42,6 +43,16 @@ public class UserPreferences {
     public void setDefaultSiteId(String siteId) {
 
         mDefaultSiteId = siteId;
+    }
+
+    public String getDefaultSiteDomain() {
+
+        return mDefaultSiteId;
+    }
+
+    public void setDefaultSiteDomain(String siteDomain) {
+
+        mDefaultSiteDomain = siteDomain;
     }
 
 

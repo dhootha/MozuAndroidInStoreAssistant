@@ -77,7 +77,6 @@ dependencies {
 
     compile 'com.android.support:support-v13:19.+'
     compile 'com.android.support:support-v4:19.+'
-    compile 'com.android.support:appcompat-v7:19.+'
 
     compile 'org.joda:joda-convert:1.6'
 

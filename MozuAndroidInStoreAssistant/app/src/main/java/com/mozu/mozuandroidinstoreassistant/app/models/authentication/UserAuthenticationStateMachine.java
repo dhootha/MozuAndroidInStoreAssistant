@@ -34,6 +34,7 @@ public class UserAuthenticationStateMachine extends Observable implements Refres
     private List<UserPreferences> mAllUsersPrefs;
     private Integer mTenantId;
     private Integer mSiteId;
+    private String mSiteDomain;
 
     protected UserAuthenticationStateMachine(Context context) {
         mContext = context;
@@ -191,14 +192,17 @@ public class UserAuthenticationStateMachine extends Observable implements Refres
     public void setCurrentSiteId(Site site){
         if (site != null) {
             mSiteId = site.getId();
+            mSiteDomain = site.getDomain();
         }else {
             mSiteId = null;
+            mSiteDomain = null;
         }
     }
 
     public void persistSiteTenantId(){
         getCurrentUsersPreferences().setDefaultTenantId(String.valueOf(mTenantId));
         getCurrentUsersPreferences().setDefaultSiteId(String.valueOf(mSiteId));
+        getCurrentUsersPreferences().setDefaultSiteId(String.valueOf(mSiteDomain));
         updateUserPreferences();
     }
 
@@ -220,8 +224,18 @@ public class UserAuthenticationStateMachine extends Observable implements Refres
         return mSiteId;
     }
 
+    public String getSiteDomain(){
+        if (mSiteDomain == null) {
+            if (!TextUtils.isEmpty(getCurrentUsersPreferences().getDefaultSiteDomain()) && !getCurrentUsersPreferences().getDefaultSiteDomain().equalsIgnoreCase("null")) {
+                return getCurrentUsersPreferences().getDefaultSiteDomain();
+            }
+        }
+        return mSiteDomain;
+    }
+
     public void resetTenantSiteId(){
         mSiteId = null;
         mTenantId = null;
+        mSiteDomain = null;
     }
 }

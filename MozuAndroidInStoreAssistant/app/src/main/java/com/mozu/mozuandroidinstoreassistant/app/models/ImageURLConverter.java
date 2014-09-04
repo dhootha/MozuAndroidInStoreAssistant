@@ -11,13 +11,16 @@ public class ImageURLConverter {
     private String mSiteDomain;
     private String mHttpString;
 
-    public ImageURLConverter(Integer tenantId, Integer siteId) {
-
-        mSiteDomain = getSiteDomain(tenantId, siteId);
+    public ImageURLConverter(String siteDomain) {
+        mSiteDomain = getSiteDomain(siteDomain);
         mHttpString = (AppAuthenticator.isUseSSL()) ? "https:" : "http:";
     }
 
     public String getFullImageUrl(String imageUrl) {
+        if (imageUrl == null) {
+            return "";
+        }
+
         StringBuilder imageUrlStringBuffer;
 
         if (imageUrl.startsWith("//cdn")) {
@@ -29,29 +32,9 @@ public class ImageURLConverter {
         return imageUrlStringBuffer.toString();
     }
 
-    private String getSiteDomain(Integer tenantId, Integer siteId) {
+    private String getSiteDomain(String siteDomain) {
         String httpString = (AppAuthenticator.isUseSSL()) ? "https:" : "http:";
-
-        TenantResource tenantResource = new TenantResource();
-        Tenant tenant = null;
-        String imageBaseUrl = null;
-
-        try {
-            tenant = tenantResource.getTenant(tenantId);
-        } catch (Exception e) {
-            Crashlytics.logException(e);
-        }
-
-        if (tenant != null) {
-            for (Site site : tenant.getSites()) {
-                if (siteId.equals(site.getId())) {
-                    imageBaseUrl = site.getDomain();
-                    break;
-                }
-            }
-        }
-
-        StringBuilder siteDomainBuilder = new StringBuilder(httpString).append("//").append(imageBaseUrl);
+        StringBuilder siteDomainBuilder = new StringBuilder(httpString).append("//").append(siteDomain);
 
         return siteDomainBuilder.toString();
     }

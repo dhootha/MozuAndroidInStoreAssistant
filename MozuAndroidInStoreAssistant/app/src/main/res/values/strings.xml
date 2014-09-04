@@ -123,5 +123,14 @@
     <string name="pending_items_direct_ship_label_not_fulfilled">Created Items</string>
     <string name="package_number_string">Package #</string>
     <string name="fulfillment_items_label">item(s)</string>
+    <string name="ship_to_label">SHIP TO</string>
+    <string name="shipping_label">SHIPPING</string>
+    <string name="packaging_type_label">PACKAGING TYPE</string>
+    <string name="tracking_number_label">TRACKING NUMBER</string>
+    <string name="status_label">STATUS</string>
+    <string name="date_label">DATE</string>
+    <string name="package_item_header_code">Code</string>
+    <string name="package_item_header_product">Product Name</string>
+    <string name="package_item_header_quantity">Quantity</string>
 
 </resources>

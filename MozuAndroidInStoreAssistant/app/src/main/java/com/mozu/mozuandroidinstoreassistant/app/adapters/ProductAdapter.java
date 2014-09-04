@@ -34,12 +34,12 @@ public class ProductAdapter extends GridToggleArrayAdapter<Product> {
     private InventoryButtonClickListener mInventoryClickListener;
     private Context mContext;
 
-    public ProductAdapter(Context context, Integer tenantId, Integer siteId,InventoryButtonClickListener inventoryClickListener) {
+    public ProductAdapter(Context context, String siteDomain,InventoryButtonClickListener inventoryClickListener) {
         super(context, R.layout.product_grid_item, R.layout.product_list_item);
         mContext = context;
         mNumberFormat = NumberFormat.getCurrencyInstance();
 
-        mUrlConverter = new ImageURLConverter(tenantId, siteId);
+        mUrlConverter = new ImageURLConverter(siteDomain);
         mInventoryClickListener = inventoryClickListener;
     }
 
