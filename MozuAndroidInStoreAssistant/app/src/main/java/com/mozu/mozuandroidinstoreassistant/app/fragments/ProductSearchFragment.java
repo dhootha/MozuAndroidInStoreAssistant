@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Loader;
 import android.database.MatrixCursor;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -73,6 +74,9 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
     private String mQueryString;
 
     private TextView mEmptyListMessageView;
+    @InjectView(R.id.product_grid_container)
+    SwipeRefreshLayout mProductGridPullToRefresh;
+    @InjectView(R.id.product_list_container) SwipeRefreshLayout mProductListPullToRefresh;
 
     private ProductListListener mListener;
     private static final String PRODUCTSEARCH_INVENTORY_DIALOG_TAG ="productsearch_inventory_tag";
@@ -174,15 +178,19 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
             mProductGridView.setOnScrollListener(this);
 
             if (prefs.getShowAsGrids()) {
+                mProductGridPullToRefresh.setVisibility(View.VISIBLE);
                 mProductGridView.setVisibility(View.VISIBLE);
                 mProductListView.setVisibility(View.GONE);
+                mProductListPullToRefresh.setVisibility(View.GONE);
                 mHeadersView.setVisibility(View.GONE);
                 mAdapter.setIsGrid(true);
                 mAdapter.notifyDataSetChanged();
             } else {
+                mProductListPullToRefresh.setVisibility(View.VISIBLE);
                 mProductListView.setVisibility(View.VISIBLE);
                 mHeadersView.setVisibility(View.VISIBLE);
                 mProductGridView.setVisibility(View.GONE);
+                mProductGridPullToRefresh.setVisibility(View.GONE);
                 mAdapter.setIsGrid(false);
                 mAdapter.notifyDataSetChanged();
             }
@@ -332,7 +340,7 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
             mProgressBar.setVisibility(View.VISIBLE);
             mProductListView.setVisibility(View.GONE);
             mHeadersView.setVisibility(View.GONE);
-            
+
             mEmptyListMessageView.setVisibility(View.GONE);
         }
 
