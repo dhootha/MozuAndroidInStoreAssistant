@@ -30,6 +30,7 @@ public class OrderDetailFullfillmentFragment extends Fragment {
     public static final String PENDING = "Pending";
     public static final String FULFILLED = "Fulfilled";
     private static final String PRODUCT_DIALOG_TAG = "prod_detail_fragment";
+    private static final String PACKAGE_DIALOG_TAG = "package_detail_fragment";
     private Order mOrder;
 
     private TextView mPendingTotal;
@@ -161,6 +162,9 @@ public class OrderDetailFullfillmentFragment extends Fragment {
             if (!item.isPackaged()) {
 
                 showProductDetailDialog(item.getNonPackgedItem());
+            } else {
+
+                showPackageDetail(item);
             }
 
         }
@@ -182,5 +186,20 @@ public class OrderDetailFullfillmentFragment extends Fragment {
 
         productOverviewFragment.show(manager, PRODUCT_DIALOG_TAG);
 
+    }
+
+    private void showPackageDetail(FulfillmentItem item) {
+        FragmentManager manager = getFragmentManager();
+        PackageInfoDialogFragment packageInfoDialogFragment = (PackageInfoDialogFragment) manager.findFragmentByTag(PACKAGE_DIALOG_TAG);
+
+        UserAuthenticationStateMachine userState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
+
+        if (packageInfoDialogFragment == null) {
+            packageInfoDialogFragment = new PackageInfoDialogFragment();
+            packageInfoDialogFragment.setFulfillmentItem(item);
+            packageInfoDialogFragment.setTenantAndSiteId(userState.getTenantId(), userState.getSiteId());
+        }
+
+        packageInfoDialogFragment.show(manager, PACKAGE_DIALOG_TAG);
     }
 }

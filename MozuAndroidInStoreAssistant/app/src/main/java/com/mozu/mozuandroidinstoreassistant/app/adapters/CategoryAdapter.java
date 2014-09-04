@@ -1,18 +1,28 @@
 package com.mozu.mozuandroidinstoreassistant.app.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.mozu.api.contracts.productruntime.Category;
 import com.mozu.mozuandroidinstoreassistant.app.R;
+import com.mozu.mozuandroidinstoreassistant.app.models.ImageURLConverter;
+import com.mozu.mozuandroidinstoreassistant.app.views.RoundedTransformation;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 
 public class CategoryAdapter extends GridToggleArrayAdapter<Category> {
 
-    public CategoryAdapter(Context context) {
+    private ImageURLConverter mUrlConverter;
+
+    public CategoryAdapter(Context context, Integer tenantId, Integer siteId) {
         super(context, R.layout.category_grid_item, R.layout.category_list_item);
+
+        mUrlConverter = new ImageURLConverter(tenantId, siteId);
     }
 
     @Override
@@ -23,7 +33,7 @@ public class CategoryAdapter extends GridToggleArrayAdapter<Category> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        CategoryViewHolder viewHolder;
+        final CategoryViewHolder viewHolder;
 
         if (convertView == null ||
             (isGrid() && convertView.getId() != getGridResource()) ||
@@ -50,6 +60,36 @@ public class CategoryAdapter extends GridToggleArrayAdapter<Category> {
                     .fit().centerCrop()
                     .into(viewHolder.categoryImage);
 
+        }
+
+        //load image asynchronously into the view
+        if (category.getContent().getCategoryImages() != null && category.getContent().getCategoryImages().size() > 0) {
+
+            RequestCreator creator = Picasso.with(getContext())
+                    .load(mUrlConverter.getFullImageUrl(category.getContent().getCategoryImages().get(0).getImageUrl()));
+
+            if (!isGrid()) {
+                creator = creator.transform(new RoundedTransformation()).fit().centerCrop();
+            } else {
+                creator = creator.placeholder(R.drawable.icon_noproductphoto).fit().centerInside();
+            }
+
+            viewHolder.categoryImage.setBackgroundColor(getContext().getResources().getColor(R.color.darker_grey));
+
+            creator.into(viewHolder.categoryImage, new Callback() {
+
+                @Override
+                public void onSuccess() {
+
+                    Bitmap bitmap = ((BitmapDrawable) viewHolder.categoryImage.getDrawable()).getBitmap();
+                    viewHolder.categoryImage.setBackgroundColor(bitmap.getPixel(0, 0));
+
+                }
+
+                @Override
+                public void onError() {}
+
+            });
         }
 
         return convertView;

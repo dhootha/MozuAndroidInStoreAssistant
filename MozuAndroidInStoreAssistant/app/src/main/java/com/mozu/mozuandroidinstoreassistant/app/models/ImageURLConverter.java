@@ -18,6 +18,10 @@ public class ImageURLConverter {
     }
 
     public String getFullImageUrl(String imageUrl) {
+        if (imageUrl == null) {
+            return "";
+        }
+
         StringBuilder imageUrlStringBuffer;
 
         if (imageUrl.startsWith("//cdn")) {

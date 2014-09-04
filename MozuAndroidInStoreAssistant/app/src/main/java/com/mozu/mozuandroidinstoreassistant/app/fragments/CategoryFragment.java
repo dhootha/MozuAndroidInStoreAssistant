@@ -256,7 +256,7 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
         UserPreferences prefs = mUserState.getCurrentUsersPreferences();
 
         if (mCategoryAdapter == null) {
-            mCategoryAdapter = new CategoryAdapter(getActivity());
+            mCategoryAdapter = new CategoryAdapter(getActivity(), mUserState.getTenantId(), mUserState.getSiteId());
             mCategoryAdapter.addAll(mCategories);
         }
 
