@@ -22,6 +22,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.mozu.api.contracts.productruntime.Category;
+import com.mozu.mozuandroidinstoreassistant.app.BuildConfig;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.CategoryAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.SearchSuggestionsCursorAdapter;
@@ -143,6 +144,10 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
             mToggleGridItem.setTitle(getString(R.string.view_as_grid_menu_item_text));
         }
 
+        if(BuildConfig.DEBUG){
+            menu.add(0,100,Menu.NONE,"Load Category Images");
+        }
+
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
         mSearchMenuItem = menu.findItem(R.id.action_search);
@@ -220,10 +225,20 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
             }
         } else if (item.getItemId() == R.id.action_search) {
             showSuggestions();
+        } else if(item.getItemId() == 100){
+            loadCategoryImages(mCategories);
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+
+
+    private void loadCategoryImages(List<Category> mCategories){
+
+
+    }
+
 
     @Override
     public Loader<List<Category>> onCreateLoader(int id, Bundle args) {
@@ -256,7 +271,9 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
         UserPreferences prefs = mUserState.getCurrentUsersPreferences();
 
         if (mCategoryAdapter == null) {
-            mCategoryAdapter = new CategoryAdapter(getActivity());
+            Integer tenantId = mUserState.getTenantId();
+            Integer siteId = mUserState.getSiteId();
+            mCategoryAdapter = new CategoryAdapter(getActivity(),tenantId,siteId);
             mCategoryAdapter.addAll(mCategories);
         }
 

@@ -7,12 +7,16 @@ import android.view.ViewGroup;
 
 import com.mozu.api.contracts.productruntime.Category;
 import com.mozu.mozuandroidinstoreassistant.app.R;
+import com.mozu.mozuandroidinstoreassistant.app.models.ImageURLConverter;
 import com.squareup.picasso.Picasso;
 
 public class CategoryAdapter extends GridToggleArrayAdapter<Category> {
 
-    public CategoryAdapter(Context context) {
+    private ImageURLConverter mUrlConverter;
+
+    public CategoryAdapter(Context context, Integer tenantId, Integer siteId) {
         super(context, R.layout.category_grid_item, R.layout.category_list_item);
+        mUrlConverter = new ImageURLConverter(tenantId, siteId);
     }
 
     @Override
@@ -46,7 +50,7 @@ public class CategoryAdapter extends GridToggleArrayAdapter<Category> {
         if (category.getContent().getCategoryImages() != null && category.getContent().getCategoryImages().size() > 0) {
 
             Picasso.with(getContext())
-                    .load(category.getContent().getCategoryImages().get(0).getImageUrl())
+                    .load("https://cdn-sb.mozu.com/6417-8168"+category.getContent().getCategoryImages().get(0).getImageUrl())
                     .fit().centerCrop()
                     .into(viewHolder.categoryImage);
 
