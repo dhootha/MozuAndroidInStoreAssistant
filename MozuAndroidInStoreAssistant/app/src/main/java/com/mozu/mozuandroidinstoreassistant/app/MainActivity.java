@@ -132,7 +132,7 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,
                 mDrawerLayout,
-                R.drawable.mozu_ic_navigation_drawer,
+                R.drawable.icon_menu,
                 R.string.drawer_open,
                 R.string.drawer_close
         ) {

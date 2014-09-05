@@ -19,6 +19,8 @@ public class LocationNameFetchTask extends AsyncTask<String,Void,String> {
         mSiteId = siteId;
     }
 
+
+
     @Override
     protected String doInBackground(String... strings) {
         LocationResource locationResource = new LocationResource(new MozuApiContext(mTenantId, mSiteId));
