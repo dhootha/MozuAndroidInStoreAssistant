@@ -132,5 +132,9 @@
     <string name="package_item_header_code">Code</string>
     <string name="package_item_header_product">Product Name</string>
     <string name="package_item_header_quantity">Quantity</string>
+    <string name="in_store_header">In-Store Pickup Items</string>
+    <string name="pickup_fulfillment_pending">Pending</string>
+    <string name="pickup_fulfillment_fulfilled">Fulfilled</string>
+    <string name="fulfillment_pickup_number">Pickup #</string>
 
 </resources>

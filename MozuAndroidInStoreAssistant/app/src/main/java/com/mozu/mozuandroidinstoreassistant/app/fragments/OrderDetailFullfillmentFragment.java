@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -17,12 +18,16 @@ import com.mozu.api.contracts.commerceruntime.orders.OrderItem;
 import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.OrderDetailDirectShipFulfillmentAdapter;
+import com.mozu.mozuandroidinstoreassistant.app.adapters.OrderDetailPickupFulfillmentAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.models.FulfillmentItem;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 
 public class OrderDetailFullfillmentFragment extends Fragment {
@@ -33,27 +38,27 @@ public class OrderDetailFullfillmentFragment extends Fragment {
     private static final String PACKAGE_DIALOG_TAG = "package_detail_fragment";
     private Order mOrder;
 
-    private TextView mPendingTotal;
-    private TextView mFulfilledTotal;
-    private TextView mShipmentTotal;
+    @InjectView(R.id.shipment_pending_total) TextView mPendingTotal;
+    @InjectView(R.id.shipment_fulfilled_total) TextView mFulfilledTotal;
+    @InjectView(R.id.shipment_total) TextView mShipmentTotal;
+    @InjectView(R.id.pickup_total) TextView mPickupTotal;
 
-    private ListView mPackageListView;
+    @InjectView(R.id.pickup_layout) LinearLayout mPickupLabels;
+    @InjectView(R.id.ship_layout) LinearLayout mShipLabels;
+
+    @InjectView(R.id.shipment_list) ListView mPackageListView;
+    @InjectView(R.id.pickup_list) ListView mPickupListView;
 
     public OrderDetailFullfillmentFragment() {
         // Required empty public constructor
         setRetainInstance(true);
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.order_detail_fulfillment_fragment, null);
 
-        mPendingTotal = (TextView) view.findViewById(R.id.shipment_pending_total);
-        mFulfilledTotal = (TextView) view.findViewById(R.id.shipment_fulfilled_total);
-        mShipmentTotal = (TextView) view.findViewById(R.id.shipment_total);
-
-        mPackageListView = (ListView) view.findViewById(R.id.shipment_list);
+        ButterKnife.inject(this, view);
 
         if (mOrder != null) {
             setOrderToViews(view);
@@ -144,6 +149,21 @@ public class OrderDetailFullfillmentFragment extends Fragment {
 
         mPackageListView.setAdapter(new OrderDetailDirectShipFulfillmentAdapter(getActivity(), fulfillmentItemList));
         mPackageListView.setOnItemClickListener(mDirectShipClickListener);
+
+
+
+        if (fulfillmentItemList == null || fulfillmentItemList.size() < 1) {
+            mShipLabels.setVisibility(View.GONE);
+            mPackageListView.setVisibility(View.GONE);
+        }
+
+        if (mOrder.getPickups() == null || mOrder.getPickups().size() < 1) {
+            mPickupLabels.setVisibility(View.GONE);
+            mPickupListView.setVisibility(View.GONE);
+        } else {
+            mPickupTotal.setText(String.valueOf(mOrder.getPickups().size()));
+            mPickupListView.setAdapter(new OrderDetailPickupFulfillmentAdapter(getActivity(), mOrder.getPickups()));
+        }
     }
 
 
