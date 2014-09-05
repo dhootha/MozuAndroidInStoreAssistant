@@ -14,4 +14,5 @@
     <dimen name="sub_product_image_margin">5dp</dimen>
 
     <item name="slide_up_down_fraction" type="dimen" format="float">0.67</item>
+    <dimen name="inventory_dialog_width">600dp</dimen>
 </resources>

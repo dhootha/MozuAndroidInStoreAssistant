@@ -7,7 +7,7 @@
     android:padding="40dp">
     <LinearLayout
         android:id="@+id/dialog_header"
-        android:layout_width="750dp"
+        android:layout_width="@dimen/inventory_dialog_width"
         android:layout_height="wrap_content"
         android:layout_marginBottom="40dp"
         android:visibility="gone"
@@ -16,7 +16,7 @@
             android:id="@+id/imageView_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="top|right"
+            android:layout_gravity="right"
             android:clickable="true"
             android:src="@drawable/icon_close" />
         <TextView
