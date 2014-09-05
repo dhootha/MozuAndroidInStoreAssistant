@@ -1,0 +1,3 @@
+<resources>
+    <dimen name="inventory_dialog_width">750dp</dimen>
+</resources>
