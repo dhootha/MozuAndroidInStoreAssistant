@@ -3,6 +3,7 @@ package com.mozu.mozuandroidinstoreassistant.app.adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,31 +66,36 @@ public class CategoryAdapter extends GridToggleArrayAdapter<Category> {
         //load image asynchronously into the view
         if (category.getContent().getCategoryImages() != null && category.getContent().getCategoryImages().size() > 0) {
 
-            RequestCreator creator = Picasso.with(getContext())
-                    .load(mUrlConverter.getFullImageUrl(category.getContent().getCategoryImages().get(0).getImageUrl()));
+            String url = category.getContent().getCategoryImages().get(0).getImageUrl();
 
-            if (!isGrid()) {
-                creator = creator.transform(new RoundedTransformation()).fit().centerCrop();
-            } else {
-                creator = creator.placeholder(R.drawable.icon_noproductphoto).fit().centerInside();
-            }
+            if (!TextUtils.isEmpty(url)) {
 
-            viewHolder.categoryImage.setBackgroundColor(getContext().getResources().getColor(R.color.darker_grey));
+                RequestCreator creator = Picasso.with(getContext())
+                        .load(mUrlConverter.getFullImageUrl(url));
 
-            creator.into(viewHolder.categoryImage, new Callback() {
-
-                @Override
-                public void onSuccess() {
-
-                    Bitmap bitmap = ((BitmapDrawable) viewHolder.categoryImage.getDrawable()).getBitmap();
-                    viewHolder.categoryImage.setBackgroundColor(bitmap.getPixel(0, 0));
-
+                if (!isGrid()) {
+                    creator = creator.transform(new RoundedTransformation()).fit().centerCrop();
+                } else {
+                    creator = creator.placeholder(R.drawable.icon_noproductphoto).fit().centerInside();
                 }
 
-                @Override
-                public void onError() {}
+                viewHolder.categoryImage.setBackgroundColor(getContext().getResources().getColor(R.color.darker_grey));
 
-            });
+                creator.into(viewHolder.categoryImage, new Callback() {
+
+                    @Override
+                    public void onSuccess() {
+
+                        Bitmap bitmap = ((BitmapDrawable) viewHolder.categoryImage.getDrawable()).getBitmap();
+                        viewHolder.categoryImage.setBackgroundColor(bitmap.getPixel(0, 0));
+
+                    }
+
+                    @Override
+                    public void onError() {}
+
+                });
+            }
         }
 
         return convertView;
