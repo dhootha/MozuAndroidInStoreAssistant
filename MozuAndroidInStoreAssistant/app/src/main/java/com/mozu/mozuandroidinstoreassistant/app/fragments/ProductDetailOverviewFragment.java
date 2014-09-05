@@ -36,6 +36,7 @@ public class ProductDetailOverviewFragment extends Fragment {
 
     private static final int MAX_DESC_LENGTH = 500;
     private static final String PRODUCT_CONFIGURABLE = "Configurable";
+    private static final String PRODUCT_BUNDLE = "Bundle";
 
     public ProductDetailOverviewFragment() {
         // Required empty public constructor
@@ -108,6 +109,11 @@ public class ProductDetailOverviewFragment extends Fragment {
 
     private boolean isProductConfigurable(Product product){
         return PRODUCT_CONFIGURABLE.equalsIgnoreCase(product.getProductUsage());
+    }
+
+    private boolean isProductBundled(Product product){
+        return PRODUCT_BUNDLE.equalsIgnoreCase(product.getProductUsage());
+
     }
 
     private String getUPC(Product product){
