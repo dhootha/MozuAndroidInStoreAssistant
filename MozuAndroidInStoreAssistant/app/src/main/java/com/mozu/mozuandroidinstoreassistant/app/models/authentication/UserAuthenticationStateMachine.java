@@ -202,7 +202,7 @@ public class UserAuthenticationStateMachine extends Observable implements Refres
     public void persistSiteTenantId(){
         getCurrentUsersPreferences().setDefaultTenantId(String.valueOf(mTenantId));
         getCurrentUsersPreferences().setDefaultSiteId(String.valueOf(mSiteId));
-        getCurrentUsersPreferences().setDefaultSiteId(String.valueOf(mSiteDomain));
+        getCurrentUsersPreferences().setDefaultSiteDomain(String.valueOf(mSiteDomain));
         updateUserPreferences();
     }
 
