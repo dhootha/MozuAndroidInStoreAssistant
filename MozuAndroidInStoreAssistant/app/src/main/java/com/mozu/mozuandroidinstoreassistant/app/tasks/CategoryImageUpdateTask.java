@@ -9,6 +9,7 @@ import com.mozu.api.ApiContext;
 import com.mozu.api.ApiException;
 import com.mozu.api.Headers;
 import com.mozu.api.MozuApiContext;
+import com.mozu.api.MozuClient;
 import com.mozu.api.MozuConfig;
 import com.mozu.api.MozuUrl;
 import com.mozu.api.Version;
@@ -46,27 +47,31 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class CategoryImageUpdateTask extends AsyncTask<Integer,Void,Void> {
+public class CategoryImageUpdateTask extends AsyncTask<Void,Void,Category> {
 
     public static final String FILTER_BY = "categoryId eq ";
     public static final String SORT_BY = "productname asc";
 
     private Integer mTenantId;
     private  Integer mSiteId;
-    public  CategoryImageUpdateTask(Integer tenantId, Integer siteId){
+    private CategoryImageUpdateListener mCategoryUpdateListener;
+    private Integer mCategoryId;
+    public  CategoryImageUpdateTask(CategoryImageUpdateListener categoryImageUpdateListener,Integer tenantId, Integer siteId,Integer categoryId){
         mTenantId = tenantId;
         mSiteId = siteId;
+        mCategoryUpdateListener = categoryImageUpdateListener;
+        mCategoryId = categoryId;
     }
+
     @Override
-    protected Void doInBackground(Integer... categoryIds) {
-        Integer categoryId = categoryIds[0];
+    protected Category doInBackground(Void... voids) {
         CategoryResource categoryResource = new CategoryResource(new MozuApiContext(mTenantId,mSiteId));
         Category category = null;
         try {
-            category = categoryResource.getCategory(categoryId);
+            category = categoryResource.getCategory(mCategoryId);
             Category tempCat = category;
-            while(tempCat.getChildCount() >0 ){
-                tempCat = categoryResource.getChildCategories(categoryId).getItems().get(0);
+            while (tempCat.getChildCount() > 0) {
+                tempCat = categoryResource.getChildCategories(tempCat.getId()).getItems().get(0);
             }
 
             ProductResource productResource = new ProductResource(new MozuApiContext(mTenantId, mSiteId));
@@ -76,16 +81,16 @@ public class CategoryImageUpdateTask extends AsyncTask<Integer,Void,Void> {
                 String imageUrl = product.getContent().getProductImages().get(0).getImageUrl();
 
                 List<CategoryLocalizedImage> categoryImageList = category.getContent().getCategoryImages();
-                if(categoryImageList.size() >0 ) {
+                if (categoryImageList.size() > 0) {
                     categoryImageList.get(0).setImageUrl(imageUrl);
-                }else{
+                } else {
                     categoryImageList = new ArrayList<CategoryLocalizedImage>();
                     CategoryLocalizedImage image = new CategoryLocalizedImage();
                     image.setImageUrl(imageUrl);
                     categoryImageList.add(image);
                 }
                 category.getContent().setCategoryImages(categoryImageList);
-                updateCategory(new MozuApiContext(mTenantId,mSiteId),category, categoryId,null,null);
+                return updateCategory(new MozuApiContext(mTenantId,mSiteId),category, mCategoryId,null,null);
             }
 
         }catch (Exception e) {
@@ -94,6 +99,39 @@ public class CategoryImageUpdateTask extends AsyncTask<Integer,Void,Void> {
 
         return null;
     }
+
+
+    @Override
+    protected void onPostExecute(Category category) {
+        if (isCancelled()) {
+            mCategoryUpdateListener.onImageUpdateFailure("Category update task cancelled");
+        }
+
+        if (mCategoryUpdateListener != null) {
+            if (category != null) {
+                mCategoryUpdateListener.onImageUpdateSucces(category.getContent().getName(), category.getId().toString());
+            } else {
+                mCategoryUpdateListener.onImageUpdateFailure("Failed to update image for category");
+            }
+        }
+    }
+
+    /***
+     *
+     * Below two methods had to mocked separately
+     * Reason:
+     *
+     * Mozu API build request uses apache api which has
+     *
+     * SringEntity(java.lang.String s, java.nio.charset.Charset charset)
+     *
+     * where as Android apache has String entity constructor
+     *
+     * SringEntity(java.lang.String s, java.lang.String charset)
+     *
+     * So faked mozuclient and changed String entity to use String "UTF-8"
+     *
+     */
 
 
     public com.mozu.api.contracts.productadmin.Category updateCategory(ApiContext apiContext,com.mozu.api.contracts.productadmin.Category category, Integer categoryId, Boolean cascadeVisibility, String responseFields) throws Exception
@@ -114,7 +152,8 @@ public class CategoryImageUpdateTask extends AsyncTask<Integer,Void,Void> {
     }
 
 
-     class FakeMozuClient<TResult> {
+
+     private class FakeMozuClient<TResult> {
         private final ObjectMapper mapper = JsonUtils.initObjectMapper();
 
          private HttpHost proxyHttpHost = HttpHelper.getProxyHost();

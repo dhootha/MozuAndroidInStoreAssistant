@@ -2,10 +2,12 @@ package com.mozu.mozuandroidinstoreassistant.app.fragments;
 
 import android.app.Activity;
 import android.app.LoaderManager;
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Loader;
 import android.database.MatrixCursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -20,6 +22,7 @@ import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mozu.api.contracts.productruntime.Category;
 import com.mozu.mozuandroidinstoreassistant.app.BuildConfig;
@@ -31,6 +34,7 @@ import com.mozu.mozuandroidinstoreassistant.app.models.RecentSearch;
 import com.mozu.mozuandroidinstoreassistant.app.models.UserPreferences;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
+import com.mozu.mozuandroidinstoreassistant.app.tasks.CategoryImageUpdateListener;
 import com.mozu.mozuandroidinstoreassistant.app.tasks.CategoryImageUpdateTask;
 
 import java.util.ArrayList;
@@ -44,6 +48,7 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
     private static final int CATEGORY_LOADER = 0;
     public static final int MAX_NUMBER_OF_SEARCHES = 5;
     public static final String NULL = "null";
+    private static final int CATEGORY_IMAGELOADER_MENU_ID = 100;
 
     @InjectView(R.id.category_grid) GridView mGridOfCategories;
     @InjectView(R.id.category_list) ListView mListOfCategories;
@@ -63,6 +68,7 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
     private SearchView mSearchView;
 
     private MenuItem mSearchMenuItem;
+    private ProgressDialog mImageUpdateProgress;
 
     @InjectView(R.id.empty_list) TextView mEmptyListMessageView;
 
@@ -145,8 +151,8 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
             mToggleGridItem.setTitle(getString(R.string.view_as_grid_menu_item_text));
         }
 
-        if(BuildConfig.DEBUG){
-            menu.add(0, 100, Menu.NONE, "Load Category Images");
+        if (BuildConfig.DEBUG) {
+            menu.add(0, CATEGORY_IMAGELOADER_MENU_ID, Menu.NONE, "Load Category Images");
         }
 
         // Get the SearchView and set the searchable configuration
@@ -226,7 +232,7 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
             }
         } else if (item.getItemId() == R.id.action_search) {
             showSuggestions();
-        } else if(item.getItemId() == 100){
+        } else if(item.getItemId() == CATEGORY_IMAGELOADER_MENU_ID){
             loadCategoryImages(mCategories);
         }
 
@@ -236,17 +242,24 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
 
 
     private void loadCategoryImages(List<Category> mCategories){
-        int count = 0;
         for(Category category:mCategories) {
-            if(count > 5)
-                break;
             if (category.getContent().getCategoryImages() == null || category.getContent().getCategoryImages().size() <= 0) {
-                new CategoryImageUpdateTask(mUserState.getTenantId(), mUserState.getSiteId()).execute(category.getCategoryId());
-                count++;
+                CategoryImageUpdateTask task = new CategoryImageUpdateTask(mCategoryImageUpdateListener,mUserState.getTenantId(), mUserState.getSiteId(),category.getCategoryId());
+                task.execute();
             }
         }
     }
 
+    private CategoryImageUpdateListener mCategoryImageUpdateListener = new CategoryImageUpdateListener() {
+        @Override
+        public void onImageUpdateSucces(String categoryName, String categoryId) {
+            Toast.makeText(getActivity(),"Done updating image for "+categoryName,Toast.LENGTH_SHORT).show();
+        }
+        @Override
+        public void onImageUpdateFailure(String message) {
+            Toast.makeText(getActivity(),"Failed to update image for ",Toast.LENGTH_SHORT).show();
+        }
+    };
 
     @Override
     public Loader<List<Category>> onCreateLoader(int id, Bundle args) {
@@ -279,9 +292,7 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
         UserPreferences prefs = mUserState.getCurrentUsersPreferences();
 
         if (mCategoryAdapter == null) {
-            Integer tenantId = mUserState.getTenantId();
-            Integer siteId = mUserState.getSiteId();
-            mCategoryAdapter = new CategoryAdapter(getActivity(),mUserState.getSiteDomain());
+            mCategoryAdapter = new CategoryAdapter(getActivity(), mUserState.getTenantId(), mUserState.getSiteId());
             mCategoryAdapter.addAll(mCategories);
         }
 

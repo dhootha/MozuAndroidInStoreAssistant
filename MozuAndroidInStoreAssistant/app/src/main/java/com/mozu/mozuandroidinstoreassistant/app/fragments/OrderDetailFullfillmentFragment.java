@@ -202,7 +202,6 @@ public class OrderDetailFullfillmentFragment extends Fragment {
             productOverviewFragment.setProduct(item.getProduct());
             productOverviewFragment.setTenantId(userState.getTenantId());
             productOverviewFragment.setSiteId(userState.getSiteId());
-            productOverviewFragment.setSiteDomain(userState.getSiteDomain());
         }
 
         productOverviewFragment.show(manager, PRODUCT_DIALOG_TAG);
