@@ -75,10 +75,15 @@ public class CategoryImageUpdateTask extends AsyncTask<Void,Void,Category> {
             }
 
             ProductResource productResource = new ProductResource(new MozuApiContext(mTenantId, mSiteId));
-            ProductCollection productCollection = productResource.getProducts(FILTER_BY + String.valueOf(tempCat.getId()), 1, 1, SORT_BY, null);
+            ProductCollection productCollection = productResource.getProducts(FILTER_BY + String.valueOf(tempCat.getId()), 1, 5, SORT_BY, null);
             if (productCollection != null && !productCollection.getItems().isEmpty()) {
-                Product product = productCollection.getItems().get(0);
-                String imageUrl = product.getContent().getProductImages().get(0).getImageUrl();
+                String imageUrl = null;
+                for (Product product : productCollection.getItems()) {
+                    if (!product.getContent().getProductImages().isEmpty() && product.getContent().getProductImages().get(0).getImageUrl() != null) {
+                        imageUrl = product.getContent().getProductImages().get(0).getImageUrl();
+                        break;
+                    }
+                }
 
                 List<CategoryLocalizedImage> categoryImageList = category.getContent().getCategoryImages();
                 if (categoryImageList.size() > 0) {
