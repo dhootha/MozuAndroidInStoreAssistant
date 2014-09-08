@@ -2,6 +2,8 @@ package com.mozu.mozuandroidinstoreassistant.app.fragments;
 
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.SpannableString;
@@ -10,6 +12,7 @@ import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +22,11 @@ import android.widget.TextView;
 import com.mozu.api.contracts.productruntime.BundledProduct;
 import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.api.contracts.productruntime.ProductOption;
+import com.mozu.mozuandroidinstoreassistant.app.ProductDetailActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.htmlutils.HTMLTagHandler;
+import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
+import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.views.NoUnderlineClickableSpan;
 import com.mozu.mozuandroidinstoreassistant.app.views.ProductOptionsLayout;
 
@@ -36,6 +42,7 @@ public class ProductDetailOverviewFragment extends Fragment {
 
     private static final int MAX_DESC_LENGTH = 500;
     private static final String PRODUCT_CONFIGURABLE = "Configurable";
+    private static final String PRODUCT_BUNDLE = "Bundle";
 
     public ProductDetailOverviewFragment() {
         // Required empty public constructor
@@ -78,11 +85,12 @@ public class ProductDetailOverviewFragment extends Fragment {
         regPrice.setText(getRegularPriceText(defaultFormat));
         msrpPrice.setText(getMSRPPriceText(defaultFormat));
         mapPrice.setText(getMAPPriceText(defaultFormat));
-        if (isProductConfigurable(mProduct)) {
+        if (mProduct.getBundledProducts() == null || mProduct.getBundledProducts().isEmpty()) {
             includesLayout.setVisibility(View.GONE);
         } else {
             includesLayout.setVisibility(View.VISIBLE);
-            includes.setText(getBundledProductsString());
+            includes.setText(getBundledProductsStringWithClick(mProduct));
+            includes.setMovementMethod(LinkMovementMethod.getInstance());
         }
         mDescription.setText(getDescriptionWithSpannableClick(false));
         mDescription.setMovementMethod(LinkMovementMethod.getInstance());
@@ -104,10 +112,6 @@ public class ProductDetailOverviewFragment extends Fragment {
 
         }
 
-    }
-
-    private boolean isProductConfigurable(Product product){
-        return PRODUCT_CONFIGURABLE.equalsIgnoreCase(product.getProductUsage());
     }
 
     private String getUPC(Product product){
@@ -179,26 +183,37 @@ public class ProductDetailOverviewFragment extends Fragment {
         return mapString;
     }
 
-    private String getBundledProductsString() {
-        String bundledString = "N/A";
 
-        if (mProduct.getBundledProducts() == null || mProduct.getBundledProducts().size() < 1) {
-            return bundledString;
-        }
-
-        bundledString = "";
-
-        for (BundledProduct bundable: mProduct.getBundledProducts()) {
+    private SpannableString getBundledProductsStringWithClick(final Product product) {
+        SpannableString bundledSpannableString = new SpannableString("");
+        for (final BundledProduct bundable: product.getBundledProducts()) {
             if (bundable.getContent() != null) {
-                bundledString += bundable.getContent().getProductName() + ", ";
+                String buttonText = bundable.getContent().getProductName();
+                SpannableString linkSpan = new SpannableString(buttonText);
+                NoUnderlineClickableSpan mIncludesClickableSpan = new NoUnderlineClickableSpan() {
+                    @Override
+                    public void onClick(View widget) {
+                        Intent intent = new Intent(getActivity(), ProductDetailActivity.class);
+                        UserAuthenticationStateMachine userAuthenticationStateMachine = UserAuthenticationStateMachineProducer.getInstance(getActivity());
+
+                        intent.putExtra(ProductDetailActivity.PRODUCT_CODE_EXTRA_KEY, bundable.getProductCode());
+                        intent.putExtra(ProductDetailActivity.CURRENT_TENANT_ID, userAuthenticationStateMachine.getTenantId());
+                        intent.putExtra(ProductDetailActivity.CURRENT_SITE_ID, userAuthenticationStateMachine.getSiteId());
+                        startActivity(intent);
+                    }
+                };
+                linkSpan.setSpan(mIncludesClickableSpan, 0, buttonText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                linkSpan.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.mozu_color)), 0, buttonText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                linkSpan.setSpan(new StyleSpan(Typeface.BOLD), 0, buttonText.length(), 0);
+                if (bundledSpannableString.toString().isEmpty()) {
+                    bundledSpannableString = new SpannableString(linkSpan);
+                } else {
+                    bundledSpannableString = new SpannableString(TextUtils.concat(bundledSpannableString, " ,  ", linkSpan));
+                }
             }
         }
 
-        if (bundledString.length() > 3) {
-            bundledString = bundledString.substring(0, bundledString.length() - 3);
-        }
-
-        return bundledString;
+        return bundledSpannableString;
     }
 
     private SpannableString getDescriptionWithSpannableClick(boolean showLargeDescription){
