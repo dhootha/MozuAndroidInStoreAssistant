@@ -108,12 +108,14 @@
 
         <TextView
             android:id="@+id/includes"
-            android:layout_width="wrap_content"
+            android:minLines="2"
+            android:clickable="true"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="24sp"
+            android:textSize="20sp"
             android:textStyle="bold"
             android:fontFamily="sans-serif-light"
-            android:textColor="@color/mozu_color"/>
+            />
 
     </LinearLayout>
 
