@@ -25,6 +25,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
@@ -46,6 +47,7 @@ public class ProductDetailInventoryFragment extends DialogFragment implements Ob
     @InjectView(R.id.dialog_header) LinearLayout mDialogLayout;
 
     private Subscription mSubscription = Subscriptions.empty();
+    private Observable<LocationInventoryCollection> mInventoryObservable;
 
     public ProductDetailInventoryFragment() {
         // Required empty public constructor
@@ -54,13 +56,20 @@ public class ProductDetailInventoryFragment extends DialogFragment implements Ob
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mInventoryObservable = AndroidObservable.bindFragment(this, new InventoryRetriever().getInventoryData(mProduct, mTenantId, mSiteId))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
 
-        mSubscription = AndroidObservable.bindFragment(this, new InventoryRetriever().getInventoryData(mProduct, mTenantId, mSiteId))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this);
+        mSubscription = mInventoryObservable.subscribe(this);
     }
 
     @Override
