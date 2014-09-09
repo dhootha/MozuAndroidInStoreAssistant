@@ -2,8 +2,6 @@ package com.mozu.mozuandroidinstoreassistant.app.fragments;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.LoaderManager;
-import android.content.Loader;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,19 +13,27 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.mozu.api.contracts.productadmin.LocationInventory;
 import com.mozu.api.contracts.productadmin.LocationInventoryCollection;
 import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.ProdDetailLocationInventoryAdapter;
-import com.mozu.mozuandroidinstoreassistant.app.loaders.LocationInventoryLoader;
+import com.mozu.mozuandroidinstoreassistant.app.loaders.InventoryRetriever;
 
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.observables.AndroidObservable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.Subscriptions;
 
-public class ProductDetailInventoryFragment extends DialogFragment implements LoaderManager.LoaderCallbacks<LocationInventoryCollection> {
+public class ProductDetailInventoryFragment extends DialogFragment implements Observer<LocationInventoryCollection> {
 
-    private static final int LOADER_PRODUCT_INVENTORY = 123;
     private Product mProduct;
 
     private int mTenantId;
@@ -35,57 +41,70 @@ public class ProductDetailInventoryFragment extends DialogFragment implements Lo
 
     private List<LocationInventory> mInventory;
 
-    private ListView mInventoryList;
-    private ProgressBar mProgress;
-    private LinearLayout mDialogLayout;
+    @InjectView(R.id.inventory_list) ListView mInventoryList;
+    @InjectView(R.id.inventory_progress) ProgressBar mProgress;
+    @InjectView(R.id.dialog_header) LinearLayout mDialogLayout;
+
+    private Subscription mSubscription = Subscriptions.empty();
 
     public ProductDetailInventoryFragment() {
         // Required empty public constructor
+
         setRetainInstance(true);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        mSubscription = AndroidObservable.bindFragment(this, new InventoryRetriever().getInventoryData(mProduct, mTenantId, mSiteId))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.product_detail_inventory_fragment, null);
 
-        mInventoryList = (ListView) view.findViewById(R.id.inventory_list);
-        mProgress = (ProgressBar) view.findViewById(R.id.inventory_progress);
+        ButterKnife.inject(this, view);
 
-        if (mProduct != null) {
+        if (mInventory == null) {
             mProgress.setVisibility(View.VISIBLE);
             mInventoryList.setVisibility(View.GONE);
-            getLoaderManager().initLoader(LOADER_PRODUCT_INVENTORY, null, this).forceLoad();
+        } else {
+            onCompleted();
         }
 
-        if (getShowsDialog()) {
-            mDialogLayout = (LinearLayout) view.findViewById(R.id.dialog_header);
-            mDialogLayout.setVisibility(View.VISIBLE);
+        setupForDialog();
 
-            TextView productCode = (TextView)mDialogLayout.findViewById(R.id.productCode);
-            TextView productName = (TextView)mDialogLayout.findViewById(R.id.productName);
-            productCode.setText(mProduct.getProductCode());
-            productName.setText(mProduct.getContent().getProductName());
-            ImageView dismissView = (ImageView) mDialogLayout.findViewById(R.id.imageView_close);
-            dismissView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                        getDialog().dismiss();
-                }
-            });
-        }
         return view;
     }
 
+    public void onPause() {
+        super.onPause();
 
-    private void setProductToView(View view) {
+        mSubscription.unsubscribe();
+    }
 
+    @Override
+
+
+    public void onNext(LocationInventoryCollection inventoryCollection) {
+        mInventory = inventoryCollection.getItems();
+    }
+
+    @Override
+    public void onCompleted() {
         mProgress.setVisibility(View.GONE);
         mInventoryList.setVisibility(View.VISIBLE);
 
-        ListView inventoryList = (ListView) view.findViewById(R.id.inventory_list);
-        inventoryList.setAdapter(new ProdDetailLocationInventoryAdapter(getActivity(), mInventory,mTenantId,mSiteId));
+        mInventoryList.setAdapter(new ProdDetailLocationInventoryAdapter(getActivity(), mInventory,mTenantId,mSiteId));
+    }
 
+    public void onError(Throwable error) {
+
+        Crashlytics.logException(error);
     }
 
     public void setProduct(Product product) {
@@ -100,9 +119,22 @@ public class ProductDetailInventoryFragment extends DialogFragment implements Lo
         mSiteId = siteId;
     }
 
-    @Override
-    public Loader<LocationInventoryCollection> onCreateLoader(int id, Bundle args) {
-        return new LocationInventoryLoader(getActivity(), mTenantId, mSiteId, mProduct);
+    private void setupForDialog() {
+        if (getShowsDialog()) {
+            mDialogLayout.setVisibility(View.VISIBLE);
+
+            TextView productCode = (TextView)mDialogLayout.findViewById(R.id.productCode);
+            TextView productName = (TextView)mDialogLayout.findViewById(R.id.productName);
+            productCode.setText(mProduct.getProductCode());
+            productName.setText(mProduct.getContent().getProductName());
+            ImageView dismissView = (ImageView) mDialogLayout.findViewById(R.id.imageView_close);
+            dismissView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    getDialog().dismiss();
+                }
+            });
+        }
     }
 
     @Override
@@ -112,20 +144,4 @@ public class ProductDetailInventoryFragment extends DialogFragment implements Lo
         return dialog;
     }
 
-    @Override
-    public void onLoadFinished(Loader<LocationInventoryCollection> loader, LocationInventoryCollection data) {
-
-        if (data == null || data.getItems() == null) {
-            return;
-        }
-
-        mInventory = data.getItems();
-
-        setProductToView(getView());
-    }
-
-    @Override
-    public void onLoaderReset(Loader<LocationInventoryCollection> loader) {
-
-    }
 }
