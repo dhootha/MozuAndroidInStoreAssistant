@@ -40,7 +40,7 @@ import butterknife.OnClick;
 
 public class OrderFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Order>>, AbsListView.OnScrollListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, SearchManager.OnCancelListener, SearchManager.OnDismissListener, SearchView.OnSuggestionListener, MenuItem.OnActionExpandListener, AdapterView.OnItemClickListener {
 
-    private static final int MAX_NUMBER_OF_ORDER_SEARCHES = 5;
+    private static final int MAX_NUMBER_OF_ORDER_SEARCHES = 200;
 
     private static final String CURRENT_SORT_COLUMN_EXTRA = "currensortcolumnextra";
 

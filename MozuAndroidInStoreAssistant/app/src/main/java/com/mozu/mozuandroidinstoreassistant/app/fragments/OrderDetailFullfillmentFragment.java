@@ -15,9 +15,9 @@ import com.mozu.api.contracts.commerceruntime.fulfillment.*;
 import com.mozu.api.contracts.commerceruntime.fulfillment.Package;
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.commerceruntime.orders.OrderItem;
-import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.mozuandroidinstoreassistant.app.R;
-import com.mozu.mozuandroidinstoreassistant.app.adapters.OrderDetailDirectShipFulfillmentAdapter;
+import com.mozu.mozuandroidinstoreassistant.app.adapters.OrderDetailFulfillmentPackageAdapter;
+import com.mozu.mozuandroidinstoreassistant.app.adapters.OrderDetailPendingFulfillmentAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.OrderDetailPickupFulfillmentAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.models.FulfillmentItem;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
@@ -28,6 +28,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.InjectViews;
 
 
 public class OrderDetailFullfillmentFragment extends Fragment {
@@ -42,11 +43,23 @@ public class OrderDetailFullfillmentFragment extends Fragment {
     @InjectView(R.id.shipment_fulfilled_total) TextView mFulfilledTotal;
     @InjectView(R.id.shipment_total) TextView mShipmentTotal;
     @InjectView(R.id.pickup_total) TextView mPickupTotal;
+    @InjectView(R.id.pickup_pending_total) TextView mPickupPending;
+    @InjectView(R.id.pickup_pickedup_total) TextView mPickedUp;
 
     @InjectView(R.id.pickup_layout) LinearLayout mPickupLabels;
     @InjectView(R.id.ship_layout) LinearLayout mShipLabels;
 
-    @InjectView(R.id.shipment_list) ListView mPackageListView;
+    @InjectView(R.id.shipment_pending_list) ListView mShippingPendingListView;
+    @InjectViews({R.id.pending_shipment_items_layout, R.id.shipment_pending_list}) List<View> mShippingPendingViews;
+
+    @InjectView(R.id.shipment_not_fulfilled_list) ListView mShippingNotFulfilledListView;
+    @InjectView(R.id.not_fulfilled_divider) View mNotFulfilledDivider;
+    @InjectViews({R.id.not_fulfilled_shipment_items_layout, R.id.shipment_not_fulfilled_list}) List<View> mShippingNotFulfilledViews;
+
+    @InjectView(R.id.shipment_fulfilled_list) ListView mShippingFulfilledListView;
+    @InjectView(R.id.fulfilled_divider) View mFulfilledDivider;
+    @InjectViews({R.id.fulfilled_shipment_items_layout, R.id.shipment_fulfilled_list}) List<View> mShippingFulfilledViews;
+
     @InjectView(R.id.pickup_list) ListView mPickupListView;
 
     public OrderDetailFullfillmentFragment() {
@@ -61,13 +74,16 @@ public class OrderDetailFullfillmentFragment extends Fragment {
         ButterKnife.inject(this, view);
 
         if (mOrder != null) {
-            setOrderToViews(view);
+            setOrderToViews();
         }
 
         return view;
     }
 
-    private void setOrderToViews(View view) {
+    private void setOrderToViews() {
+
+        boolean isPendingVisible = false;
+        boolean isNotFulfilledVisible = false;
 
         int pendingCount = 0;
         int fulfilledCount = 0;
@@ -131,37 +147,90 @@ public class OrderDetailFullfillmentFragment extends Fragment {
                 }
 
             }
-
         }
 
-        for (OrderItem orderItem: orderItemsNotPackaged) {
-            FulfillmentItem fulfillmentItem = new FulfillmentItem();
-            fulfillmentItem.setPackaged(false);
-            fulfillmentItem.setFullfilled(false);
-            fulfillmentItem.setNonPackgedItem(orderItem);
-
-            fulfillmentItemList.add(0, fulfillmentItem);
-        }
-
+        //set header info for shipments
         mPendingTotal.setText(String.valueOf(pendingCount));
         mFulfilledTotal.setText(String.valueOf(fulfilledCount));
         mShipmentTotal.setText(String.valueOf(pendingCount + fulfilledCount));
 
-        mPackageListView.setAdapter(new OrderDetailDirectShipFulfillmentAdapter(getActivity(), fulfillmentItemList));
-        mPackageListView.setOnItemClickListener(mDirectShipClickListener);
-
-
-
-        if (fulfillmentItemList == null || fulfillmentItemList.size() < 1) {
+        //if there are no fulfillment items or unpackaged items, then hide the ship labels
+        if ((fulfillmentItemList == null || fulfillmentItemList.size() < 1) && (orderItemsNotPackaged == null || orderItemsNotPackaged.size() < 1) ) {
             mShipLabels.setVisibility(View.GONE);
-            mPackageListView.setVisibility(View.GONE);
         }
 
+        //show the pending items if possible
+        if (orderItemsNotPackaged.size() < 1) {
+            ButterKnife.apply(mShippingPendingViews, GONE);
+            isPendingVisible = false;
+        } else {
+            ButterKnife.apply(mShippingPendingViews, VISIBLE);
+
+            mShippingPendingListView.setAdapter(new OrderDetailPendingFulfillmentAdapter(getActivity(), orderItemsNotPackaged));
+            mShippingPendingListView.setOnItemClickListener(mDirectShipPendingItemClickListener);
+            isPendingVisible = true;
+        }
+
+        //show not fulfilled items if possible
+        if (pendingCount < 1) {
+            ButterKnife.apply(mShippingNotFulfilledViews, GONE);
+            isNotFulfilledVisible = false;
+        } else {
+            mNotFulfilledDivider.setVisibility(isPendingVisible ? View.VISIBLE : View.GONE);
+
+            List<FulfillmentItem> notFulfilledItems = new ArrayList<FulfillmentItem>();
+
+            for (FulfillmentItem item: fulfillmentItemList) {
+                if (!item.isFullfilled()) {
+                    notFulfilledItems.add(item);
+                }
+            }
+
+            mShippingNotFulfilledListView.setAdapter(new OrderDetailFulfillmentPackageAdapter(getActivity(), notFulfilledItems));
+            mShippingNotFulfilledListView.setOnItemClickListener(mDirectShipPackageClickListener);
+
+            isNotFulfilledVisible = true;
+        }
+
+        //show fulfilled items if possible
+        if (fulfilledCount < 1) {
+            ButterKnife.apply(mShippingNotFulfilledViews, GONE);
+        } else {
+            mFulfilledDivider.setVisibility(isPendingVisible || isNotFulfilledVisible ? View.VISIBLE : View.GONE);
+
+            List<FulfillmentItem> fulfilledItems = new ArrayList<FulfillmentItem>();
+
+            for (FulfillmentItem item: fulfillmentItemList) {
+                if (item.isFullfilled()) {
+                    fulfilledItems.add(item);
+                }
+            }
+
+            mShippingFulfilledListView.setAdapter(new OrderDetailFulfillmentPackageAdapter(getActivity(), fulfilledItems));
+            mShippingFulfilledListView.setOnItemClickListener(mDirectShipPackageClickListener);
+        }
+
+        //pickup setup
         if (mOrder.getPickups() == null || mOrder.getPickups().size() < 1) {
             mPickupLabels.setVisibility(View.GONE);
             mPickupListView.setVisibility(View.GONE);
         } else {
             mPickupTotal.setText(String.valueOf(mOrder.getPickups().size()));
+
+            int pending = 0;
+            int pickedup = 0;
+
+            for (Pickup pickup: mOrder.getPickups()) {
+                if (pickup.getStatus().equalsIgnoreCase(FULFILLED)) {
+                    pickedup++;
+                } else {
+                    pending++;
+                }
+            }
+
+            mPickupPending.setText(String.valueOf(pending));
+            mPickedUp.setText(String.valueOf(pickedup));
+
             mPickupListView.setAdapter(new OrderDetailPickupFulfillmentAdapter(getActivity(), mOrder.getPickups()));
         }
     }
@@ -172,20 +241,27 @@ public class OrderDetailFullfillmentFragment extends Fragment {
         mOrder = order;
     }
 
-    private AdapterView.OnItemClickListener mDirectShipClickListener = new AdapterView.OnItemClickListener() {
+    private AdapterView.OnItemClickListener mDirectShipPackageClickListener = new AdapterView.OnItemClickListener() {
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
             FulfillmentItem item = (FulfillmentItem) parent.getItemAtPosition(position);
 
-            if (!item.isPackaged()) {
+            showPackageDetail(item);
 
-                showProductDetailDialog(item.getNonPackgedItem());
-            } else {
+        }
 
-                showPackageDetail(item);
-            }
+    };
+
+    private AdapterView.OnItemClickListener mDirectShipPendingItemClickListener = new AdapterView.OnItemClickListener() {
+
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            OrderItem item = (OrderItem) parent.getItemAtPosition(position);
+
+            showProductDetailDialog(item);
 
         }
 
@@ -205,7 +281,6 @@ public class OrderDetailFullfillmentFragment extends Fragment {
         }
 
         productOverviewFragment.show(manager, PRODUCT_DIALOG_TAG);
-
     }
 
     private void showPackageDetail(FulfillmentItem item) {
@@ -222,4 +297,16 @@ public class OrderDetailFullfillmentFragment extends Fragment {
 
         packageInfoDialogFragment.show(manager, PACKAGE_DIALOG_TAG);
     }
+
+    static final ButterKnife.Action<View> GONE = new ButterKnife.Action<View>() {
+        @Override public void apply(View view, int index) {
+            view.setVisibility(View.GONE);
+        }
+    };
+
+    static final ButterKnife.Action<View> VISIBLE = new ButterKnife.Action<View>() {
+        @Override public void apply(View view, int index) {
+            view.setVisibility(View.VISIBLE);
+        }
+    };
 }
