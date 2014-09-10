@@ -126,7 +126,6 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
         mSearchView.setOnCloseListener(this);
         mSearchView.setQueryHint(getString(R.string.order_search_hint_text));
-
         mSearchMenuItem.setOnActionExpandListener(this);
         searchManager.setOnCancelListener(this);
         searchManager.setOnDismissListener(this);
@@ -135,13 +134,13 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_search) {
-            showSuggestions();
+            initSuggestions();
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void showSuggestions() {
+    private void initSuggestions() {
         UserPreferences prefs = UserAuthenticationStateMachineProducer.getInstance(getActivity()).getCurrentUsersPreferences();
 
         List<RecentSearch> recentOrderSearches = prefs.getRecentOrderSearches();
@@ -273,6 +272,12 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+        //hack to dismiss the popup suggestions
+        onSuggestionSelect(-1);
+
+        saveSearchToList(query);
+
+        initSuggestions();
 
         getOrdersLoader().reset();
         getOrdersLoader().init();
@@ -283,9 +288,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         mProgress.setVisibility(View.VISIBLE);
         mOrdersList.setVisibility(View.GONE);
 
-        saveSearchToList(query);
-
-        return true;
+        return false;
     }
 
     @Override
