@@ -10,9 +10,8 @@ import butterknife.InjectView;
 
 public class OrderDetailPickupFulfillmentViewHolder {
 
-    @InjectView(R.id.pickup_fulfillment_cell_type) TextView cellType;
-    @InjectView(R.id.pickup_fulfillment_main_label) TextView mainLabel;
-    @InjectView(R.id.pickup_fulfillment_item_count) TextView itemCount;
+    @InjectView(R.id.pickup_name) TextView pickupName;
+    @InjectView(R.id.item_count) TextView itemCount;
 
     public OrderDetailPickupFulfillmentViewHolder(View view) {
         ButterKnife.inject(this, view);

@@ -18,7 +18,7 @@ import com.mozu.api.contracts.commerceruntime.orders.OrderItem;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.OrderDetailFulfillmentPackageAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.OrderDetailPendingFulfillmentAdapter;
-import com.mozu.mozuandroidinstoreassistant.app.adapters.OrderDetailPickupFulfillmentAdapter;
+import com.mozu.mozuandroidinstoreassistant.app.adapters.OrderDetailPickupAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.models.FulfillmentItem;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
@@ -37,6 +37,8 @@ public class OrderDetailFullfillmentFragment extends Fragment {
     public static final String FULFILLED = "Fulfilled";
     private static final String PRODUCT_DIALOG_TAG = "prod_detail_fragment";
     private static final String PACKAGE_DIALOG_TAG = "package_detail_fragment";
+    private static final String PICKUP_DIALOG_TAG = "pickup_detail_fragment";
+    public static final int FIRST_PICKUP_COUNT = 1;
     private Order mOrder;
 
     @InjectView(R.id.shipment_pending_total) TextView mPendingTotal;
@@ -60,7 +62,15 @@ public class OrderDetailFullfillmentFragment extends Fragment {
     @InjectView(R.id.fulfilled_divider) View mFulfilledDivider;
     @InjectViews({R.id.fulfilled_shipment_items_layout, R.id.shipment_fulfilled_list}) List<View> mShippingFulfilledViews;
 
-    @InjectView(R.id.pickup_list) ListView mPickupListView;
+    @InjectView(R.id.pickup_pickedup_list) ListView mPickedupList;
+    @InjectView(R.id.pickedup_divider) View mPickedUpDivider;
+    @InjectViews({R.id.pickedup_items_layout, R.id.pickup_pickedup_list}) List<View> mPickedupViews;
+
+    @InjectView(R.id.pickup_pending_list) ListView mNotPickedupList;
+    @InjectViews({R.id.not_pickedup_items_layout, R.id.pickup_pending_list}) List<View> mNotPickedupViews;
+
+    @InjectView(R.id.pickup_detail_layout) LinearLayout mPickupDetailLayout;
+    @InjectView(R.id.shipment_detail_layout) LinearLayout mShipmentDetailLayout;
 
     public OrderDetailFullfillmentFragment() {
         // Required empty public constructor
@@ -82,8 +92,74 @@ public class OrderDetailFullfillmentFragment extends Fragment {
 
     private void setOrderToViews() {
 
-        boolean isPendingVisible = false;
-        boolean isNotFulfilledVisible = false;
+        setShipmentLayouts();
+        setPickupsLayout();
+
+    }
+
+    private void setPickupsLayout() {
+        //if no pickups, then hide pickups and move along
+        if (mOrder.getPickups() == null || mOrder.getPickups().size() < 1) {
+            mPickupLabels.setVisibility(View.GONE);
+
+            mPickupDetailLayout.setVisibility(View.GONE);
+
+            ButterKnife.apply(mNotPickedupViews, GONE);
+            ButterKnife.apply(mPickedupViews, GONE);
+
+            return;
+        }
+
+        boolean isNotPickedupShowing;
+
+        List<Pickup> unPickedUps = new ArrayList<Pickup>();
+        List<Pickup> pickedUps = new ArrayList<Pickup>();
+
+        mPickupTotal.setText(String.valueOf(mOrder.getPickups().size()));
+
+        for (Pickup pickup: mOrder.getPickups()) {
+            if (pickup.getStatus().equalsIgnoreCase(FULFILLED)) {
+
+                pickedUps.add(pickup);
+            } else {
+
+                unPickedUps.add(pickup);
+            }
+        }
+
+        mPickupPending.setText(String.valueOf(unPickedUps.size()));
+        mPickedUp.setText(String.valueOf(pickedUps.size()));
+        mPickupTotal.setText(String.valueOf(unPickedUps.size() + pickedUps.size()));
+
+        //setup un pickedup pickups
+        if (unPickedUps.size() < 1) {
+            ButterKnife.apply(mNotPickedupViews, GONE);
+            isNotPickedupShowing = false;
+        } else {
+            ButterKnife.apply(mNotPickedupViews, VISIBLE);
+
+            mNotPickedupList.setAdapter(new OrderDetailPickupAdapter(getActivity(), unPickedUps, FIRST_PICKUP_COUNT));
+            mNotPickedupList.setOnItemClickListener(mPickupItemClickListener);
+
+            isNotPickedupShowing = true;
+        }
+
+        //setup un pickedup pickups
+        if (pickedUps.size() < 1) {
+            ButterKnife.apply(mPickedupViews, GONE);
+        } else {
+            ButterKnife.apply(mPickedupViews, VISIBLE);
+
+            mPickedUpDivider.setVisibility(isNotPickedupShowing ? View.VISIBLE : View.GONE);
+
+            mPickedupList.setAdapter(new OrderDetailPickupAdapter(getActivity(), pickedUps, unPickedUps.size() + FIRST_PICKUP_COUNT));
+            mPickedupList.setOnItemClickListener(mPickupItemClickListener);
+        }
+    }
+
+    private void setShipmentLayouts() {
+        boolean isPendingVisible;
+        boolean isNotFulfilledVisible;
 
         int pendingCount = 0;
         int fulfilledCount = 0;
@@ -158,6 +234,9 @@ public class OrderDetailFullfillmentFragment extends Fragment {
         //if there are no fulfillment items or unpackaged items, then hide the ship labels
         if ((fulfillmentItemList == null || fulfillmentItemList.size() < 1) && (orderItemsNotPackaged == null || orderItemsNotPackaged.size() < 1) ) {
             mShipLabels.setVisibility(View.GONE);
+            mShipmentDetailLayout.setVisibility(View.GONE);
+
+            return;
         }
 
         //show the pending items if possible
@@ -214,30 +293,6 @@ public class OrderDetailFullfillmentFragment extends Fragment {
             mShippingFulfilledListView.setAdapter(new OrderDetailFulfillmentPackageAdapter(getActivity(), fulfilledItems));
             mShippingFulfilledListView.setOnItemClickListener(mDirectShipPackageClickListener);
         }
-
-        //pickup setup
-        if (mOrder.getPickups() == null || mOrder.getPickups().size() < 1) {
-            mPickupLabels.setVisibility(View.GONE);
-            mPickupListView.setVisibility(View.GONE);
-        } else {
-            mPickupTotal.setText(String.valueOf(mOrder.getPickups().size()));
-
-            int pending = 0;
-            int pickedup = 0;
-
-            for (Pickup pickup: mOrder.getPickups()) {
-                if (pickup.getStatus().equalsIgnoreCase(FULFILLED)) {
-                    pickedup++;
-                } else {
-                    pending++;
-                }
-            }
-
-            mPickupPending.setText(String.valueOf(pending));
-            mPickedUp.setText(String.valueOf(pickedup));
-
-            mPickupListView.setAdapter(new OrderDetailPickupFulfillmentAdapter(getActivity(), mOrder.getPickups()));
-        }
     }
 
 
@@ -272,6 +327,19 @@ public class OrderDetailFullfillmentFragment extends Fragment {
 
     };
 
+    private AdapterView.OnItemClickListener mPickupItemClickListener = new AdapterView.OnItemClickListener() {
+
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            Pickup item = (Pickup) parent.getItemAtPosition(position);
+
+            showPickupDetailDialog(item);
+
+        }
+
+    };
+
     private void showProductDetailDialog(OrderItem item) {
         FragmentManager manager = getFragmentManager();
         ProductDetailOverviewDialogFragment productOverviewFragment = (ProductDetailOverviewDialogFragment) manager.findFragmentByTag(PRODUCT_DIALOG_TAG);
@@ -301,6 +369,21 @@ public class OrderDetailFullfillmentFragment extends Fragment {
         }
 
         packageInfoDialogFragment.show(manager, PACKAGE_DIALOG_TAG);
+    }
+
+    private void showPickupDetailDialog(Pickup item) {
+        FragmentManager manager = getFragmentManager();
+        PickupInfoDialogFragment pickupInfoDialogFragment = (PickupInfoDialogFragment) manager.findFragmentByTag(PICKUP_DIALOG_TAG);
+
+        UserAuthenticationStateMachine userState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
+
+        if (pickupInfoDialogFragment == null) {
+            pickupInfoDialogFragment = new PickupInfoDialogFragment();
+            pickupInfoDialogFragment.setPickup(item);
+            pickupInfoDialogFragment.setTenantAndSiteId(userState.getTenantId(), userState.getSiteId());
+        }
+
+        pickupInfoDialogFragment.show(manager, PICKUP_DIALOG_TAG);
     }
 
     static final ButterKnife.Action<View> GONE = new ButterKnife.Action<View>() {
