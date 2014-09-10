@@ -15,7 +15,7 @@ import java.util.List;
 
 public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> {
 
-    private static final int ITEMS_PER_PAGE = 200;
+    private static final int ITEMS_PER_PAGE = 50;
 
     private static final String ORDER_ID_FILTER_BY = "orderNumber eq ";
 

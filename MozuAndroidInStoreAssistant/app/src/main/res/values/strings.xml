@@ -136,5 +136,10 @@
     <string name="pickup_fulfillment_pending">Pending</string>
     <string name="pickup_fulfillment_fulfilled">Fulfilled</string>
     <string name="fulfillment_pickup_number">Pickup #</string>
+    <string name="pickup_pickedup_total_string">Picked-Up</string>
+    <string name="pickup_pending_total_string">Pending</string>
+    <string name="not_picked_up">Pending Pickups</string>
+    <string name="picked_up">Picked-up</string>
+    <string name="pickup_header_text">Pickup</string>
 
 </resources>
