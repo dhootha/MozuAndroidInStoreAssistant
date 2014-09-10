@@ -149,10 +149,11 @@ public class OrderDetailFullfillmentFragment extends Fragment {
             }
         }
 
-        //set header info for shipments
-        mPendingTotal.setText(String.valueOf(pendingCount));
+        //set header info for shipments, a pending package according to the
+        //documentation is one that has not shipped
+        mPendingTotal.setText(String.valueOf(pendingCount + orderItemsNotPackaged.size()));
         mFulfilledTotal.setText(String.valueOf(fulfilledCount));
-        mShipmentTotal.setText(String.valueOf(pendingCount + fulfilledCount));
+        mShipmentTotal.setText(String.valueOf(pendingCount + orderItemsNotPackaged.size() + fulfilledCount));
 
         //if there are no fulfillment items or unpackaged items, then hide the ship labels
         if ((fulfillmentItemList == null || fulfillmentItemList.size() < 1) && (orderItemsNotPackaged == null || orderItemsNotPackaged.size() < 1) ) {
@@ -176,6 +177,8 @@ public class OrderDetailFullfillmentFragment extends Fragment {
             ButterKnife.apply(mShippingNotFulfilledViews, GONE);
             isNotFulfilledVisible = false;
         } else {
+            ButterKnife.apply(mShippingNotFulfilledViews, VISIBLE);
+
             mNotFulfilledDivider.setVisibility(isPendingVisible ? View.VISIBLE : View.GONE);
 
             List<FulfillmentItem> notFulfilledItems = new ArrayList<FulfillmentItem>();
@@ -194,8 +197,10 @@ public class OrderDetailFullfillmentFragment extends Fragment {
 
         //show fulfilled items if possible
         if (fulfilledCount < 1) {
-            ButterKnife.apply(mShippingNotFulfilledViews, GONE);
+            ButterKnife.apply(mShippingFulfilledViews, GONE);
         } else {
+            ButterKnife.apply(mShippingFulfilledViews, VISIBLE);
+
             mFulfilledDivider.setVisibility(isPendingVisible || isNotFulfilledVisible ? View.VISIBLE : View.GONE);
 
             List<FulfillmentItem> fulfilledItems = new ArrayList<FulfillmentItem>();
