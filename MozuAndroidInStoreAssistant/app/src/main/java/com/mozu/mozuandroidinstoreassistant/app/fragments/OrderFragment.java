@@ -207,7 +207,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
             recentOrderSearches.remove(recentOrderSearches.size() - 1);
         }
 
-        prefs.setRecentProductSearchs(recentOrderSearches);
+        prefs.setRecentOrderSearchs(recentOrderSearches);
 
         userState.updateUserPreferences();
     }
@@ -481,7 +481,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
 
         UserPreferences prefs = userState.getCurrentUsersPreferences();
 
-        List<RecentSearch> recentProductSearches = prefs.getRecentProductSearches();
+        List<RecentSearch> recentProductSearches = prefs.getRecentOrderSearches();
 
         String searchTerm = recentProductSearches.get(position).getSearchTerm();
 

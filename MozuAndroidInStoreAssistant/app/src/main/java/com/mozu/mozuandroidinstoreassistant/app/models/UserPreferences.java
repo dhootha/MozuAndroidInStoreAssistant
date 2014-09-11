@@ -14,6 +14,8 @@ public class UserPreferences {
 
     private List<RecentSearch> mRecentOrderSearches;
 
+    private List<RecentSearch> mRecentCustomerSearches;
+
     public String getEmail() {
 
         return mEmail;
@@ -79,5 +81,18 @@ public class UserPreferences {
         }
 
         return mRecentOrderSearches;
+    }
+
+    public void setRecentCustomerSearchs(List<RecentSearch> recentCustomerSearches) {
+
+        mRecentCustomerSearches = recentCustomerSearches;
+    }
+
+    public List<RecentSearch> getRecentCustomerSearches() {
+        if (mRecentCustomerSearches == null) {
+            mRecentCustomerSearches = new ArrayList<RecentSearch>();
+        }
+
+        return mRecentCustomerSearches;
     }
 }

@@ -147,6 +147,13 @@
     <string name="refresh_product_detail_menu_item_text">Refresh Product</string>
     <string name="refresh_orders_menu_item_text">Refresh Orders</string>
     <string name="refresh_order_detail_menu_item_text">Refresh Order</string>
+    <string name="customer_list_customer_no_header">Customer No.</string>
+    <string name="customer_list_date_header">Last Name</string>
+    <string name="customer_list_customer_first_name_header">First Name</string>
+    <string name="customer_list_customer_email_header">Email</string>
+    <string name="customer_list_customer_lifetime_value_header">Lifetime Value</string>
+    <string name="refresh_customers_menu_item_text">Refresh Customers</string>
+    <string name="customer_search_hint_text">Search by Customer Name or Email Address</string>
 
 
 </resources>
