@@ -6,12 +6,15 @@ import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -20,12 +23,16 @@ import com.mozu.api.contracts.productruntime.ProductImage;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.ProductDetailSectionPagerAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.loaders.ProductDetailLoader;
 import com.mozu.mozuandroidinstoreassistant.app.models.ImageURLConverter;
+import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.views.HeightWrappingViewPager;
 import com.squareup.picasso.Picasso;
 import com.viewpagerindicator.TabPageIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 public class ProductDetailActivity extends Activity implements LoaderManager.LoaderCallbacks<Product>, View.OnClickListener {
 
@@ -63,10 +70,14 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
 
     private List<String> mTitles;
 
+    @InjectView(R.id.progress_bar) ProgressBar mRefreshProgressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_detail);
+
+        ButterKnife.inject(this);
 
         if (getIntent() != null) {
             mProductCode = getIntent().getStringExtra(PRODUCT_CODE_EXTRA_KEY);
@@ -120,11 +131,37 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
         super.onSaveInstanceState(outState);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+
+        inflater.inflate(R.menu.product_detail, menu);
+
+        return true;
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == android.R.id.home) {
+            finish();
+
+            return true;
+        } else if (item.getItemId() == R.id.refresh_product_detail) {
+            mRefreshProgressBar.setVisibility(View.VISIBLE);
+
+            mProductSectionViewPager.setCurrentItem(0);
+
+            Loader productLoader = getLoaderManager().getLoader(LOADER_PRODUCT_DETAIL);
+
+            productLoader.reset();
+            productLoader.startLoading();
+            productLoader.forceLoad();
+
+            return true;
+        } else if (item.getItemId() == R.id.action_logout) {
+            UserAuthenticationStateMachineProducer.getInstance(getApplicationContext()).getCurrentUserAuthState().signOutUser();
+            startActivity(new Intent(this, LoginActivity.class));
             finish();
 
             return true;
@@ -137,7 +174,7 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
     public Loader<Product> onCreateLoader(int id, Bundle args) {
 
         if (id == LOADER_PRODUCT_DETAIL) {
-
+            mRefreshProgressBar.setVisibility(View.VISIBLE);
             return new ProductDetailLoader(this, mTenantId, mSiteId, mProductCode);
         }
 
@@ -146,6 +183,7 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<Product> loader, Product data) {
+        mRefreshProgressBar.setVisibility(View.GONE);
 
         mProduct = data;
 

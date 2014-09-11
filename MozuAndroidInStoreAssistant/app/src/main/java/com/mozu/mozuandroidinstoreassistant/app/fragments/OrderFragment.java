@@ -7,6 +7,7 @@ import android.content.Loader;
 import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,7 +39,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class OrderFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Order>>, AbsListView.OnScrollListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, SearchManager.OnCancelListener, SearchManager.OnDismissListener, SearchView.OnSuggestionListener, MenuItem.OnActionExpandListener, AdapterView.OnItemClickListener {
+public class OrderFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Order>>, AbsListView.OnScrollListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, SearchManager.OnCancelListener, SearchManager.OnDismissListener, SearchView.OnSuggestionListener, MenuItem.OnActionExpandListener, AdapterView.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     private static final int MAX_NUMBER_OF_ORDER_SEARCHES = 200;
 
@@ -49,6 +50,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
     private Integer mTenantId;
     private Integer mSiteId;
 
+    @InjectView(R.id.order_list_container) SwipeRefreshLayout mOrderRefreshLayout;
     @InjectView(R.id.order_list) ListView mOrdersList;
     @InjectView(R.id.order_list_progress) LinearLayout mProgress;
 
@@ -88,9 +90,13 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         View view = inflater.inflate(R.layout.fragment_order, container, false);
         ButterKnife.inject(this, view);
 
-        mOrdersList.setVisibility(View.GONE);
-        mProgress.setVisibility(View.VISIBLE);
+        mOrderRefreshLayout.setOnRefreshListener(this);
+        mOrderRefreshLayout.setColorScheme(R.color.first_color_swipe_refresh,
+                R.color.second_color_swipe_refresh,
+                R.color.third_color_swipe_refresh,
+                R.color.fourth_color_swipe_refresh);
 
+        mOrderRefreshLayout.setRefreshing(true);
         getLoaderManager().initLoader(LOADER_ORDERS, null, this).forceLoad();
 
         mOrdersList.setOnItemClickListener(this);
@@ -136,6 +142,8 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_search) {
             initSuggestions();
+        } else if (item.getItemId() == R.id.refresh_orders) {
+            onRefresh();
         }
 
         return super.onOptionsItemSelected(item);
@@ -219,6 +227,8 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public void onLoadFinished(Loader<List<Order>> loader, List<Order> data) {
+        mOrderRefreshLayout.setRefreshing(false);
+
         if (loader.getId() == LOADER_ORDERS) {
             if (mAdapter == null) {
 
@@ -284,8 +294,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         getOrdersLoader().startLoading();
         getOrdersLoader().forceLoad();
 
-        mProgress.setVisibility(View.VISIBLE);
-        mOrdersList.setVisibility(View.GONE);
+        mOrderRefreshLayout.setRefreshing(true);
 
         return false;
     }
@@ -319,8 +328,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         getOrdersLoader().startLoading();
         getOrdersLoader().forceLoad();
 
-        mProgress.setVisibility(View.VISIBLE);
-        mOrdersList.setVisibility(View.GONE);
+        mOrderRefreshLayout.setRefreshing(true);
     }
 
     @Override
@@ -482,5 +490,14 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         onQueryTextSubmit(searchTerm);
 
         return true;
+    }
+
+    @Override
+    public void onRefresh() {
+        mSearchMenuItem.collapseActionView();
+
+        mOrderRefreshLayout.setRefreshing(true);
+
+        clearSearchReload();
     }
 }
