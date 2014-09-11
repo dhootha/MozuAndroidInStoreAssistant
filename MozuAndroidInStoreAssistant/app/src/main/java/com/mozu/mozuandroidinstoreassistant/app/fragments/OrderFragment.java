@@ -289,7 +289,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         mProgress.setVisibility(View.VISIBLE);
         mOrdersList.setVisibility(View.GONE);
 
-        return false;
+        return true;
     }
 
     @Override
