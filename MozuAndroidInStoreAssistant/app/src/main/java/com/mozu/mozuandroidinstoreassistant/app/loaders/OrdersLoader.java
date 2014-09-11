@@ -20,10 +20,13 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
     private static final String ORDER_ID_FILTER_BY = "orderNumber eq ";
 
     private static final String ORDER_ORDER_NUMBER = "orderNumber";
-    private static final String ORDER_ORDER_DATE = "orderDate";
+    private static final String ORDER_ORDER_DATE = "submittedDate";
     private static final String ORDER_ORDER_EMAIL = "email";
     private static final String ORDER_ORDER_STATUS = "status";
-    private static final String ORDER_ORDER_TOAL = "total";
+    private static final String ORDER_ORDER_TOTAL = "total";
+
+    private static final String SORT_ORDER_ASC = "asc";
+    private static final String SORT_ORDER_DSC = "desc";
 
     public String mCurrentOrderBy = "";
 
@@ -37,12 +40,19 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
     private boolean mIsLoading;
 
     public String mSearchQueryFilter;
+    private String mCurrentSort;
 
     public OrdersLoader(Context context, Integer tenantId, Integer siteId) {
         super(context);
         mTenantId = tenantId;
         mSiteId = siteId;
+        mCurrentSort = SORT_ORDER_DSC;
+        mCurrentOrderBy = ORDER_ORDER_DATE;
         init();
+    }
+
+    public boolean isSortAsc() {
+        return SORT_ORDER_ASC.equals(mCurrentSort) ? true : false;
     }
 
     public void init() {
@@ -140,7 +150,7 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
             if (!TextUtils.isEmpty(mSearchQueryFilter)) {
                 orderCollection = searchOrders(orderResource);
             } else {
-                orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mCurrentOrderBy, null, null, null, null);
+                orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mCurrentOrderBy+" "+mCurrentSort, null, null, null, null);
             }
 
             mTotalPages = (int) Math.ceil(orderCollection.getTotalCount() * 1.0f / ITEMS_PER_PAGE * 1.0f);
@@ -186,17 +196,35 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
         mSearchQueryFilter = "";
     }
 
-    public void orderByNumber() {
+    private void toggleCurrentSortOrder(){
+        if (SORT_ORDER_DSC.equalsIgnoreCase(mCurrentSort)) {
+            mCurrentSort = SORT_ORDER_ASC;
+        } else {
+            mCurrentSort =  SORT_ORDER_DSC;
+        }
+    }
 
-        mCurrentOrderBy = ORDER_ORDER_NUMBER;
+    public void orderByNumber() {
+        mCurrentPage = 0;
+        if (ORDER_ORDER_NUMBER.equalsIgnoreCase(mCurrentOrderBy)) {
+            toggleCurrentSortOrder();
+        } else {
+            mCurrentOrderBy = ORDER_ORDER_NUMBER;
+            mCurrentSort = SORT_ORDER_DSC;
+        }
     }
 
     //date is the default and there is no way through the api/sdk to
     //tell the orders to sort by a date
     //so we are just removing the sort filter and resorting
     public void orderByDate() {
-
-        clearOrdering();
+        mCurrentPage = 0;
+        if (ORDER_ORDER_DATE.equalsIgnoreCase(mCurrentOrderBy)) {
+            toggleCurrentSortOrder();
+        } else {
+            mCurrentOrderBy = ORDER_ORDER_DATE;
+            mCurrentSort = SORT_ORDER_DSC;
+        }
     }
 
 //TODO: NOT CURRENTLY A WAY TO SORT BY EMAIL
@@ -206,13 +234,24 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
 //    }
 
     public void orderByStatus() {
+        mCurrentPage = 0;
+        if (ORDER_ORDER_STATUS.equalsIgnoreCase(mCurrentOrderBy)) {
+            toggleCurrentSortOrder();
+        } else {
+            mCurrentOrderBy = ORDER_ORDER_STATUS;
+            mCurrentSort = SORT_ORDER_DSC;
+        }
 
-        mCurrentOrderBy = ORDER_ORDER_STATUS;
     }
 
     public void orderByTotal() {
-
-        mCurrentOrderBy = ORDER_ORDER_TOAL;
+        mCurrentPage = 0;
+        if (ORDER_ORDER_TOTAL.equalsIgnoreCase(mCurrentOrderBy)) {
+            toggleCurrentSortOrder();
+        } else {
+            mCurrentOrderBy = ORDER_ORDER_TOTAL;
+            mCurrentSort = SORT_ORDER_DSC;
+        }
     }
 
     public void clearOrdering() {

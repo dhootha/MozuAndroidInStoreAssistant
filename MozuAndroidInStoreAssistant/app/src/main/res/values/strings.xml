@@ -136,5 +136,9 @@
     <string name="pickup_fulfillment_pending">Pending</string>
     <string name="pickup_fulfillment_fulfilled">Fulfilled</string>
     <string name="fulfillment_pickup_number">Pickup #</string>
+    <string name="product_search_hint">Search by Product Name, Product ID or Manufacturer</string>
+    <string name="customers_search_hint">Search by Customer Name or Email Address</string>
+    <string name="global_search_hint">Search for Products, Orders or Customers</string>
+
 
 </resources>
