@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/customer_list_item"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:background="@android:color/transparent"
+    android:minHeight="?android:attr/listPreferredItemHeight">
+
+    <ImageView
+        android:id="@+id/customer_image"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:src="@drawable/icon_customer_circle"
+        android:layout_weight=".3"/>
+
+    <TextView
+        android:id="@+id/customer_number"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:layout_weight=".3"/>
+
+    <TextView
+        android:id="@+id/customer_last_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight=".5"/>
+
+    <TextView
+        android:id="@+id/customer_first_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight=".5"/>
+
+    <TextView
+        android:id="@+id/customer_email"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight=".5"/>
+
+    <TextView
+        android:id="@+id/customer_lifetime_value"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight=".3"
+        android:gravity="right"
+        android:textStyle="bold"
+        android:textColor="@color/mozu_color"
+        android:layout_marginRight="15dp"/>
+
+</LinearLayout>

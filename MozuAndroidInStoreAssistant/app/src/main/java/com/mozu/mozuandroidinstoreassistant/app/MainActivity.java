@@ -1,10 +1,8 @@
 package com.mozu.mozuandroidinstoreassistant.app;
 
-import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
@@ -12,11 +10,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
+import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.api.contracts.productruntime.Category;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.CategoryFragment;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.CategoryFragmentListener;
+import com.mozu.mozuandroidinstoreassistant.app.fragments.CustomerListener;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.CustomersFragment;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.OrderFragment;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.OrderListener;
@@ -28,7 +29,7 @@ import com.mozu.mozuandroidinstoreassistant.app.fragments.SearchFragment;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 
-public class MainActivity extends AuthActivity implements View.OnClickListener, CategoryFragmentListener, ProductFragmentListener, ProductListListener, OrderListener {
+public class MainActivity extends AuthActivity implements View.OnClickListener, CategoryFragmentListener, ProductFragmentListener, ProductListListener, OrderListener, CustomerListener {
 
     private static final String CATEGORY_FRAGMENT = "category_fragment_taggy_tag_tag";
     private static final String SEARCH_FRAGMENT = "search_fragment_taggy_tag_tag";
@@ -274,10 +275,14 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         FragmentManager fragmentManager = getFragmentManager();
 
         clearBackstack(fragmentManager);
+        UserAuthenticationStateMachine userStateMachine = UserAuthenticationStateMachineProducer.getInstance(this);
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         CustomersFragment fragment = new CustomersFragment();
+        fragment.setTenantId(userStateMachine.getTenantId());
+        fragment.setSiteId(userStateMachine.getSiteId());
+        fragment.setListener(this);
         fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out);
         fragmentTransaction.replace(R.id.content_fragment_holder, fragment);
         fragmentTransaction.commit();
@@ -389,5 +394,10 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         intent.putExtra(OrderDetailActivity.CURRENT_SITE_ID, userAuthenticationStateMachine.getSiteId());
 
         startActivity(intent);
+    }
+
+    @Override
+    public void customerSelected(CustomerAccount customer) {
+        Toast.makeText(this, customer.getLastName() + " " + customer.getFirstName() + " selected ", Toast.LENGTH_SHORT).show();
     }
 }
