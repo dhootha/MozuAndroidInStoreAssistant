@@ -159,6 +159,8 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
         mSearchMenuItem = menu.findItem(R.id.action_search);
         mSearchView = (SearchView) mSearchMenuItem.getActionView();
+        mSearchView.setQueryHint(getString(R.string.product_search_hint));
+        mSearchView.setMaxWidth(1500);
 
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
         mSearchView.setOnQueryTextListener(this);

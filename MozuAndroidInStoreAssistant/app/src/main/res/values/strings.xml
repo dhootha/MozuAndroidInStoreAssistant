@@ -141,5 +141,9 @@
     <string name="not_picked_up">Pending Pickups</string>
     <string name="picked_up">Picked-up</string>
     <string name="pickup_header_text">Pickup</string>
+    <string name="product_search_hint">Search by Product Name, Product ID or Manufacturer</string>
+    <string name="customers_search_hint">Search by Customer Name or Email Address</string>
+    <string name="global_search_hint">Search for Products, Orders or Customers</string>
+
 
 </resources>

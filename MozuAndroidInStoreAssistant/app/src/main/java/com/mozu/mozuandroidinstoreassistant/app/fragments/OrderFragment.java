@@ -126,6 +126,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
         mSearchView.setOnCloseListener(this);
         mSearchView.setQueryHint(getString(R.string.order_search_hint_text));
+
         mSearchMenuItem.setOnActionExpandListener(this);
         searchManager.setOnCancelListener(this);
         searchManager.setOnDismissListener(this);
@@ -367,12 +368,23 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
             getOrdersLoader().orderByNumber();
             setTextViewBoldStyle(mOrderNumberHeader);
             mResourceOfCurrentSelectedColumn = mOrderNumberHeader.getId();
+            if(getOrdersLoader().isSortAsc()){
+                mOrderNumberHeaderSortImage.setImageResource(R.drawable.icon_sort_up);
+            }else{
+                mOrderNumberHeaderSortImage.setImageResource(R.drawable.icon_sort_down);
+            }
+
             mOrderNumberHeaderSortImage.setVisibility(View.VISIBLE);
         } else if (v.getId() == mOrderDateHeader.getId()) {
             getOrdersLoader().orderByDate();
             setTextViewBoldStyle(mOrderDateHeader);
             mResourceOfCurrentSelectedColumn = mOrderDateHeader.getId();
             mOrderDateHeaderSortImage.setVisibility(View.VISIBLE);
+            if(getOrdersLoader().isSortAsc()){
+                mOrderDateHeaderSortImage.setImageResource(R.drawable.icon_sort_up);
+            }else{
+                mOrderDateHeaderSortImage.setImageResource(R.drawable.icon_sort_down);
+            }
         } else if (v.getId() == mOrderEmailHeader.getId()) {
             //TODO: NOT CURRENTLY A WAY TO SORT BY EMAIL
             //            getOrdersLoader().orderByEmail();
@@ -383,11 +395,21 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
             setTextViewBoldStyle(mOrderStatusHeader);
             mResourceOfCurrentSelectedColumn = mOrderStatusHeader.getId();
             mOrderStatusHeaderSortImage.setVisibility(View.VISIBLE);
+            if(getOrdersLoader().isSortAsc()){
+                mOrderStatusHeaderSortImage.setImageResource(R.drawable.icon_sort_up);
+            }else{
+                mOrderStatusHeaderSortImage.setImageResource(R.drawable.icon_sort_down);
+            }
         } else if (v.getId() == mOrderTotalHeader.getId()) {
             getOrdersLoader().orderByTotal();
             setTextViewBoldStyle(mOrderTotalHeader);
             mResourceOfCurrentSelectedColumn = mOrderTotalHeader.getId();
             mOrderTotalHeaderSortImage.setVisibility(View.VISIBLE);
+            if(getOrdersLoader().isSortAsc()){
+                mOrderTotalHeaderSortImage.setImageResource(R.drawable.icon_sort_up);
+            }else{
+                mOrderTotalHeaderSortImage.setImageResource(R.drawable.icon_sort_down);
+            }
         } else {
             // if the view wasn't a sort column we don't need to do anyting else
             return;
