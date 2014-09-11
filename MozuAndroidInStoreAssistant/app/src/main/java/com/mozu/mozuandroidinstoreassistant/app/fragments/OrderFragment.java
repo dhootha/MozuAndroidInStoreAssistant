@@ -273,15 +273,13 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        //hack to dismiss the popup suggestions
-        onSuggestionSelect(-1);
+        mSearchView.clearFocus();
 
         saveSearchToList(query);
 
         initSuggestions();
 
         getOrdersLoader().reset();
-        getOrdersLoader().init();
         getOrdersLoader().setFilter(query);
         getOrdersLoader().startLoading();
         getOrdersLoader().forceLoad();
@@ -289,7 +287,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         mProgress.setVisibility(View.VISIBLE);
         mOrdersList.setVisibility(View.GONE);
 
-        return true;
+        return false;
     }
 
     @Override
@@ -318,7 +316,6 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         getOrdersLoader().removeFilter();
 
         getOrdersLoader().reset();
-        getOrdersLoader().init();
         getOrdersLoader().startLoading();
         getOrdersLoader().forceLoad();
 
@@ -341,6 +338,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        mSearchView.setQuery("", false);
         mListener.orderSelected((Order)mOrdersList.getAdapter().getItem(position));
     }
 
@@ -466,7 +464,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public boolean onSuggestionSelect(int position) {
-        return false;
+        return true;
     }
 
     @Override
