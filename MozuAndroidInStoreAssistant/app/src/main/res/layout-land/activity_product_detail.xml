@@ -6,6 +6,13 @@
     android:orientation="horizontal"
     tools:context="com.mozu.mozuandroidinstoreassistant.app.ProductDetailActivity">
 
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:indeterminateOnly="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <ScrollView
         android:id="@+id/vertical_image_preview"
         android:layout_width="@dimen/main_product_image_size_land"

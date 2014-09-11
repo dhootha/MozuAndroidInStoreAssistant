@@ -5,4 +5,8 @@
         android:title="@string/action_logout"
         android:orderInCategory="100"
         android:showAsAction="never" />
+
+    <item android:id="@+id/refresh_product_detail"
+        android:title="@string/refresh_product_detail_menu_item_text"
+        android:showAsAction="never" />
 </menu>

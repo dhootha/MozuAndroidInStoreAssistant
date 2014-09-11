@@ -2,16 +2,21 @@ package com.mozu.mozuandroidinstoreassistant.app;
 
 import android.app.Activity;
 import android.app.LoaderManager;
+import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.OrderDetailSectionPagerAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.loaders.OrderDetailLoader;
+import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.tasks.CustomerAsyncListener;
 import com.mozu.mozuandroidinstoreassistant.app.tasks.RetrieveCustomerAsyncTask;
 import com.mozu.mozuandroidinstoreassistant.app.views.HeightWrappingViewPager;
@@ -21,6 +26,9 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 public class OrderDetailActivity extends Activity implements LoaderManager.LoaderCallbacks<Order>, CustomerAsyncListener {
 
@@ -51,10 +59,14 @@ public class OrderDetailActivity extends Activity implements LoaderManager.Loade
 
     private NumberFormat mNumberFormat;
 
+    @InjectView(R.id.progress_bar) ProgressBar mRefreshProgressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_detail);
+
+        ButterKnife.inject(this);
 
         if (getIntent() != null) {
             mOrderNumber = getIntent().getStringExtra(ORDER_NUMBER_EXTRA_KEY);
@@ -105,11 +117,35 @@ public class OrderDetailActivity extends Activity implements LoaderManager.Loade
         super.onSaveInstanceState(outState);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.order_detail, menu);
+
+        return true;
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == android.R.id.home) {
+            finish();
+
+            return true;
+        }else if (item.getItemId() == R.id.refresh_order) {
+            mRefreshProgressBar.setVisibility(View.VISIBLE);
+
+            mTabIndicator.setCurrentItem(0);
+
+            Loader orderLoader = getLoaderManager().getLoader(LOADER_ORDER_DETAIL);
+
+            orderLoader.reset();
+            orderLoader.startLoading();
+            orderLoader.forceLoad();
+
+            return true;
+        } else if (item.getItemId() == R.id.action_logout) {
+            UserAuthenticationStateMachineProducer.getInstance(getApplicationContext()).getCurrentUserAuthState().signOutUser();
+            startActivity(new Intent(this, LoginActivity.class));
             finish();
 
             return true;
@@ -122,7 +158,7 @@ public class OrderDetailActivity extends Activity implements LoaderManager.Loade
     public Loader<Order> onCreateLoader(int id, Bundle args) {
 
         if (id == LOADER_ORDER_DETAIL) {
-
+            mRefreshProgressBar.setVisibility(View.VISIBLE);
             return new OrderDetailLoader(this, mTenantId, mSiteId, mOrderNumber);
         }
 
@@ -131,6 +167,8 @@ public class OrderDetailActivity extends Activity implements LoaderManager.Loade
 
     @Override
     public void onLoadFinished(Loader<Order> loader, Order data) {
+
+        mRefreshProgressBar.setVisibility(View.GONE);
 
         mOrder = data;
 
