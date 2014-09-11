@@ -8,12 +8,11 @@ import com.mozu.mozuandroidinstoreassistant.app.R;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class OrderDetailPickupFulfillmentViewHolder {
+public class OrderDetailDirectShipPendingFulfillmentViewHolder {
 
-    @InjectView(R.id.pickup_name) TextView pickupName;
-    @InjectView(R.id.item_count) TextView itemCount;
+    @InjectView(R.id.order_item_name) TextView productName;
 
-    public OrderDetailPickupFulfillmentViewHolder(View view) {
+    public OrderDetailDirectShipPendingFulfillmentViewHolder(View view) {
         ButterKnife.inject(this, view);
     }
 

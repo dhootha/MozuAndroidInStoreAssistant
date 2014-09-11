@@ -40,7 +40,7 @@ import butterknife.OnClick;
 
 public class OrderFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Order>>, AbsListView.OnScrollListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, SearchManager.OnCancelListener, SearchManager.OnDismissListener, SearchView.OnSuggestionListener, MenuItem.OnActionExpandListener, AdapterView.OnItemClickListener {
 
-    private static final int MAX_NUMBER_OF_ORDER_SEARCHES = 5;
+    private static final int MAX_NUMBER_OF_ORDER_SEARCHES = 200;
 
     private static final String CURRENT_SORT_COLUMN_EXTRA = "currensortcolumnextra";
 
@@ -126,7 +126,6 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
         mSearchView.setOnCloseListener(this);
         mSearchView.setQueryHint(getString(R.string.order_search_hint_text));
-        mSearchView.setMaxWidth(1500);
 
         mSearchMenuItem.setOnActionExpandListener(this);
         searchManager.setOnCancelListener(this);
@@ -136,13 +135,13 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_search) {
-            showSuggestions();
+            initSuggestions();
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void showSuggestions() {
+    private void initSuggestions() {
         UserPreferences prefs = UserAuthenticationStateMachineProducer.getInstance(getActivity()).getCurrentUsersPreferences();
 
         List<RecentSearch> recentOrderSearches = prefs.getRecentOrderSearches();
@@ -226,10 +225,6 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
                 mAdapter = new OrdersAdapter(getActivity());
             }
 
-            if( loader instanceof OrdersLoader){
-                ((OrdersLoader)loader).isSortAsc();
-            }
-
             mAdapter.clear();
             mAdapter.addAll(data);
 
@@ -259,7 +254,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
         //if the user has scrolled half way through the list and we can load more, then load more
-        if (firstVisibleItem + visibleItemCount > totalItemCount / 3 && getOrdersLoader() != null && mOrdersLoader.hasMoreResults() && !mOrdersLoader.isLoading()) {
+        if (firstVisibleItem + visibleItemCount > totalItemCount / 2 && getOrdersLoader() != null && mOrdersLoader.hasMoreResults() && !mOrdersLoader.isLoading()) {
             getOrdersLoader().forceLoad();
         }
 
@@ -278,6 +273,12 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+        //hack to dismiss the popup suggestions
+        onSuggestionSelect(-1);
+
+        saveSearchToList(query);
+
+        initSuggestions();
 
         getOrdersLoader().reset();
         getOrdersLoader().init();
@@ -288,9 +289,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         mProgress.setVisibility(View.VISIBLE);
         mOrdersList.setVisibility(View.GONE);
 
-        saveSearchToList(query);
-
-        return true;
+        return false;
     }
 
     @Override
