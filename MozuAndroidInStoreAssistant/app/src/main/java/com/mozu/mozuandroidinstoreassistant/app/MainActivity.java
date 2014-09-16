@@ -303,9 +303,9 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
     }
 
     private void clearBackstack(FragmentManager fragmentManager) {
-       // while (getFragmentManager().getBackStackEntryCount() > 0) {
-            //fragmentManager.popBackStackImmediate();
-        //}
+        while (getFragmentManager().getBackStackEntryCount() > 0) {
+            fragmentManager.popBackStackImmediate();
+        }
     }
 
     private void addChildCategoryFragment(Category category) {
@@ -342,7 +342,6 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
 
     private void showProductSearchFragment(int categoryId, String query) {
         FragmentManager fragmentManager = getFragmentManager();
-        clearBackstack(fragmentManager);
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
@@ -351,7 +350,7 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         fragment.setQueryString(query);
         fragmentTransaction.setCustomAnimations(R.animator.slide_right_in, R.animator.scale_fade_out,R.animator.slide_left_in, R.animator.scale_fade_out);
         fragmentTransaction.replace(R.id.content_fragment_holder, fragment, PRODUCTS_SEARCH_FRAGMENT_BACKSTACK);
-        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.addToBackStack(PRODUCTS_SEARCH_FRAGMENT_BACKSTACK);
         fragmentTransaction.commit();
     }
 
