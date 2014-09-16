@@ -1,14 +1,237 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/main_background"
-    tools:context="com.mozu.mozuandroidinstoreassistant.app.fragments.OrderFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+>
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="search" />
+        android:orientation="vertical"
+        android:paddingRight="45dp"
+        android:paddingLeft="45dp"
+        android:background="@color/main_background"
+        tools:context="com.mozu.mozuandroidinstoreassistant.app.fragments.OrderFragment">
 
-</FrameLayout>
+        <RelativeLayout
+            android:visibility="gone"
+            android:id="@+id/search_bar"
+            android:layout_alignParentTop="true"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+            <EditText
+                android:id="@+id/global_search"
+                android:inputType="text"
+                android:hint="@string/global_search_hint"
+                android:singleLine="true"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:background="@drawable/product_detail_images_background"
+                android:imeOptions="actionDone"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent" />
+
+            <ImageView
+                android:id="@+id/global_search_button"
+                android:clickable="true"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/icon_search_actionbar" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_below="@+id/search_bar"
+            android:visibility="invisible"
+            android:id="@+id/order_layout_view"
+            android:background="@drawable/product_detail_images_background"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_marginTop="30dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp">
+
+                <ImageView
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="45dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/order_icon"
+                    android:src="@drawable/icon_orders_menu" />
+
+                <TextView
+                    android:layout_marginLeft="5dp"
+                    android:layout_toRightOf="@+id/order_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textSize="18sp"
+                    android:gravity="center"
+                    android:text="Orders" />
+
+                <Button
+                    android:id="@+id/order_view_all"
+                    android:visibility="invisible"
+                    android:background="@null"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="wrap_content"
+                    android:gravity="center"
+                    android:layout_height="match_parent"
+                    android:textSize="15sp"
+                    android:textColor="@color/mozu_text_button"
+                    android:text="VIEW ALL" />
+
+            </RelativeLayout>
+
+            <include layout="@layout/divider_3d_hor" />
+
+            <com.mozu.mozuandroidinstoreassistant.app.views.LoadingView
+                android:id="@+id/order_loading_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.mozu.mozuandroidinstoreassistant.app.views.ExpandedListView
+                    android:layout_marginLeft="50dp"
+                    android:id="@+id/orders_search_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.mozu.mozuandroidinstoreassistant.app.views.LoadingView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_below="@+id/order_layout_view"
+            android:visibility="invisible"
+            android:id="@+id/product_layout_view"
+            android:background="@drawable/product_detail_images_background"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_marginTop="30dp"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp">
+
+                <ImageView
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="45dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/product_icon"
+                    android:src="@drawable/icon_products_menu" />
+
+                <TextView
+                    android:layout_marginLeft="5dp"
+                    android:layout_toRightOf="@+id/product_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textSize="18sp"
+                    android:gravity="center"
+                    android:text="Products" />
+
+                <Button
+                    android:id="@+id/product_view_all"
+                    android:visibility="invisible"
+                    android:background="@null"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="wrap_content"
+                    android:gravity="center"
+                    android:layout_height="match_parent"
+                    android:textSize="15sp"
+                    android:textColor="@color/mozu_text_button"
+                    android:text="VIEW ALL" />
+
+
+
+            </RelativeLayout>
+
+            <include layout="@layout/divider_3d_hor" />
+
+            <com.mozu.mozuandroidinstoreassistant.app.views.LoadingView
+                android:id="@+id/product_loading_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.mozu.mozuandroidinstoreassistant.app.views.ExpandedListView
+                    android:layout_marginLeft="50dp"
+                    android:id="@+id/products_search_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                 />
+            </com.mozu.mozuandroidinstoreassistant.app.views.LoadingView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_below="@+id/product_layout_view"
+            android:visibility="invisible"
+            android:id="@+id/customer_layout_view"
+            android:background="@drawable/product_detail_images_background"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:paddingLeft="10dp"
+            android:layout_marginTop="30dp"
+            android:paddingRight="10dp"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp">
+
+                <ImageView
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="45dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/customer_icon"
+                    android:src="@drawable/icon_customers_menu" />
+
+                <TextView
+                    android:layout_marginLeft="5dp"
+                    android:layout_toRightOf="@+id/customer_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textSize="18sp"
+                    android:gravity="center"
+                    android:text="Customers" />
+
+                <Button
+                    android:id="@+id/customer_view_all"
+                    android:visibility="invisible"
+                    android:background="@null"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="wrap_content"
+                    android:gravity="center"
+                    android:layout_height="match_parent"
+                    android:textSize="15sp"
+                    android:textColor="@color/mozu_text_button"
+                    android:text="VIEW ALL" />
+
+            </RelativeLayout>
+
+            <include layout="@layout/divider_3d_hor" />
+
+            <com.mozu.mozuandroidinstoreassistant.app.views.LoadingView
+                android:id="@+id/customer_loading_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.mozu.mozuandroidinstoreassistant.app.views.ExpandedListView
+                    android:layout_marginLeft="50dp"
+                    android:id="@+id/customers_search_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.mozu.mozuandroidinstoreassistant.app.views.LoadingView>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+</ScrollView>
+

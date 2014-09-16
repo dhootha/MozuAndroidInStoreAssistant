@@ -246,6 +246,7 @@ public class OrderDetailFullfillmentFragment extends Fragment {
         } else {
             ButterKnife.apply(mShippingPendingViews, VISIBLE);
 
+
             mShippingPendingListView.setAdapter(new OrderDetailPendingFulfillmentAdapter(getActivity(), orderItemsNotPackaged));
             mShippingPendingListView.setOnItemClickListener(mDirectShipPendingItemClickListener);
             isPendingVisible = true;
