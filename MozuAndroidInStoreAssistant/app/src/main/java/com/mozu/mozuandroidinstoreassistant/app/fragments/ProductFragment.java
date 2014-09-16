@@ -385,6 +385,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
     public boolean onQueryTextSubmit(String query) {
         mSearchMenuItem.collapseActionView();
 
+
         mListener.onSearchPerformedFromProduct(mCategoryId, query);
         saveSearchToList(query);
 

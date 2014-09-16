@@ -16,6 +16,8 @@ public class UserPreferences {
 
     private List<RecentSearch> mRecentCustomerSearches;
 
+    private List<RecentSearch> mRecentGlobalSearchs;
+
     public String getEmail() {
 
         return mEmail;
@@ -69,6 +71,20 @@ public class UserPreferences {
 
         return mRecentProductSearches;
     }
+
+    public void setRecentGlobalSearchs(List<RecentSearch> recentProductSearchs) {
+
+        mRecentGlobalSearchs = recentProductSearchs;
+    }
+
+    public List<RecentSearch> getRecentGlobalSearchs() {
+        if (mRecentGlobalSearchs == null) {
+            mRecentGlobalSearchs = new ArrayList<RecentSearch>();
+        }
+
+        return mRecentProductSearches;
+    }
+
 
     public void setRecentOrderSearchs(List<RecentSearch> recentOrderSearchs) {
 

@@ -8,6 +8,7 @@ import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -49,6 +50,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private Integer mTenantId;
     private Integer mSiteId;
+    private String mDefaultSearchQuery;
 
     @InjectView(R.id.order_list_container) SwipeRefreshLayout mOrderRefreshLayout;
     @InjectView(R.id.order_list) ListView mOrdersList;
@@ -220,9 +222,18 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         mSiteId = siteId;
     }
 
+    public void setDefaultSearchQuery(String searchQuery) {
+        mDefaultSearchQuery = searchQuery;
+    }
+
+
     @Override
     public Loader<List<Order>> onCreateLoader(int id, Bundle args) {
-        return new OrdersLoader(getActivity(), mTenantId, mSiteId);
+        OrdersLoader loader = new OrdersLoader(getActivity(), mTenantId, mSiteId);
+        if (TextUtils.isEmpty(mDefaultSearchQuery)) {
+            loader.setFilter(mDefaultSearchQuery);
+        }
+        return loader;
     }
 
     @Override
