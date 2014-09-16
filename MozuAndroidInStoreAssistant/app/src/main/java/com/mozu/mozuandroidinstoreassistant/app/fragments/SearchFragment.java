@@ -307,7 +307,7 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
         @Override
         public void onClick(View view) {
             if(!TextUtils.isEmpty(mOrderSearchString)){
-                ((MainActivity) getActivity()).initializeOrdersFragment(mOrderSearchString);
+               // ((MainActivity) getActivity()).initializeOrdersFragment(mOrderSearchString);
 
             }
 
@@ -319,7 +319,7 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
         @Override
         public void onClick(View view) {
             if(!TextUtils.isEmpty(mProductSearchString)){
-                ((ProductFragmentListener) getActivity()).onSearchPerformedFromProduct(0,mProductSearchString);
+                //((ProductFragmentListener) getActivity()).onSearchPerformedFromProduct(0,mProductSearchString);
             }
         }
     }
