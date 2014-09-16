@@ -343,6 +343,7 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
     private void showProductSearchFragment(int categoryId, String query) {
         FragmentManager fragmentManager = getFragmentManager();
 
+
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         ProductSearchFragment fragment = new ProductSearchFragment();
