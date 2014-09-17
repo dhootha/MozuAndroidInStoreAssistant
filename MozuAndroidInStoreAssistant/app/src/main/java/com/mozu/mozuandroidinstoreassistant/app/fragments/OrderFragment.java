@@ -132,6 +132,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         mSearchView = (SearchView) mSearchMenuItem.getActionView();
         mSearchView.setOnQueryTextListener(this);
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        mSearchView.setMaxWidth(1500);
         mSearchView.setOnCloseListener(this);
         mSearchView.setQueryHint(getString(R.string.order_search_hint_text));
 
