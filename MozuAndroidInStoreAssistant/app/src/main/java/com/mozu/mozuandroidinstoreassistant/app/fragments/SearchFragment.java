@@ -342,7 +342,6 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
         MenuItem mSearchMenuItem = menu.findItem(R.id.action_search);
         mSearchView = (SearchView) mSearchMenuItem.getActionView();
-        mSearchView.setIconifiedByDefault(false);
         mSearchView.setQueryHint(getString(R.string.global_search_hint));
         mSearchView.setMaxWidth(1500);
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -358,16 +357,8 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
             }
         });
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
-
-        int searchPlateId = mSearchView.getContext().getResources().getIdentifier("android:id/search_plate", null, null);
-        View searchPlate = mSearchView.findViewById(searchPlateId);
-        if (searchPlate!=null) {
-            searchPlate.setBackgroundResource(R.drawable.product_detail_images_background);
-        }
-       mSearchView.setIconified(false);
-       mSearchMenuItem.expandActionView();
-       mSearchView.requestFocus();
-       showSuggestions();
+        mSearchMenuItem.expandActionView();
+        showSuggestions();
     }
 
 

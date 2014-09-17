@@ -133,6 +133,7 @@ public class CustomersFragment extends Fragment implements LoaderManager.LoaderC
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
         mSearchView.setOnCloseListener(this);
         mSearchView.setQueryHint(getString(R.string.customer_search_hint_text));
+        mSearchView.setMaxWidth(1500);
 
         mSearchMenuItem.setOnActionExpandListener(this);
         searchManager.setOnCancelListener(this);
