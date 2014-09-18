@@ -1,5 +1,6 @@
 package com.mozu.mozuandroidinstoreassistant.app;
 
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -29,7 +30,7 @@ import com.mozu.mozuandroidinstoreassistant.app.fragments.SearchFragment;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 
-public class MainActivity extends AuthActivity implements View.OnClickListener, CategoryFragmentListener, ProductFragmentListener, ProductListListener, OrderListener, CustomerListener {
+public class MainActivity extends AuthActivity implements View.OnClickListener, CategoryFragmentListener, ProductFragmentListener, ProductListListener, OrderListener, CustomerListener,SearchFragment.GlobalSearchListener {
 
     private static final String CATEGORY_FRAGMENT = "category_fragment_taggy_tag_tag";
     private static final String SEARCH_FRAGMENT = "search_fragment_taggy_tag_tag";
@@ -279,6 +280,7 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
     private void initializeProductFragment(Category category) {
         FragmentManager fragmentManager = getFragmentManager();
 
+        clearBackstack(fragmentManager);
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         ProductFragment fragment = new ProductFragment();
@@ -291,14 +293,26 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
 
     private void initializeSearchFragment() {
         FragmentManager fragmentManager = getFragmentManager();
-
+        clearBackstack(fragmentManager);
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         UserAuthenticationStateMachine userStateMachine = UserAuthenticationStateMachineProducer.getInstance(this);
         SearchFragment fragment = SearchFragment.getInstance(userStateMachine.getTenantId(),userStateMachine.getSiteId());
-        fragmentTransaction.addToBackStack(SEARCH_FRAGMENT_BACKSTACK);
         fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out);
-        fragmentTransaction.replace(R.id.content_fragment_holder, fragment, SEARCH_FRAGMENT);
-        fragmentTransaction.addToBackStack(SEARCH_FRAGMENT_BACKSTACK);
+        fragmentTransaction.replace(R.id.content_fragment_holder, fragment);
+        fragmentTransaction.commit();
+    }
+
+
+    public void addMainFragment(Fragment newFragment,boolean addToBackStack){
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        Fragment currentFragment = fragmentManager.findFragmentById(R.id.content_fragment_holder);
+        fragmentTransaction.hide(currentFragment);
+        fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out);
+        fragmentTransaction.add(R.id.content_fragment_holder, newFragment, SEARCH_FRAGMENT);
+        if (addToBackStack) {
+            fragmentTransaction.addToBackStack(null);
+        }
         fragmentTransaction.commit();
     }
 
@@ -349,7 +363,7 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         ProductSearchFragment fragment = new ProductSearchFragment();
         fragment.setCategoryId(categoryId);
         fragment.setQueryString(query);
-        fragmentTransaction.setCustomAnimations(R.animator.slide_right_in, R.animator.scale_fade_out,R.animator.slide_left_in, R.animator.scale_fade_out);
+        fragmentTransaction.setCustomAnimations(R.animator.slide_right_in, R.animator.scale_fade_out, R.animator.slide_left_in, R.animator.scale_fade_out);
         fragmentTransaction.replace(R.id.content_fragment_holder, fragment, PRODUCTS_SEARCH_FRAGMENT_BACKSTACK);
         fragmentTransaction.addToBackStack(PRODUCTS_SEARCH_FRAGMENT_BACKSTACK);
         fragmentTransaction.commit();
@@ -401,5 +415,38 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
     @Override
     public void customerSelected(CustomerAccount customer) {
         Toast.makeText(this, customer.getLastName() + " " + customer.getFirstName() + " selected ", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onOrderLaunch(String searchQuery) {
+        UserAuthenticationStateMachine userStateMachine = UserAuthenticationStateMachineProducer.getInstance(this);
+        OrderFragment fragment = new OrderFragment();
+        fragment.setTenantId(userStateMachine.getTenantId());
+        fragment.setSiteId(userStateMachine.getSiteId());
+        fragment.setListener(this);
+        fragment.setLaunchFromGlobalSearch(true);
+        fragment.setDefaultSearchQuery(searchQuery);
+        addMainFragment(fragment, true);
+    }
+
+    @Override
+    public void launchProductSearch(String searchQuery) {
+        ProductSearchFragment fragment = new ProductSearchFragment();
+        fragment.setCategoryId(0);
+        fragment.setQueryString(searchQuery);
+        fragment.setLaunchedFromSearch();
+        addMainFragment(fragment,true);
+    }
+
+    @Override
+    public void launchCustomerSearch(String searchQuery) {
+        UserAuthenticationStateMachine userStateMachine = UserAuthenticationStateMachineProducer.getInstance(this);
+        CustomersFragment fragment = new CustomersFragment();
+        fragment.setTenantId(userStateMachine.getTenantId());
+        fragment.setSiteId(userStateMachine.getSiteId());
+        fragment.setListener(this);
+        fragment.setDefaultSearchQuery(searchQuery);
+        fragment.setLauncedFromSearch();
+        addMainFragment(fragment,true);
     }
 }

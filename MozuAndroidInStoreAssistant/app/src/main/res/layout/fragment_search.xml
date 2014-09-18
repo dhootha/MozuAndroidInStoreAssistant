@@ -67,6 +67,7 @@
                     android:src="@drawable/icon_orders_menu" />
 
                 <TextView
+                    android:id="@+id/orders_header"
                     android:layout_marginLeft="5dp"
                     android:layout_toRightOf="@+id/order_icon"
                     android:layout_width="wrap_content"
@@ -74,6 +75,18 @@
                     android:textSize="18sp"
                     android:gravity="center"
                     android:text="Orders" />
+
+                <TextView
+                    android:layout_marginLeft="5dp"
+                    android:layout_toRightOf="@+id/orders_header"
+                    android:id="@+id/order_result_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textSize="12sp"
+                    android:textColor="@color/mozu_color"
+                    android:visibility="invisible"
+                    android:gravity="center" />
+
 
                 <Button
                     android:id="@+id/order_view_all"
@@ -129,6 +142,7 @@
                     android:src="@drawable/icon_products_menu" />
 
                 <TextView
+                    android:id="@+id/product_header"
                     android:layout_marginLeft="5dp"
                     android:layout_toRightOf="@+id/product_icon"
                     android:layout_width="wrap_content"
@@ -136,6 +150,17 @@
                     android:textSize="18sp"
                     android:gravity="center"
                     android:text="Products" />
+
+                <TextView
+                    android:layout_marginLeft="5dp"
+                    android:layout_toRightOf="@+id/product_header"
+                    android:id="@+id/product_result_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textSize="12sp"
+                    android:textColor="@color/mozu_color"
+                    android:visibility="invisible"
+                    android:gravity="center" />
 
                 <Button
                     android:id="@+id/product_view_all"
@@ -194,6 +219,7 @@
                     android:src="@drawable/icon_customers_menu" />
 
                 <TextView
+                    android:id="@+id/customer_header"
                     android:layout_marginLeft="5dp"
                     android:layout_toRightOf="@+id/customer_icon"
                     android:layout_width="wrap_content"
@@ -201,6 +227,17 @@
                     android:textSize="18sp"
                     android:gravity="center"
                     android:text="Customers" />
+
+                <TextView
+                    android:layout_marginLeft="5dp"
+                    android:layout_toRightOf="@+id/customer_header"
+                    android:id="@+id/customer_result_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textSize="12sp"
+                    android:textColor="@color/mozu_color"
+                    android:visibility="invisible"
+                    android:gravity="center" />
 
                 <Button
                     android:id="@+id/customer_view_all"
