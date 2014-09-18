@@ -8,6 +8,7 @@ import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -76,12 +77,21 @@ public class CustomersFragment extends Fragment implements LoaderManager.LoaderC
     @InjectView(R.id.customer_status_header_email_image) ImageView mCustomerEmailHeaderSortImage;
     @InjectView(R.id.customer_lifetime_value_header_sort_image) ImageView mCustomerLifetimeValueHeaderSortImage;
 
+    @InjectView(R.id.customers_header) LinearLayout mCustomerHeaderLayout;
+    @InjectView(R.id.customer_search_query) TextView mCustomerSearchQuery;
+
     private int mResourceOfCurrentSelectedColumn = -1;
+    private String mDefaultSearchQuery;
+    private boolean mLauncedFromSearch;
 
     public CustomersFragment() {
 
         setRetainInstance(true);
         setHasOptionsMenu(true);
+    }
+
+    public void setLauncedFromSearch(){
+        mLauncedFromSearch = true;
     }
 
     @Override
@@ -110,6 +120,14 @@ public class CustomersFragment extends Fragment implements LoaderManager.LoaderC
             initializeSortColumn();
         }
 
+        if (mLauncedFromSearch) {
+            setHasOptionsMenu(false);
+            mCustomerHeaderLayout.setVisibility(View.VISIBLE);
+            if (!TextUtils.isEmpty(mDefaultSearchQuery)) {
+                mCustomerSearchQuery.setText(mDefaultSearchQuery);
+            }
+
+        }
         return view;
     }
 
@@ -225,7 +243,11 @@ public class CustomersFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public Loader<List<CustomerAccount>> onCreateLoader(int id, Bundle args) {
-        return new CustomersLoader(getActivity(), mTenantId, mSiteId);
+        CustomersLoader loader =  new CustomersLoader(getActivity(), mTenantId, mSiteId);
+        if (!TextUtils.isEmpty(mDefaultSearchQuery)) {
+            loader.setFilter(mDefaultSearchQuery);
+        }
+        return loader;
     }
 
     @Override
@@ -283,6 +305,11 @@ public class CustomersFragment extends Fragment implements LoaderManager.LoaderC
 
         return mCustomersLoader;
     }
+
+    public void setDefaultSearchQuery(String searchQuery) {
+        mDefaultSearchQuery = searchQuery;
+    }
+
 
     @Override
     public boolean onQueryTextSubmit(String query) {

@@ -99,6 +99,10 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
     private GlobalSearchCustomerAdapter mCustomerAdapter;
     private SearchView mSearchView;
     private UserAuthenticationStateMachine mUserState;
+    private MenuItem mSearchMenuItem;
+    private TextView mCustomersResultCount;
+    private TextView mOrdersResultCount;
+    private TextView mProductsResultCount;
 
     public static SearchFragment getInstance(Integer tenantId,Integer siteId){
         SearchFragment fragment = new SearchFragment();
@@ -199,7 +203,6 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
-        if(mView == null) {
             mView = inflater.inflate(R.layout.fragment_search, container, false);
             mOrderLoadingView = (LoadingView) mView.findViewById(R.id.order_loading_view);
             mProductLoadingView = (LoadingView) mView.findViewById(R.id.product_loading_view);
@@ -207,10 +210,14 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
             mSearchEditText = (EditText) mView.findViewById(R.id.global_search);
 
             mOrdersViewButton = (Button) mView.findViewById(R.id.order_view_all);
-            //mOrdersViewButton.setOnClickListener(new OrderViewListener());
+            mOrdersResultCount = (TextView)mView.findViewById(R.id.order_result_count);
+            mOrdersViewButton.setOnClickListener(new OrderViewListener());
             mProductsViewButton = (Button) mView.findViewById(R.id.product_view_all);
-            //mProductsViewButton.setOnClickListener(new ProductViewListener());
+            mProductsResultCount = (TextView)mView.findViewById(R.id.product_result_count);
+            mProductsViewButton.setOnClickListener(new ProductViewListener());
             mCustomersViewButton = (Button) mView.findViewById(R.id.customer_view_all);
+            mCustomersResultCount = (TextView)mView.findViewById(R.id.customer_result_count);
+            mCustomersViewButton.setOnClickListener(new CustomerViewListener());
 
             mSearchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
@@ -278,11 +285,6 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
             mCustomerAdapter = new GlobalSearchCustomerAdapter(new CustomerAccountCollection());
             mCustomersSearchView.setAdapter(mCustomerAdapter);
             setHasOptionsMenu(true);
-        }else{
-            if(mView.getParent() != null) {
-                ((ViewGroup) mView.getParent()).removeView(mView);
-            }
-        }
 
         return mView;
     }
@@ -306,9 +308,8 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
 
         @Override
         public void onClick(View view) {
-            if(!TextUtils.isEmpty(mOrderSearchString)){
-               // ((MainActivity) getActivity()).initializeOrdersFragment(mOrderSearchString);
-
+            if (!TextUtils.isEmpty(mOrderSearchString)) {
+                ((GlobalSearchListener) getActivity()).onOrderLaunch(mOrderSearchString);
             }
 
         }
@@ -319,7 +320,8 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
         @Override
         public void onClick(View view) {
             if(!TextUtils.isEmpty(mProductSearchString)){
-                //((ProductFragmentListener) getActivity()).onSearchPerformedFromProduct(0,mProductSearchString);
+                mSearchMenuItem.collapseActionView();
+                ((GlobalSearchListener) getActivity()).launchProductSearch(mProductSearchString);
             }
         }
     }
@@ -329,7 +331,8 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
         @Override
         public void onClick(View view) {
             if(!TextUtils.isEmpty(mCustomerSearchString)){
-
+                mSearchMenuItem.collapseActionView();
+                ((GlobalSearchListener) getActivity()).launchCustomerSearch(mCustomerSearchString);
             }
 
         }
@@ -340,7 +343,7 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
         inflater.inflate(R.menu.search, menu);
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
-        MenuItem mSearchMenuItem = menu.findItem(R.id.action_search);
+        mSearchMenuItem  = menu.findItem(R.id.search);
         mSearchView = (SearchView) mSearchMenuItem.getActionView();
         mSearchView.setQueryHint(getString(R.string.global_search_hint));
         mSearchView.setMaxWidth(1500);
@@ -364,7 +367,8 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-       if (item.getItemId() == R.id.action_search) {
+       if (item.getItemId() == R.id.search) {
+           showSuggestions();
        }
         return super.onOptionsItemSelected(item);
     }
@@ -390,6 +394,7 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
         mOrderLayout.setVisibility(View.VISIBLE);
         mOrderLoadingView.setLoading();
         mOrdersViewButton.setVisibility(View.INVISIBLE);
+        mOrdersResultCount.setVisibility(View.INVISIBLE);
         mOrderObservable.subscribe(new Observer<OrderCollection>(){
             @Override
             public void onCompleted() {
@@ -407,11 +412,19 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
                     mOrderLoadingView.success();
                     mOrderAdapter.setData(orderCollection);
                     mOrderAdapter.notifyDataSetChanged();
-                    mOrdersViewButton.setVisibility(View.VISIBLE);
+                    if (orderCollection.getTotalCount() > 3) {
+                        mOrdersViewButton.setVisibility(View.VISIBLE);
+                    } else {
+                        mOrdersViewButton.setVisibility(View.INVISIBLE);
+                    }
                     mOrderSearchString = s;
+                    mOrdersResultCount.setVisibility(View.VISIBLE);
+                    mOrdersResultCount.setText("("+orderCollection.getTotalCount()+" items found) ");
                 } else {
                     mOrderLoadingView.setError("No Results found");
                     mOrdersViewButton.setVisibility(View.INVISIBLE);
+                    mOrdersResultCount.setVisibility(View.INVISIBLE);
+
                 }
             }
         });
@@ -419,6 +432,7 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
         mProductLayout.setVisibility(View.VISIBLE);
         mProductLoadingView.setLoading();
         mProductsViewButton.setVisibility(View.INVISIBLE);
+        mProductsResultCount.setVisibility(View.INVISIBLE);
         mProductObservable.subscribe(new Observer<ProductSearchResult>(){
 
             @Override
@@ -437,12 +451,19 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
                     mProductLoadingView.success();
                     mProductAdapter.setData(productSearchResult);
                     mProductAdapter.notifyDataSetChanged();
-                    mProductsViewButton.setVisibility(View.VISIBLE);
+                    if(productSearchResult.getTotalCount()>3) {
+                        mProductsViewButton.setVisibility(View.VISIBLE);
+                    }else{
+                        mProductsViewButton.setVisibility(View.INVISIBLE);
+                    }
                     mProductSearchString = s;
+                    mProductsResultCount.setVisibility(View.VISIBLE);
+                    mProductsResultCount.setText("("+productSearchResult.getTotalCount()+" items found) ");
 
                 } else {
                     mProductLoadingView.setError("No Results found");
                     mProductsViewButton.setVisibility(View.INVISIBLE);
+                    mProductsResultCount.setVisibility(View.INVISIBLE);
                 }
 
             }
@@ -451,6 +472,7 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
         mCustomerLayout.setVisibility(View.VISIBLE);
         mCustomerLoadingView.setLoading();
         mCustomersViewButton.setVisibility(View.INVISIBLE);
+        mCustomersResultCount.setVisibility(View.INVISIBLE);
         mCustomerObservable.subscribe(new Observer<CustomerAccountCollection>(){
 
             @Override
@@ -469,16 +491,31 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
                     mCustomerLoadingView.success();
                     mCustomerAdapter.setData(customerAccountCollection);
                     mCustomerAdapter.notifyDataSetChanged();
-                    mCustomersViewButton.setVisibility(View.VISIBLE);
+                    if (customerAccountCollection.getTotalCount() > 3) {
+                        mCustomersViewButton.setVisibility(View.VISIBLE);
+                    } else {
+                        mCustomersViewButton.setVisibility(View.INVISIBLE);
+                    }
+
                     mCustomerSearchString = s;
+                    mCustomersResultCount.setVisibility(View.VISIBLE);
+                    mCustomersResultCount.setText("("+customerAccountCollection.getTotalCount()+" items found) ");
                 } else {
                     mCustomerLoadingView.setError("No Results found");
                     mCustomersViewButton.setVisibility(View.INVISIBLE);
+                    mCustomersResultCount.setVisibility(View.INVISIBLE);
                 }
             }
         });
     }
 
+    public interface GlobalSearchListener {
 
+        public void onOrderLaunch(String searchQuery);
+
+        public void launchProductSearch(String searchQuery);
+
+        public void launchCustomerSearch(String searchQuery);
+    }
 
 }

@@ -77,10 +77,12 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
     @InjectView(R.id.product_grid_container)
     SwipeRefreshLayout mProductGridPullToRefresh;
     @InjectView(R.id.product_list_container) SwipeRefreshLayout mProductListPullToRefresh;
+    @InjectView(R.id.products_header) LinearLayout mProductHeaderLayout;
+    @InjectView(R.id.products_search_query) TextView mProductSearchQuery;
 
     private ProductListListener mListener;
     private static final String PRODUCTSEARCH_INVENTORY_DIALOG_TAG ="productsearch_inventory_tag";
-
+    private boolean mLaunchedFromSearch;
     public ProductSearchFragment() {
         // Required empty public constructor
     }
@@ -94,6 +96,11 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
         setRetainInstance(true);
         setHasOptionsMenu(true);
     }
+
+    public void setLaunchedFromSearch(){
+        mLaunchedFromSearch = true;
+    }
+
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -176,15 +183,24 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
             }
 
             mProductGridView.setOnScrollListener(this);
-
-            if (prefs.getShowAsGrids()) {
-                mProductGridPullToRefresh.setVisibility(View.VISIBLE);
-                mProductGridView.setVisibility(View.VISIBLE);
-                mProductListView.setVisibility(View.GONE);
-                mProductListPullToRefresh.setVisibility(View.GONE);
-                mHeadersView.setVisibility(View.GONE);
-                mAdapter.setIsGrid(true);
-                mAdapter.notifyDataSetChanged();
+            if (!mLaunchedFromSearch) {
+                if (prefs.getShowAsGrids()) {
+                    mProductGridPullToRefresh.setVisibility(View.VISIBLE);
+                    mProductGridView.setVisibility(View.VISIBLE);
+                    mProductListView.setVisibility(View.GONE);
+                    mProductListPullToRefresh.setVisibility(View.GONE);
+                    mHeadersView.setVisibility(View.GONE);
+                    mAdapter.setIsGrid(true);
+                    mAdapter.notifyDataSetChanged();
+                } else {
+                    mProductListPullToRefresh.setVisibility(View.VISIBLE);
+                    mProductListView.setVisibility(View.VISIBLE);
+                    mHeadersView.setVisibility(View.VISIBLE);
+                    mProductGridView.setVisibility(View.GONE);
+                    mProductGridPullToRefresh.setVisibility(View.GONE);
+                    mAdapter.setIsGrid(false);
+                    mAdapter.notifyDataSetChanged();
+                }
             } else {
                 mProductListPullToRefresh.setVisibility(View.VISIBLE);
                 mProductListView.setVisibility(View.VISIBLE);
@@ -193,6 +209,9 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
                 mProductGridPullToRefresh.setVisibility(View.GONE);
                 mAdapter.setIsGrid(false);
                 mAdapter.notifyDataSetChanged();
+                setHasOptionsMenu(false);
+                mProductHeaderLayout.setVisibility(View.VISIBLE);
+                mProductSearchQuery.setText(mQueryString);
             }
 
             mProgressBar.setVisibility(View.GONE);

@@ -77,8 +77,12 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
     @InjectView(R.id.order_email_header_sort_image) ImageView mOrderEmailHeaderSortImage;
     @InjectView(R.id.order_status_header_sort_image) ImageView mOrderStatusHeaderSortImage;
     @InjectView(R.id.order_total_header_sort_image) ImageView mOrderTotalHeaderSortImage;
+    @InjectView(R.id.orders_header) LinearLayout mOrdersHeaderLayout;
+    @InjectView(R.id.order_search_query) TextView order_search_query;
+
 
     private int mResourceOfCurrentSelectedColumn = -1;
+    private boolean mLaunchFromGlobalSearch = false;
 
     public OrderFragment() {
 
@@ -86,11 +90,26 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         setHasOptionsMenu(true);
     }
 
+    public void setLaunchFromGlobalSearch(boolean launchFromGlobalSearch){
+        mLaunchFromGlobalSearch = launchFromGlobalSearch;
+    }
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_order, container, false);
         ButterKnife.inject(this, view);
+        if (mLaunchFromGlobalSearch) {
+            setHasOptionsMenu(false);
+            if (!TextUtils.isEmpty(mDefaultSearchQuery)) {
+                mOrdersHeaderLayout.setVisibility(View.VISIBLE);
+                order_search_query.setText(mDefaultSearchQuery);
+            }
+        } else {
+            setHasOptionsMenu(true);
+            mOrdersHeaderLayout.setVisibility(View.GONE);
+        }
 
         mOrderRefreshLayout.setOnRefreshListener(this);
         mOrderRefreshLayout.setColorScheme(R.color.first_color_swipe_refresh,
@@ -231,7 +250,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public Loader<List<Order>> onCreateLoader(int id, Bundle args) {
         OrdersLoader loader = new OrdersLoader(getActivity(), mTenantId, mSiteId);
-        if (TextUtils.isEmpty(mDefaultSearchQuery)) {
+        if (!TextUtils.isEmpty(mDefaultSearchQuery)) {
             loader.setFilter(mDefaultSearchQuery);
         }
         return loader;
@@ -358,7 +377,9 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        mSearchView.setQuery("", false);
+        if (mSearchView != null) {
+            mSearchView.setQuery("", false);
+        }
         mListener.orderSelected((Order)mOrdersList.getAdapter().getItem(position));
     }
 
