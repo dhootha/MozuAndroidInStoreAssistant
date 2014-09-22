@@ -86,7 +86,10 @@
     <string name="price_return_header">Price</string>
     <string name="type_return_header">Type</string>
     <string name="quantity_return_header">Quantity</string>
-    <string name="notes_header">Customer Notes</string>
+    <string name="internal_notes_header">Internal Notes</string>
+    <string name="customer_notes_header">Customer Notes</string>
+    <string name="show_internal_notes_text">Show Internal Notes</string>
+    <string name="show_customer_notes_text">Show Customer Notes</string>
     <string name="date_notes_header">Date</string>
     <string name="comment_notes_header">Comment</string>
     <string name="ordered_items_header">Ordered Items</string>
@@ -154,6 +157,7 @@
     <string name="customer_list_customer_lifetime_value_header">Lifetime Value</string>
     <string name="refresh_customers_menu_item_text">Refresh Customers</string>
     <string name="customer_search_hint_text">Search by Customer Name or Email Address</string>
+    <string name="employee_header">Emmployee</string>
 
 
 </resources>
