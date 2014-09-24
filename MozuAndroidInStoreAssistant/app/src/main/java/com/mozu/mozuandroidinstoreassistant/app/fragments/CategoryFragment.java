@@ -1,15 +1,13 @@
 package com.mozu.mozuandroidinstoreassistant.app.fragments;
 
 import android.app.Activity;
-import android.app.LoaderManager;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.Loader;
 import android.database.MatrixCursor;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,7 +27,7 @@ import com.mozu.mozuandroidinstoreassistant.app.BuildConfig;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.CategoryAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.SearchSuggestionsCursorAdapter;
-import com.mozu.mozuandroidinstoreassistant.app.loaders.CategoryLoader;
+import com.mozu.mozuandroidinstoreassistant.app.loaders.CategoryFetcher;
 import com.mozu.mozuandroidinstoreassistant.app.models.RecentSearch;
 import com.mozu.mozuandroidinstoreassistant.app.models.UserPreferences;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
@@ -42,25 +40,26 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import rx.Observable;
+import rx.android.observables.AndroidObservable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
-public class CategoryFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Category>>, AdapterView.OnItemClickListener, SearchView.OnQueryTextListener, SearchView.OnSuggestionListener {
+public class CategoryFragment extends Fragment implements AdapterView.OnItemClickListener, SearchView.OnQueryTextListener, SearchView.OnSuggestionListener, SwipeRefreshLayout.OnRefreshListener {
 
     private static final int CATEGORY_LOADER = 0;
     public static final int MAX_NUMBER_OF_SEARCHES = 5;
-    public static final String NULL = "null";
     private static final int CATEGORY_IMAGELOADER_MENU_ID = 100;
+    private static final String CURRENT_CATEGORY = "currentCategory" ;
 
     @InjectView(R.id.category_grid) GridView mGridOfCategories;
     @InjectView(R.id.category_list) ListView mListOfCategories;
 
     private UserAuthenticationStateMachine mUserState;
-
     private CategoryAdapter mCategoryAdapter;
-
-    private List<Category> mCategories = new ArrayList<Category>();
-
+    private Category mCategory;
     private CategoryFragmentListener mListener = sCategoryListener;
-
     private boolean mIsGridVisible = true;
 
     private MenuItem mToggleGridItem;
@@ -68,68 +67,128 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
     private SearchView mSearchView;
 
     private MenuItem mSearchMenuItem;
-    private ProgressDialog mImageUpdateProgress;
+    private rx.Observable<List<Category>> mCategoryObservable;
 
     @InjectView(R.id.empty_list) TextView mEmptyListMessageView;
+    @InjectView(R.id.category_container) SwipeRefreshLayout mCategoryPullToRefresh;
+
+    public static CategoryFragment getInstance(Category category){
+        CategoryFragment fragment = new CategoryFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(CURRENT_CATEGORY, category);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-
         mListener = (CategoryFragmentListener) activity;
     }
 
     @Override
     public void onDetach() {
         mListener = sCategoryListener;
-
         super.onDetach();
-    }
-
-    public CategoryFragment() {
-        // Required empty public constructor
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle b = getArguments();
+        mCategory = (Category) b.getSerializable(CURRENT_CATEGORY);
 
         mUserState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
+        CategoryFetcher categoryFetcher = new CategoryFetcher();
+        mCategoryObservable = AndroidObservable.bindFragment(this, categoryFetcher.getCategoryInformation(mUserState.getTenantId(),mUserState.getSiteId()));
 
         setRetainInstance(true);
         setHasOptionsMenu(true);
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (mCategory == null || mCategory.getChildrenCategories().size() < 1) {
+            reloadData();
+        } else {
+            updateListGridsToCategory(mCategory.getChildrenCategories());
+        }
+    }
+
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         View fragmentView = inflater.inflate(R.layout.fragment_category_product_grid, container, false);
-
         ButterKnife.inject(this, fragmentView);
-
         mGridOfCategories.setOnItemClickListener(this);
         mListOfCategories.setOnItemClickListener(this);
-
         mEmptyListMessageView.setVisibility(View.GONE);
+        mCategoryPullToRefresh.setOnRefreshListener(this);
+        mCategoryPullToRefresh.setColorScheme(R.color.first_color_swipe_refresh,
+                R.color.second_color_swipe_refresh,
+                R.color.third_color_swipe_refresh,
+                R.color.fourth_color_swipe_refresh);
 
         return fragmentView;
+    }
 
+    public void reloadData(){
+        mCategoryPullToRefresh.setRefreshing(true);
+        mCategoryObservable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<List<Category>, Observable<Category>>() {
+                    @Override
+                    public Observable<Category> call(List<Category> categories) {
+                        return Observable.from(categories);
+                    }
+                }).filter(new Func1<Category, Boolean>() {
+                    @Override
+                     public Boolean call(Category category) {
+                        if (mCategory == null) {
+                            return true;
+                        }
+                        if (mCategory.getCategoryId() == category.getCategoryId()) {
+                            return true;
+                        }
+                        return false;
+                     }
+                })
+                .subscribe(new CategorySubscriber());
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onRefresh() {
+        reloadData();
+    }
 
-        //if no categories are set, i.e., they weren't initialized to the fragment
-        // then load top level of categories for drilldown
-        if (mCategories == null || mCategories.size() < 1) {
+    private class CategorySubscriber implements rx.Observer<Category> {
 
-            getLoaderManager().initLoader(CATEGORY_LOADER, savedInstanceState, this).forceLoad();
-        } else {
+        List<Category> categoryList = new ArrayList<Category>();
 
-            updateListGridsToCategory();
+        @Override
+        public void onCompleted() {
+            if (mCategoryPullToRefresh.isRefreshing()) {
+                mCategoryPullToRefresh.setRefreshing(false);
+            }
+            updateListGridsToCategory(categoryList);
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            mCategoryPullToRefresh.setRefreshing(false);
+            mGridOfCategories.setVisibility(View.GONE);
+            mListOfCategories.setVisibility(View.GONE);
+            mEmptyListMessageView.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        public void onNext(Category category) {
+            categoryList.add(category);
         }
     }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -142,11 +201,9 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
         mIsGridVisible = prefs.getShowAsGrids();
 
         if (mIsGridVisible) {
-
             mToggleGridItem.setIcon(R.drawable.list);
             mToggleGridItem.setTitle(getString(R.string.view_as_list_menu_item_text));
         } else {
-
             mToggleGridItem.setIcon(R.drawable.grid);
             mToggleGridItem.setTitle(getString(R.string.view_as_grid_menu_item_text));
         }
@@ -235,7 +292,9 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
         } else if (item.getItemId() == R.id.action_search) {
             showSuggestions();
         } else if(item.getItemId() == CATEGORY_IMAGELOADER_MENU_ID){
-            loadCategoryImages(mCategories);
+            //loadCategoryImages(mCategories);
+        }else if(item.getItemId() == R.id.refresh_product){
+            reloadData();
         }
 
         return super.onOptionsItemSelected(item);
@@ -263,39 +322,20 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
         }
     };
 
-    @Override
-    public Loader<List<Category>> onCreateLoader(int id, Bundle args) {
-
-        if (id == CATEGORY_LOADER) {
-            //rework this to always have appropriate fragment values
-            Integer tenantId = mUserState.getTenantId();
-            Integer siteId = mUserState.getSiteId();
-            return new CategoryLoader(getActivity(), tenantId , siteId);
-        }
-
-        return null;
-    }
-
-    @Override
-    public void onLoadFinished(Loader<List<Category>> loader, List<Category> data) {
-
-        if (loader.getId() == CATEGORY_LOADER) {
-            mCategories = data;
-            updateListGridsToCategory();
-        }
-    }
-
-    public void setCategories(List<Category> categories) {
-
-        mCategories = categories;
-    }
-
-    private void updateListGridsToCategory() {
+    private void updateListGridsToCategory(List<Category> categoryList) {
         UserPreferences prefs = mUserState.getCurrentUsersPreferences();
 
+        if (categoryList == null || categoryList.size() < 1) {
+            mGridOfCategories.setVisibility(View.GONE);
+            mListOfCategories.setVisibility(View.GONE);
+            mEmptyListMessageView.setVisibility(View.VISIBLE);
+            return;
+        } else {
+            mEmptyListMessageView.setVisibility(View.GONE);
+        }
         if (mCategoryAdapter == null) {
             mCategoryAdapter = new CategoryAdapter(getActivity(), mUserState.getTenantId(), mUserState.getSiteId());
-            mCategoryAdapter.addAll(mCategories);
+            mCategoryAdapter.addAll(categoryList);
         }
 
         mGridOfCategories.setAdapter(mCategoryAdapter);
@@ -313,17 +353,6 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
             mCategoryAdapter.notifyDataSetChanged();
         }
 
-        if (mCategories == null || mCategories.size() < 1) {
-            mGridOfCategories.setVisibility(View.GONE);
-            mListOfCategories.setVisibility(View.GONE);
-            mEmptyListMessageView.setVisibility(View.VISIBLE);
-        } else {
-            mEmptyListMessageView.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<List<Category>> loader) {
 
     }
 
@@ -352,15 +381,11 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public boolean onQueryTextSubmit(String query) {
         mSearchMenuItem.collapseActionView();
-
         int categoryId = -1;
-
-        if (mCategories != null && mCategories.size() > 0 && mCategories.get(0).getParentCategory() != null) {
-            categoryId = mCategories.get(0).getParentCategory().getCategoryId();
+        if (mCategory != null) {
+            categoryId = mCategory.getCategoryId();
         }
-
         mListener.onSearchPerformedFromCategory(categoryId, query);
-
         //save search to list
         UserPreferences prefs = mUserState.getCurrentUsersPreferences();
 
@@ -369,7 +394,6 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
         if (recentProductSearches == null) {
             recentProductSearches = new ArrayList<RecentSearch>();
         }
-
         //if search already exists then dont add it again
         for (int i = 0; i < recentProductSearches.size(); i++) {
             if (recentProductSearches.get(i).getSearchTerm().equalsIgnoreCase(query)) {
@@ -396,24 +420,19 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public boolean onQueryTextChange(String newText) {
-
         return false;
     }
 
     @Override
     public boolean onSuggestionSelect(int position) {
-
         return false;
     }
 
     @Override
     public boolean onSuggestionClick(int position) {
         UserPreferences prefs = mUserState.getCurrentUsersPreferences();
-
         List<RecentSearch> recentProductSearches = prefs.getRecentProductSearches();
-
         onQueryTextSubmit(recentProductSearches.get(position).getSearchTerm());
-
         return true;
     }
 }

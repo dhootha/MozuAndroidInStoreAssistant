@@ -1,36 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
+    android:id="@+id/category_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/main_background"
-    tools:context="com.mozu.mozuandroidinstoreassistant.app.fragments.TenantFragment">
+    android:layout_height="match_parent">
 
-    <GridView
-        android:id="@+id/category_grid"
+    <LinearLayout
+
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="none"
-        android:numColumns="@integer/num_of_columns_in_grid"
-        />
+        android:background="@color/main_background"
+        tools:context="com.mozu.mozuandroidinstoreassistant.app.fragments.TenantFragment">
 
-    <ListView
-        android:id="@+id/category_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:dividerHeight="1dp"
-        android:divider="@color/light_gray"
-        android:scrollbars="none"
-        android:visibility="gone"
-        />
 
-    <TextView
-        android:id="@+id/empty_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/no_categories_available"
-        />
+        <GridView
+            android:id="@+id/category_grid"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            android:numColumns="@integer/num_of_columns_in_grid" />
 
-</LinearLayout>
+        <ListView
+            android:id="@+id/category_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:dividerHeight="1dp"
+            android:divider="@color/light_gray"
+            android:scrollbars="none"
+            android:visibility="gone" />
+
+
+        <TextView
+            android:id="@+id/empty_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/no_categories_available" />
+
+    </LinearLayout>
+</android.support.v4.widget.SwipeRefreshLayout>
