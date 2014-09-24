@@ -5,11 +5,9 @@ import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
@@ -30,7 +28,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class OrderDetailActivity extends Activity implements LoaderManager.LoaderCallbacks<Order>, CustomerAsyncListener {
+public class OrderDetailActivity extends Activity implements LoaderManager.LoaderCallbacks<Order>, CustomerAsyncListener, SwipeRefreshLayout.OnRefreshListener{
 
     public static final String ORDER_NUMBER_EXTRA_KEY = "ORDER_NUMBER";
     public static final String CURRENT_TENANT_ID = "curTenantIdWhenActLoaded";
@@ -59,7 +57,7 @@ public class OrderDetailActivity extends Activity implements LoaderManager.Loade
 
     private NumberFormat mNumberFormat;
 
-    @InjectView(R.id.progress_bar) ProgressBar mRefreshProgressBar;
+    @InjectView(R.id.order_detail_container) SwipeRefreshLayout mOrderSwipeRefresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +104,13 @@ public class OrderDetailActivity extends Activity implements LoaderManager.Loade
         getLoaderManager().initLoader(LOADER_ORDER_DETAIL, null, this).forceLoad();
 
         mNumberFormat = NumberFormat.getCurrencyInstance();
+        mOrderSwipeRefresh.setOnRefreshListener(this);
+        mOrderSwipeRefresh.setEnabled(true);
+        mOrderSwipeRefresh.setColorScheme(R.color.first_color_swipe_refresh,
+                R.color.second_color_swipe_refresh,
+                R.color.third_color_swipe_refresh,
+                R.color.fourth_color_swipe_refresh);
+
     }
 
     @Override
@@ -126,28 +131,17 @@ public class OrderDetailActivity extends Activity implements LoaderManager.Loade
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         if (item.getItemId() == android.R.id.home) {
             finish();
-
             return true;
         }else if (item.getItemId() == R.id.refresh_order) {
-            mRefreshProgressBar.setVisibility(View.VISIBLE);
-
-            mTabIndicator.setCurrentItem(0);
-
-            Loader orderLoader = getLoaderManager().getLoader(LOADER_ORDER_DETAIL);
-
-            orderLoader.reset();
-            orderLoader.startLoading();
-            orderLoader.forceLoad();
-
+            mOrderSwipeRefresh.setRefreshing(true);
+            onRefresh();
             return true;
         } else if (item.getItemId() == R.id.action_logout) {
             UserAuthenticationStateMachineProducer.getInstance(getApplicationContext()).getCurrentUserAuthState().signOutUser();
             startActivity(new Intent(this, LoginActivity.class));
             finish();
-
             return true;
         }
 
@@ -155,10 +149,19 @@ public class OrderDetailActivity extends Activity implements LoaderManager.Loade
     }
 
     @Override
+    public void onRefresh(){
+        mTabIndicator.setCurrentItem(0);
+        Loader orderLoader = getLoaderManager().getLoader(LOADER_ORDER_DETAIL);
+        orderLoader.reset();
+        orderLoader.startLoading();
+        orderLoader.forceLoad();
+    }
+
+    @Override
     public Loader<Order> onCreateLoader(int id, Bundle args) {
 
         if (id == LOADER_ORDER_DETAIL) {
-            mRefreshProgressBar.setVisibility(View.VISIBLE);
+            mOrderSwipeRefresh.setRefreshing(true);
             return new OrderDetailLoader(this, mTenantId, mSiteId, mOrderNumber);
         }
 
@@ -167,11 +170,8 @@ public class OrderDetailActivity extends Activity implements LoaderManager.Loade
 
     @Override
     public void onLoadFinished(Loader<Order> loader, Order data) {
-
-        mRefreshProgressBar.setVisibility(View.GONE);
-
+        mOrderSwipeRefresh.setRefreshing(false);
         mOrder = data;
-
         if (mOrder == null) {
             return;
         }
