@@ -5,7 +5,7 @@ import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -34,7 +33,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class ProductDetailActivity extends Activity implements LoaderManager.LoaderCallbacks<Product>, View.OnClickListener {
+public class ProductDetailActivity extends Activity implements LoaderManager.LoaderCallbacks<Product>, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     public static final String PRODUCT_CODE_EXTRA_KEY = "PRODUCT_CODE";
     public static final String CURRENT_TENANT_ID = "curTenantIdWhenActLoaded";
@@ -70,7 +69,7 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
 
     private List<String> mTitles;
 
-    @InjectView(R.id.progress_bar) ProgressBar mRefreshProgressBar;
+    @InjectView(R.id.product_detail_container) SwipeRefreshLayout mProductSwipeRefresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,6 +119,15 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
         } else {
             getLoaderManager().initLoader(LOADER_PRODUCT_DETAIL, null, this);
         }
+        mProductSwipeRefresh.setOnRefreshListener(this);
+        mProductSwipeRefresh.setEnabled(true);
+        mProductSwipeRefresh.setColorScheme(R.color.first_color_swipe_refresh,
+                R.color.second_color_swipe_refresh,
+                R.color.third_color_swipe_refresh,
+                R.color.fourth_color_swipe_refresh);
+
+
+
 
     }
     @Override
@@ -148,15 +156,7 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
 
             return true;
         } else if (item.getItemId() == R.id.refresh_product_detail) {
-            mRefreshProgressBar.setVisibility(View.VISIBLE);
-
-            mProductSectionViewPager.setCurrentItem(0);
-
-            Loader productLoader = getLoaderManager().getLoader(LOADER_PRODUCT_DETAIL);
-
-            productLoader.reset();
-            productLoader.startLoading();
-            productLoader.forceLoad();
+           onRefresh();
 
             return true;
         } else if (item.getItemId() == R.id.action_logout) {
@@ -174,7 +174,7 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
     public Loader<Product> onCreateLoader(int id, Bundle args) {
 
         if (id == LOADER_PRODUCT_DETAIL) {
-            mRefreshProgressBar.setVisibility(View.VISIBLE);
+            mProductSwipeRefresh.setRefreshing(true);
             return new ProductDetailLoader(this, mTenantId, mSiteId, mProductCode);
         }
 
@@ -183,10 +183,8 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<Product> loader, Product data) {
-        mRefreshProgressBar.setVisibility(View.GONE);
-
+        mProductSwipeRefresh.setRefreshing(false);
         mProduct = data;
-
         if (mProduct == null) {
             return;
         }
@@ -427,4 +425,13 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
         return list;
     }
 
+    @Override
+    public void onRefresh() {
+        mProductSwipeRefresh.setRefreshing(true);
+        mProductSectionViewPager.setCurrentItem(0);
+        Loader productLoader = getLoaderManager().getLoader(LOADER_PRODUCT_DETAIL);
+        productLoader.reset();
+        productLoader.startLoading();
+        productLoader.forceLoad();
+    }
 }

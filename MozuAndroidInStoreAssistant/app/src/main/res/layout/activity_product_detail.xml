@@ -1,98 +1,96 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/product_detail_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:scrollbars="none"
-    android:padding="0dp"
-    tools:context="com.mozu.mozuandroidinstoreassistant.app.ProductDetailActivity" >
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:scrollbars="none"
+        android:padding="0dp"
         tools:context="com.mozu.mozuandroidinstoreassistant.app.ProductDetailActivity">
 
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:indeterminateOnly="true"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            tools:context="com.mozu.mozuandroidinstoreassistant.app.ProductDetailActivity">
 
-        <HorizontalScrollView
-            android:id="@+id/horizontal_image_preview"
-            android:layout_width="wrap_content"
-            android:scrollbars="none"
-            android:layout_marginTop="16dp"
-            android:layout_height="368dp">
-
-            <LinearLayout
+            <HorizontalScrollView
+                android:id="@+id/horizontal_image_preview"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="24dp"
-                android:paddingRight="44dp"
-                >
+                android:scrollbars="none"
+                android:layout_marginTop="16dp"
+                android:layout_height="368dp">
 
                 <LinearLayout
-                    android:id="@+id/product_images_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:background="@drawable/product_detail_images_background"
-                    >
+                    android:layout_marginLeft="24dp"
+                    android:paddingRight="44dp">
 
-                    <ImageView
-                        android:id="@+id/mainImageView"
-                        android:layout_width="@dimen/main_product_image_size"
+                    <LinearLayout
+                        android:id="@+id/product_images_layout"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:background="@color/main_background"
-                        android:src="@drawable/icon_noproductphoto"
-                        android:scaleType="center"
-                        />
+                        android:background="@drawable/product_detail_images_background">
 
+                        <ImageView
+                            android:id="@+id/mainImageView"
+                            android:layout_width="@dimen/main_product_image_size"
+                            android:layout_height="match_parent"
+                            android:background="@color/main_background"
+                            android:src="@drawable/icon_noproductphoto"
+                            android:scaleType="center" />
+
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
 
-        </HorizontalScrollView>
+            </HorizontalScrollView>
 
-        <TextView
-            android:id="@+id/productCode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="24dp"
-            android:layout_marginTop="30dp"
-            android:textSize="20sp"
-            android:textColor="@color/mozu_color"/>
+            <TextView
+                android:id="@+id/productCode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="30dp"
+                android:textSize="20sp"
+                android:textColor="@color/mozu_color" />
 
-        <TextView
-            android:id="@+id/productName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="24dp"
-            android:layout_marginTop="5dp"
-            android:textSize="40sp"/>
+            <TextView
+                android:id="@+id/productName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="5dp"
+                android:textSize="40sp" />
 
-        <com.viewpagerindicator.TabPageIndicator
-            android:id="@+id/product_detail_sections"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_marginTop="30dp"
-            android:layout_marginLeft="24dp"/>
+            <com.viewpagerindicator.TabPageIndicator
+                android:id="@+id/product_detail_sections"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_marginLeft="24dp" />
 
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:background="@color/divider_black" />
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider_black" />
 
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:background="@color/divider_white" />
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider_white" />
 
-        <com.mozu.mozuandroidinstoreassistant.app.views.HeightWrappingViewPager
-            android:id="@+id/product_detail_sections_viewpager"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="0dp"/>
+            <com.mozu.mozuandroidinstoreassistant.app.views.HeightWrappingViewPager
+                android:id="@+id/product_detail_sections_viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="0dp" />
 
-    </LinearLayout>
-</ScrollView>
+        </LinearLayout>
+    </ScrollView>
+
+</android.support.v4.widget.SwipeRefreshLayout>
