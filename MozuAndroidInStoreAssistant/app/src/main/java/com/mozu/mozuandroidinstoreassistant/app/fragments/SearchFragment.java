@@ -1,12 +1,11 @@
 package com.mozu.mozuandroidinstoreassistant.app.fragments;
 
+import android.app.Fragment;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.MatrixCursor;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -22,17 +21,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.ViewFlipper;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.commerceruntime.orders.OrderCollection;
 import com.mozu.api.contracts.customer.CustomerAccountCollection;
 import com.mozu.api.contracts.productruntime.ProductSearchResult;
-import com.mozu.mozuandroidinstoreassistant.app.MainActivity;
 import com.mozu.mozuandroidinstoreassistant.app.OrderDetailActivity;
 import com.mozu.mozuandroidinstoreassistant.app.ProductDetailActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
@@ -110,7 +106,6 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
         bundle.putInt(TENANT_ID, tenantId);
         bundle.putInt(SITE_ID, siteId);
         fragment.setArguments(bundle);
-
         return fragment;
     }
 
@@ -123,19 +118,9 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
         mSiteId = b.getInt(SITE_ID);
         mUserState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
         mSearchFetcher = new SearchFetcher();
-        mOrderObservable = AndroidObservable.bindFragment(this, mSearchFetcher.searchOrder(mTenantId, mSiteId))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-
-        mProductObservable = AndroidObservable.bindFragment(this, mSearchFetcher.searchProduct(mTenantId,mSiteId))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-
-
-        mCustomerObservable = AndroidObservable.bindFragment(this, mSearchFetcher.searchCustomer(mTenantId, mSiteId))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-
+        mOrderObservable = AndroidObservable.bindFragment(this, mSearchFetcher.searchOrder(mTenantId, mSiteId));
+        mProductObservable = AndroidObservable.bindFragment(this, mSearchFetcher.searchProduct(mTenantId,mSiteId));
+        mCustomerObservable = AndroidObservable.bindFragment(this, mSearchFetcher.searchCustomer(mTenantId, mSiteId));
         setRetainInstance(true);
 
     }
@@ -297,8 +282,8 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
     @Override
     public boolean onSuggestionClick(int position) {
         UserPreferences prefs = mUserState.getCurrentUsersPreferences();
-        List<RecentSearch> recentProductSearches = prefs.getRecentProductSearches();
-        String selectedStr = recentProductSearches.get(position).getSearchTerm();
+        List<RecentSearch> recentGlobalSearchs = prefs.getRecentGlobalSearchs();
+        String selectedStr = recentGlobalSearchs.get(position).getSearchTerm();
         performSearch(selectedStr);
         mSearchView.setQuery(selectedStr,false);
         return true;
@@ -395,118 +380,125 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
         mOrderLoadingView.setLoading();
         mOrdersViewButton.setVisibility(View.INVISIBLE);
         mOrdersResultCount.setVisibility(View.INVISIBLE);
-        mOrderObservable.subscribe(new Observer<OrderCollection>(){
-            @Override
-            public void onCompleted() {
-            }
+        mOrderObservable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).
+                subscribe(new Observer<OrderCollection>() {
+                    @Override
+                    public void onCompleted() {
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                mOrderLoadingView.setError("Failed to fetch Orders");
-                mOrdersViewButton.setVisibility(View.INVISIBLE);
-            }
-
-            @Override
-            public void onNext(OrderCollection orderCollection) {
-                if (orderCollection.getItems() != null && !orderCollection.getItems().isEmpty()) {
-                    mOrderLoadingView.success();
-                    mOrderAdapter.setData(orderCollection);
-                    mOrderAdapter.notifyDataSetChanged();
-                    if (orderCollection.getTotalCount() > 3) {
-                        mOrdersViewButton.setVisibility(View.VISIBLE);
-                    } else {
+                    @Override
+                    public void onError(Throwable e) {
+                        mOrderLoadingView.setError("Failed to fetch Orders");
                         mOrdersViewButton.setVisibility(View.INVISIBLE);
                     }
-                    mOrderSearchString = s;
-                    mOrdersResultCount.setVisibility(View.VISIBLE);
-                    mOrdersResultCount.setText("("+orderCollection.getTotalCount()+" items found) ");
-                } else {
-                    mOrderLoadingView.setError("No Results found");
-                    mOrdersViewButton.setVisibility(View.INVISIBLE);
-                    mOrdersResultCount.setVisibility(View.INVISIBLE);
 
-                }
-            }
-        });
+                    @Override
+                    public void onNext(OrderCollection orderCollection) {
+                        if (orderCollection.getItems() != null && !orderCollection.getItems().isEmpty()) {
+                            mOrderLoadingView.success();
+                            mOrderAdapter.setData(orderCollection);
+                            mOrderAdapter.notifyDataSetChanged();
+                            if (orderCollection.getTotalCount() > 3) {
+                                mOrdersViewButton.setVisibility(View.VISIBLE);
+                            } else {
+                                mOrdersViewButton.setVisibility(View.INVISIBLE);
+                            }
+                            mOrderSearchString = s;
+                            mOrdersResultCount.setVisibility(View.VISIBLE);
+                            mOrdersResultCount.setText("(" + orderCollection.getTotalCount() + " items found) ");
+                        } else {
+                            mOrderLoadingView.setError("No Results found");
+                            mOrdersViewButton.setVisibility(View.INVISIBLE);
+                            mOrdersResultCount.setVisibility(View.INVISIBLE);
+
+                        }
+                    }
+                });
 
         mProductLayout.setVisibility(View.VISIBLE);
         mProductLoadingView.setLoading();
         mProductsViewButton.setVisibility(View.INVISIBLE);
         mProductsResultCount.setVisibility(View.INVISIBLE);
-        mProductObservable.subscribe(new Observer<ProductSearchResult>(){
+        mProductObservable.
+                subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).
+                subscribe(new Observer<ProductSearchResult>() {
 
-            @Override
-            public void onCompleted() {
-            }
+                    @Override
+                    public void onCompleted() {
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                mOrderLoadingView.setError("Failed to fetch Product");
-                mProductsViewButton.setVisibility(View.INVISIBLE);
-            }
-
-            @Override
-            public void onNext(ProductSearchResult productSearchResult) {
-                if (productSearchResult.getItems() != null && !productSearchResult.getItems().isEmpty()) {
-                    mProductLoadingView.success();
-                    mProductAdapter.setData(productSearchResult);
-                    mProductAdapter.notifyDataSetChanged();
-                    if(productSearchResult.getTotalCount()>3) {
-                        mProductsViewButton.setVisibility(View.VISIBLE);
-                    }else{
+                    @Override
+                    public void onError(Throwable e) {
+                        mOrderLoadingView.setError("Failed to fetch Product");
                         mProductsViewButton.setVisibility(View.INVISIBLE);
                     }
-                    mProductSearchString = s;
-                    mProductsResultCount.setVisibility(View.VISIBLE);
-                    mProductsResultCount.setText("("+productSearchResult.getTotalCount()+" items found) ");
 
-                } else {
-                    mProductLoadingView.setError("No Results found");
-                    mProductsViewButton.setVisibility(View.INVISIBLE);
-                    mProductsResultCount.setVisibility(View.INVISIBLE);
-                }
+                    @Override
+                    public void onNext(ProductSearchResult productSearchResult) {
+                        if (productSearchResult.getItems() != null && !productSearchResult.getItems().isEmpty()) {
+                            mProductLoadingView.success();
+                            mProductAdapter.setData(productSearchResult);
+                            mProductAdapter.notifyDataSetChanged();
+                            if (productSearchResult.getTotalCount() > 3) {
+                                mProductsViewButton.setVisibility(View.VISIBLE);
+                            } else {
+                                mProductsViewButton.setVisibility(View.INVISIBLE);
+                            }
+                            mProductSearchString = s;
+                            mProductsResultCount.setVisibility(View.VISIBLE);
+                            mProductsResultCount.setText("(" + productSearchResult.getTotalCount() + " items found) ");
 
-            }
-        });
+                        } else {
+                            mProductLoadingView.setError("No Results found");
+                            mProductsViewButton.setVisibility(View.INVISIBLE);
+                            mProductsResultCount.setVisibility(View.INVISIBLE);
+                        }
+
+                    }
+                });
 
         mCustomerLayout.setVisibility(View.VISIBLE);
         mCustomerLoadingView.setLoading();
         mCustomersViewButton.setVisibility(View.INVISIBLE);
         mCustomersResultCount.setVisibility(View.INVISIBLE);
-        mCustomerObservable.subscribe(new Observer<CustomerAccountCollection>(){
+        mCustomerObservable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).
+                subscribe(new Observer<CustomerAccountCollection>() {
 
-            @Override
-            public void onCompleted() {
-            }
+                    @Override
+                    public void onCompleted() {
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                mCustomerLoadingView.setError("Failed to fetch Customers");
-                mCustomersViewButton.setVisibility(View.INVISIBLE);
-            }
-
-            @Override
-            public void onNext(CustomerAccountCollection customerAccountCollection) {
-                if (customerAccountCollection.getItems() != null && !customerAccountCollection.getItems().isEmpty()) {
-                    mCustomerLoadingView.success();
-                    mCustomerAdapter.setData(customerAccountCollection);
-                    mCustomerAdapter.notifyDataSetChanged();
-                    if (customerAccountCollection.getTotalCount() > 3) {
-                        mCustomersViewButton.setVisibility(View.VISIBLE);
-                    } else {
+                    @Override
+                    public void onError(Throwable e) {
+                        mCustomerLoadingView.setError("Failed to fetch Customers");
                         mCustomersViewButton.setVisibility(View.INVISIBLE);
                     }
 
-                    mCustomerSearchString = s;
-                    mCustomersResultCount.setVisibility(View.VISIBLE);
-                    mCustomersResultCount.setText("("+customerAccountCollection.getTotalCount()+" items found) ");
-                } else {
-                    mCustomerLoadingView.setError("No Results found");
-                    mCustomersViewButton.setVisibility(View.INVISIBLE);
-                    mCustomersResultCount.setVisibility(View.INVISIBLE);
-                }
-            }
-        });
+                    @Override
+                    public void onNext(CustomerAccountCollection customerAccountCollection) {
+                        if (customerAccountCollection.getItems() != null && !customerAccountCollection.getItems().isEmpty()) {
+                            mCustomerLoadingView.success();
+                            mCustomerAdapter.setData(customerAccountCollection);
+                            mCustomerAdapter.notifyDataSetChanged();
+                            if (customerAccountCollection.getTotalCount() > 3) {
+                                mCustomersViewButton.setVisibility(View.VISIBLE);
+                            } else {
+                                mCustomersViewButton.setVisibility(View.INVISIBLE);
+                            }
+
+                            mCustomerSearchString = s;
+                            mCustomersResultCount.setVisibility(View.VISIBLE);
+                            mCustomersResultCount.setText("(" + customerAccountCollection.getTotalCount() + " items found) ");
+                        } else {
+                            mCustomerLoadingView.setError("No Results found");
+                            mCustomersViewButton.setVisibility(View.INVISIBLE);
+                            mCustomersResultCount.setVisibility(View.INVISIBLE);
+                        }
+                    }
+                });
     }
 
     public interface GlobalSearchListener {

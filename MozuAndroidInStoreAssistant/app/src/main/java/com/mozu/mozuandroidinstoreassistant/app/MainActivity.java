@@ -231,12 +231,9 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
 
     private void initializeCategoryFragment() {
         FragmentManager fragmentManager = getFragmentManager();
-
         clearBackstack(fragmentManager);
-
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-        CategoryFragment fragment = new CategoryFragment();
+        CategoryFragment fragment = CategoryFragment.getInstance(null);
         fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out);
         fragmentTransaction.replace(R.id.content_fragment_holder, fragment, CATEGORY_FRAGMENT);
         fragmentTransaction.commit();
@@ -278,17 +275,9 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
     }
 
     private void initializeProductFragment(Category category) {
-        FragmentManager fragmentManager = getFragmentManager();
-
-        clearBackstack(fragmentManager);
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
         ProductFragment fragment = new ProductFragment();
         fragment.setCategoryId(category.getCategoryId());
-        fragmentTransaction.setCustomAnimations(R.animator.slide_right_in, R.animator.scale_fade_out,R.animator.slide_left_in, R.animator.scale_fade_out);
-        fragmentTransaction.replace(R.id.content_fragment_holder, fragment, PRODUCTS_FRAGMENT);
-        fragmentTransaction.addToBackStack(PRODUCTS_FRAGMENT_BACKSTACK);
-        fragmentTransaction.commit();
+        addMainFragment(fragment,true);
     }
 
     private void initializeSearchFragment() {
@@ -309,7 +298,7 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         Fragment currentFragment = fragmentManager.findFragmentById(R.id.content_fragment_holder);
         fragmentTransaction.hide(currentFragment);
         fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out);
-        fragmentTransaction.add(R.id.content_fragment_holder, newFragment, SEARCH_FRAGMENT);
+        fragmentTransaction.add(R.id.content_fragment_holder, newFragment);
         if (addToBackStack) {
             fragmentTransaction.addToBackStack(null);
         }
@@ -322,18 +311,6 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         }
     }
 
-    private void addChildCategoryFragment(Category category) {
-        FragmentManager fragmentManager = getFragmentManager();
-
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-        CategoryFragment fragment = new CategoryFragment();
-        fragment.setCategories(category.getChildrenCategories());
-        fragmentTransaction.addToBackStack(CATEGORY_FRAGMENT + String.valueOf(category.getCategoryId()));
-        fragmentTransaction.setCustomAnimations(R.animator.slide_right_in, R.animator.scale_fade_out,R.animator.slide_left_in, R.animator.scale_fade_out);
-        fragmentTransaction.replace(R.id.content_fragment_holder, fragment, CATEGORY_FRAGMENT + String.valueOf(category.getCategoryId()));
-        fragmentTransaction.commit();
-    }
 
     @Override
     public void onCategoryChosen(Category category) {
@@ -356,10 +333,7 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
 
     private void showProductSearchFragment(int categoryId, String query) {
         FragmentManager fragmentManager = getFragmentManager();
-
-
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
         ProductSearchFragment fragment = new ProductSearchFragment();
         fragment.setCategoryId(categoryId);
         fragment.setQueryString(query);
@@ -437,6 +411,12 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         fragment.setLaunchedFromSearch();
         addMainFragment(fragment,true);
     }
+
+    private void addChildCategoryFragment(Category category) {
+        CategoryFragment categoryFragment = CategoryFragment.getInstance(category);
+        addMainFragment(categoryFragment,true);
+    }
+
 
     @Override
     public void launchCustomerSearch(String searchQuery) {
