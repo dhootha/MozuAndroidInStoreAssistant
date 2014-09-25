@@ -21,9 +21,7 @@ public class OrderDetailPaymentsAdapter extends ArrayAdapter<Payment> {
 
     public OrderDetailPaymentsAdapter(Context context, List<Payment> payments) {
         super(context, R.layout.payment_list_item);
-
-        mNumberFormat = NumberFormat.getInstance();
-
+        mNumberFormat = NumberFormat.getCurrencyInstance();
         addAll(payments);
     }
 
@@ -43,9 +41,10 @@ public class OrderDetailPaymentsAdapter extends ArrayAdapter<Payment> {
         String date = payment.getAuditInfo() != null && payment.getAuditInfo().getCreateDate() != null ? dateFormat.format("MM/dd/yy  hh:mm a", new Date(payment.getAuditInfo().getCreateDate().getMillis())).toString() : "";
 
         paymentDate.setText(date);
+        payment.getPaymentType();
 
         if (payment.getBillingInfo() != null && payment.getBillingInfo().getPaymentType() != null) {
-            if (payment.getBillingInfo().getPaymentType().equalsIgnoreCase("CC")) {
+            if (payment.getBillingInfo().getPaymentType().equalsIgnoreCase("CreditCard")) {
                 paymentTypeOrCreditCard.setText(payment.getBillingInfo().getCard().getCardNumberPartOrMask());
             } else {
                 paymentTypeOrCreditCard.setText(payment.getBillingInfo().getPaymentType());
@@ -53,9 +52,7 @@ public class OrderDetailPaymentsAdapter extends ArrayAdapter<Payment> {
         } else {
             paymentTypeOrCreditCard.setText("N/A");
         }
-
         paymentAmount.setText(mNumberFormat.format(payment.getAmountCollected()));
-
         return convertView;
     }
 

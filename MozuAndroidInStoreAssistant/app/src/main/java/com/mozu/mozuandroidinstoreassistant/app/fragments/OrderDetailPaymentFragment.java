@@ -1,15 +1,18 @@
 package com.mozu.mozuandroidinstoreassistant.app.fragments;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
+import com.mozu.api.contracts.commerceruntime.payments.Payment;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.OrderDetailPaymentsAdapter;
 
@@ -44,7 +47,8 @@ public class OrderDetailPaymentFragment extends Fragment {
 
     private void setOrderToViews(View view) {
         ListView paymentList = (ListView) view.findViewById(R.id.payments_list);
-        paymentList.setAdapter(new OrderDetailPaymentsAdapter(getActivity(), mOrder.getPayments()));
+        final OrderDetailPaymentsAdapter adapter = new OrderDetailPaymentsAdapter(getActivity(), mOrder.getPayments());
+        paymentList.setAdapter(adapter);
         TextView emptyView = (TextView) view.findViewById(R.id.empty_payments_message);
         paymentList.setEmptyView(emptyView);
 
@@ -61,7 +65,18 @@ public class OrderDetailPaymentFragment extends Fragment {
         orderTotal.setText(mNumberFormat.format(mOrder.getTotal()));
         paymentsReceived.setText(mNumberFormat.format(mOrder.getTotal() - mOrder.getAmountRemainingForPayment()));
         balance.setText(mNumberFormat.format(mOrder.getAmountRemainingForPayment()));
+        paymentList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                FragmentManager manager = getFragmentManager();
+                Payment payment = adapter.getItem(position);
+                PaymentInfoFragment frag = PaymentInfoFragment.getInstance(payment);
+                frag.show(manager,"payment_info");
+            }
+        });
     }
+
+
 
     public void setOrder(Order order) {
         mOrder = order;
