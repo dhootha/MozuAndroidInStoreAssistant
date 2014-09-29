@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.api.contracts.productruntime.Category;
+import com.mozu.mozuandroidinstoreassistant.app.customer.CustomerDetailActivity;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.CategoryFragment;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.CategoryFragmentListener;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.CustomerListener;
@@ -277,7 +278,7 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
     private void initializeProductFragment(Category category) {
         ProductFragment fragment = new ProductFragment();
         fragment.setCategoryId(category.getCategoryId());
-        addMainFragment(fragment,true);
+        addMainFragment(fragment, true);
     }
 
     private void initializeSearchFragment() {
@@ -388,7 +389,9 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
 
     @Override
     public void customerSelected(CustomerAccount customer) {
-        Toast.makeText(this, customer.getLastName() + " " + customer.getFirstName() + " selected ", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, CustomerDetailActivity.class);
+        intent.putExtra(CustomerDetailActivity.CUSTOMER_ID,customer);
+        startActivity(intent);
     }
 
     @Override

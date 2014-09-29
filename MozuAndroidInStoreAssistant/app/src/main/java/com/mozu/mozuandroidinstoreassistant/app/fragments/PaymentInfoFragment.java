@@ -68,7 +68,7 @@ public class PaymentInfoFragment extends DialogFragment {
         mPaymentBillTo.setText(billTo);
         mPaymentStatus.setText(mPayment.getStatus());
         mPaymentMethod.setText(getPaymentMethod(mPayment));
-        mPaymentDate.setText(DateUtils.getFormattedDate(mPayment.getBillingInfo().getAuditInfo().getCreateDate().getMillis()));
+        mPaymentDate.setText(DateUtils.getFormattedDateTime(mPayment.getBillingInfo().getAuditInfo().getCreateDate().getMillis()));
         NumberFormat numberFormat = NumberFormat.getCurrencyInstance();
         mPaymentAmount.setText(numberFormat.format(mPayment.getAmountCollected()));
     }

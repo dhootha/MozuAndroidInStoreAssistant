@@ -5,6 +5,7 @@ import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -63,7 +64,7 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
     private HorizontalScrollView mHorizontalScrollView;
     private ScrollView mVerticalScrollView;
 
-    private HeightWrappingViewPager mProductSectionViewPager;
+    private ViewPager mProductSectionViewPager;
 
     private TabPageIndicator mTabIndicator;
 
@@ -110,7 +111,7 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
         mTitles.add(getString(R.string.shipping_tab_name));
         mTitles.add(getString(R.string.inventory_tab_name));
 
-        mProductSectionViewPager = (HeightWrappingViewPager) findViewById(R.id.product_detail_sections_viewpager);
+        mProductSectionViewPager = (ViewPager) findViewById(R.id.product_detail_sections_viewpager);
         mTabIndicator = (TabPageIndicator) findViewById(R.id.product_detail_sections);
         mMainImageView.setOnClickListener(this);
 

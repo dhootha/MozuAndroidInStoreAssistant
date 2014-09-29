@@ -17,7 +17,7 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
 
     private static final int ITEMS_PER_PAGE = 50;
 
-    private static final String ORDER_ID_FILTER_BY = "orderNumber eq ";
+    private static final String ORDER_ID_FILTER_BY = "customerAccountId eq ";
 
     private static final String ORDER_ORDER_NUMBER = "orderNumber";
     private static final String ORDER_ORDER_DATE = "submittedDate";
