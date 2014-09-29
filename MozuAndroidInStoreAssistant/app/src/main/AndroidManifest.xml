@@ -45,6 +45,11 @@
             android:label="@string/title_activity_product_detail" >
         </activity>
         <activity
+            android:name=".customer.CustomerDetailActivity"
+            android:label="@string/title_activity_customer_detail" >
+        </activity>
+
+        <activity
             android:name=".ImagePagerActivity"
             android:label="@string/title_activity_image_list"
             android:launchMode="singleInstance"

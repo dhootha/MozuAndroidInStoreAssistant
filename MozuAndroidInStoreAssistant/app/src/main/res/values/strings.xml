@@ -162,6 +162,29 @@
     <string name="payment_method">METHOD</string>
     <string name="payment_status">STATUS</string>
     <string name="payment_date">DATE</string>
+    <string name="customer_since">Customer Since</string>
+    <string name="customer_lifetime">Livetime Value</string>
+    <string name="total_visits">Total Visits</string>
+    <string name="fullfilled_orders">Fullfilled Orders</string>
+    <string name="store_credits">Store Credits</string>
+    <string name="customer_property">Property</string>
+    <string name="title_activity_customer_detail">CustomerDetailActivity</string>
+    <string name="customer_order_num">Order No.</string>
+    <string name="customer_order_date">Date</string>
+    <string name="customer_status">Status</string>
+    <string name="customer_order_amount">Order Amount</string>
+    <string name="customer_credit_code">Code</string>
+    <string name="customer_credit_date_issued">Date Issued</string>
+    <string name="customer_credit_amount">Amount</string>
+    <string name="customer_credit_issued_by">Issued By</string>
+    <string name="customer_credit_expires">Expires</string>
+    <string name="customer_credit_balance">Balance</string>
+    <string name="customer_wishlist_product">Product</string>
+    <string name="customer_wishlist_price">Price</string>
+    <string name="customer_wishlist_saleprice">Sale Price</string>
+    <string name="customer_wishlist_qty">Qty</string>
+    <string name="customer_wishlist_purchasable">Purchasable</string>
+    <string name="customer_wishlist_date_added">Date Added</string>
 
 
 </resources>

@@ -1,0 +1,127 @@
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/order_detail_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        android:background="@android:color/transparent"
+        android:padding="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:layout_marginLeft="60dp"
+            android:background="@android:color/transparent">
+            <TextView
+                android:textColor="@color/mozu_color"
+                android:id="@+id/customer_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textStyle="normal"
+            />
+            <TextView
+                android:id="@+id/customer_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="32sp"
+                 />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@color/darker_grey">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="60dp"
+                android:src="@drawable/icon_ordertime" />
+
+            <TextView
+                android:id="@+id/customer_email"
+                android:layout_width="wrap_content"
+                android:fontFamily="sans-serif-light"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp" />
+
+           <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:src="@drawable/icon_ordername" />
+
+            <TextView
+                android:id="@+id/customer_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-light"
+                android:layout_marginLeft="20dp"
+                android:textColor="@color/mozu_color" />
+
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/icon_ordername" />
+
+            <TextView
+                android:id="@+id/customer_newsletter"
+                android:layout_width="wrap_content"
+                android:fontFamily="sans-serif-light"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:textColor="@color/mozu_color" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/icon_ordername" />
+
+            <TextView
+                android:id="@+id/customer_tax_exempt"
+                android:layout_width="wrap_content"
+                android:fontFamily="sans-serif-light"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:textColor="@color/mozu_color" />
+
+
+        </LinearLayout>
+
+        <com.viewpagerindicator.TabPageIndicator
+            android:id="@+id/customer_detail_sections_tab"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="60dp"
+            android:layout_marginTop="30dp"
+            />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider_black" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider_white" />
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/customer_detail_sections_viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="60dp" />
+    </LinearLayout>
+</android.support.v4.widget.SwipeRefreshLayout>
