@@ -77,12 +77,28 @@ public class CustomerAccountInfoFragment extends Fragment {
             for (CustomerAttribute attribute : attributes) {
                 CustomerAccountAttribute customerAccountAttribute = new CustomerAccountAttribute();
                 customerAccountAttribute.setProperty(attribute.getFullyQualifiedName());
+                customerAccountAttribute.setValue(getValue(attribute.getValues()));
                 resultSet.add(customerAccountAttribute);
             }
         }
-
         return resultSet;
+    }
 
+    private String getValue(List<Object> values) {
+        String resultValue = "";
+
+        for (Object obj : values) {
+            if (resultValue.length() != 0) {
+                resultValue = resultValue + ",";
+            }
+            try {
+                resultValue = resultValue + String.valueOf(obj);
+            } catch (Exception e) {
+
+            }
+
+        }
+        return resultValue;
     }
 
 

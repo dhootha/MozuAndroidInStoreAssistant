@@ -5,23 +5,15 @@ import android.app.FragmentManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
 
 import com.mozu.api.contracts.customer.CustomerAccount;
-import com.mozu.api.contracts.productruntime.Product;
-import com.mozu.mozuandroidinstoreassistant.app.fragments.ProductDetailInventoryFragment;
-import com.mozu.mozuandroidinstoreassistant.app.fragments.ProductDetailOverviewFragment;
-import com.mozu.mozuandroidinstoreassistant.app.fragments.ProductDetailPropertiesFragment;
-import com.mozu.mozuandroidinstoreassistant.app.fragments.ProductDetailShippingFragment;
-
-import java.util.List;
 
 public class CustomerFragmentAdapter extends FragmentStatePagerAdapter {
 
     private enum TabTypes{
         ACCOUNT_INFO("ACCOUNT INFO"),
+        ADDRESSES("ADDRESSES"),
         ORDER_HISTORY("ORDER HISTORY"),
-        STORE_CREDIT("STORE CREDIT"),
         WISHLIST("WISHLIST"),
-        ADDRESSES("ADDRESSES");
-
+        STORE_CREDIT("STORE CREDIT");
         String mDisplayTitle;
         TabTypes(String displayTitle){
             mDisplayTitle = displayTitle;
@@ -35,8 +27,7 @@ public class CustomerFragmentAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return 4;
-       // return TabTypes.values().length;
+       return TabTypes.values().length;
     }
 
     @Override
@@ -51,6 +42,8 @@ public class CustomerFragmentAdapter extends FragmentStatePagerAdapter {
                 CustomerAccountInfoFragment customerAccountInfoFragment = CustomerAccountInfoFragment.getInstance(mCustomer);
                 return customerAccountInfoFragment;
             case ADDRESSES:
+                CustomerAddressFragment customerAddressFragment = CustomerAddressFragment.getInstance(mCustomer);
+                return customerAddressFragment;
 
             case ORDER_HISTORY:
                 CustomerOrderHistoryFragment customerOrderHistoryFragment = CustomerOrderHistoryFragment.getInstance(mCustomer);

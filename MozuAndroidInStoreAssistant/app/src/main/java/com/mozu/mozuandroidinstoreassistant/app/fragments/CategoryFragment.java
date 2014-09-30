@@ -103,7 +103,6 @@ public class CategoryFragment extends Fragment implements AdapterView.OnItemClic
         mUserState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
         CategoryFetcher categoryFetcher = new CategoryFetcher();
         mCategoryObservable = AndroidObservable.bindFragment(this, categoryFetcher.getCategoryInformation(mUserState.getTenantId(),mUserState.getSiteId()));
-
         setRetainInstance(true);
         setHasOptionsMenu(true);
     }

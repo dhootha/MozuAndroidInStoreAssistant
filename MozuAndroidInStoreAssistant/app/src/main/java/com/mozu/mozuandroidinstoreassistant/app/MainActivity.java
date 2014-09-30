@@ -390,7 +390,7 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
     @Override
     public void customerSelected(CustomerAccount customer) {
         Intent intent = new Intent(this, CustomerDetailActivity.class);
-        intent.putExtra(CustomerDetailActivity.CUSTOMER_ID,customer);
+        intent.putExtra(CustomerDetailActivity.CUSTOMER_ID,customer.getId());
         startActivity(intent);
     }
 
