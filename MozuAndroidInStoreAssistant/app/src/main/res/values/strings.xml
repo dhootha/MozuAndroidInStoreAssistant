@@ -158,7 +158,7 @@
     <string name="customer_list_customer_lifetime_value_header">Lifetime Value</string>
     <string name="refresh_customers_menu_item_text">Refresh Customers</string>
     <string name="customer_search_hint_text">Search by Customer Name or Email Address</string>
-    <string name="employee_header">Emmployee</string>
+    <string name="employee_header">Employee</string>
     <string name="bill_to">BILL TO</string>
     <string name="payment_method">METHOD</string>
     <string name="payment_status">STATUS</string>

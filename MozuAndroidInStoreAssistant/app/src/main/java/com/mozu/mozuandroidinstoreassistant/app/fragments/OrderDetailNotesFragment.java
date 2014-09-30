@@ -71,7 +71,7 @@ private LoadingView mNotesLoadingView;
             mCustomerLoadingView.success();
         }
 
-        showInternalNotes();
+        showCustomerNotes();
         mShowCustomerNotes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

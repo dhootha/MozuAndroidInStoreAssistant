@@ -139,7 +139,6 @@ public class CustomerDetailActivity extends Activity implements SwipeRefreshLayo
 
             @Override
             public void onCompleted() {
-                mCustomerViewPager.setCurrentItem(0);
                 setUpViews(mCustomerAccount);
                 mSwipeRefreshLayout.setRefreshing(false);
             }
@@ -161,6 +160,7 @@ public class CustomerDetailActivity extends Activity implements SwipeRefreshLayo
 
     @Override
     public void onRefresh() {
+        mCustomerViewPager.setCurrentItem(0);
         loadData();
     }
 
