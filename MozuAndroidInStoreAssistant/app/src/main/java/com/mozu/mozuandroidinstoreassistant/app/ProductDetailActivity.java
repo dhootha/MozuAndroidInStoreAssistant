@@ -126,10 +126,6 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
                 R.color.second_color_swipe_refresh,
                 R.color.third_color_swipe_refresh,
                 R.color.fourth_color_swipe_refresh);
-
-
-
-
     }
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -383,12 +379,12 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
         if (v.getId() == mMainImageView.getId()) {
             startImageViewPagerActivity(0, v);
         } else if (v instanceof LinearLayout) {
-            LinearLayout layout = (LinearLayout)v;
+            LinearLayout layout = (LinearLayout) v;
 
             for (int i = 0; i < layout.getChildCount(); i++) {
                 if (layout.getChildAt(i) instanceof TextView) {
-                   TextView positionText = (TextView)layout.getChildAt(i);
-                   startImageViewPagerActivity(Integer.parseInt(positionText.getText().toString()), positionText);
+                    TextView positionText = (TextView) layout.getChildAt(i);
+                    startImageViewPagerActivity(Integer.parseInt(positionText.getText().toString()), positionText);
                 }
             }
         }

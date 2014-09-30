@@ -16,6 +16,7 @@
         android:layout_height="match_parent">
 
         <RelativeLayout
+            android:layout_marginTop="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
@@ -86,21 +87,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/darker_grey" />
+
             <com.mozu.mozuandroidinstoreassistant.app.views.LoadingView
                 android:id="@+id/notes_loading_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
 
-            <ListView
-                android:id="@+id/notes_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:scrollbars="none"
-                android:dividerHeight="0dp"
-                android:divider="@android:color/transparent" />
-</com.mozu.mozuandroidinstoreassistant.app.views.LoadingView>
+                <ListView
+                    android:id="@+id/notes_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:scrollbars="none"
+                    android:dividerHeight="0dp"
+                    android:divider="@android:color/transparent" />
+            </com.mozu.mozuandroidinstoreassistant.app.views.LoadingView>
         </LinearLayout>
 
     </LinearLayout>
@@ -112,6 +114,7 @@
         android:layout_height="match_parent">
 
         <RelativeLayout
+            android:layout_marginTop="15dp"
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
@@ -175,25 +178,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/darker_grey" />
+
             <com.mozu.mozuandroidinstoreassistant.app.views.LoadingView
                 android:id="@+id/customer_notes_loading_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
 
-            <ListView
-                android:id="@+id/customer_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:scrollbars="none"
-                android:dividerHeight="0dp"
-                android:divider="@android:color/transparent" />
+                <ListView
+                    android:id="@+id/customer_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:scrollbars="none"
+                    android:dividerHeight="0dp"
+                    android:divider="@android:color/transparent" />
             </com.mozu.mozuandroidinstoreassistant.app.views.LoadingView>
 
         </LinearLayout>
 
     </LinearLayout>
+
     <TextView
         android:visibility="gone"
         android:id="@+id/empty_list_item"
@@ -201,7 +206,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:gravity="center_vertical|center_horizontal"
-        android:text="@string/empty_order_items_text"
-        />
+        android:text="@string/empty_order_items_text" />
 
 </LinearLayout>
