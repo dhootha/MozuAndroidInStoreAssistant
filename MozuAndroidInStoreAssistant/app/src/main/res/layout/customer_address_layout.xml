@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.mozu.mozuandroidinstoreassistant.app.views.LoadingView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/customer_address_loading">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/billing_header"
+                android:textSize="28sp"
+                android:layout_marginBottom="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/billing" />
+
+
+            <com.mozu.mozuandroidinstoreassistant.app.views.ExpandedGridView
+                android:layout_marginBottom="20dp"
+                android:layout_marginRight="20dp"
+                android:id="@+id/customer_address_grid"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="none"
+                android:numColumns="@integer/num_of_columns_in_grid" />
+
+
+            <TextView
+                android:id="@+id/shipping_header"
+                android:textSize="28sp"
+                android:layout_marginBottom="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/shipping" />
+
+            <com.mozu.mozuandroidinstoreassistant.app.views.ExpandedGridView
+                android:layout_marginBottom="20dp"
+                android:layout_marginRight="20dp"
+                android:id="@+id/customer_shipping_address_grid"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="none"
+                android:numColumns="@integer/num_of_columns_in_grid" />
+
+        </LinearLayout>
+    </com.mozu.mozuandroidinstoreassistant.app.views.LoadingView>
+</ScrollView>

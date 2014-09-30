@@ -6,4 +6,8 @@
         android:orderInCategory="100"
         android:showAsAction="never" />
 
+    <item android:id="@+id/refresh_category_detail"
+        android:title="@string/refresh_category_menu_item_text"
+        android:showAsAction="never" />
+
 </menu>

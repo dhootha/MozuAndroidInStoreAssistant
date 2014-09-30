@@ -121,6 +121,7 @@
     <string name="product_price_header">Price</string>
     <string name="product_sales_price_header">Sale Price</string>
     <string name="refresh_product_menu_item_text">Refresh Products</string>
+    <string name="refresh_category_menu_item_text">Refresh</string>
     <string name="pending_items_direct_ship_label_unpackaged">Pending Items</string>
     <string name="pending_items_direct_ship_label_fulfilled">Shipped Items</string>
     <string name="pending_items_direct_ship_label_not_fulfilled">Created Items</string>
@@ -185,6 +186,8 @@
     <string name="customer_wishlist_qty">Qty</string>
     <string name="customer_wishlist_purchasable">Purchasable</string>
     <string name="customer_wishlist_date_added">Date Added</string>
+    <string name="shipping">Shipping</string>
+    <string name="billing">Billing</string>
 
 
 </resources>

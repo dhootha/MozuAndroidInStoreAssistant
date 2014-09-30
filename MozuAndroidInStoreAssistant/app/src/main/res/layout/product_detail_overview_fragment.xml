@@ -150,8 +150,8 @@
                 android:layout_height="wrap_content"
                 android:padding="5dp"
                 android:layout_margin="2dp"
-                android:background="@color/darker_grey"
-                android:text="@string/upc_label"
+
+                android:text="@string/upc_label" android:background="@color/darker_grey"
                 android:singleLine="true"/>
 
             <TextView
