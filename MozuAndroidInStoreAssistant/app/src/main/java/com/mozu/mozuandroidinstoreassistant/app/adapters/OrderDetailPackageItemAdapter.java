@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 
 import com.mozu.api.contracts.commerceruntime.fulfillment.PackageItem;
 import com.mozu.mozuandroidinstoreassistant.app.R;
+import com.mozu.mozuandroidinstoreassistant.app.utils.ProductUtils;
 
 import java.util.List;
 
@@ -38,12 +39,14 @@ public class OrderDetailPackageItemAdapter extends ArrayAdapter<PackageItem> {
         }
 
         PackageItem packageItem = getItem(position);
-
         viewHolder.code.setText(packageItem.getProductCode());
-        viewHolder.productName.loadName(packageItem.getProductCode());
+        viewHolder.productName.loadName(ProductUtils.getPackageorPickupProductCode(packageItem.getProductCode()));
         viewHolder.quantity.setText(String.valueOf(packageItem.getQuantity()));
 
         return convertView;
     }
+
+
+
 
 }

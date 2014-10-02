@@ -35,6 +35,7 @@ public class OrderDetailFulfillmentPackageAdapter extends ArrayAdapter<Fulfillme
 
         viewHolder.packageName.setText(orderPackage.getPackageNumber());
 
+
         setRemainingFields(viewHolder, orderPackage);
 
         return convertView;

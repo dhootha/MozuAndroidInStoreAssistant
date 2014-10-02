@@ -96,11 +96,12 @@ public class OrderDetailActivity extends Activity implements LoaderManager.Loade
         mOrderViewPager = (HeightWrappingViewPager) findViewById(R.id.order_detail_sections_viewpager);
         mTabIndicator = (TabPageIndicator) findViewById(R.id.order_detail_sections);
 
-        if (getLoaderManager().getLoader(LOADER_ORDER_DETAIL) == null) {
-            getLoaderManager().initLoader(LOADER_ORDER_DETAIL, null, this).forceLoad();
-        } else {
-            getLoaderManager().initLoader(LOADER_ORDER_DETAIL, null, this);
-        }
+        OrderDetailSectionPagerAdapter adapter = new OrderDetailSectionPagerAdapter(getFragmentManager(), mOrder, mTitles, mTenantId, mSiteId);
+        mOrderViewPager.setAdapter(adapter);
+
+        mTabIndicator.setViewPager(mOrderViewPager);
+
+        getLoaderManager().initLoader(LOADER_ORDER_DETAIL, null, this).forceLoad();
 
         mNumberFormat = NumberFormat.getCurrencyInstance();
         mOrderSwipeRefresh.setOnRefreshListener(this);
@@ -149,7 +150,7 @@ public class OrderDetailActivity extends Activity implements LoaderManager.Loade
 
     @Override
     public void onRefresh(){
-        mOrderViewPager.setCurrentItem(0);
+        mTabIndicator.setCurrentItem(0);
         Loader orderLoader = getLoaderManager().getLoader(LOADER_ORDER_DETAIL);
         orderLoader.reset();
         orderLoader.startLoading();
@@ -191,8 +192,7 @@ public class OrderDetailActivity extends Activity implements LoaderManager.Loade
         OrderDetailSectionPagerAdapter adapter = new OrderDetailSectionPagerAdapter(getFragmentManager(), mOrder, mTitles, mTenantId, mSiteId);
         mOrderViewPager.setAdapter(adapter);
         mTabIndicator.setViewPager(mOrderViewPager);
-        adapter.notifyDataSetChanged();
-
+        mTabIndicator.setCurrentItem(0);
 
     }
 

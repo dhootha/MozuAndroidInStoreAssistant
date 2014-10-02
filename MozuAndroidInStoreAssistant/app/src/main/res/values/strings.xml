@@ -188,6 +188,8 @@
     <string name="customer_wishlist_date_added">Date Added</string>
     <string name="shipping">Shipping</string>
     <string name="billing">Billing</string>
+    <string name="not_available">N/A</string>
+    <string name="order_fulfillment_status">Status:</string>
 
 
 </resources>

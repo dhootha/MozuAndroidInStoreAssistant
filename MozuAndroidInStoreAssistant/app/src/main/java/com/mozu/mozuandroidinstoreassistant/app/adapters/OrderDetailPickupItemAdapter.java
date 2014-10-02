@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import com.mozu.api.contracts.commerceruntime.fulfillment.PackageItem;
 import com.mozu.api.contracts.commerceruntime.fulfillment.PickupItem;
 import com.mozu.mozuandroidinstoreassistant.app.R;
+import com.mozu.mozuandroidinstoreassistant.app.utils.ProductUtils;
 
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class OrderDetailPickupItemAdapter extends ArrayAdapter<PickupItem> {
         PickupItem pickupItem = getItem(position);
 
         viewHolder.code.setText(pickupItem.getProductCode());
-        viewHolder.productName.loadName(pickupItem.getProductCode());
+        viewHolder.productName.loadName(ProductUtils.getPackageorPickupProductCode(pickupItem.getProductCode()));
         viewHolder.quantity.setText(String.valueOf(pickupItem.getQuantity()));
 
         return convertView;

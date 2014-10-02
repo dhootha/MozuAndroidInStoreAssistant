@@ -5,7 +5,7 @@ import android.app.FragmentManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
-import com.mozu.mozuandroidinstoreassistant.app.fragments.OrderDetailFullfillmentFragment;
+import com.mozu.mozuandroidinstoreassistant.app.order.OrderDetailFullfillmentFragment;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.OrderDetailNotesFragment;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.OrderDetailOverviewFragment;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.OrderDetailPaymentFragment;
@@ -60,19 +60,16 @@ public class OrderDetailSectionPagerAdapter extends FragmentStatePagerAdapter {
             case OVERVIEW_TAB_POSITION:
                 OrderDetailOverviewFragment overviewFragment = new OrderDetailOverviewFragment();
                 overviewFragment.setOrder(mOrder);
-
                 return overviewFragment;
 
             case FULFILLMENT_TAB_POSITION:
                 OrderDetailFullfillmentFragment fullfillmentFragment = new OrderDetailFullfillmentFragment();
                 fullfillmentFragment.setOrder(mOrder);
-
                 return fullfillmentFragment;
 
             case PAYMENT_TAB_POSITION:
                 OrderDetailPaymentFragment paymentFragment = new OrderDetailPaymentFragment();
                 paymentFragment.setOrder(mOrder);
-
                 return paymentFragment;
 
             case RETURNS_TABS_POSITION:
@@ -82,7 +79,6 @@ public class OrderDetailSectionPagerAdapter extends FragmentStatePagerAdapter {
                 returnsFragment.setTenantId(mTenantId);
 
                 return returnsFragment;
-
             case NOTES_TAB_POSITION:
                 OrderDetailNotesFragment notesFragment = new OrderDetailNotesFragment();
                 notesFragment.setOrder(mOrder);
