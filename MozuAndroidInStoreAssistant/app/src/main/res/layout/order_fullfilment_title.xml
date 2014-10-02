@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.mozu.mozuandroidinstoreassistant.app.layout.order.FullfillmentTitleRow xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_alignParentLeft="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@android:color/transparent"
+            android:text="@string/blank_for_alignment" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="28sp"
+            android:text="@string/not_available"
+            android:id="@+id/order_fulfillment_title"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginRight="15dp"
+        android:orientation="vertical"
+        android:id="@+id/ship_pending_layout"
+        android:layout_toLeftOf="@+id/ship_fulfilled_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@android:color/darker_gray"
+            android:text="@string/shipment_pending_total" />
+
+        <TextView
+            android:id="@+id/shipment_pending_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/not_available"
+            android:layout_marginTop="5dp"
+            android:textSize="28sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginRight="15dp"
+        android:orientation="vertical"
+        android:id="@+id/ship_fulfilled_layout"
+        android:layout_toLeftOf="@+id/ship_total_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@android:color/darker_gray"
+            android:text="@string/shipment_fulfilled_total" />
+
+        <TextView
+            android:id="@+id/shipment_fulfilled_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@string/not_available"
+            android:textSize="28sp" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/ship_total_layout"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@android:color/darker_gray"
+            android:text="@string/shipment_total" />
+
+        <TextView
+            android:id="@+id/shipment_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@string/not_available"
+            android:textSize="28sp" />
+
+    </LinearLayout>
+</com.mozu.mozuandroidinstoreassistant.app.layout.order.FullfillmentTitleRow>

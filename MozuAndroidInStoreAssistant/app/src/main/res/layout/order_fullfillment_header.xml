@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.mozu.mozuandroidinstoreassistant.app.layout.order.FullfillmentHeaderRow xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_marginLeft="40dp"
+    android:layout_marginTop="40dp"
+    android:gravity="center_vertical"
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:background="@drawable/list_item"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_marginLeft="40dp"
+        android:id="@+id/fulfillment_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="18dp"
+        android:textColor="@android:color/darker_gray" />
+</com.mozu.mozuandroidinstoreassistant.app.layout.order.FullfillmentHeaderRow>
+
