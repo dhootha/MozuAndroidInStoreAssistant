@@ -119,7 +119,10 @@ public class CustomerDetailActivity extends Activity implements SwipeRefreshLayo
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_logout) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }else if (item.getItemId() == R.id.action_logout) {
             UserAuthenticationStateMachineProducer.getInstance(getApplicationContext()).getCurrentUserAuthState().signOutUser();
             startActivity(new Intent(this, LoginActivity.class));
             finish();

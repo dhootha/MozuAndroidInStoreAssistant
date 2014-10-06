@@ -5,6 +5,7 @@ import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,7 +18,6 @@ import com.mozu.mozuandroidinstoreassistant.app.loaders.OrderDetailLoader;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.tasks.CustomerAsyncListener;
 import com.mozu.mozuandroidinstoreassistant.app.tasks.RetrieveCustomerAsyncTask;
-import com.mozu.mozuandroidinstoreassistant.app.views.HeightWrappingViewPager;
 import com.viewpagerindicator.TabPageIndicator;
 
 import java.text.NumberFormat;
@@ -49,7 +49,7 @@ public class OrderDetailActivity extends Activity implements LoaderManager.Loade
 
     private int mSiteId;
 
-    private HeightWrappingViewPager mOrderViewPager;
+    private ViewPager mOrderViewPager;
 
     private TabPageIndicator mTabIndicator;
 
@@ -93,15 +93,15 @@ public class OrderDetailActivity extends Activity implements LoaderManager.Loade
         mTitles.add(getString(R.string.returns_tab_name));
         mTitles.add(getString(R.string.notes_tab_name));
 
-        mOrderViewPager = (HeightWrappingViewPager) findViewById(R.id.order_detail_sections_viewpager);
+        mOrderViewPager = (ViewPager) findViewById(R.id.order_detail_sections_viewpager);
         mTabIndicator = (TabPageIndicator) findViewById(R.id.order_detail_sections);
 
-        OrderDetailSectionPagerAdapter adapter = new OrderDetailSectionPagerAdapter(getFragmentManager(), mOrder, mTitles, mTenantId, mSiteId);
-        mOrderViewPager.setAdapter(adapter);
+        if (getLoaderManager().getLoader(LOADER_ORDER_DETAIL) == null) {
+            getLoaderManager().initLoader(LOADER_ORDER_DETAIL, null, this).forceLoad();
+        } else {
+            getLoaderManager().initLoader(LOADER_ORDER_DETAIL, null, this);
+        }
 
-        mTabIndicator.setViewPager(mOrderViewPager);
-
-        getLoaderManager().initLoader(LOADER_ORDER_DETAIL, null, this).forceLoad();
 
         mNumberFormat = NumberFormat.getCurrencyInstance();
         mOrderSwipeRefresh.setOnRefreshListener(this);
@@ -150,7 +150,7 @@ public class OrderDetailActivity extends Activity implements LoaderManager.Loade
 
     @Override
     public void onRefresh(){
-        mTabIndicator.setCurrentItem(0);
+        mOrderViewPager.setCurrentItem(0);
         Loader orderLoader = getLoaderManager().getLoader(LOADER_ORDER_DETAIL);
         orderLoader.reset();
         orderLoader.startLoading();
@@ -192,7 +192,7 @@ public class OrderDetailActivity extends Activity implements LoaderManager.Loade
         OrderDetailSectionPagerAdapter adapter = new OrderDetailSectionPagerAdapter(getFragmentManager(), mOrder, mTitles, mTenantId, mSiteId);
         mOrderViewPager.setAdapter(adapter);
         mTabIndicator.setViewPager(mOrderViewPager);
-        mTabIndicator.setCurrentItem(0);
+        adapter.notifyDataSetChanged();
 
     }
 

@@ -29,9 +29,8 @@ public class OrderDetailNotesFragment extends Fragment {
 
 private LoadingView mNotesLoadingView;
     private LoadingView mCustomerLoadingView;
-
-
-
+    private boolean isCurrentInternalNotes = false;
+    private String CURRENT_IS_INTERNAL = "currentInternal";
 
     public OrderDetailNotesFragment() {
         // Required empty public constructor
@@ -40,6 +39,10 @@ private LoadingView mNotesLoadingView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        if(savedInstanceState != null){
+            isCurrentInternalNotes = savedInstanceState.getBoolean(CURRENT_IS_INTERNAL);
+        }
         View view = inflater.inflate(R.layout.order_detail_notes_fragment, null);
 
         ButterKnife.inject(this, view);
@@ -51,6 +54,12 @@ private LoadingView mNotesLoadingView;
         }
 
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(CURRENT_IS_INTERNAL, isCurrentInternalNotes);
+        super.onSaveInstanceState(outState);
     }
 
     private void setOrderToViews(View view) {
@@ -70,12 +79,16 @@ private LoadingView mNotesLoadingView;
         } else {
             mCustomerLoadingView.success();
         }
-
-        showCustomerNotes();
+        if (isCurrentInternalNotes) {
+            showInternalNotes();
+        } else {
+            showCustomerNotes();
+        }
         mShowCustomerNotes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showCustomerNotes();
+                isCurrentInternalNotes = false;
             }
         });
 
@@ -83,6 +96,7 @@ private LoadingView mNotesLoadingView;
             @Override
             public void onClick(View view) {
                 showInternalNotes();
+                isCurrentInternalNotes = true;
             }
         });
 
