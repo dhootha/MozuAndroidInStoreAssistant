@@ -52,13 +52,13 @@ public class CustomerStoreCreditAdapter extends BaseAdapter {
         TextView creditBalance = (TextView)view.findViewById(R.id.customer_credit_balance_value);
         TextView creditCode = (TextView)view.findViewById(R.id.customer_credit_code_value);
         TextView creditDate = (TextView)view.findViewById(R.id.customer_credit_date_issued_value);
-        TextView creditIssuedBy = (TextView)view.findViewById(R.id.customer_credit_issued_by_value);
+        TextView creditType = (TextView)view.findViewById(R.id.customer_store_credit_type_value);
         TextView creditExpires = (TextView)view.findViewById(R.id.customer_credit_expires_value);
 
         creditAmount.setText(NumberFormat.getCurrencyInstance().format(credit.getInitialBalance()));
         creditCode.setText(credit.getCode());
         creditBalance.setText(NumberFormat.getCurrencyInstance().format(credit.getCurrentBalance()));
-        creditIssuedBy.setText(credit.getAuditInfo().getCreateBy());
+        creditType.setText(credit.getCreditType());
         creditExpires.setText(DateUtils.getFormattedDate(credit.getExpirationDate().getMillis()));
         creditDate.setText(DateUtils.getFormattedDate(credit.getAuditInfo().getCreateDate().getMillis()));
 

@@ -79,7 +79,7 @@ public class CustomerStoreCreditFragment extends Fragment {
                 mAdapter.setData(mCreditList);
                 mAdapter.notifyDataSetChanged();
             } else {
-                mOrderLoading.setError("No Content Available");
+                mOrderLoading.setError("No store credits to display");
             }
         }
 

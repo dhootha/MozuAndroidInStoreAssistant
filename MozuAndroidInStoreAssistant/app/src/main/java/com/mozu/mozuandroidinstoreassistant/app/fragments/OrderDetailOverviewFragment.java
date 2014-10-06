@@ -2,6 +2,7 @@ package com.mozu.mozuandroidinstoreassistant.app.fragments;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -20,6 +21,8 @@ import com.mozu.api.contracts.commerceruntime.orders.OrderAttribute;
 import com.mozu.api.contracts.commerceruntime.orders.OrderItem;
 import com.mozu.api.contracts.commerceruntime.products.Product;
 import com.mozu.mozuandroidinstoreassistant.app.R;
+import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
+import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 
 import java.text.NumberFormat;
 import java.util.List;
@@ -179,7 +182,14 @@ public class OrderDetailOverviewFragment extends Fragment implements View.OnClic
             TextView price = (TextView) view.findViewById(R.id.ordered_item_price);
             TextView quantity = (TextView) view.findViewById(R.id.ordered_item_quantity);
             TextView total = (TextView) view.findViewById(R.id.ordered_item_total);
-            ImageView discountInfo = (ImageView) view.findViewById(R.id.discount_info_image);
+         //   final ImageView discountInfo = (ImageView) view.findViewById(R.id.discount_info_image);
+            final LinearLayout discountInfoLayout = (LinearLayout)view.findViewById(R.id.discount_info_image_layout);
+            discountInfoLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    determineShowDiscountInfo(discountInfoLayout);
+                }
+            });
 
             Product product = item.getProduct();
 
@@ -200,27 +210,48 @@ public class OrderDetailOverviewFragment extends Fragment implements View.OnClic
             price.setText(product.getPrice() != null && product.getPrice().getPrice() != null ? mNumberFormat.format(product.getPrice().getPrice()) : N_A);
             quantity.setText(String.valueOf(item.getQuantity()));
             total.setText(mNumberFormat.format(item.getTotal()));
-
+            view.setOnClickListener(new ProductClickListener());
+            view.setTag(i);
             if (item.getProductDiscounts() != null && item.getProductDiscounts().size() > 0) {
-                view.setOnClickListener(this);
-
-                view.setTag(i);
-
-                discountInfo.setVisibility(View.VISIBLE);
+                discountInfoLayout.setTag(i);
+                discountInfoLayout.setVisibility(View.VISIBLE);
             } else {
-                discountInfo.setVisibility(View.INVISIBLE);
+                discountInfoLayout.setVisibility(View.INVISIBLE);
             }
-
             i++;
-
             mOrderedItemLayout.addView(view);
-
         }
-
     }
 
     public void setOrder(Order order) {
         mOrder = order;
+    }
+
+    private class ProductClickListener implements View.OnClickListener{
+
+        @Override
+        public void onClick(View view) {
+            int index;
+            try {
+                index = Integer.parseInt(String.valueOf(view.getTag()));
+            } catch (Exception e) {
+                index = -1;
+            }
+            if (index != -1 && mOrder != null && mOrder.getItems() != null && mOrder.getItems().size() > 0) {
+                OrderItem item = mOrder.getItems().get(index);
+                FragmentManager manager = getFragmentManager();
+                ProductDetailOverviewDialogFragment productOverviewFragment = (ProductDetailOverviewDialogFragment) manager.findFragmentByTag("productDialog");
+                UserAuthenticationStateMachine userState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
+                if (productOverviewFragment == null) {
+                    productOverviewFragment = new ProductDetailOverviewDialogFragment();
+                    productOverviewFragment.setProduct(item.getProduct());
+                    productOverviewFragment.setTenantId(userState.getTenantId());
+                    productOverviewFragment.setSiteId(userState.getSiteId());
+                }
+                productOverviewFragment.show(manager, "productDialog");
+            }
+
+        }
     }
 
     @Override
@@ -232,10 +263,7 @@ public class OrderDetailOverviewFragment extends Fragment implements View.OnClic
             } else {
                 mDetailLayout.setVisibility(View.GONE);
             }
-        } else {
-            determineShowDiscountInfo(v);
         }
-
     }
 
     private void determineShowDiscountInfo(View v) {
