@@ -190,6 +190,7 @@
     <string name="billing">Billing</string>
     <string name="not_available">N/A</string>
     <string name="order_fulfillment_status">Status:</string>
+    <string name="store_credit_type_label">Type</string>
 
 
 </resources>

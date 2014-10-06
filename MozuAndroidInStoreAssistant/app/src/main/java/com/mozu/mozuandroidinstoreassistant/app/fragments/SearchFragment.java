@@ -27,6 +27,7 @@ import android.widget.TextView;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.commerceruntime.orders.OrderCollection;
+import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.api.contracts.customer.CustomerAccountCollection;
 import com.mozu.api.contracts.productruntime.ProductSearchResult;
 import com.mozu.mozuandroidinstoreassistant.app.OrderDetailActivity;
@@ -36,6 +37,7 @@ import com.mozu.mozuandroidinstoreassistant.app.adapters.GlobalSearchCustomerAda
 import com.mozu.mozuandroidinstoreassistant.app.adapters.GlobalSearchOrderAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.GlobalSearchProductAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.SearchSuggestionsCursorAdapter;
+import com.mozu.mozuandroidinstoreassistant.app.customer.CustomerDetailActivity;
 import com.mozu.mozuandroidinstoreassistant.app.loaders.SearchFetcher;
 import com.mozu.mozuandroidinstoreassistant.app.models.RecentSearch;
 import com.mozu.mozuandroidinstoreassistant.app.models.UserPreferences;
@@ -269,6 +271,15 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
 
             mCustomerAdapter = new GlobalSearchCustomerAdapter(new CustomerAccountCollection());
             mCustomersSearchView.setAdapter(mCustomerAdapter);
+            mCustomersSearchView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                CustomerAccount customerAccount = mCustomerAdapter.getItem(position);
+                Intent intent = new Intent(getActivity(), CustomerDetailActivity.class);
+                intent.putExtra(CustomerDetailActivity.CUSTOMER_ID,customerAccount.getId());
+                startActivity(intent);
+            }
+        });
             setHasOptionsMenu(true);
 
         return mView;
