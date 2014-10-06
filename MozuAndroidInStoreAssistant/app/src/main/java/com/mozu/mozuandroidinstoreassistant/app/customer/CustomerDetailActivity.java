@@ -2,7 +2,6 @@ package com.mozu.mozuandroidinstoreassistant.app.customer;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.Loader;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -13,20 +12,12 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.customer.CustomerAccount;
-import com.mozu.api.contracts.productruntime.Category;
 import com.mozu.mozuandroidinstoreassistant.app.LoginActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
-import com.mozu.mozuandroidinstoreassistant.app.adapters.OrderDetailSectionPagerAdapter;
-import com.mozu.mozuandroidinstoreassistant.app.loaders.OrderDetailLoader;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
-import com.mozu.mozuandroidinstoreassistant.app.tasks.RetrieveCustomerAsyncTask;
 import com.viewpagerindicator.TabPageIndicator;
-
-import java.util.Date;
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -52,6 +43,10 @@ public class CustomerDetailActivity extends Activity implements SwipeRefreshLayo
     @InjectView(R.id.customer_detail_sections_viewpager) ViewPager mCustomerViewPager;
     @InjectView(R.id.customer_detail_sections_tab) TabPageIndicator mTabPageIndicator;
 
+    static final String VIEW_PAGER_POS = "viewPagerPos";
+    static final String CUSTOMER_ACCOUNT = "customerAccount";
+    private CustomerAccount mCustomerAccount;
+    private Integer mViewPagerPos;
 
     private rx.Observable<CustomerAccount> mCustomerObservable;
     private CustomerAccountFetcher mCustomerAccountFetcher;
@@ -60,6 +55,11 @@ public class CustomerDetailActivity extends Activity implements SwipeRefreshLayo
         super.onCreate(savedInstanceState);
         if (getIntent() != null) {
             mUserAccountId =  getIntent().getIntExtra(CUSTOMER_ID,-1);
+        }
+
+        if (savedInstanceState != null) {
+            mCustomerAccount = (CustomerAccount) savedInstanceState.getSerializable(CUSTOMER_ACCOUNT);
+            mViewPagerPos = savedInstanceState.getInt(VIEW_PAGER_POS);
         }
         LayoutInflater inflater = LayoutInflater.from(this);
         mView = inflater.inflate(R.layout.activity_customer_detail,null);
@@ -79,15 +79,27 @@ public class CustomerDetailActivity extends Activity implements SwipeRefreshLayo
                 R.color.second_color_swipe_refresh,
                 R.color.third_color_swipe_refresh,
                 R.color.fourth_color_swipe_refresh);
+        if (mCustomerAccount == null) {
+            loadData();
+        } else {
+            setUpViews(mCustomerAccount);
+        }
+    }
 
-        loadData();
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putInt(VIEW_PAGER_POS, mCustomerViewPager.getCurrentItem());
+        savedInstanceState.putSerializable(CUSTOMER_ACCOUNT, mCustomerAccount);
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     public void setUpViews(CustomerAccount customerAccount) {
-
-        mCustomerFragmentAdapter = new CustomerFragmentAdapter(getFragmentManager(),customerAccount);
+        mCustomerFragmentAdapter = new CustomerFragmentAdapter(getFragmentManager(), customerAccount);
         mCustomerViewPager.setAdapter(mCustomerFragmentAdapter);
         mTabPageIndicator.setViewPager(mCustomerViewPager);
+        if (mViewPagerPos != null) {
+            mCustomerViewPager.setCurrentItem(mViewPagerPos);
+        }
 
         mCustomerName.setText(customerAccount.getFirstName() + "  " + customerAccount.getLastName());
         mCustomerEmail.setText(customerAccount.getEmailAddress());
@@ -138,7 +150,7 @@ public class CustomerDetailActivity extends Activity implements SwipeRefreshLayo
         mCustomerAccountFetcher.setCustomerId(mUserAccountId);
         mSwipeRefreshLayout.setRefreshing(true);
         mCustomerObservable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<CustomerAccount>() {
-            private CustomerAccount mCustomerAccount;
+
 
             @Override
             public void onCompleted() {
