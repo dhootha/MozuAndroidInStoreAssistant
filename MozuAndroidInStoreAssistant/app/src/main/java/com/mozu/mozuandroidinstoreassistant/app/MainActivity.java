@@ -282,14 +282,9 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
     }
 
     private void initializeSearchFragment() {
-        FragmentManager fragmentManager = getFragmentManager();
-        clearBackstack(fragmentManager);
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         UserAuthenticationStateMachine userStateMachine = UserAuthenticationStateMachineProducer.getInstance(this);
         SearchFragment fragment = SearchFragment.getInstance(userStateMachine.getTenantId(),userStateMachine.getSiteId());
-        fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out);
-        fragmentTransaction.replace(R.id.content_fragment_holder, fragment);
-        fragmentTransaction.commit();
+        addMainFragment(fragment,true);
     }
 
 
@@ -304,6 +299,21 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
             fragmentTransaction.addToBackStack(null);
         }
         fragmentTransaction.commit();
+    }
+
+
+    @Override
+    public void onBackPressed() {
+
+        FragmentManager fragmentManager = getFragmentManager();
+        Fragment currentFragment = fragmentManager.findFragmentById(R.id.content_fragment_holder);
+        if (currentFragment instanceof SearchFragment) {
+            ((SearchFragment) currentFragment).onBackPressed();
+        }
+        else{
+            super.onBackPressed();
+        }
+
     }
 
     private void clearBackstack(FragmentManager fragmentManager) {

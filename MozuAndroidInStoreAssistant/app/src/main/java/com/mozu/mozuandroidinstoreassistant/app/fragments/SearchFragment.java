@@ -289,6 +289,12 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
         return true;
     }
 
+    public void onBackPressed() {
+        if (TextUtils.isEmpty(mSearchView.getQuery()) && mOrderLayout.getVisibility() == View.INVISIBLE && mCustomerLayout.getVisibility() == View.INVISIBLE && mProductLayout.getVisibility() == View.INVISIBLE) {
+            getFragmentManager().popBackStack();
+        }
+    }
+
     private class OrderViewListener implements View.OnClickListener{
 
         @Override
@@ -323,12 +329,26 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
         }
     }
 
+
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.search, menu);
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
         mSearchMenuItem  = menu.findItem(R.id.search);
+       mSearchMenuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem menuItem) {
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem menuItem) {
+                onBackPressed();
+                return false;
+            }
+        });
         mSearchView = (SearchView) mSearchMenuItem.getActionView();
         mSearchView.setQueryHint(getString(R.string.global_search_hint));
         mSearchView.setMaxWidth(1500);
@@ -347,6 +367,19 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
         mSearchMenuItem.expandActionView();
         showSuggestions();
+
+        mSearchView.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    onBackPressed();
+                }
+                return true;
+            }
+        });
+
+
+
     }
 
 
