@@ -10,10 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.mozu.api.contracts.commerceruntime.discounts.AppliedLineItemProductDiscount;
-import com.mozu.api.contracts.commerceruntime.discounts.AppliedProductDiscount;
 import com.mozu.api.contracts.commerceruntime.discounts.Discount;
 import com.mozu.api.contracts.commerceruntime.discounts.ShippingDiscount;
 import com.mozu.api.contracts.commerceruntime.orders.Order;
@@ -50,6 +50,8 @@ public class OrderDetailOverviewFragment extends Fragment implements View.OnClic
     private ImageView mToggleDetailsView;
 
     private NumberFormat mNumberFormat;
+    private View mView;
+    private ScrollView mScrollView;
 
     public OrderDetailOverviewFragment() {
         mNumberFormat = NumberFormat.getCurrencyInstance();
@@ -60,32 +62,33 @@ public class OrderDetailOverviewFragment extends Fragment implements View.OnClic
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.order_detail_overview_fragment, null);
+        mView = inflater.inflate(R.layout.order_detail_overview_fragment, null);
+        mScrollView = (ScrollView) mView.findViewById(R.id.topscrollview);
 
-        mOrderedItemLayout = (LinearLayout) view.findViewById(R.id.layout_to_add_ordered_items_to);
-        mDetailLayout = (LinearLayout) view.findViewById(R.id.detail_layout);
+        mOrderedItemLayout = (LinearLayout) mView.findViewById(R.id.layout_to_add_ordered_items_to);
+        mDetailLayout = (LinearLayout) mView.findViewById(R.id.detail_layout);
 
-        mOrderAttributeItemLayout = (LinearLayout) view.findViewById(R.id.layout_to_add_order_attributes_to);
-        mAttributesHeaderLayout = (LinearLayout) view.findViewById(R.id.attributes_header_layout);
+        mOrderAttributeItemLayout = (LinearLayout) mView.findViewById(R.id.layout_to_add_order_attributes_to);
+        mAttributesHeaderLayout = (LinearLayout) mView.findViewById(R.id.attributes_header_layout);
 
         mDetailLayout.setVisibility(View.GONE);
 
-        mItemsTotal = (TextView) view.findViewById(R.id.items_total);
-        mDiscounts = (TextView) view.findViewById(R.id.discounts);
-        mCoupons = (TextView) view.findViewById(R.id.coupons);
-        mSubTotal = (TextView) view.findViewById(R.id.sub_total);
-        mShipping = (TextView) view.findViewById(R.id.shipping_total);
-        mShippingDiscounts = (TextView) view.findViewById(R.id.shipping_discounts_total);
-        mTax = (TextView) view.findViewById(R.id.tax_total);
+        mItemsTotal = (TextView) mView.findViewById(R.id.items_total);
+        mDiscounts = (TextView) mView.findViewById(R.id.discounts);
+        mCoupons = (TextView) mView.findViewById(R.id.coupons);
+        mSubTotal = (TextView) mView.findViewById(R.id.sub_total);
+        mShipping = (TextView) mView.findViewById(R.id.shipping_total);
+        mShippingDiscounts = (TextView) mView.findViewById(R.id.shipping_discounts_total);
+        mTax = (TextView) mView.findViewById(R.id.tax_total);
 
-        mToggleDetailsView = (ImageView) view.findViewById(R.id.toggle_details_view);
+        mToggleDetailsView = (ImageView) mView.findViewById(R.id.toggle_details_view);
         mToggleDetailsView.setOnClickListener(this);
 
         if (mOrder != null) {
-            setOrderToViews(view);
+            setOrderToViews(mView);
         }
 
-        return view;
+        return mView;
     }
 
     private void setOrderToViews(View view) {
@@ -256,10 +259,15 @@ public class OrderDetailOverviewFragment extends Fragment implements View.OnClic
 
     @Override
     public void onClick(View v) {
-
         if (mToggleDetailsView.getId() == v.getId()) {
             if (mDetailLayout.getVisibility() == View.GONE) {
                 mDetailLayout.setVisibility(View.VISIBLE);
+                mScrollView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mScrollView.fullScroll(View.FOCUS_DOWN);
+                    }
+                });
             } else {
                 mDetailLayout.setVisibility(View.GONE);
             }
@@ -268,12 +276,8 @@ public class OrderDetailOverviewFragment extends Fragment implements View.OnClic
 
     private void determineShowDiscountInfo(View v) {
         int index;
-
-        //try to parse the tag as an index, if it does not parse then we know it is not an index
         try {
-
             index = Integer.parseInt(String.valueOf(v.getTag()));
-
         } catch (Exception e) {
 
            index = -1;

@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.mozu.api.contracts.productruntime.Category;
 import com.mozu.mozuandroidinstoreassistant.app.BuildConfig;
+import com.mozu.mozuandroidinstoreassistant.app.MainActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.CategoryAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.SearchSuggestionsCursorAdapter;
@@ -157,6 +158,13 @@ public class CategoryFragment extends Fragment implements AdapterView.OnItemClic
                 .subscribe(new CategorySubscriber());
     }
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            ((MainActivity)getActivity()).setProductSelected();
+        }
+    }
     @Override
     public void onRefresh() {
         reloadData();

@@ -25,6 +25,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.mozu.api.contracts.productruntime.Product;
+import com.mozu.mozuandroidinstoreassistant.app.MainActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.ProductAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.SearchSuggestionsCursorAdapter;
@@ -98,14 +99,19 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-
         mListener = (ProductFragmentListener) activity;
+    }
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            ((MainActivity)getActivity()).setProductSelected();
+        }
     }
 
     @Override
     public void onDetach() {
         mListener = sProductListener;
-
         super.onDetach();
     }
 

@@ -30,10 +30,8 @@ public class OrderDetailSectionPagerAdapter extends FragmentStatePagerAdapter {
 
     public OrderDetailSectionPagerAdapter(FragmentManager manager, Order product, List<String> pageTitles, int tenantId, int siteId) {
         super(manager);
-
         mOrder = product;
         mPageTitles = pageTitles;
-
         mTenantId = tenantId;
         mSiteId = siteId;
     }
@@ -75,9 +73,6 @@ public class OrderDetailSectionPagerAdapter extends FragmentStatePagerAdapter {
             case RETURNS_TABS_POSITION:
                 OrderDetailReturnsFragment returnsFragment = new OrderDetailReturnsFragment();
                 returnsFragment.setOrder(mOrder);
-                returnsFragment.setSiteId(mSiteId);
-                returnsFragment.setTenantId(mTenantId);
-
                 return returnsFragment;
             case NOTES_TAB_POSITION:
                 OrderDetailNotesFragment notesFragment = new OrderDetailNotesFragment();

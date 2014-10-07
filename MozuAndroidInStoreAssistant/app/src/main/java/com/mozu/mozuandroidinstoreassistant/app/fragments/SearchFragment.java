@@ -30,6 +30,7 @@ import com.mozu.api.contracts.commerceruntime.orders.OrderCollection;
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.api.contracts.customer.CustomerAccountCollection;
 import com.mozu.api.contracts.productruntime.ProductSearchResult;
+import com.mozu.mozuandroidinstoreassistant.app.MainActivity;
 import com.mozu.mozuandroidinstoreassistant.app.OrderDetailActivity;
 import com.mozu.mozuandroidinstoreassistant.app.ProductDetailActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
@@ -46,6 +47,7 @@ import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthen
 import com.mozu.mozuandroidinstoreassistant.app.views.LoadingView;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import rx.Observable;
@@ -143,51 +145,52 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
         }
 
         for(int i = 0; i < recentGlobalSearchs.size(); i++) {
-
             temp[0] = i;
             temp[1] = recentGlobalSearchs.get(i);
-
             cursor.addRow(temp);
-
         }
 
         mSearchView.setSuggestionsAdapter(new SearchSuggestionsCursorAdapter(getActivity(), cursor, recentGlobalSearchs));
-
         mSearchView.setOnSuggestionListener(this);
+    }
+
+    private List<RecentSearch> removeDuplicateSearchItem(List<RecentSearch> searchItems, String query) {
+        Iterator<RecentSearch> i = searchItems.iterator();
+        while (i.hasNext()) {
+            RecentSearch item = i.next();
+            if (item.getSearchTerm().equalsIgnoreCase(query)) {
+                i.remove();
+            }
+        }
+        return searchItems;
     }
 
     private void saveSearchToList(String query) {
         //save search to list
         UserPreferences prefs = mUserState.getCurrentUsersPreferences();
-
         List<RecentSearch> recentGlobalSearchs = prefs.getRecentGlobalSearchs();
-
         if (recentGlobalSearchs == null) {
             recentGlobalSearchs = new ArrayList<RecentSearch>();
         }
-
-        //if search already exists then dont add it again
-        for (int i = 0; i < recentGlobalSearchs.size(); i++) {
-            if (recentGlobalSearchs.get(i).getSearchTerm().equalsIgnoreCase(query)) {
-                recentGlobalSearchs.remove(i);
-                break;
-            }
-        }
-
+        recentGlobalSearchs = removeDuplicateSearchItem(recentGlobalSearchs,query);
         RecentSearch search = new RecentSearch();
         search.setSearchTerm(query);
-
         recentGlobalSearchs.add(0, search);
-
         if (recentGlobalSearchs.size() > MAX_NUMBER_OF_SEARCHES) {
             recentGlobalSearchs.remove(recentGlobalSearchs.size() - 1);
         }
-
         prefs.setRecentGlobalSearchs(recentGlobalSearchs);
-
         mUserState.updateUserPreferences();
     }
 
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            ((MainActivity) getActivity()).setOrdersSelected();
+        }
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
             mView = inflater.inflate(R.layout.fragment_search, container, false);
@@ -276,11 +279,12 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 CustomerAccount customerAccount = mCustomerAdapter.getItem(position);
                 Intent intent = new Intent(getActivity(), CustomerDetailActivity.class);
-                intent.putExtra(CustomerDetailActivity.CUSTOMER_ID,customerAccount.getId());
+                intent.putExtra(CustomerDetailActivity.CUSTOMER_ID, customerAccount.getId());
                 startActivity(intent);
             }
         });
             setHasOptionsMenu(true);
+
 
         return mView;
     }
@@ -298,6 +302,12 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
         performSearch(selectedStr);
         mSearchView.setQuery(selectedStr,false);
         return true;
+    }
+
+    public void onBackPressed() {
+        if (TextUtils.isEmpty(mSearchView.getQuery()) && mOrderLayout.getVisibility() == View.INVISIBLE && mCustomerLayout.getVisibility() == View.INVISIBLE && mProductLayout.getVisibility() == View.INVISIBLE) {
+            getFragmentManager().popBackStack();
+        }
     }
 
     private class OrderViewListener implements View.OnClickListener{
@@ -334,12 +344,26 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
         }
     }
 
+
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.search, menu);
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
         mSearchMenuItem  = menu.findItem(R.id.search);
+       mSearchMenuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem menuItem) {
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem menuItem) {
+                onBackPressed();
+                return true;
+            }
+        });
         mSearchView = (SearchView) mSearchMenuItem.getActionView();
         mSearchView.setQueryHint(getString(R.string.global_search_hint));
         mSearchView.setMaxWidth(1500);
@@ -358,6 +382,19 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
         mSearchMenuItem.expandActionView();
         showSuggestions();
+
+        mSearchView.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    onBackPressed();
+                }
+                return true;
+            }
+        });
+
+
+
     }
 
 

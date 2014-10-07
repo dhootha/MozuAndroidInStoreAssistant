@@ -1,11 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -32,13 +25,13 @@
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
                 android:textColor="@android:color/transparent"
-                android:text="@string/blank_for_alignment"/>
+                android:text="@string/blank_for_alignment" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="28sp"
-                android:text="@string/returns_header"/>
+                android:text="@string/returns_header" />
 
         </LinearLayout>
 
@@ -60,14 +53,14 @@
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
                     android:textColor="@android:color/darker_gray"
-                    android:text="@string/replaced_total"/>
+                    android:text="@string/replaced_total" />
 
                 <TextView
                     android:id="@+id/replaced_total"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:textSize="28sp"/>
+                    android:textSize="28sp" />
 
             </LinearLayout>
 
@@ -83,14 +76,14 @@
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
                     android:textColor="@android:color/darker_gray"
-                    android:text="@string/refunded_total"/>
+                    android:text="@string/refunded_total" />
 
                 <TextView
                     android:id="@+id/refunded_total"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:textSize="28sp"/>
+                    android:textSize="28sp" />
 
             </LinearLayout>
 
@@ -106,14 +99,14 @@
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
                     android:textColor="@android:color/darker_gray"
-                    android:text="@string/total_returned_items"/>
+                    android:text="@string/total_returned_items" />
 
                 <TextView
                     android:id="@+id/total_returned"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:textSize="28sp"/>
+                    android:textSize="28sp" />
 
             </LinearLayout>
 
@@ -128,7 +121,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
         android:text="@string/empty_order_items_text"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/list_of_returns_layout"
@@ -154,8 +147,7 @@
                 android:layout_marginLeft="10dp"
                 android:textStyle="bold"
                 android:textColor="@android:color/darker_gray"
-                android:text="@string/date_return_header"
-                />
+                android:text="@string/date_return_header" />
 
             <TextView
                 android:layout_width="0dp"
@@ -163,8 +155,7 @@
                 android:layout_weight=".4"
                 android:textStyle="bold"
                 android:textColor="@android:color/darker_gray"
-                android:text="@string/code_return_header"
-                />
+                android:text="@string/code_return_header" />
 
             <TextView
                 android:layout_width="0dp"
@@ -172,8 +163,7 @@
                 android:layout_weight="1.3"
                 android:textStyle="bold"
                 android:textColor="@android:color/darker_gray"
-                android:text="@string/product_return_header"
-                />
+                android:text="@string/product_return_header" />
 
             <TextView
                 android:layout_width="0dp"
@@ -203,16 +193,18 @@
                 android:gravity="center_horizontal" />
 
         </LinearLayout>
-
-
-        <LinearLayout
+        <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_margin="5dp"
             android:orientation="horizontal"
-            android:background="@color/darker_grey">
+            android:background="@color/darker_grey"/>
 
-        </LinearLayout>
+
+        <com.mozu.mozuandroidinstoreassistant.app.views.LoadingView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/order_return_loading">
 
         <ListView
             android:id="@+id/returns_list"
@@ -220,10 +212,9 @@
             android:layout_height="wrap_content"
             android:scrollbars="none"
             android:dividerHeight="0dp"
-            android:divider="@android:color/transparent"
-            />
+            android:divider="@android:color/transparent" />
+            </com.mozu.mozuandroidinstoreassistant.app.views.LoadingView>
 
     </LinearLayout>
 
 </LinearLayout>
-    </ScrollView>

@@ -216,17 +216,13 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         mCustomersLayout.setSelected(false);
 
         if (viewId == R.id.menu_search_layout) {
-            getActionBar().setTitle(R.string.menu_search_text);
-            mSearchMenuLayout.setSelected(true);
+            setSearchSelected();
         } else if (viewId == R.id.menu_products_layout) {
-            getActionBar().setTitle(R.string.menu_products_text);
-            mProductsLayout.setSelected(true);
+            setProductSelected();
         } else if (viewId == R.id.menu_orders_layout) {
-            getActionBar().setTitle(R.string.menu_orders_text);
-            mOrdersLayout.setSelected(true);
+            setOrdersSelected();
         } else if (viewId == R.id.menu_customers_layout) {
-            getActionBar().setTitle(R.string.menu_customers_text);
-            mCustomersLayout.setSelected(true);
+            setCustomersSelected();
         }
     }
 
@@ -243,12 +239,9 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
 
     private void initializeOrdersFragment() {
         FragmentManager fragmentManager = getFragmentManager();
-
         clearBackstack(fragmentManager);
         UserAuthenticationStateMachine userStateMachine = UserAuthenticationStateMachineProducer.getInstance(this);
-
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
         OrderFragment fragment = new OrderFragment();
         fragment.setTenantId(userStateMachine.getTenantId());
         fragment.setSiteId(userStateMachine.getSiteId());
@@ -260,12 +253,9 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
 
     private void initializeCustomersFragment() {
         FragmentManager fragmentManager = getFragmentManager();
-
         clearBackstack(fragmentManager);
         UserAuthenticationStateMachine userStateMachine = UserAuthenticationStateMachineProducer.getInstance(this);
-
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
         CustomersFragment fragment = new CustomersFragment();
         fragment.setTenantId(userStateMachine.getTenantId());
         fragment.setSiteId(userStateMachine.getSiteId());
@@ -282,16 +272,42 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
     }
 
     private void initializeSearchFragment() {
-        FragmentManager fragmentManager = getFragmentManager();
-        clearBackstack(fragmentManager);
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         UserAuthenticationStateMachine userStateMachine = UserAuthenticationStateMachineProducer.getInstance(this);
         SearchFragment fragment = SearchFragment.getInstance(userStateMachine.getTenantId(),userStateMachine.getSiteId());
-        fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out);
-        fragmentTransaction.replace(R.id.content_fragment_holder, fragment);
-        fragmentTransaction.commit();
+        addMainFragment(fragment,true);
     }
 
+    private void resetSelected(){
+        mProductsLayout.setSelected(false);
+        mOrdersLayout.setSelected(false);
+        mCustomersLayout.setSelected(false);
+        mSearchMenuLayout.setSelected(false);
+    }
+
+    public void setProductSelected(){
+        resetSelected();
+        getActionBar().setTitle(R.string.menu_products_text);
+        mProductsLayout.setSelected(true);
+    }
+
+    public void setOrdersSelected(){
+        resetSelected();
+        getActionBar().setTitle(R.string.menu_orders_text);
+        mOrdersLayout.setSelected(true);
+    }
+
+    public void setCustomersSelected(){
+        resetSelected();
+        getActionBar().setTitle(R.string.menu_customers_text);
+        mCustomersLayout.setSelected(true);
+
+    }
+
+    public void setSearchSelected(){
+        resetSelected();
+        getActionBar().setTitle(R.string.menu_search_text);
+        mSearchMenuLayout.setSelected(true);
+    }
 
     public void addMainFragment(Fragment newFragment,boolean addToBackStack){
         FragmentManager fragmentManager = getFragmentManager();
@@ -304,6 +320,21 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
             fragmentTransaction.addToBackStack(null);
         }
         fragmentTransaction.commit();
+    }
+
+
+    @Override
+    public void onBackPressed() {
+
+        FragmentManager fragmentManager = getFragmentManager();
+        Fragment currentFragment = fragmentManager.findFragmentById(R.id.content_fragment_holder);
+        if (currentFragment instanceof SearchFragment) {
+            ((SearchFragment) currentFragment).onBackPressed();
+        }
+        else{
+            super.onBackPressed();
+        }
+
     }
 
     private void clearBackstack(FragmentManager fragmentManager) {

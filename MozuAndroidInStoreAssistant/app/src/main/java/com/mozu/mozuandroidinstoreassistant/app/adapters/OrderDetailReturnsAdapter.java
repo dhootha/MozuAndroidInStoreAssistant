@@ -31,6 +31,11 @@ public class OrderDetailReturnsAdapter extends ArrayAdapter<ReturnItemForAdapter
     }
 
     @Override
+    public boolean isEnabled(int position) {
+        return false;
+    }
+
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.returns_list_item, parent, false);

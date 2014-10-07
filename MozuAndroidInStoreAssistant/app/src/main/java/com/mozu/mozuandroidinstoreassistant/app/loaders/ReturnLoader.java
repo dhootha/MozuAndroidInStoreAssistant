@@ -89,7 +89,6 @@ public class ReturnLoader extends AsyncTaskLoader<List<Return>> {
 
         try {
             collection = orderResource.getReturns(0, 200, null, "originalorderId eq " + mOrderNumber + " or returnorderid eq " + mOrderNumber, null);
-
             if (collection != null) {
                 returns = collection.getItems();
             }
