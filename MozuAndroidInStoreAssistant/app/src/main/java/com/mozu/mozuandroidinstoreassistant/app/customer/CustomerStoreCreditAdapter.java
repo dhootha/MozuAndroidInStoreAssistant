@@ -60,8 +60,7 @@ public class CustomerStoreCreditAdapter extends BaseAdapter {
         creditBalance.setText(NumberFormat.getCurrencyInstance().format(credit.getCurrentBalance()));
         creditType.setText(credit.getCreditType());
         creditExpires.setText(DateUtils.getFormattedDate(credit.getExpirationDate().getMillis()));
-        creditDate.setText(DateUtils.getFormattedDate(credit.getAuditInfo().getCreateDate().getMillis()));
-
+        creditDate.setText(DateUtils.getFormattedDate(credit.getActivationDate().getMillis()));
         return view;
     }
 
