@@ -191,6 +191,8 @@
     <string name="not_available">N/A</string>
     <string name="order_fulfillment_status">Status:</string>
     <string name="store_credit_type_label">Type</string>
+    <string name="auth_id">Auth ID:</string>
+    <string name="trans_id">Trans ID:</string>
 
 
 </resources>

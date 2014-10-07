@@ -32,6 +32,12 @@ public class PaymentInfoFragment extends DialogFragment {
     @InjectView(R.id.payment_status) TextView mPaymentStatus;
     @InjectView(R.id.payment_date) TextView mPaymentDate;
     @InjectView(R.id.payment_amount) TextView mPaymentAmount;
+    @InjectView(R.id.top_payment_type) TextView mTopPaymentType;
+    @InjectView(R.id.top_payment_date) TextView mTopPaymentDate;
+    @InjectView(R.id.top_payment_amount) TextView mTopPaymentAmount;
+    @InjectView(R.id.trans_id_value) TextView mTransId;
+    @InjectView(R.id.auth_id_value) TextView mAuthId;
+
 
     public static PaymentInfoFragment getInstance(Payment payment){
         PaymentInfoFragment paymentInfoFragment = new PaymentInfoFragment();
@@ -72,6 +78,19 @@ public class PaymentInfoFragment extends DialogFragment {
         mPaymentDate.setText(DateUtils.getFormattedDateTime(mPayment.getBillingInfo().getAuditInfo().getCreateDate().getMillis()));
         NumberFormat numberFormat = NumberFormat.getCurrencyInstance();
         mPaymentAmount.setText(numberFormat.format(mPayment.getAmountCollected()));
+        mTopPaymentAmount.setText(numberFormat.format(mPayment.getAmountCollected()));
+        mTopPaymentDate.setText(DateUtils.getFormattedDate(mPayment.getBillingInfo().getAuditInfo().getCreateDate().getMillis()));
+        if (mPayment.getBillingInfo().getPaymentType().equalsIgnoreCase("CreditCard")) {
+            mTopPaymentType.setText(mPayment.getBillingInfo().getCard().getCardNumberPartOrMask());
+
+        } else {
+            mTopPaymentType.setText(getPaymentMethod(mPayment));
+        }
+
+        if (mPayment.getPaymentServiceTransactionId() != null) {
+            mTransId.setText(mPayment.getPaymentServiceTransactionId());
+        }
+        mAuthId.setText(mPayment.getId());
     }
 
     private String getPaymentMethod(Payment payment){
@@ -120,7 +139,7 @@ public class PaymentInfoFragment extends DialogFragment {
             str.append(lineSeparator);
         }
 
-        str.append(address.getCityOrTown());
+        str.append(address.getCityOrTown().trim());
         str.append(",");
         str.append(address.getStateOrProvince());
         str.append(" ");
