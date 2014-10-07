@@ -1,5 +1,6 @@
 package com.mozu.mozuandroidinstoreassistant.app.fragments;
 
+import android.app.Activity;
 import android.app.LoaderManager;
 import android.app.SearchManager;
 import android.content.Context;
@@ -24,6 +25,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.mozu.api.contracts.customer.CustomerAccount;
+import com.mozu.mozuandroidinstoreassistant.app.MainActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.CustomersAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.SearchSuggestionsCursorAdapter;
@@ -136,6 +138,14 @@ public class CustomersFragment extends Fragment implements LoaderManager.LoaderC
         outState.putInt(CURRENT_SORT_COLUMN_EXTRA, mResourceOfCurrentSelectedColumn);
 
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            ((MainActivity)getActivity()).setCustomersSelected();
+        }
     }
 
     @Override

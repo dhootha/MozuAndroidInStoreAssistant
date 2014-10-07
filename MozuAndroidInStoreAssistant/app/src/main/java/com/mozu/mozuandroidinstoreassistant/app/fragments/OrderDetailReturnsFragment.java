@@ -1,8 +1,6 @@
 package com.mozu.mozuandroidinstoreassistant.app.fragments;
 
 import android.app.Fragment;
-import android.app.LoaderManager;
-import android.content.Loader;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,70 +14,112 @@ import com.mozu.api.contracts.commerceruntime.returns.Return;
 import com.mozu.api.contracts.commerceruntime.returns.ReturnItem;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.OrderDetailReturnsAdapter;
-import com.mozu.mozuandroidinstoreassistant.app.loaders.ReturnLoader;
 import com.mozu.mozuandroidinstoreassistant.app.models.ReturnItemForAdapterWrapper;
+import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
+import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
+import com.mozu.mozuandroidinstoreassistant.app.order.OrderReturnFetcher;
+import com.mozu.mozuandroidinstoreassistant.app.views.LoadingView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.android.observables.AndroidObservable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
-public class OrderDetailReturnsFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Return>> {
+
+public class OrderDetailReturnsFragment extends Fragment  {
 
     private static final int LOADER_ORDER_DETAIL = 141;
     public static final String REPLACE = "Replace";
     public static final String REFUND = "Refund";
     public static final String UNKNOWN = "Unknown";
-
     private LinearLayout mListOfReturnsLayout;
 
     private Order mOrder;
-    private List<Return> mReturns;
 
     private TextView mReplacedTotal;
     private TextView mRefundedTotal;
     private TextView mTotal;
     private TextView mEmptyReturnsMessage;
-
     private ListView mItemList;
-
-    private int mTenantId;
-    private int mSiteId;
-
+    private OrderReturnFetcher mOrderReturnFetcher;
+    private rx.Observable<List<Return>> mOrderReturnObservable;
+    private LoadingView mReturnLoading;
+    private View mView;
     public OrderDetailReturnsFragment() {
         // Required empty public constructor
         setRetainInstance(true);
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mOrderReturnFetcher = new OrderReturnFetcher();
+        UserAuthenticationStateMachine userState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
+        mOrderReturnObservable = AndroidObservable.bindFragment(this, mOrderReturnFetcher.getOrderReturns(userState.getTenantId(), userState.getSiteId()));
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.order_detail_returns_fragment, null);
-
-        if (mOrder != null) {
-            getLoaderManager().initLoader(LOADER_ORDER_DETAIL, savedInstanceState, this).forceLoad();
-        }
-
-        return view;
+        mView = inflater.inflate(R.layout.order_detail_returns_fragment, null);
+        mReturnLoading = (LoadingView) mView.findViewById(R.id.order_return_loading);
+        return mView;
     }
 
-    private void setOrderToViews(View view) {
-        if (view == null || mReturns == null) {
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        loadData();
+    }
+
+    private void loadData(){
+        mOrderReturnFetcher.setOrderNumber(mOrder.getId());
+        mOrderReturnObservable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new OrderReturnSubscriber());
+
+    }
+
+    private class OrderReturnSubscriber implements rx.Observer<List<Return>> {
+        List<Return> mReturnList = new ArrayList<Return>();
+        @Override
+        public void onCompleted() {
+            if (mReturnList.size() > 0) {
+                mReturnLoading.success();
+                setOrderToViews(mReturnList);
+            } else {
+                mReturnLoading.setError("No returns data Available");
+            }
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            mReturnLoading.setError(e.getMessage());
+        }
+
+        @Override
+        public void onNext(List<Return> returnList) {
+            mReturnList = returnList;
+        }
+    }
+
+
+    private void setOrderToViews(List<Return> returnList) {
+        if (returnList == null) {
             return;
         }
 
-        mListOfReturnsLayout = (LinearLayout) view.findViewById(R.id.list_of_returns_layout);
-        mReplacedTotal = (TextView) view.findViewById(R.id.replaced_total);
-        mRefundedTotal = (TextView) view.findViewById(R.id.refunded_total);
-        mTotal = (TextView) view.findViewById(R.id.total_returned);
-        mEmptyReturnsMessage = (TextView) view.findViewById(R.id.empty_returns_message);
+        mListOfReturnsLayout = (LinearLayout) mView.findViewById(R.id.list_of_returns_layout);
+        mReplacedTotal = (TextView) mView.findViewById(R.id.replaced_total);
+        mRefundedTotal = (TextView) mView.findViewById(R.id.refunded_total);
+        mTotal = (TextView) mView.findViewById(R.id.total_returned);
+        mEmptyReturnsMessage = (TextView) mView.findViewById(R.id.empty_returns_message);
 
         List<ReturnItemForAdapterWrapper> items = new ArrayList<ReturnItemForAdapterWrapper>();
         int replacedCount = 0;
         int refundedCount = 0;
 
-        for (Return item: mReturns) {
+        for (Return item: returnList) {
             String returnType = new String();
-
             if (item.getCustomerInteractionType().equalsIgnoreCase(REPLACE)) {
                 replacedCount += item.getReturnNumber();
                 returnType = REPLACE;
@@ -96,10 +136,10 @@ public class OrderDetailReturnsFragment extends Fragment implements LoaderManage
             }
         }
 
-        mItemList = (ListView) view.findViewById(R.id.returns_list);
+        mItemList = (ListView) mView.findViewById(R.id.returns_list);
         mItemList.setAdapter(new OrderDetailReturnsAdapter(getActivity(), items));
 
-        if (replacedCount + refundedCount < 1) {
+        if (items.size() < 1) {
             mListOfReturnsLayout.setVisibility(View.INVISIBLE);
             mEmptyReturnsMessage.setVisibility(View.VISIBLE);
         } else {
@@ -109,7 +149,7 @@ public class OrderDetailReturnsFragment extends Fragment implements LoaderManage
 
         mReplacedTotal.setText(String.valueOf(replacedCount));
         mRefundedTotal.setText(String.valueOf(refundedCount));
-        mTotal.setText(String.valueOf(replacedCount + refundedCount));
+        mTotal.setText(String.valueOf(items.size()));
     }
 
 
@@ -117,29 +157,4 @@ public class OrderDetailReturnsFragment extends Fragment implements LoaderManage
         mOrder = order;
     }
 
-
-    @Override
-    public Loader<List<Return>> onCreateLoader(int id, Bundle args) {
-        return new ReturnLoader(getActivity(), mTenantId, mSiteId, mOrder.getId());
-    }
-
-    @Override
-    public void onLoadFinished(Loader<List<Return>> loader, List<Return> data) {
-        mReturns = data;
-
-        setOrderToViews(getView());
-    }
-
-    @Override
-    public void onLoaderReset(Loader<List<Return>> loader) {
-
-    }
-
-    public void setTenantId(int tenantId) {
-        mTenantId = tenantId;
-    }
-
-    public void setSiteId(int siteId) {
-        mSiteId = siteId;
-    }
 }

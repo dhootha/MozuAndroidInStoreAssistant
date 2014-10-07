@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.mozu.api.contracts.commerceruntime.payments.BillingInfo;
 import com.mozu.api.contracts.commerceruntime.payments.Payment;
 import com.mozu.api.contracts.core.Address;
+import com.mozu.api.contracts.core.Contact;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.utils.DateUtils;
 
@@ -99,8 +100,11 @@ public class PaymentInfoFragment extends DialogFragment {
 
     private String getAddressString(Payment payment){
         String lineSeparator = System.getProperty ("line.separator");
-        Address address = payment.getBillingInfo().getBillingContact().getAddress();
+        Contact billingContact =  payment.getBillingInfo().getBillingContact();
+        Address address = billingContact.getAddress();
         StringBuilder str = new StringBuilder();
+        str.append(billingContact.getFirstName()+" "+billingContact.getLastNameOrSurname());
+        str.append(lineSeparator);
         str.append(address.getAddress1());
         str.append(lineSeparator);
         if (!TextUtils.isEmpty(address.getAddress2())) {

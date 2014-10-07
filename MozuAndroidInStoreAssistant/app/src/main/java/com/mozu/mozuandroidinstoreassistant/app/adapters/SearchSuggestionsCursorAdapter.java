@@ -19,25 +19,19 @@ public class SearchSuggestionsCursorAdapter extends CursorAdapter {
 
     public SearchSuggestionsCursorAdapter(Context context, Cursor cursor, List<RecentSearch> items) {
         super(context, cursor, false);
-
         mItems = items;
     }
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-
         TextView text = (TextView) view.findViewById(R.id.text);
         text.setText(mItems.get(cursor.getPosition()).getSearchTerm());
-
     }
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
         View view = inflater.inflate(R.layout.item, parent, false);
-
         return view;
 
     }
