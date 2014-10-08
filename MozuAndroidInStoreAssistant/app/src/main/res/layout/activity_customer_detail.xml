@@ -102,6 +102,7 @@
                     android:fontFamily="sans-serif-light"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
+                    android:text="@string/not_available"
                     android:textColor="@color/mozu_color" />
             </LinearLayout>
 

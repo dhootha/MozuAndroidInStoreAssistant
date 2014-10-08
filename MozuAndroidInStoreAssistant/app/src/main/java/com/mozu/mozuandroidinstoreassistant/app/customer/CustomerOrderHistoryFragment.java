@@ -1,14 +1,17 @@
 package com.mozu.mozuandroidinstoreassistant.app.customer;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.customer.CustomerAccount;
+import com.mozu.mozuandroidinstoreassistant.app.OrderDetailActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
@@ -57,6 +60,18 @@ public class CustomerOrderHistoryFragment extends Fragment {
         mAdapter = new CustomerOrderHistoryAdapter(new ArrayList<Order>());
         mListView.setAdapter(mAdapter);
         mListView.setDivider(null);
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Order order =  mAdapter.getItem(position);
+                UserAuthenticationStateMachine userAuthenticationStateMachine = UserAuthenticationStateMachineProducer.getInstance(getActivity());
+                Intent intent = new Intent(getActivity(), OrderDetailActivity.class);
+                intent.putExtra(OrderDetailActivity.ORDER_NUMBER_EXTRA_KEY, order.getId());
+                intent.putExtra(OrderDetailActivity.CURRENT_TENANT_ID, userAuthenticationStateMachine.getTenantId());
+                intent.putExtra(OrderDetailActivity.CURRENT_SITE_ID, userAuthenticationStateMachine.getSiteId());
+                startActivity(intent);
+            }
+        });
         return fragmentView;
     }
 

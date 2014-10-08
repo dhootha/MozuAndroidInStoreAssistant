@@ -408,7 +408,6 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
     @Override
     public void orderSelected(Order order) {
         UserAuthenticationStateMachine userAuthenticationStateMachine = UserAuthenticationStateMachineProducer.getInstance(this);
-
         Intent intent = new Intent(this, OrderDetailActivity.class);
 
         intent.putExtra(OrderDetailActivity.ORDER_NUMBER_EXTRA_KEY, order.getId());

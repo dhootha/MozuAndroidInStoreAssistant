@@ -9,11 +9,13 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.OrderDetailSectionPagerAdapter;
+import com.mozu.mozuandroidinstoreassistant.app.customer.CustomerDetailActivity;
 import com.mozu.mozuandroidinstoreassistant.app.loaders.OrderDetailLoader;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.tasks.CustomerAsyncListener;
@@ -85,6 +87,16 @@ public class OrderDetailActivity extends Activity implements LoaderManager.Loade
         mOrderDate = (TextView) findViewById(R.id.order_date);
         mOrderName = (TextView) findViewById(R.id.order_name);
         mOrderTotal = (TextView) findViewById(R.id.order_total);
+        mOrderName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mOrder != null && mOrder.getCustomerAccountId() != null) {
+                    Intent intent = new Intent(OrderDetailActivity.this, CustomerDetailActivity.class);
+                    intent.putExtra(CustomerDetailActivity.CUSTOMER_ID, mOrder.getCustomerAccountId());
+                    startActivity(intent);
+                }
+            }
+        });
 
         mTitles = new ArrayList<String>();
         mTitles.add(getString(R.string.overview_tab_name));
