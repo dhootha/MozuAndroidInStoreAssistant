@@ -17,6 +17,8 @@ import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.OrderDetailPaymentsAdapter;
 
 import java.text.NumberFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -45,9 +47,25 @@ public class OrderDetailPaymentFragment extends Fragment {
         return view;
     }
 
+    class PaymentsSort implements Comparator<Payment> {
+        @Override
+        public int compare(Payment p1, Payment p2) {
+            if (p1.getAuditInfo().getCreateDate().getMillis() > p2.getAuditInfo().getCreateDate().getMillis())
+                return -1;
+            else if ((p2.getAuditInfo().getCreateDate().getMillis() > p1.getAuditInfo().getCreateDate().getMillis())) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    }
+
+
     private void setOrderToViews(View view) {
         ListView paymentList = (ListView) view.findViewById(R.id.payments_list);
-        final OrderDetailPaymentsAdapter adapter = new OrderDetailPaymentsAdapter(getActivity(), mOrder.getPayments());
+        List<Payment> payments = mOrder.getPayments();
+        Collections.sort(payments,new PaymentsSort());
+        final OrderDetailPaymentsAdapter adapter = new OrderDetailPaymentsAdapter(getActivity(), payments);
         paymentList.setAdapter(adapter);
         TextView emptyView = (TextView) view.findViewById(R.id.empty_payments_message);
         paymentList.setEmptyView(emptyView);
@@ -61,7 +79,12 @@ public class OrderDetailPaymentFragment extends Fragment {
         TextView orderTotal = (TextView) view.findViewById(R.id.order_total);
         TextView paymentsReceived = (TextView) view.findViewById(R.id.payments_received);
         TextView balance = (TextView) view.findViewById(R.id.balance);
-
+        TextView status = (TextView) view.findViewById(R.id.status);
+        if (mOrder.getPaymentStatus() != null) {
+            status.setText(mOrder.getPaymentStatus());
+        } else {
+            status.setText("N/A");
+        }
         orderTotal.setText(mNumberFormat.format(mOrder.getTotal()));
         paymentsReceived.setText(mNumberFormat.format(mOrder.getTotal() - mOrder.getAmountRemainingForPayment()));
         balance.setText(mNumberFormat.format(mOrder.getAmountRemainingForPayment()));

@@ -51,7 +51,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="60dp"
-                    android:src="@drawable/icon_ordertime" />
+                    android:src="@drawable/icon_emailaddress" />
 
                 <TextView
                     android:id="@+id/customer_email"
@@ -72,7 +72,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
-                    android:src="@drawable/icon_ordername" />
+                    android:src="@drawable/icon_customergroup" />
 
                 <TextView
                     android:id="@+id/customer_group"
@@ -94,7 +94,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
-                    android:src="@drawable/icon_ordername" />
+                    android:src="@drawable/icon_newsletter" />
 
                 <TextView
                     android:id="@+id/customer_newsletter"
@@ -116,7 +116,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
-                    android:src="@drawable/icon_ordername" />
+                    android:src="@drawable/icon_taxexempt" />
 
                 <TextView
                     android:id="@+id/customer_tax_exempt"
