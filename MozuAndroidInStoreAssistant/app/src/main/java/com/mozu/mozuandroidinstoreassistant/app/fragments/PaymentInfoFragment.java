@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.mozu.api.contracts.commerceruntime.payments.BillingInfo;
 import com.mozu.api.contracts.commerceruntime.payments.Payment;
+import com.mozu.api.contracts.commerceruntime.payments.PaymentInteraction;
 import com.mozu.api.contracts.core.Address;
 import com.mozu.api.contracts.core.Contact;
 import com.mozu.mozuandroidinstoreassistant.app.R;
@@ -37,7 +38,6 @@ public class PaymentInfoFragment extends DialogFragment {
     @InjectView(R.id.top_payment_amount) TextView mTopPaymentAmount;
     @InjectView(R.id.trans_id_value) TextView mTransId;
     @InjectView(R.id.auth_id_value) TextView mAuthId;
-    @InjectView(R.id.amount_authorized) TextView mAmountAuthorized;
 
 
     public static PaymentInfoFragment getInstance(Payment payment){
@@ -88,12 +88,19 @@ public class PaymentInfoFragment extends DialogFragment {
         }
 
         if (mPayment.getPaymentServiceTransactionId() != null) {
-            mTransId.setText(mPayment.getPaymentServiceTransactionId());
+            for (PaymentInteraction interaction : mPayment.getInteractions()) {
+                if (mPayment.getId().equalsIgnoreCase(interaction.getPaymentId())) {
+                    if(interaction.getGatewayTransactionId() != null && !interaction.getGatewayTransactionId().equals("0")) {
+                        mTransId.setText(interaction.getGatewayTransactionId());
+                    }else{
+                        mTransId.setText("N/A");
+                    }
+                    break;
+                }
+            }
         }
         mAuthId.setText(mPayment.getId());
-
-        //TODO: Figure out a way to retrieve this
-        mAmountAuthorized.setText("N/A");
+        mPayment.getInteractions();
     }
 
     private String getPaymentMethod(Payment payment){
