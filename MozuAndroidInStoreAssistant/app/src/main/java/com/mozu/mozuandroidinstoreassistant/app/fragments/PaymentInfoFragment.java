@@ -37,6 +37,7 @@ public class PaymentInfoFragment extends DialogFragment {
     @InjectView(R.id.top_payment_amount) TextView mTopPaymentAmount;
     @InjectView(R.id.trans_id_value) TextView mTransId;
     @InjectView(R.id.auth_id_value) TextView mAuthId;
+    @InjectView(R.id.amount_authorized) TextView mAmountAuthorized;
 
 
     public static PaymentInfoFragment getInstance(Payment payment){
@@ -82,7 +83,6 @@ public class PaymentInfoFragment extends DialogFragment {
         mTopPaymentDate.setText(DateUtils.getFormattedDate(mPayment.getBillingInfo().getAuditInfo().getCreateDate().getMillis()));
         if (mPayment.getBillingInfo().getPaymentType().equalsIgnoreCase("CreditCard")) {
             mTopPaymentType.setText(mPayment.getBillingInfo().getCard().getCardNumberPartOrMask());
-
         } else {
             mTopPaymentType.setText(getPaymentMethod(mPayment));
         }
@@ -91,6 +91,9 @@ public class PaymentInfoFragment extends DialogFragment {
             mTransId.setText(mPayment.getPaymentServiceTransactionId());
         }
         mAuthId.setText(mPayment.getId());
+
+        //TODO: Figure out a way to retrieve this
+        mAmountAuthorized.setText("N/A");
     }
 
     private String getPaymentMethod(Payment payment){

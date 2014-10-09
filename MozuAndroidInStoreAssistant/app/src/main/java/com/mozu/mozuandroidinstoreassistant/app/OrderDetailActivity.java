@@ -117,7 +117,7 @@ public class OrderDetailActivity extends Activity implements LoaderManager.Loade
 
         mNumberFormat = NumberFormat.getCurrencyInstance();
         mOrderSwipeRefresh.setOnRefreshListener(this);
-        mOrderSwipeRefresh.setEnabled(true);
+        mOrderSwipeRefresh.setEnabled(false);
         mOrderSwipeRefresh.setColorScheme(R.color.first_color_swipe_refresh,
                 R.color.second_color_swipe_refresh,
                 R.color.third_color_swipe_refresh,
