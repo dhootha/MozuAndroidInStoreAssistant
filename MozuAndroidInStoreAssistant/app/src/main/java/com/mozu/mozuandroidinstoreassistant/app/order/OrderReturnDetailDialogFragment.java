@@ -21,6 +21,7 @@ import com.mozu.mozuandroidinstoreassistant.app.data.order.OrderReturnDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.OrderReturnHeaderDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.OrderReturnTitleDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.TopRowItem;
+import com.mozu.mozuandroidinstoreassistant.app.utils.DateUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,15 +70,19 @@ public class OrderReturnDetailDialogFragment extends DialogFragment {
         List<IData> resultList = new ArrayList<IData>();
         if (mReturn != null && mReturn.getItems().size() > 0) {
             OrderReturnTitleDataItem orderReturnTitleDataItem = new OrderReturnTitleDataItem("Returns");
-
             resultList.add(orderReturnTitleDataItem);
-
+            resultList.add(new TopRowItem());
             resultList.add(new OrderReturnHeaderDataItem());
             for (ReturnItem returnItem : mReturn.getItems()) {
                 OrderReturnDataItem orderReturnDataItem = new OrderReturnDataItem(returnItem);
                 resultList.add(orderReturnDataItem);
             }
             resultList.add(new BottomRowItem());
+        }
+        if (mReturn.getRmaDeadline() != null) {
+            resultList.add(new OrderReturnTitleDataItem("Return Due on: "+DateUtils.getFormattedDate(mReturn.getRmaDeadline().getMillis())));
+        }else{
+            resultList.add(new OrderReturnTitleDataItem("Return Due on: N/A"));
         }
 
         if (mReturn.getPayments() != null && mReturn.getPayments().size() > 0) {
