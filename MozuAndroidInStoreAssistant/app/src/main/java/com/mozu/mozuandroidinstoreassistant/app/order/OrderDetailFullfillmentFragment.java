@@ -166,7 +166,6 @@ public class OrderDetailFullfillmentFragment extends Fragment {
         List<FullfillmentPackageDataItem> fullfilledItems = new ArrayList<FullfillmentPackageDataItem>();
         List<OrderItem> orderItemsNotPackaged = new ArrayList<OrderItem>(shipItems);
         mOrder.getPickups();
-
         if (shipItems.size() > 0) {
             int packageCount = 0;
             for (Package orderPackage : mOrder.getPackages()) {
