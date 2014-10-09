@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.mozu.mozuandroidinstoreassistant.app.layout.order.OrderReturnHeaderItemRow xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:paddingTop="10dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:background="@drawable/list_item_background"
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:textColor="@android:color/darker_gray"
+        android:text="@string/product_code_header"
+        android:layout_height="match_parent" />
+    <TextView
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:textColor="@android:color/darker_gray"
+        android:text="@string/product_title_header"
+        android:layout_height="match_parent" />
+    <TextView
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:textColor="@android:color/darker_gray"
+        android:text="@string/product_price_header"
+        android:layout_height="match_parent" />
+    <TextView
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:textColor="@android:color/darker_gray"
+        android:text="@string/return_loss_header"
+        android:layout_height="match_parent" />
+    <TextView
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:textColor="@android:color/darker_gray"
+        android:text="@string/return_restockable_header"
+        android:layout_height="match_parent" />
+    <TextView
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:textColor="@android:color/darker_gray"
+        android:text="@string/return_reason_header"
+        android:layout_height="match_parent" />
+    <TextView
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:textColor="@android:color/darker_gray"
+        android:text="@string/return_quantity_header"
+        android:layout_height="match_parent" />
+    <TextView
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:textColor="@android:color/darker_gray"
+        android:text="@string/return_quantity_returned_header"
+        android:layout_height="match_parent" />
+    </com.mozu.mozuandroidinstoreassistant.app.layout.order.OrderReturnHeaderItemRow>

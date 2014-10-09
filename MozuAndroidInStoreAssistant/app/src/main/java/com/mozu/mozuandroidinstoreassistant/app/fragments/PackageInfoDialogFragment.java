@@ -154,7 +154,6 @@ public class PackageInfoDialogFragment extends DialogFragment {
         }
 
         String addressString = "";
-
         if (!TextUtils.isEmpty(address.getAddress1())) {
             addressString += address.getAddress1();
         }

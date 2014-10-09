@@ -84,8 +84,8 @@
     <string name="code_return_header">Code</string>
     <string name="product_return_header">Product</string>
     <string name="price_return_header">Price</string>
-    <string name="type_return_header">Type</string>
-    <string name="quantity_return_header">Quantity</string>
+    <string name="return_type_header">Type</string>
+    <string name="return_quantity_header">Quantity</string>
     <string name="internal_notes_header">Internal Notes</string>
     <string name="customer_notes_header">Customer Notes</string>
     <string name="show_internal_notes_text">Show Internal Notes</string>
@@ -193,6 +193,19 @@
     <string name="store_credit_type_label">Type</string>
     <string name="auth_id">Auth ID:</string>
     <string name="trans_id">Trans ID:</string>
+    <string name="return_id_header">ID</string>
+    <string name="return_status_header">Status</string>
+    <string name="return_create_date_header">Date</string>
+    <string name="return_amount_header">Amount</string>
+    <string name="product_title_header">Title</string>
+    <string name="return_loss_header">Loss</string>
+    <string name="return_restockable_header">Restockable</string>
+    <string name="return_reason_header">Reason</string>
+    <string name="return_quantity_returned_header">Quantity Returned</string>
+    <string name="refund_payment_type">PaymentType</string>
+    <string name="refund_payment_cardtype">CardType</string>
+    <string name="refund_payment_cardnumber">CardNumber</string>
+    <string name="refund_payment_amount_credited">Amount Credited</string>
 
 
 </resources>

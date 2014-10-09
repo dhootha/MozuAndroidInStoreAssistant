@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.mozu.mozuandroidinstoreassistant.app.layout.order.OrderRefundHeaderItemRow xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:background="@drawable/list_item_background"
+    android:paddingLeft="10dp"
+    android:layout_marginTop="10dp"
+    android:paddingRight="10dp"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_weight="1"
+        android:textColor="@android:color/darker_gray"
+        android:layout_width="0dp"
+        android:text="@string/refund_payment_type"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:textColor="@android:color/darker_gray"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:text="@string/refund_payment_cardtype"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:textColor="@android:color/darker_gray"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:text="@string/refund_payment_cardnumber"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:textColor="@android:color/darker_gray"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:text="@string/refund_payment_amount_credited"
+        android:layout_height="match_parent" />
+</com.mozu.mozuandroidinstoreassistant.app.layout.order.OrderRefundHeaderItemRow>

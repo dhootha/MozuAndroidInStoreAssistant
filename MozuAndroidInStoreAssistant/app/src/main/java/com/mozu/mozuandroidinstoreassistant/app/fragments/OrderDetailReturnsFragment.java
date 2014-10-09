@@ -1,10 +1,12 @@
 package com.mozu.mozuandroidinstoreassistant.app.fragments;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -17,6 +19,7 @@ import com.mozu.mozuandroidinstoreassistant.app.adapters.OrderDetailReturnsAdapt
 import com.mozu.mozuandroidinstoreassistant.app.models.ReturnItemForAdapterWrapper;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
+import com.mozu.mozuandroidinstoreassistant.app.order.OrderReturnDetailDialogFragment;
 import com.mozu.mozuandroidinstoreassistant.app.order.OrderReturnFetcher;
 import com.mozu.mozuandroidinstoreassistant.app.views.LoadingView;
 
@@ -29,6 +32,7 @@ import rx.schedulers.Schedulers;
 
 
 public class OrderDetailReturnsFragment extends Fragment  {
+
 
     private static final int LOADER_ORDER_DETAIL = 141;
     public static final String REPLACE = "Replace";
@@ -47,6 +51,10 @@ public class OrderDetailReturnsFragment extends Fragment  {
     private rx.Observable<List<Return>> mOrderReturnObservable;
     private LoadingView mReturnLoading;
     private View mView;
+    private OrderDetailReturnsAdapter mReturnAdapter;
+
+    private static String RETURN_DETAIL_DIALOG_TAG = "returnDetailDialog";
+
     public OrderDetailReturnsFragment() {
         // Required empty public constructor
         setRetainInstance(true);
@@ -64,6 +72,19 @@ public class OrderDetailReturnsFragment extends Fragment  {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.order_detail_returns_fragment, null);
         mReturnLoading = (LoadingView) mView.findViewById(R.id.order_return_loading);
+        mItemList = (ListView) mView.findViewById(R.id.returns_list);
+        mReturnAdapter = new OrderDetailReturnsAdapter(getActivity(), new ArrayList<Return>());
+        mItemList.setAdapter(mReturnAdapter);
+        mItemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Return returnItem = mReturnAdapter.getItem(position);
+                OrderReturnDetailDialogFragment dialogFragment = OrderReturnDetailDialogFragment.getInstance(returnItem);
+                FragmentManager manager = getFragmentManager();
+                dialogFragment.show(manager, RETURN_DETAIL_DIALOG_TAG);
+            }
+        });
+
         return mView;
     }
 
@@ -76,7 +97,6 @@ public class OrderDetailReturnsFragment extends Fragment  {
     private void loadData(){
         mOrderReturnFetcher.setOrderNumber(mOrder.getId());
         mOrderReturnObservable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new OrderReturnSubscriber());
-
     }
 
     private class OrderReturnSubscriber implements rx.Observer<List<Return>> {
@@ -84,8 +104,9 @@ public class OrderDetailReturnsFragment extends Fragment  {
         @Override
         public void onCompleted() {
             if (mReturnList.size() > 0) {
+                mReturnAdapter.setData(mReturnList);
+                mReturnAdapter.notifyDataSetChanged();
                 mReturnLoading.success();
-                setOrderToViews(mReturnList);
             } else {
                 mReturnLoading.setError("No returns data Available");
             }
@@ -136,8 +157,8 @@ public class OrderDetailReturnsFragment extends Fragment  {
             }
         }
 
-        mItemList = (ListView) mView.findViewById(R.id.returns_list);
-        mItemList.setAdapter(new OrderDetailReturnsAdapter(getActivity(), items));
+
+
 
         if (items.size() < 1) {
             mListOfReturnsLayout.setVisibility(View.INVISIBLE);
