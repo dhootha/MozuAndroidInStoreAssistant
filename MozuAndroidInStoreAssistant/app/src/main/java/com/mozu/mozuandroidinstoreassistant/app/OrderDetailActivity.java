@@ -216,7 +216,9 @@ public class OrderDetailActivity extends Activity implements LoaderManager.Loade
 
     @Override
     public void customerRetreived(CustomerAccount customer) {
-        mOrderName.setText(customer.getFirstName() + " " + customer.getLastName());
+        if (mOrderName != null && customer != null) {
+            mOrderName.setText(customer.getFirstName() + " " + customer.getLastName());
+        }
     }
 
     @Override

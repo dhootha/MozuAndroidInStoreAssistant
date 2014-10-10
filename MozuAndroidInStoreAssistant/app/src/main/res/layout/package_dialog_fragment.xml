@@ -8,7 +8,7 @@
 
     <LinearLayout
         android:id="@+id/package_detail_layout"
-        android:layout_width="650dp"
+        android:layout_width="750dp"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 

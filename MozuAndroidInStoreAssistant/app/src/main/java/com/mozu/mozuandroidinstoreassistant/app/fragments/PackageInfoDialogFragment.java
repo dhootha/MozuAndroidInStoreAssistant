@@ -74,12 +74,10 @@ public class PackageInfoDialogFragment extends DialogFragment {
             final Package orderPackage = mFulfillmentItem.getOrderPackage();
 
             if (orderPackage.getShippingMethodName() != null) {
-
                 mShipping.setText(orderPackage.getShippingMethodName());
             }
 
             if (orderPackage.getPackagingType() != null) {
-
                 mPackagingType.setText(orderPackage.getPackagingType());
             }
 
@@ -111,30 +109,20 @@ public class PackageInfoDialogFragment extends DialogFragment {
             }
 
             if (orderPackage.getStatus() != null) {
-
                 mStatus.setText(orderPackage.getStatus());
             }
 
-            if (orderPackage.getFulfillmentDate() != null) {
-                android.text.format.DateFormat dateFormat= new android.text.format.DateFormat();
-                String date = dateFormat.format("MM/dd/yy  hh:mm a", new Date(orderPackage.getFulfillmentDate().getMillis())).toString();
-
+            if (orderPackage.getAuditInfo().getCreateDate() != null) {
+                android.text.format.DateFormat dateFormat = new android.text.format.DateFormat();
+                String date = dateFormat.format("MM/dd/yy  hh:mm a", new Date(orderPackage.getAuditInfo().getCreateDate().getMillis())).toString();
                 mShipDate.setText(date);
             }
         }
 
-        if (mFulfillmentItem.getShipment() != null) {
-            Shipment shipment = mFulfillmentItem.getShipment();
-
-            if (shipment.getDestinationAddress() != null) {
-                Contact contact = shipment.getDestinationAddress();
-
+        if (mFulfillmentItem.getmFulfillmentContact() != null) {
+            Contact contact = mFulfillmentItem.getmFulfillmentContact();
+            if (contact != null) {
                 mAddress.setText(contact.getFirstName() + " " + contact.getLastNameOrSurname() + "\n" + constructAddress(contact.getAddress()));
-            }
-
-            if (shipment.getTrackingNumber() != null) {
-
-                mTrackingNumber.setText(shipment.getTrackingNumber());
             }
         }
 
@@ -190,7 +178,6 @@ public class PackageInfoDialogFragment extends DialogFragment {
     }
 
     public void setFulfillmentItem(FulfillmentItem fulfillmentItem) {
-
         mFulfillmentItem = fulfillmentItem;
     }
 
