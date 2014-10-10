@@ -1,45 +1,27 @@
 package com.mozu.mozuandroidinstoreassistant.app.fragments;
 
 import android.app.DialogFragment;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
-import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.mozu.api.contracts.commerceruntime.fulfillment.*;
 import com.mozu.api.contracts.commerceruntime.fulfillment.Package;
-import com.mozu.api.contracts.commerceruntime.products.BundledProduct;
-import com.mozu.api.contracts.commerceruntime.products.Product;
-import com.mozu.api.contracts.commerceruntime.products.ProductOption;
+import com.mozu.api.contracts.commerceruntime.fulfillment.Shipment;
 import com.mozu.api.contracts.core.Address;
 import com.mozu.api.contracts.core.Contact;
-import com.mozu.api.contracts.productruntime.ProductOptionValue;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.OrderDetailPackageItemAdapter;
-import com.mozu.mozuandroidinstoreassistant.app.htmlutils.HTMLTagHandler;
 import com.mozu.mozuandroidinstoreassistant.app.models.FulfillmentItem;
-import com.mozu.mozuandroidinstoreassistant.app.views.NoUnderlineClickableSpan;
-import com.mozu.mozuandroidinstoreassistant.app.views.ProductOptionsLayout;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
+import com.mozu.mozuandroidinstoreassistant.app.utils.ShipperUtils;
 
-import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -89,7 +71,7 @@ public class PackageInfoDialogFragment extends DialogFragment {
         mPackageName.setText(mFulfillmentItem.getPackageNumber());
 
         if (mFulfillmentItem.getOrderPackage() != null) {
-            Package orderPackage = mFulfillmentItem.getOrderPackage();
+            final Package orderPackage = mFulfillmentItem.getOrderPackage();
 
             if (orderPackage.getShippingMethodName() != null) {
 
@@ -102,8 +84,30 @@ public class PackageInfoDialogFragment extends DialogFragment {
             }
 
             if (orderPackage.getTrackingNumber() != null) {
-
                 mTrackingNumber.setText(orderPackage.getTrackingNumber());
+                mTrackingNumber.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String shippingCode = orderPackage.getShippingMethodCode();
+                        String Url = "";
+                        if (shippingCode.toLowerCase().startsWith(ShipperUtils.Shipper.DHL.toString().toLowerCase())) {
+                            Url = ShipperUtils.Shipper.DHL.getTrackingUrl(orderPackage.getTrackingNumber());
+                        } else if (shippingCode.toLowerCase().startsWith(ShipperUtils.Shipper.FEDEX.toString().toLowerCase())) {
+                            Url = ShipperUtils.Shipper.FEDEX.getTrackingUrl(orderPackage.getTrackingNumber());
+                        } else if (shippingCode.toLowerCase().startsWith(ShipperUtils.Shipper.UPS.toString().toLowerCase())) {
+                            Url = ShipperUtils.Shipper.UPS.getTrackingUrl(orderPackage.getTrackingNumber());
+                        } else if (shippingCode.toLowerCase().startsWith(ShipperUtils.Shipper.USPS.toString().toLowerCase())) {
+                            Url = ShipperUtils.Shipper.USPS.getTrackingUrl(orderPackage.getTrackingNumber());
+                        } else {
+                            Toast.makeText(getActivity(), "Unsupported Shipper", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+                        Intent browse = new Intent(Intent.ACTION_VIEW, Uri.parse(Url));
+                        startActivity(browse);
+
+                    }
+                });
             }
 
             if (orderPackage.getStatus() != null) {
