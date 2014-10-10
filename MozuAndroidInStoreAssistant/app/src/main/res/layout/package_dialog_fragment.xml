@@ -97,6 +97,8 @@
                     android:text="@string/tracking_number_label"/>
 
                 <TextView
+                    android:clickable="true"
+                    android:textColor="@color/mozu_color"
                     android:id="@+id/tracking_number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>

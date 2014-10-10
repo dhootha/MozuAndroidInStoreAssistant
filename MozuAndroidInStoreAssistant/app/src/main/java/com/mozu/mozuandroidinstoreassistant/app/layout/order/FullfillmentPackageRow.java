@@ -33,9 +33,11 @@ public class FullfillmentPackageRow extends LinearLayout implements IRowLayout {
             FullfillmentPackageDataItem fullfillmentPackageDataItem = (FullfillmentPackageDataItem) data;
             mPackageName.setText(fullfillmentPackageDataItem.getPackageName());
             mPackageCount.setText(String.valueOf(fullfillmentPackageDataItem.getPackageCount()+ " " + getContext().getString(R.string.fulfillment_items_label)));
+            mPackageTracking.setText("N/A");
             if (fullfillmentPackageDataItem.getPackageTrackingNumber() != null) {
                 mPackageTracking.setText(fullfillmentPackageDataItem.getPackageTrackingNumber());
             }
+
             if (fullfillmentPackageDataItem.getShipmentTrackingNumber() != null) {
                 mPackageTracking.setText(fullfillmentPackageDataItem.getShipmentTrackingNumber());
             }
