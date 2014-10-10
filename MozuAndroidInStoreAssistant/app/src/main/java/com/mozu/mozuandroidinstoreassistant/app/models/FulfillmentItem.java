@@ -3,6 +3,7 @@ package com.mozu.mozuandroidinstoreassistant.app.models;
 import com.mozu.api.contracts.commerceruntime.fulfillment.*;
 import com.mozu.api.contracts.commerceruntime.fulfillment.Package;
 import com.mozu.api.contracts.commerceruntime.orders.OrderItem;
+import com.mozu.api.contracts.core.Contact;
 
 public class FulfillmentItem {
 
@@ -14,6 +15,17 @@ public class FulfillmentItem {
     private Shipment shipment;
     
     private String packageNumber;
+
+    private Contact mFulfillmentContact;
+
+    public void setFulfillmentContact(Contact fulfillmentContact){
+        mFulfillmentContact = fulfillmentContact;
+
+    }
+
+    public Contact getmFulfillmentContact(){
+        return  mFulfillmentContact;
+    }
 
     public boolean isPackaged() {
         return isPackaged;

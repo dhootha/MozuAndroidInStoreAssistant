@@ -181,6 +181,7 @@ public class OrderDetailFullfillmentFragment extends Fragment {
                 if (status.equalsIgnoreCase(NOTFULLFILLED)) {
                     fulfillmentItem.setFullfilled(false);
                     fulfillmentItem.setPackageNumber(getActivity().getString(R.string.package_number_string) + String.valueOf(packageCount));
+                    fulfillmentItem.setFulfillmentContact(mOrder.getFulfillmentInfo().getFulfillmentContact());
                     pendingItems.add(new FullfillmentPackageDataItem(fulfillmentItem));
                 } else if (status.equalsIgnoreCase(FULFILLED)) {
                     fulfillmentItem.setFullfilled(true);
@@ -191,6 +192,7 @@ public class OrderDetailFullfillmentFragment extends Fragment {
                         }
                     }
                     fulfillmentItem.setPackageNumber(getActivity().getString(R.string.package_number_string) + String.valueOf(packageCount));
+                    fulfillmentItem.setFulfillmentContact(mOrder.getFulfillmentInfo().getFulfillmentContact());
                     fullfilledItems.add(new FullfillmentPackageDataItem(fulfillmentItem));
                 }
             }
