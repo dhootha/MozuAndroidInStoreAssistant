@@ -210,6 +210,8 @@
     <string name="payment_amount_authorized">Amount Authorized</string>
     <string name="pickup_status">Status:</string>
     <string name="pickup_location">Location:</string>
+    <string name="empty_items">No Items to display</string>
+    <string name="empty_address">No Address available</string>
 
 
 </resources>

@@ -22,6 +22,8 @@ public class CustomerAddressFragment extends Fragment {
     private ExpandedGridView mBillingGridView;
     private CustomerAddressAdapter mBillingAdapter;
     private static String CUSTOMER_ACCOUNT = "customerAccount";
+    private static String BILLING = "billing";
+    private static String SHIPPING = "shipping";
     private ExpandedGridView mShippingGridView;
     private CustomerAddressAdapter mShippingAdapter;
     private List<CustomerContactDataItem> mBillingContacts;
@@ -61,7 +63,6 @@ public class CustomerAddressFragment extends Fragment {
             mAddressLoading.success();
 
             if (mBillingContacts.size() > 0) {
-
                 mBillingAdapter = new CustomerAddressAdapter(mBillingContacts);
                 mBillingGridView.setAdapter(mBillingAdapter);
             } else {
@@ -70,7 +71,6 @@ public class CustomerAddressFragment extends Fragment {
             }
 
             if (mShippingContacts.size() > 0) {
-
                 mShippingAdapter = new CustomerAddressAdapter(mShippingContacts);
                 mShippingGridView.setAdapter(mShippingAdapter);
             } else {
@@ -78,7 +78,7 @@ public class CustomerAddressFragment extends Fragment {
                 shippingHeader.setVisibility(View.GONE);
             }
         } else {
-            mAddressLoading.setError("No Content Available");
+            mAddressLoading.setError(getActivity().getResources().getString(R.string.empty_address));
         }
 
         return fragmentView;
@@ -92,7 +92,7 @@ public class CustomerAddressFragment extends Fragment {
 
         for(CustomerContact contact:customerContacts){
             for(ContactType type: contact.getTypes()){
-                if(type.getName().equalsIgnoreCase("billing")){
+                if(type.getName().equalsIgnoreCase(BILLING)){
                     CustomerContactDataItem customerContactDataItem = new CustomerContactDataItem();
                     customerContactDataItem.setCustomerContact(contact);
                     if (type.getIsPrimary()){
@@ -101,7 +101,7 @@ public class CustomerAddressFragment extends Fragment {
                         customerContactDataItem.setPrimary(false);
                     }
                     mBillingContacts.add(customerContactDataItem);
-                }else if(type.getName().equalsIgnoreCase("shipping")){
+                }else if(type.getName().equalsIgnoreCase(SHIPPING)){
                     CustomerContactDataItem customerContactDataItem = new CustomerContactDataItem();
                     customerContactDataItem.setCustomerContact(contact);
                     if (type.getIsPrimary()){

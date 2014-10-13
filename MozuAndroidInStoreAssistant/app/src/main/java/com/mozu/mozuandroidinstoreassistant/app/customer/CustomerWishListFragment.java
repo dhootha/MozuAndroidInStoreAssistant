@@ -80,7 +80,7 @@ public class CustomerWishListFragment extends Fragment {
                 mAdapter.setData(mWishlistItemList);
                 mAdapter.notifyDataSetChanged();
             } else {
-                mWishListLoading.setError("No Content Available");
+                mWishListLoading.setError(getActivity().getResources().getString(R.string.empty_items));
             }
         }
 
