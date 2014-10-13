@@ -3,10 +3,22 @@
     android:layout_width="wrap_content"
     android:minWidth="750dp"
     android:minHeight="500dp"
+    android:orientation="vertical"
     android:layout_height="wrap_content">
 
+    <ImageView
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:id="@+id/return_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:clickable="true"
+        android:src="@drawable/icon_close" />
+
     <ListView
-        android:padding="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:id="@+id/returns_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

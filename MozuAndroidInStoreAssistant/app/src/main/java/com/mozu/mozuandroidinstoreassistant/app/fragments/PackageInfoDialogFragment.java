@@ -8,12 +8,12 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mozu.api.contracts.commerceruntime.fulfillment.Package;
-import com.mozu.api.contracts.commerceruntime.fulfillment.Shipment;
 import com.mozu.api.contracts.core.Address;
 import com.mozu.api.contracts.core.Contact;
 import com.mozu.mozuandroidinstoreassistant.app.R;
@@ -39,6 +39,7 @@ public class PackageInfoDialogFragment extends DialogFragment {
     @InjectView(R.id.status) TextView mStatus;
     @InjectView(R.id.ship_date) TextView mShipDate;
     @InjectView(R.id.package_items_list) ListView mList;
+    @InjectView(R.id.package_info_close) ImageView mPackageInfoClose;
 
     private Integer mTenantId;
     private Integer mSiteId;
@@ -69,6 +70,12 @@ public class PackageInfoDialogFragment extends DialogFragment {
         setPackageItems();
 
         mPackageName.setText(mFulfillmentItem.getPackageNumber());
+        mPackageInfoClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getDialog().dismiss();
+            }
+        });
 
         if (mFulfillmentItem.getOrderPackage() != null) {
             final Package orderPackage = mFulfillmentItem.getOrderPackage();
@@ -106,6 +113,8 @@ public class PackageInfoDialogFragment extends DialogFragment {
 
                     }
                 });
+            }else{
+                mTrackingNumber.setText("N/A");
             }
 
             if (orderPackage.getStatus() != null) {

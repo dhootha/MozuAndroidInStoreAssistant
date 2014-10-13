@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.mozu.api.contracts.commerceruntime.payments.Payment;
@@ -33,6 +34,7 @@ public class OrderReturnDetailDialogFragment extends DialogFragment {
     private View mView;
     private ListView mReturnListView;
     private OrderDetailReturnAdapter mOrderDetailReturnAdapter;
+    private ImageView closeImageView;
 
 
     public static OrderReturnDetailDialogFragment getInstance(Return orderReturn) {
@@ -53,10 +55,17 @@ public class OrderReturnDetailDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.order_return_info, null);
+        closeImageView = (ImageView)mView.findViewById(R.id.return_close);
         mReturnListView = (ListView) mView.findViewById(R.id.returns_list);
         mOrderDetailReturnAdapter = new OrderDetailReturnAdapter(getActivity(), setUpData());
         mReturnListView.setAdapter(mOrderDetailReturnAdapter);
         mReturnListView.setDivider(null);
+        closeImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getDialog().dismiss();
+            }
+        });
         return mView;
     }
 

@@ -64,7 +64,7 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
     private HorizontalScrollView mHorizontalScrollView;
     private ScrollView mVerticalScrollView;
 
-    private ViewPager mProductSectionViewPager;
+    private HeightWrappingViewPager mProductSectionViewPager;
 
     private TabPageIndicator mTabIndicator;
 
@@ -111,7 +111,7 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
         mTitles.add(getString(R.string.shipping_tab_name));
         mTitles.add(getString(R.string.inventory_tab_name));
 
-        mProductSectionViewPager = (ViewPager) findViewById(R.id.product_detail_sections_viewpager);
+        mProductSectionViewPager = (HeightWrappingViewPager) findViewById(R.id.product_detail_sections_viewpager);
         mTabIndicator = (TabPageIndicator) findViewById(R.id.product_detail_sections);
         mMainImageView.setOnClickListener(this);
 
@@ -193,6 +193,8 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
         }
 
         if (mImages != null && mProduct.getContent().getProductImages().size() > 0) {
+            mProductImagesLayout.removeAllViews();
+            mProductImagesLayout.addView(mMainImageView);
             Picasso.with(this)
                     .load(mImageUrlConverter.getFullImageUrl(mProduct.getContent().getProductImages().get(0).getImageUrl()))
                     .fit().centerCrop()
@@ -294,7 +296,6 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
                         .fit().centerCrop()
                         .into(imageViewBottom);
             }
-
             mProductImagesLayout.addView(layout);
         }
     }
