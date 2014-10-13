@@ -25,8 +25,13 @@ public class ImageViewPageFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.image_item_for_viewpager, null);
-
         ImageView image = (ImageView) view.findViewById(R.id.image_for_viewpager);
+        image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().finish();
+            }
+        });
 
         Picasso.with(getActivity())
                 .load(mImageUrl)
