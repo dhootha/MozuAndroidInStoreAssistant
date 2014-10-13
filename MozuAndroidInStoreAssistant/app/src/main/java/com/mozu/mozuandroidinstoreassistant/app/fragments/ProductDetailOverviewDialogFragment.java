@@ -73,6 +73,13 @@ public class ProductDetailOverviewDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.product_detail_overview_dialog_fragment, null);
+        ImageView overviewClose = (ImageView) view.findViewById(R.id.product_detail_overview_close);
+        overviewClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getDialog().dismiss();
+            }
+        });
 
         ButterKnife.inject(this, view);
 

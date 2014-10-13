@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mozu.api.contracts.commerceruntime.payments.BillingInfo;
@@ -38,6 +39,7 @@ public class PaymentInfoFragment extends DialogFragment {
     @InjectView(R.id.top_payment_amount) TextView mTopPaymentAmount;
     @InjectView(R.id.trans_id_value) TextView mTransId;
     @InjectView(R.id.auth_id_value) TextView mAuthId;
+    @InjectView(R.id.payment_close) ImageView mPaymentClose;
 
 
     public static PaymentInfoFragment getInstance(Payment payment){
@@ -73,6 +75,12 @@ public class PaymentInfoFragment extends DialogFragment {
 
     private void setUpViews() {
         String billTo = getAddressString(mPayment);
+        mPaymentClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getDialog().dismiss();
+            }
+        });
         mPaymentBillTo.setText(billTo);
         mPaymentStatus.setText(mPayment.getStatus());
         mPaymentMethod.setText(getPaymentMethod(mPayment));

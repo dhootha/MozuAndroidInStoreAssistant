@@ -208,6 +208,8 @@
     <string name="refund_payment_amount_credited">Amount Credited</string>
     <string name="payment_amount_collected">Amount Collected</string>
     <string name="payment_amount_authorized">Amount Authorized</string>
+    <string name="pickup_status">Status:</string>
+    <string name="pickup_location">Location:</string>
 
 
 </resources>

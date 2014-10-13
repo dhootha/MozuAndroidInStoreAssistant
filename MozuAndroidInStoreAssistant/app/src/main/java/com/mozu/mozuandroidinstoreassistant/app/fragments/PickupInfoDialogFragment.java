@@ -2,14 +2,14 @@ package com.mozu.mozuandroidinstoreassistant.app.fragments;
 
 import android.app.DialogFragment;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.mozu.api.contracts.commerceruntime.fulfillment.Pickup;
-import com.mozu.api.contracts.core.Address;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.OrderDetailPickupItemAdapter;
 
@@ -25,6 +25,9 @@ public class PickupInfoDialogFragment extends DialogFragment {
 
     private Integer mTenantId;
     private Integer mSiteId;
+    private TextView mStatus;
+    private TextView mLocation;
+    private ImageView mCloseView;
 
     public PickupInfoDialogFragment() {
         // Required empty public constructor
@@ -37,6 +40,15 @@ public class PickupInfoDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.pickup_dialog_fragment, null);
+        mStatus = (TextView) view.findViewById(R.id.pickup_status_value);
+        mLocation = (TextView)view.findViewById(R.id.pickup_location_value);
+        mCloseView = (ImageView)view.findViewById(R.id.pickup_close);
+        mCloseView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getDialog().dismiss();
+            }
+        });
 
         ButterKnife.inject(this, view);
 
@@ -54,7 +66,16 @@ public class PickupInfoDialogFragment extends DialogFragment {
     }
 
     private void setPickupItems() {
-
+        if (mPickup.getStatus() != null) {
+            mStatus.setText(mPickup.getStatus());
+        } else {
+            mStatus.setText("N/A");
+        }
+        if (mPickup.getFulfillmentLocationCode() != null) {
+            mLocation.setText(mPickup.getFulfillmentLocationCode());
+        } else {
+            mLocation.setText("N/A");
+        }
         if (mPickup.getItems() == null|| mPickup.getItems().size() < 1) {
             return;
         }
