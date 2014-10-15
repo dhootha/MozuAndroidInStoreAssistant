@@ -18,6 +18,7 @@ import com.mozu.mozuandroidinstoreassistant.app.adapters.OrderDetailSectionPager
 import com.mozu.mozuandroidinstoreassistant.app.customer.CustomerDetailActivity;
 import com.mozu.mozuandroidinstoreassistant.app.loaders.OrderDetailLoader;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
+import com.mozu.mozuandroidinstoreassistant.app.settings.SettingsFragment;
 import com.mozu.mozuandroidinstoreassistant.app.tasks.CustomerAsyncListener;
 import com.mozu.mozuandroidinstoreassistant.app.tasks.RetrieveCustomerAsyncTask;
 import com.viewpagerindicator.TabPageIndicator;
@@ -60,6 +61,7 @@ public class OrderDetailActivity extends Activity implements LoaderManager.Loade
     private NumberFormat mNumberFormat;
 
     @InjectView(R.id.order_detail_container) SwipeRefreshLayout mOrderSwipeRefresh;
+    private final String ORDER_SETTINGS_FRAGMENT = "Order_Settings_Fragment";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,6 +157,9 @@ public class OrderDetailActivity extends Activity implements LoaderManager.Loade
             startActivity(new Intent(this, LoginActivity.class));
             finish();
             return true;
+        }else if(item.getItemId() == R.id.settings){
+            SettingsFragment settingsFragment = SettingsFragment.getInstance();
+            settingsFragment.show(getFragmentManager(), ORDER_SETTINGS_FRAGMENT);
         }
 
         return super.onOptionsItemSelected(item);

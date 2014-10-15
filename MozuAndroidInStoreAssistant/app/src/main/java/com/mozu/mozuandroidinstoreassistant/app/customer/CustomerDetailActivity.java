@@ -17,6 +17,7 @@ import com.mozu.mozuandroidinstoreassistant.app.LoginActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
+import com.mozu.mozuandroidinstoreassistant.app.settings.SettingsFragment;
 import com.viewpagerindicator.TabPageIndicator;
 
 import butterknife.ButterKnife;
@@ -50,6 +51,8 @@ public class CustomerDetailActivity extends Activity implements SwipeRefreshLayo
 
     private rx.Observable<CustomerAccount> mCustomerObservable;
     private CustomerAccountFetcher mCustomerAccountFetcher;
+    private final String CUSTOMER_SETTINGS_FRAGMENT = "Customer_Settings_Fragment";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,6 +144,9 @@ public class CustomerDetailActivity extends Activity implements SwipeRefreshLayo
             return true;
         } else if (item.getItemId() == R.id.refresh_category_detail) {
             loadData();
+        }else if(item.getItemId() == R.id.settings){
+            SettingsFragment settingsFragment = SettingsFragment.getInstance();
+            settingsFragment.show(getFragmentManager(), CUSTOMER_SETTINGS_FRAGMENT);
         }
 
         return super.onOptionsItemSelected(item);

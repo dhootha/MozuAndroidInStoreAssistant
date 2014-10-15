@@ -24,6 +24,7 @@ import com.mozu.mozuandroidinstoreassistant.app.adapters.ProductDetailSectionPag
 import com.mozu.mozuandroidinstoreassistant.app.loaders.ProductDetailLoader;
 import com.mozu.mozuandroidinstoreassistant.app.models.ImageURLConverter;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
+import com.mozu.mozuandroidinstoreassistant.app.settings.SettingsFragment;
 import com.mozu.mozuandroidinstoreassistant.app.views.HeightWrappingViewPager;
 import com.squareup.picasso.Picasso;
 import com.viewpagerindicator.TabPageIndicator;
@@ -147,21 +148,20 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         if (item.getItemId() == android.R.id.home) {
             finish();
-
             return true;
         } else if (item.getItemId() == R.id.refresh_product_detail) {
            onRefresh();
-
             return true;
         } else if (item.getItemId() == R.id.action_logout) {
             UserAuthenticationStateMachineProducer.getInstance(getApplicationContext()).getCurrentUserAuthState().signOutUser();
             startActivity(new Intent(this, LoginActivity.class));
             finish();
-
             return true;
+        }else if( item.getItemId() == R.id.settings){
+            SettingsFragment settingsFragment = SettingsFragment.getInstance();
+            settingsFragment.show(getFragmentManager(), "settings_frag");
         }
 
         return super.onOptionsItemSelected(item);

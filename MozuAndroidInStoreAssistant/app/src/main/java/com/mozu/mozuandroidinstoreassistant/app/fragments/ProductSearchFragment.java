@@ -79,6 +79,7 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
     @InjectView(R.id.product_list_container) SwipeRefreshLayout mProductListPullToRefresh;
     @InjectView(R.id.products_header) LinearLayout mProductHeaderLayout;
     @InjectView(R.id.products_search_query) TextView mProductSearchQuery;
+    @InjectView(R.id.close_search) TextView mProductClose;
 
     private ProductListListener mListener;
     private static final String PRODUCTSEARCH_INVENTORY_DIALOG_TAG ="productsearch_inventory_tag";
@@ -170,12 +171,14 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
 
         if (loader.getId() == PRODUCT_SEARCH_LOADER) {
             if (mAdapter == null) {
-
                 mAdapter = new ProductAdapter(getActivity(), mUserState.getTenantId(), mUserState.getSiteId(),this);
             }
 
             mAdapter.clear();
             mAdapter.addAll(data);
+
+            mProductHeaderLayout.setVisibility(View.VISIBLE);
+            mProductSearchQuery.setText(mQueryString);
 
             if (mProductGridView.getAdapter() == null) {
                 mProductGridView.setAdapter(mAdapter);
@@ -184,6 +187,13 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
 
             mProductGridView.setOnScrollListener(this);
             if (!mLaunchedFromSearch) {
+                mProductClose.setVisibility(View.VISIBLE);
+                mProductClose.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        getFragmentManager().popBackStack();
+                    }
+                });
                 if (prefs.getShowAsGrids()) {
                     mProductGridPullToRefresh.setVisibility(View.VISIBLE);
                     mProductGridView.setVisibility(View.VISIBLE);
@@ -202,6 +212,7 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
                     mAdapter.notifyDataSetChanged();
                 }
             } else {
+                mProductClose.setVisibility(View.INVISIBLE);
                 mProductListPullToRefresh.setVisibility(View.VISIBLE);
                 mProductListView.setVisibility(View.VISIBLE);
                 mHeadersView.setVisibility(View.VISIBLE);
@@ -210,8 +221,6 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
                 mAdapter.setIsGrid(false);
                 mAdapter.notifyDataSetChanged();
                 setHasOptionsMenu(false);
-                mProductHeaderLayout.setVisibility(View.VISIBLE);
-                mProductSearchQuery.setText(mQueryString);
             }
 
             mProgressBar.setVisibility(View.GONE);
@@ -229,19 +238,13 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         UserPreferences prefs = mUserState.getCurrentUsersPreferences();
-
         inflater.inflate(R.menu.product, menu);
-
         mToggleGridItem = menu.findItem(R.id.toggle_view);
-
         mIsGridVisible = prefs.getShowAsGrids();
-
         if (mIsGridVisible) {
-
             mToggleGridItem.setIcon(R.drawable.list);
             mToggleGridItem.setTitle(getString(R.string.view_as_list_menu_item_text));
         } else {
-
             mToggleGridItem.setIcon(R.drawable.grid);
             mToggleGridItem.setTitle(getString(R.string.view_as_grid_menu_item_text));
         }

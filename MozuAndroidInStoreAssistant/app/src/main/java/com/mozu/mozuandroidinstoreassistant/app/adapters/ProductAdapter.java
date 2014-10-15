@@ -77,7 +77,7 @@ public class ProductAdapter extends GridToggleArrayAdapter<Product> {
             if (!isGrid()) {
                 creator = creator.transform(new RoundedTransformation()).fit().centerCrop();
             } else {
-                creator = creator.placeholder(R.drawable.icon_noproductphoto).fit().centerInside();
+                creator = creator.placeholder(R.drawable.icon_noproductphoto);
             }
 
             viewHolder.productImage.setBackgroundColor(getContext().getResources().getColor(R.color.darker_grey));
@@ -93,7 +93,10 @@ public class ProductAdapter extends GridToggleArrayAdapter<Product> {
                 }
 
                 @Override
-                public void onError() {}
+                public void onError() {
+                    String s = "";
+
+                }
 
             });
         }

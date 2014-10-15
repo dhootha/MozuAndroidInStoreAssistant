@@ -40,12 +40,14 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
     private UserAuthenticationStateMachine mUserAuthStateMachine;
 
     private boolean mTenantOrSiteNotChosenAuto = false;
+    private boolean isLaunchedFromSettings = false;
+    public static final String LAUNCH_FROM_SETTINGS = "launchfromSettings";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_tenant_and_site);
-
+        isLaunchedFromSettings = getIntent().getBooleanExtra(LAUNCH_FROM_SETTINGS,false);
         mUserAuthStateMachine = UserAuthenticationStateMachineProducer.getInstance(getApplicationContext());
 
         mUserAuthStateMachine.addObserver(this);
@@ -55,6 +57,11 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
         } else {
             updateAuthTicketToDefaults();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override
@@ -193,7 +200,6 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
     public void retrievedTenant(Tenant tenant) {
         if (tenant == null) {
             Toast.makeText(this, getString(R.string.tenant_unavailable_for_account), Toast.LENGTH_LONG).show();
-
             showTenantChooser();
             return;
         }
@@ -204,11 +210,9 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
     @Override
     public void siteWasChosen(Site chosenSite) {
         mUserAuthStateMachine.setCurrentSiteId(chosenSite);
-
         if (mSiteFragment != null) {
             mSiteFragment.dismiss();
         }
-
         showAskToSetDefaultDialog();
     }
 
@@ -218,6 +222,16 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
     }
 
     private void showAskToSetDefaultDialog() {
+
+        if (isLaunchedFromSettings) {
+            mUserAuthStateMachine.persistSiteTenantId();
+            Intent mainIntent = new Intent(this, MainActivity.class);
+            mainIntent.putExtra(MainActivity.LAUNCH_SETTINGS,true);
+            mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(mainIntent);
+            finish();
+            return;
+        }
         if (!mTenantOrSiteNotChosenAuto) {
             startActivity(new Intent(this, MainActivity.class));
             finish();
