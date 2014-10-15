@@ -49,18 +49,22 @@ public class SettingsFragment extends DialogFragment {
 
     private void setUpViews(){
         StringBuilder store = new StringBuilder();
-        if (mUserState.getTenantName() != null) {
-            store.append(mUserState.getTenantName());
+        if (mUserState.getTenantName() != null && mUserState.getSiteName() != null) {
+            if (mUserState.getTenantName() != null) {
+                store.append(mUserState.getTenantName());
+            } else {
+                store.append(getActivity().getResources().getString(R.string.not_available));
+            }
+            store.append(" (");
+            if (mUserState.getSiteName() != null) {
+                store.append(mUserState.getSiteName());
+            } else {
+                store.append(getActivity().getResources().getString(R.string.not_available));
+            }
+            store.append(") ");
         } else {
-            store.append("N/A");
+            store.append(getActivity().getResources().getString(R.string.not_set));
         }
-        store.append(" (");
-        if (mUserState.getSiteName() != null) {
-            store.append(mUserState.getSiteName());
-        } else {
-            store.append("N/A");
-        }
-        store.append(") ");
         mDefaultStore.setText(store.toString());
         mUpdateStore.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -143,7 +143,7 @@ public class CustomerDetailActivity extends Activity implements SwipeRefreshLayo
             finish();
             return true;
         } else if (item.getItemId() == R.id.refresh_category_detail) {
-            loadData();
+            onRefresh();
         }else if(item.getItemId() == R.id.settings){
             SettingsFragment settingsFragment = SettingsFragment.getInstance();
             settingsFragment.show(getFragmentManager(), CUSTOMER_SETTINGS_FRAGMENT);

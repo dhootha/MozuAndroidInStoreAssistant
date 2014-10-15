@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
 import android.widget.TextView;
 
 import com.mozu.api.contracts.customer.ContactType;
@@ -19,17 +20,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CustomerAddressFragment extends Fragment {
-    private ExpandedGridView mBillingGridView;
+    private GridView mBillingGridView;
     private CustomerAddressAdapter mBillingAdapter;
     private static String CUSTOMER_ACCOUNT = "customerAccount";
     private static String BILLING = "billing";
     private static String SHIPPING = "shipping";
-    private ExpandedGridView mShippingGridView;
     private CustomerAddressAdapter mShippingAdapter;
     private List<CustomerContactDataItem> mBillingContacts;
     private List<CustomerContactDataItem> mShippingContacts;
     private CustomerAccount mCustomerAccount;
     private LoadingView mAddressLoading ;
+
+    private final String SHIPPING_DEFAULT_TYPE = "Default Shipping";
+    private final String BILLING_DEFAULT_TYPE = "Default Billing";
+
 
 
     public static CustomerAddressFragment getInstance(CustomerAccount customerAccount){
@@ -54,10 +58,7 @@ public class CustomerAddressFragment extends Fragment {
         updateContacts(mCustomerAccount);
         mAddressLoading = (LoadingView) fragmentView.findViewById(R.id.customer_address_loading);
         TextView billingHeader = (TextView) fragmentView.findViewById(R.id.billing_header);
-        TextView shippingHeader = (TextView) fragmentView.findViewById(R.id.shipping_header);
-        mBillingGridView = (ExpandedGridView) fragmentView.findViewById(R.id.customer_address_grid);
-        mShippingGridView = (ExpandedGridView) fragmentView.findViewById(R.id.customer_shipping_address_grid);
-
+        mBillingGridView = (GridView) fragmentView.findViewById(R.id.customer_address_grid);
 
         if (mBillingContacts.size() > 0 || mShippingContacts.size() >0) {
             mAddressLoading.success();
@@ -65,18 +66,12 @@ public class CustomerAddressFragment extends Fragment {
             if (mBillingContacts.size() > 0) {
                 mBillingAdapter = new CustomerAddressAdapter(mBillingContacts);
                 mBillingGridView.setAdapter(mBillingAdapter);
+                billingHeader.setVisibility(View.GONE);
             } else {
                 mBillingGridView.setVisibility(View.GONE);
                 billingHeader.setVisibility(View.GONE);
             }
 
-            if (mShippingContacts.size() > 0) {
-                mShippingAdapter = new CustomerAddressAdapter(mShippingContacts);
-                mShippingGridView.setAdapter(mShippingAdapter);
-            } else {
-                mShippingGridView.setVisibility(View.GONE);
-                shippingHeader.setVisibility(View.GONE);
-            }
         } else {
             mAddressLoading.setError(getActivity().getResources().getString(R.string.empty_address));
         }
@@ -91,26 +86,33 @@ public class CustomerAddressFragment extends Fragment {
             return;
 
         for(CustomerContact contact:customerContacts){
-            for(ContactType type: contact.getTypes()){
-                if(type.getName().equalsIgnoreCase(BILLING)){
-                    CustomerContactDataItem customerContactDataItem = new CustomerContactDataItem();
-                    customerContactDataItem.setCustomerContact(contact);
-                    if (type.getIsPrimary()){
-                        customerContactDataItem.setPrimary(true);
-                    }else{
-                        customerContactDataItem.setPrimary(false);
+            if(contact.getTypes().size() > 0 ) {
+                for (ContactType type : contact.getTypes()) {
+                    if (type.getName().equalsIgnoreCase(BILLING)) {
+                        CustomerContactDataItem customerContactDataItem = new CustomerContactDataItem();
+                        customerContactDataItem.setCustomerContact(contact);
+                        if(type.getIsPrimary()) {
+                            customerContactDataItem.setTypeMessage(BILLING_DEFAULT_TYPE);
+                            mBillingContacts.add(0,customerContactDataItem);
+                        }else{
+                            mBillingContacts.add(customerContactDataItem);
+                        }
+                    } else if (type.getName().equalsIgnoreCase(SHIPPING)) {
+                        CustomerContactDataItem customerContactDataItem = new CustomerContactDataItem();
+                        customerContactDataItem.setCustomerContact(contact);
+                        if(type.getIsPrimary()) {
+                            customerContactDataItem.setTypeMessage(SHIPPING_DEFAULT_TYPE);
+                            mBillingContacts.add(0,customerContactDataItem);
+                        }else{
+                            mBillingContacts.add(customerContactDataItem);
+                        }
                     }
-                    mBillingContacts.add(customerContactDataItem);
-                }else if(type.getName().equalsIgnoreCase(SHIPPING)){
-                    CustomerContactDataItem customerContactDataItem = new CustomerContactDataItem();
-                    customerContactDataItem.setCustomerContact(contact);
-                    if (type.getIsPrimary()){
-                        customerContactDataItem.setPrimary(true);
-                    }else{
-                        customerContactDataItem.setPrimary(false);
-                    }
-                    mShippingContacts.add(customerContactDataItem);
                 }
+            }else{
+                CustomerContactDataItem customerContactDataItem = new CustomerContactDataItem();
+                customerContactDataItem.setCustomerContact(contact);
+                customerContactDataItem.setTypeMessage(null);
+                mBillingContacts.add(customerContactDataItem);
             }
         }
     }

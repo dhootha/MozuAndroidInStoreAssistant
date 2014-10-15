@@ -218,6 +218,7 @@
     <string name="clear_search_results">CLEAR SEARCH RESULTS</string>
     <string name="refresh">Refresh</string>
     <string name="store_update">CHANGE</string>
+    <string name="not_set">Not Set</string>
 
 
 </resources>

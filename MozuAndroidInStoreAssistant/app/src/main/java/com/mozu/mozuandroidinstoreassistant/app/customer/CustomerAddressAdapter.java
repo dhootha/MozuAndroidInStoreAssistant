@@ -58,8 +58,9 @@ public class CustomerAddressAdapter extends BaseAdapter {
 
 
         TextView isPrimary = (TextView)view.findViewById(R.id.customer_primary_address);
-        if (customerContactDataItem.isPrimary()) {
+        if (customerContactDataItem.getTypeMessage() != null) {
             isPrimary.setVisibility(View.VISIBLE);
+            isPrimary.setText(customerContactDataItem.getTypeMessage());
         } else {
             isPrimary.setVisibility(View.INVISIBLE);
         }

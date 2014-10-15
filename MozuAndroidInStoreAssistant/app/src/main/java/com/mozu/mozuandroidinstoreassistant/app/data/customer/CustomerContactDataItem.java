@@ -5,7 +5,7 @@ import com.mozu.api.contracts.customer.CustomerContact;
 public class CustomerContactDataItem {
 
     private CustomerContact customerContact;
-    private boolean isPrimary;
+    private String mTypeMessage;
 
     public CustomerContact getCustomerContact() {
         return customerContact;
@@ -15,11 +15,11 @@ public class CustomerContactDataItem {
         this.customerContact = customerContact;
     }
 
-    public boolean isPrimary() {
-        return isPrimary;
+    public String getTypeMessage() {
+        return mTypeMessage;
     }
 
-    public void setPrimary(boolean isPrimary) {
-        this.isPrimary = isPrimary;
+    public void setTypeMessage(String typeMessage) {
+        mTypeMessage = typeMessage;
     }
 }
