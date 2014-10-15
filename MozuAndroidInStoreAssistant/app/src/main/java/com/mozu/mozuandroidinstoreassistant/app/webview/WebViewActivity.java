@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.Window;
 import android.webkit.WebView;
 
@@ -12,7 +13,7 @@ import com.mozu.mozuandroidinstoreassistant.app.R;
 public class WebViewActivity extends Activity {
 
     private WebView webView;
-    public static final String URL = "domanurl";
+    public static final String URL = "domainurl";
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,9 +33,10 @@ public class WebViewActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.order_detail, menu);
+        getMenuInflater().inflate(R.menu.webview_menu, menu);
         return true;
     }
+
 
     @Override
     public void onBackPressed() {
@@ -43,5 +45,17 @@ public class WebViewActivity extends Activity {
         else
             super.onBackPressed();
     }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.refresh) {
+            webView.reload();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+
+    }
+
 
 }

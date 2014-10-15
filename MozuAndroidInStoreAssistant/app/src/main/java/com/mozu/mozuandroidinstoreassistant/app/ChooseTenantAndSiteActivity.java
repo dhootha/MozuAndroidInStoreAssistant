@@ -200,7 +200,6 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
     public void retrievedTenant(Tenant tenant) {
         if (tenant == null) {
             Toast.makeText(this, getString(R.string.tenant_unavailable_for_account), Toast.LENGTH_LONG).show();
-
             showTenantChooser();
             return;
         }
@@ -211,13 +210,9 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
     @Override
     public void siteWasChosen(Site chosenSite) {
         mUserAuthStateMachine.setCurrentSiteId(chosenSite);
-
         if (mSiteFragment != null) {
             mSiteFragment.dismiss();
         }
-
-
-
         showAskToSetDefaultDialog();
     }
 

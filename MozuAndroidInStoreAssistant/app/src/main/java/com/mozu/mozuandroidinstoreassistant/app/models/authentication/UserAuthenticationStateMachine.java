@@ -153,7 +153,6 @@ public class UserAuthenticationStateMachine extends Observable implements Refres
         UserPreferences prefs = new UserPreferences();
         if (mAuthProfile.getUserProfile() != null) {
             prefs.setEmail(mAuthProfile.getUserProfile().getEmailAddress());
-
             mAllUsersPrefs.add(prefs);
         }
 
@@ -207,7 +206,6 @@ public class UserAuthenticationStateMachine extends Observable implements Refres
         }
     }
 
-
     public void persistSiteTenantId(){
         getCurrentUsersPreferences().setDefaultTenantId(String.valueOf(mTenantId));
         getCurrentUsersPreferences().setDefaultSiteId(String.valueOf(mSiteId));
@@ -228,12 +226,11 @@ public class UserAuthenticationStateMachine extends Observable implements Refres
     }
 
     public String getTenantName(){
-        if (mTenantName == null) {
-            if (!TextUtils.isEmpty(getCurrentUsersPreferences().getDefaultTenantName()) && !getCurrentUsersPreferences().getDefaultTenantName().equalsIgnoreCase("null")) {
-                return getCurrentUsersPreferences().getDefaultTenantName();
-            }
+        if (!TextUtils.isEmpty(getCurrentUsersPreferences().getDefaultTenantName()) && !getCurrentUsersPreferences().getDefaultTenantName().equalsIgnoreCase("null")) {
+            return getCurrentUsersPreferences().getDefaultTenantName();
+        }else{
+            return null;
         }
-        return mTenantName;
     }
 
 
@@ -246,13 +243,12 @@ public class UserAuthenticationStateMachine extends Observable implements Refres
         return mSiteId;
     }
 
-    public String getSiteName(){
-        if (mSiteName == null) {
-            if (!TextUtils.isEmpty(getCurrentUsersPreferences().getDefaultSiteName()) && !getCurrentUsersPreferences().getDefaultSiteName().equalsIgnoreCase("null")) {
-                return getCurrentUsersPreferences().getDefaultSiteName();
-            }
+    public String getSiteName() {
+        if (!TextUtils.isEmpty(getCurrentUsersPreferences().getDefaultSiteName()) && !getCurrentUsersPreferences().getDefaultSiteName().equalsIgnoreCase("null")) {
+            return getCurrentUsersPreferences().getDefaultSiteName();
+        } else {
+            return null;
         }
-        return mSiteName;
     }
 
     public String getSiteDomain(){
