@@ -30,8 +30,9 @@ import com.mozu.mozuandroidinstoreassistant.app.fragments.ProductSearchFragment;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.SearchFragment;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
+import com.mozu.mozuandroidinstoreassistant.app.settings.SettingsFragment;
 
-public class MainActivity extends AuthActivity implements View.OnClickListener, CategoryFragmentListener, ProductFragmentListener, ProductListListener, OrderListener, CustomerListener,SearchFragment.GlobalSearchListener {
+public class MainActivity extends AuthActivity implements View.OnClickListener, CategoryFragmentListener, ProductFragmentListener, ProductListListener, OrderListener, CustomerListener, SearchFragment.GlobalSearchListener {
 
     private static final String CATEGORY_FRAGMENT = "category_fragment_taggy_tag_tag";
     private static final String SEARCH_FRAGMENT = "search_fragment_taggy_tag_tag";
@@ -59,12 +60,15 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
 
     private int mCurrentlySelectedNavItem;
 
+    private boolean mLaunchSettings;
+    public static String LAUNCH_SETTINGS = "launchSettings";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-
+        mLaunchSettings = getIntent().getBooleanExtra(LAUNCH_SETTINGS, false);
         mSearchMenuLayout = (LinearLayout) findViewById(R.id.menu_search_layout);
         mSearchMenuLayout.setOnClickListener(this);
 
@@ -89,11 +93,16 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         } else {
             updateNavView(savedInstanceState.getInt(CURRENTLY_SELECTED_NAV_VIEW_ID, R.id.menu_products_layout));
         }
+        if (mLaunchSettings) {
+            showSettings();
+        }
+
 
         //mWasCreatedInPortrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
 
         setupDrawer();
     }
+
 
     @Override
     public void loginSuccess() {
@@ -107,7 +116,7 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
 
     @Override
     public void authError() {
-       startLoginScreen();
+        startLoginScreen();
     }
 
     @Override
@@ -161,13 +170,12 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
         //if (mWasCreatedInPortrait) {
-            mDrawerToggle.syncState();
+        mDrawerToggle.syncState();
         //}
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
@@ -183,9 +191,16 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
             return true;
         } else if (mDrawerToggle != null && mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
+        } else if (item.getItemId() == R.id.settings) {
+            showSettings();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showSettings() {
+        SettingsFragment settingsFragment = SettingsFragment.getInstance();
+        settingsFragment.show(getFragmentManager(), "main_settings_frag");
     }
 
     @Override
@@ -273,43 +288,43 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
 
     private void initializeSearchFragment() {
         UserAuthenticationStateMachine userStateMachine = UserAuthenticationStateMachineProducer.getInstance(this);
-        SearchFragment fragment = SearchFragment.getInstance(userStateMachine.getTenantId(),userStateMachine.getSiteId());
-        addMainFragment(fragment,true);
+        SearchFragment fragment = SearchFragment.getInstance(userStateMachine.getTenantId(), userStateMachine.getSiteId());
+        addMainFragment(fragment, true);
     }
 
-    private void resetSelected(){
+    private void resetSelected() {
         mProductsLayout.setSelected(false);
         mOrdersLayout.setSelected(false);
         mCustomersLayout.setSelected(false);
         mSearchMenuLayout.setSelected(false);
     }
 
-    public void setProductSelected(){
+    public void setProductSelected() {
         resetSelected();
         getActionBar().setTitle(R.string.menu_products_text);
         mProductsLayout.setSelected(true);
     }
 
-    public void setOrdersSelected(){
+    public void setOrdersSelected() {
         resetSelected();
         getActionBar().setTitle(R.string.menu_orders_text);
         mOrdersLayout.setSelected(true);
     }
 
-    public void setCustomersSelected(){
+    public void setCustomersSelected() {
         resetSelected();
         getActionBar().setTitle(R.string.menu_customers_text);
         mCustomersLayout.setSelected(true);
 
     }
 
-    public void setSearchSelected(){
+    public void setSearchSelected() {
         resetSelected();
         getActionBar().setTitle(R.string.menu_search_text);
         mSearchMenuLayout.setSelected(true);
     }
 
-    public void addMainFragment(Fragment newFragment,boolean addToBackStack){
+    public void addMainFragment(Fragment newFragment, boolean addToBackStack) {
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         Fragment currentFragment = fragmentManager.findFragmentById(R.id.content_fragment_holder);
@@ -330,8 +345,7 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         Fragment currentFragment = fragmentManager.findFragmentById(R.id.content_fragment_holder);
         if (currentFragment instanceof SearchFragment) {
             ((SearchFragment) currentFragment).onBackPressed();
-        }
-        else{
+        } else {
             super.onBackPressed();
         }
 
@@ -364,15 +378,10 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
     }
 
     private void showProductSearchFragment(int categoryId, String query) {
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         ProductSearchFragment fragment = new ProductSearchFragment();
         fragment.setCategoryId(categoryId);
         fragment.setQueryString(query);
-        fragmentTransaction.setCustomAnimations(R.animator.slide_right_in, R.animator.scale_fade_out, R.animator.slide_left_in, R.animator.scale_fade_out);
-        fragmentTransaction.replace(R.id.content_fragment_holder, fragment, PRODUCTS_SEARCH_FRAGMENT_BACKSTACK);
-        fragmentTransaction.addToBackStack(PRODUCTS_SEARCH_FRAGMENT_BACKSTACK);
-        fragmentTransaction.commit();
+        addMainFragment(fragment, true);
     }
 
     @Override
@@ -420,7 +429,7 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
     @Override
     public void customerSelected(CustomerAccount customer) {
         Intent intent = new Intent(this, CustomerDetailActivity.class);
-        intent.putExtra(CustomerDetailActivity.CUSTOMER_ID,customer.getId());
+        intent.putExtra(CustomerDetailActivity.CUSTOMER_ID, customer.getId());
         startActivity(intent);
     }
 
@@ -442,12 +451,12 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         fragment.setCategoryId(0);
         fragment.setQueryString(searchQuery);
         fragment.setLaunchedFromSearch();
-        addMainFragment(fragment,true);
+        addMainFragment(fragment, true);
     }
 
     private void addChildCategoryFragment(Category category) {
         CategoryFragment categoryFragment = CategoryFragment.getInstance(category);
-        addMainFragment(categoryFragment,true);
+        addMainFragment(categoryFragment, true);
     }
 
 
@@ -460,6 +469,6 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         fragment.setListener(this);
         fragment.setDefaultSearchQuery(searchQuery);
         fragment.setLauncedFromSearch();
-        addMainFragment(fragment,true);
+        addMainFragment(fragment, true);
     }
 }

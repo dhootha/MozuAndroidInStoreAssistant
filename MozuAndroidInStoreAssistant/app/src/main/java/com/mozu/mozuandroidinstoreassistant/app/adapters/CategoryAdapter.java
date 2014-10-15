@@ -76,7 +76,7 @@ public class CategoryAdapter extends GridToggleArrayAdapter<Category> {
                 if (!isGrid()) {
                     creator = creator.transform(new RoundedTransformation()).fit().centerCrop();
                 } else {
-                    creator = creator.placeholder(R.drawable.icon_noproductphoto).fit().centerInside();
+                    creator = creator.placeholder(R.drawable.icon_noproductphoto);
                 }
 
                 viewHolder.categoryImage.setBackgroundColor(getContext().getResources().getColor(R.color.darker_grey));

@@ -188,7 +188,7 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if (!hidden) {
-            ((MainActivity) getActivity()).setOrdersSelected();
+            ((MainActivity) getActivity()).setSearchSelected();
         }
     }
     @Override

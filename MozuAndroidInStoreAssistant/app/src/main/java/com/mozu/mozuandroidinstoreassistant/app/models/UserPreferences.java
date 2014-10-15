@@ -7,7 +7,10 @@ public class UserPreferences {
 
     private String mEmail;
     private String mDefaultTenantId;
+    private String mDefaultTenantName;
     private String mDefaultSiteId;
+    private String mDefaultSiteName;
+    private String mDefaultSiteDomain;
     private boolean mShowAsGrids = true;
 
     private List<RecentSearch> mRecentProductSearches;
@@ -38,14 +41,39 @@ public class UserPreferences {
         mDefaultTenantId = tenantId;
     }
 
+    public String getDefaultTenantName() {
+
+        return mDefaultTenantName;
+    }
+
+    public void setDefaultTenantName(String tenantName) {
+        mDefaultTenantName = tenantName;
+    }
+
+
     public String getDefaultSiteId() {
 
         return mDefaultSiteId;
     }
 
     public void setDefaultSiteId(String siteId) {
-
         mDefaultSiteId = siteId;
+    }
+
+    public String getDefaultSiteName() {
+        return mDefaultSiteName;
+    }
+
+    public void setDefaultSiteName(String siteName) {
+        mDefaultSiteName = siteName;
+    }
+
+    public String getDefaultSiteDomain() {
+        return mDefaultSiteDomain;
+    }
+
+    public void setDefaultSiteDomain(String siteDomain) {
+        mDefaultSiteDomain = siteDomain;
     }
 
 

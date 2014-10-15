@@ -212,6 +212,10 @@
     <string name="pickup_location">Location:</string>
     <string name="empty_items">No Items to display</string>
     <string name="empty_address">No Address available</string>
+    <string name="settings_header">Settings</string>
+    <string name="default_store">Default Store</string>
+    <string name="settings_website">Website</string>
+    <string name="clear_search_results">CLEAR SEARCH RESULTS</string>
 
 
 </resources>
