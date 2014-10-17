@@ -83,6 +83,7 @@ public class CategoryAdapter extends GridToggleArrayAdapter<Category> {
                     public void onSuccess() {
                         Bitmap bitmap = ((BitmapDrawable) viewHolder.categoryImage.getDrawable()).getBitmap();
                         viewHolder.categoryImage.setBackgroundColor(bitmap.getPixel(0, 0));
+                        viewHolder.categoryImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                         viewHolder.categoryLoading.success();
 
                     }

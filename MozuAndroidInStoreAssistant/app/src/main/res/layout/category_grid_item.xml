@@ -3,7 +3,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/category_grid_layout"
     android:orientation="vertical"
-    android:layout_width="match_parent"
+    android:layout_width="240dp"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:background="@color/main_background">
@@ -13,20 +13,20 @@
         android:layout_height="match_parent"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="2dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
         android:background="@drawable/card_background">
 
         <com.mozu.mozuandroidinstoreassistant.app.views.LoadingView
             android:id="@+id/category_loading"
-            android:layout_width="188dp"
-            android:layout_height="188dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
           >
             <ImageView
                 android:id="@+id/category_image"
-                android:layout_width="188dp"
-                android:layout_height="188dp"
+                android:layout_width="240dp"
+                android:layout_height="240dp"
                 android:src="@drawable/icon_nocategoryphoto"
                 />
         </com.mozu.mozuandroidinstoreassistant.app.views.LoadingView>

@@ -88,11 +88,14 @@ public class ProductAdapter extends GridToggleArrayAdapter<Product> {
                 public void onSuccess() {
                     Bitmap bitmap = ((BitmapDrawable) viewHolder.productImage.getDrawable()).getBitmap();
                     viewHolder.productImage.setBackgroundColor(bitmap.getPixel(0, 0));
+                    viewHolder.productImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                    viewHolder.productLoading.success();
                 }
 
                 @Override
                 public void onError() {
                     viewHolder.productImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                    viewHolder.productLoading.success();
                 }
 
             });

@@ -234,11 +234,15 @@
         android:visibility="gone">
 
         <GridView
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:verticalSpacing="4dp"
+            android:horizontalSpacing="2dp"
             android:id="@+id/product_grid"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="none"
-            android:numColumns="@integer/num_of_columns_in_grid" />
+            android:numColumns="5" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
