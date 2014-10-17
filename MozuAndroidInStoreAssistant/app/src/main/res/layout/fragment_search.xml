@@ -40,7 +40,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:src="@drawable/icon_search_actionbar" />
+                android:src="@drawable/actionbar_search_button" />
         </RelativeLayout>
 
         <LinearLayout

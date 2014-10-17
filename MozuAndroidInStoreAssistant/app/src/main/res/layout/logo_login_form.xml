@@ -70,55 +70,107 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:floatLabelTextAppearance="@style/TextAppearance.Mozu.FloatLabel">
+                <RelativeLayout
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_width="310dp"
+                    android:layout_height="match_parent">
 
-                    <AutoCompleteTextView
-                        android:id="@+id/email"
-                        android:layout_width="match_parent"
+                    <ImageView
+                        android:id="@+id/email_image"
+                        android:layout_alignParentBottom="true"
+                        android:paddingBottom="8dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:imeOptions="flagNavigateNext"
-                        android:hint="@string/prompt_email"
-                        android:inputType="textEmailAddress"
-                        android:maxLines="1"
-                        android:fontFamily="sans-serif-light"
-                        android:textColor="@color/mozu_color"
-                        android:drawableLeft="@drawable/icon_username_login"
-                        android:singleLine="true" />
+                        android:layout_toLeftOf="@+id/email_float_label"
+                        android:src="@drawable/icon_username_login" />
 
-                </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
+                    <com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout
+                        android:id="@+id/email_float_label"
+                        android:layout_marginLeft="16dp"
+                        android:paddingLeft="0dp"
+                        android:paddingRight="0dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_width="268dp"
+                        android:layout_height="wrap_content"
+                        app:floatLabelTextAppearance="@style/TextAppearance.Mozu.FloatLabel">
 
-                <com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                        <AutoCompleteTextView
+                            android:id="@+id/email"
+                            android:textSize="16sp"
+                            android:paddingRight="4dp"
+                            android:paddingLeft="4dp"
+                            android:paddingTop="10dp"
+                            android:paddingBottom="10dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:imeOptions="flagNavigateNext"
+                            android:hint="@string/prompt_email"
+                            android:inputType="textEmailAddress"
+                            android:maxLines="1"
+                            android:fontFamily="sans-serif-light"
+                            android:textColor="@color/mozu_color"
+                            android:singleLine="true" />
+
+                    </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
+                </RelativeLayout>
+
+                <RelativeLayout
                     android:layout_marginTop="10dp"
-                    app:floatLabelTextAppearance="@style/TextAppearance.Mozu.FloatLabel">
-
-                    <EditText
-                        android:id="@+id/password"
-                        android:layout_width="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_width="310dp"
+                    android:layout_height="match_parent">
+                    <ImageView
+                        android:id="@+id/password_image"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:hint="@string/prompt_password"
-                        android:imeActionId="@+id/login"
-                        android:imeActionLabel="@string/action_sign_in"
-                        android:imeOptions="actionUnspecified"
-                        android:inputType="textPassword"
-                        android:nextFocusUp="@id/email"
-                        android:maxLines="1"
-                        android:fontFamily="sans-serif-light"
-                        android:textColor="@color/mozu_color"
-                        android:drawableLeft="@drawable/icon_password_login"
-                        android:singleLine="true" />
+                        android:layout_alignParentBottom="true"
+                        android:paddingBottom="8dp"
+                        android:layout_toLeftOf="@+id/password_float_label"
+                        android:src="@drawable/icon_password_login" />
 
-                </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
+                    <com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout
+                        android:id="@+id/password_float_label"
+                        android:layout_marginLeft="16dp"
+                        android:paddingLeft="0dp"
+                        android:paddingRight="0dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:floatLabelTextAppearance="@style/TextAppearance.Mozu.FloatLabel">
+
+                        <EditText
+                            android:id="@+id/password"
+                            android:textSize="16sp"
+                            android:layout_width="268dp"
+                            android:paddingLeft="4dp"
+                            android:paddingRight="4dp"
+                            android:paddingTop="10dp"
+                            android:paddingBottom="10dp"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/prompt_password"
+                            android:imeActionId="@+id/login"
+                            android:imeActionLabel="@string/action_sign_in"
+                            android:imeOptions="actionUnspecified"
+                            android:inputType="textPassword"
+                            android:nextFocusUp="@id/email"
+                            android:maxLines="1"
+                            android:fontFamily="sans-serif-light"
+                            android:textColor="@color/mozu_color"
+                            android:singleLine="true" />
+
+                    </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
+                </RelativeLayout>
 
                 <Button
+                    android:background="@color/mozu_color"
                     android:id="@+id/email_sign_in_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="31dp"
+                    android:layout_width="216dp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_height="35dp"
+                    android:layout_marginTop="34dp"
+                    android:textSize="14sp"
                     android:textColor="@android:color/white"
                     android:text="@string/action_sign_in"
                     android:textStyle="bold" />

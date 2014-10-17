@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
 import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.mozuandroidinstoreassistant.app.R;
@@ -75,27 +76,23 @@ public class ProductAdapter extends GridToggleArrayAdapter<Product> {
                     .load(mUrlConverter.getFullImageUrl(product.getContent().getProductImages().get(0).getImageUrl()));
 
             if (!isGrid()) {
-                creator = creator.transform(new RoundedTransformation()).fit().centerCrop();
+               creator = creator.transform(new RoundedTransformation()).placeholder(R.drawable.icon_noproductphoto);
+
             } else {
                 creator = creator.placeholder(R.drawable.icon_noproductphoto);
             }
-
-            viewHolder.productImage.setBackgroundColor(getContext().getResources().getColor(R.color.darker_grey));
 
             creator.into(viewHolder.productImage, new Callback() {
 
                 @Override
                 public void onSuccess() {
-
                     Bitmap bitmap = ((BitmapDrawable) viewHolder.productImage.getDrawable()).getBitmap();
                     viewHolder.productImage.setBackgroundColor(bitmap.getPixel(0, 0));
-
                 }
 
                 @Override
                 public void onError() {
-                    String s = "";
-
+                    viewHolder.productImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                 }
 
             });
