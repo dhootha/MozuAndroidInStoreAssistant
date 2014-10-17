@@ -196,15 +196,8 @@
             android:orientation="horizontal"
             android:background="@color/semi_white_background"
             android:layout_height="match_parent">
-
             <View
-                android:layout_weight="0.1"
-                android:layout_width="0dp"
-                android:layout_height="0dp" />
-
-            <View
-                android:layout_weight="0.9"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/dark_black_border" />
         </LinearLayout>
@@ -242,7 +235,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="none"
-            android:numColumns="5" />
+            android:numColumns="@integer/num_of_columns_in_grid"
+            />
 
     </android.support.v4.widget.SwipeRefreshLayout>
 

@@ -102,8 +102,24 @@ public class ProductAdapter extends GridToggleArrayAdapter<Product> {
         }
 
         viewHolder.productSku.setText(product.getProductCode());
-        viewHolder.productPrice.setText(product.getPrice() != null && product.getPrice().getPrice() != null && product.getPrice().getPrice() > 0.0 ? mNumberFormat.format(product.getPrice().getPrice()) : "");
+        if(product.getPrice() != null && product.getPrice().getSalePrice() != null){
+            if(isGrid()) {
+                viewHolder.productPrice.setVisibility(View.GONE);
+            }else {
+                viewHolder.productPrice.setVisibility(View.VISIBLE);
+            }
+            viewHolder.productSalePrice.setVisibility(View.VISIBLE);
+        }else{
+            viewHolder.productPrice.setVisibility(View.VISIBLE);
+            if (isGrid()) {
+                viewHolder.productSalePrice.setVisibility(View.GONE);
+            }else {
+                viewHolder.productSalePrice.setVisibility(View.VISIBLE);
+            }
+        }
         viewHolder.productSalePrice.setText(product.getPrice() != null && product.getPrice().getSalePrice() != null && product.getPrice().getSalePrice() > 0.0 ? mNumberFormat.format(product.getPrice().getSalePrice()) : "");
+        viewHolder.productPrice.setText(product.getPrice() != null && product.getPrice().getPrice() != null && product.getPrice().getPrice() > 0.0 ? mNumberFormat.format(product.getPrice().getPrice()) : "");
+
         viewHolder.productInventory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -120,7 +136,7 @@ public class ProductAdapter extends GridToggleArrayAdapter<Product> {
                     dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
                     dialog.show();
                     WindowManager.LayoutParams lParams = dialog.getWindow().getAttributes();
-                    int[] coordinates = new int[]{0,0};
+                    int[] coordinates = new int[]{0, 0};
                     lParams.gravity = Gravity.TOP | Gravity.LEFT;
                     view.getLocationOnScreen(coordinates);
                     lParams.x = (int) (coordinates[0] - view.getX());
