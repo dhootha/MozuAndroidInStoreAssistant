@@ -62,6 +62,9 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
     @InjectView(R.id.product_list_container) SwipeRefreshLayout mProductListPullToRefresh;
 
     @InjectView(R.id.product_list_headers) LinearLayout mHeadersView;
+    @InjectView(R.id.list_view_border) LinearLayout mHeadersBorderView;
+
+
 
     private ProductAdapter mAdapter;
 
@@ -147,6 +150,8 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         mProgressBar.setVisibility(View.VISIBLE);
         mProductListPullToRefresh.setVisibility(View.GONE);
         mHeadersView.setVisibility(View.GONE);
+        mHeadersBorderView.setVisibility(View.GONE);
+
         mEmptyListMessageView.setVisibility(View.GONE);
 
         return fragmentView;
@@ -200,12 +205,14 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
                 mProductGridPullToRefresh.setVisibility(View.VISIBLE);
                 mProductListPullToRefresh.setVisibility(View.GONE);
                 mHeadersView.setVisibility(View.GONE);
+                mHeadersBorderView.setVisibility(View.GONE);
                 mAdapter.setIsGrid(true);
                 mAdapter.notifyDataSetChanged();
             } else {
                 mProductListPullToRefresh.setVisibility(View.VISIBLE);
                 mProductGridPullToRefresh.setVisibility(View.GONE);
                 mHeadersView.setVisibility(View.VISIBLE);
+                mHeadersBorderView.setVisibility(View.VISIBLE);
                 mAdapter.setIsGrid(false);
                 mAdapter.notifyDataSetChanged();
             }
@@ -216,6 +223,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
                 mProductGridPullToRefresh.setVisibility(View.GONE);
                 mProductListPullToRefresh.setVisibility(View.GONE);
                 mHeadersView.setVisibility(View.GONE);
+                mHeadersBorderView.setVisibility(View.GONE);
                 mEmptyListMessageView.setVisibility(View.VISIBLE);
             } else {
                 mEmptyListMessageView.setVisibility(View.GONE);
@@ -235,11 +243,11 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
         if (mIsGridVisible) {
 
-            mToggleGridItem.setIcon(R.drawable.list);
+            mToggleGridItem.setIcon(R.drawable.actionbar_icon_list_button);
             mToggleGridItem.setTitle(getString(R.string.view_as_list_menu_item_text));
         } else {
 
-            mToggleGridItem.setIcon(R.drawable.grid);
+            mToggleGridItem.setIcon(R.drawable.actionbar_icon_grid_button);
             mToggleGridItem.setTitle(getString(R.string.view_as_grid_menu_item_text));
         }
 
@@ -308,6 +316,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
             mIsGridVisible = true;
             mProductListPullToRefresh.setVisibility(View.GONE);
             mHeadersView.setVisibility(View.GONE);
+            mHeadersBorderView.setVisibility(View.GONE);
             mProductGridPullToRefresh.setVisibility(View.VISIBLE);
             mProgressBar.setVisibility(View.GONE);
             mAdapter.setIsGrid(true);
@@ -315,7 +324,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
             prefs.setShowAsGrids(true);
             mUserState.updateUserPreferences();
 
-            mToggleGridItem.setIcon(R.drawable.list);
+            mToggleGridItem.setIcon(R.drawable.actionbar_icon_list_button);
             mToggleGridItem.setTitle(getString(R.string.view_as_list_menu_item_text));
 
             return true;
@@ -323,6 +332,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
             mIsGridVisible = false;
             mProductListPullToRefresh.setVisibility(View.VISIBLE);
             mHeadersView.setVisibility(View.VISIBLE);
+            mHeadersBorderView.setVisibility(View.VISIBLE);
             mProductGridPullToRefresh.setVisibility(View.GONE);
             mProgressBar.setVisibility(View.GONE);
             mAdapter.setIsGrid(false);
@@ -330,7 +340,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
             prefs.setShowAsGrids(false);
             mUserState.updateUserPreferences();
 
-            mToggleGridItem.setIcon(R.drawable.grid);
+            mToggleGridItem.setIcon(R.drawable.actionbar_icon_grid_button);
             mToggleGridItem.setTitle(getString(R.string.view_as_grid_menu_item_text));
 
             return true;

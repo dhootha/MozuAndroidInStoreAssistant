@@ -4,21 +4,33 @@
     android:id="@+id/product_list_layout"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="64dp"
     android:gravity="center_vertical"
     android:background="@android:color/transparent"
     android:minHeight="100dp">
 
-    <ImageView
-        android:id="@+id/product_image"
+    <com.mozu.mozuandroidinstoreassistant.app.views.LoadingView
+        android:id="@+id/product_loading"
+        android:layout_weight="0.1"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight=".3"/>
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/product_image"
+                android:layout_width="40dp"
+                android:scaleType="centerInside"
+                android:layout_height="40dp" />
+        </LinearLayout>
+    </com.mozu.mozuandroidinstoreassistant.app.views.LoadingView>
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight=".7"
+        android:layout_weight=".18"
         android:orientation="horizontal"
         android:gravity="left|center_vertical">
 
@@ -26,14 +38,14 @@
             android:id="@+id/product_sku"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/darker_gray"/>
+            android:textColor="@android:color/darker_gray" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1.5"
+        android:layout_weight="0.38"
         android:orientation="horizontal"
         android:gravity="left|center_vertical">
 
@@ -42,14 +54,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
-            android:textColor="@android:color/black"/>
+            android:textColor="@android:color/black" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight=".4"
+        android:layout_weight=".13"
         android:orientation="horizontal"
         android:gravity="right|center_vertical">
 
@@ -57,14 +69,14 @@
             android:id="@+id/product_price"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:textColor="@android:color/darker_gray"/>
+            android:textColor="@android:color/darker_gray" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight=".4"
+        android:layout_weight=".13"
         android:orientation="horizontal"
         android:gravity="right|center_vertical">
 
@@ -73,22 +85,23 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:textStyle="bold"
-            android:textColor="@color/mozu_color"/>
+            android:textColor="@color/mozu_color" />
 
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight=".2"
+        android:layout_weight=".08"
         android:orientation="horizontal"
         android:gravity="right|center_vertical">
 
-    <ImageView
-        android:id="@+id/product_image_inventory"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/transparent"
-        android:src="@drawable/mozu_btn_inventory"/>
-        </LinearLayout>
+        <ImageView
+            android:id="@+id/product_image_inventory"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:src="@drawable/mozu_btn_inventory" />
+    </LinearLayout>
 
 </LinearLayout>

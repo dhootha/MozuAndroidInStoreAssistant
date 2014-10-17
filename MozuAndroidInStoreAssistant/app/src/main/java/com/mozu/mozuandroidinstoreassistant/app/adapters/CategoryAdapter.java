@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.mozu.api.contracts.productruntime.Category;
 import com.mozu.mozuandroidinstoreassistant.app.R;
@@ -39,7 +40,6 @@ public class CategoryAdapter extends GridToggleArrayAdapter<Category> {
         if (convertView == null ||
             (isGrid() && convertView.getId() != getGridResource()) ||
             (!isGrid() && convertView.getId() != getListResource())) {
-
             convertView = LayoutInflater.from(getContext()).inflate(getCurrentResource(), parent, false);
             viewHolder = new CategoryViewHolder(convertView);
             convertView.setTag(viewHolder);
@@ -74,25 +74,25 @@ public class CategoryAdapter extends GridToggleArrayAdapter<Category> {
                         .load(mUrlConverter.getFullImageUrl(url));
 
                 if (!isGrid()) {
-                    creator = creator.transform(new RoundedTransformation()).fit().centerCrop();
+                    creator = creator.transform(new RoundedTransformation()).placeholder(R.drawable.icon_nocategoryphoto);
                 } else {
-                    creator = creator.placeholder(R.drawable.icon_noproductphoto);
+                    creator = creator.placeholder(R.drawable.icon_nocategoryphoto);
                 }
-
-                viewHolder.categoryImage.setBackgroundColor(getContext().getResources().getColor(R.color.darker_grey));
-
                 creator.into(viewHolder.categoryImage, new Callback() {
-
                     @Override
                     public void onSuccess() {
-
                         Bitmap bitmap = ((BitmapDrawable) viewHolder.categoryImage.getDrawable()).getBitmap();
                         viewHolder.categoryImage.setBackgroundColor(bitmap.getPixel(0, 0));
+                        viewHolder.categoryImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                        viewHolder.categoryLoading.success();
 
                     }
 
                     @Override
-                    public void onError() {}
+                    public void onError() {
+                        viewHolder.categoryLoading.success();
+                        viewHolder.categoryImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                    }
 
                 });
             }

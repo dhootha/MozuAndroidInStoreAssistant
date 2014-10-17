@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
 import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.mozuandroidinstoreassistant.app.R;
@@ -75,35 +76,50 @@ public class ProductAdapter extends GridToggleArrayAdapter<Product> {
                     .load(mUrlConverter.getFullImageUrl(product.getContent().getProductImages().get(0).getImageUrl()));
 
             if (!isGrid()) {
-                creator = creator.transform(new RoundedTransformation()).fit().centerCrop();
+               creator = creator.transform(new RoundedTransformation()).placeholder(R.drawable.icon_noproductphoto);
+
             } else {
                 creator = creator.placeholder(R.drawable.icon_noproductphoto);
             }
-
-            viewHolder.productImage.setBackgroundColor(getContext().getResources().getColor(R.color.darker_grey));
 
             creator.into(viewHolder.productImage, new Callback() {
 
                 @Override
                 public void onSuccess() {
-
                     Bitmap bitmap = ((BitmapDrawable) viewHolder.productImage.getDrawable()).getBitmap();
                     viewHolder.productImage.setBackgroundColor(bitmap.getPixel(0, 0));
-
+                    viewHolder.productImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                    viewHolder.productLoading.success();
                 }
 
                 @Override
                 public void onError() {
-                    String s = "";
-
+                    viewHolder.productImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                    viewHolder.productLoading.success();
                 }
 
             });
         }
 
         viewHolder.productSku.setText(product.getProductCode());
-        viewHolder.productPrice.setText(product.getPrice() != null && product.getPrice().getPrice() != null && product.getPrice().getPrice() > 0.0 ? mNumberFormat.format(product.getPrice().getPrice()) : "");
+        if(product.getPrice() != null && product.getPrice().getSalePrice() != null){
+            if(isGrid()) {
+                viewHolder.productPrice.setVisibility(View.GONE);
+            }else {
+                viewHolder.productPrice.setVisibility(View.VISIBLE);
+            }
+            viewHolder.productSalePrice.setVisibility(View.VISIBLE);
+        }else{
+            viewHolder.productPrice.setVisibility(View.VISIBLE);
+            if (isGrid()) {
+                viewHolder.productSalePrice.setVisibility(View.GONE);
+            }else {
+                viewHolder.productSalePrice.setVisibility(View.VISIBLE);
+            }
+        }
         viewHolder.productSalePrice.setText(product.getPrice() != null && product.getPrice().getSalePrice() != null && product.getPrice().getSalePrice() > 0.0 ? mNumberFormat.format(product.getPrice().getSalePrice()) : "");
+        viewHolder.productPrice.setText(product.getPrice() != null && product.getPrice().getPrice() != null && product.getPrice().getPrice() > 0.0 ? mNumberFormat.format(product.getPrice().getPrice()) : "");
+
         viewHolder.productInventory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -120,7 +136,7 @@ public class ProductAdapter extends GridToggleArrayAdapter<Product> {
                     dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
                     dialog.show();
                     WindowManager.LayoutParams lParams = dialog.getWindow().getAttributes();
-                    int[] coordinates = new int[]{0,0};
+                    int[] coordinates = new int[]{0, 0};
                     lParams.gravity = Gravity.TOP | Gravity.LEFT;
                     view.getLocationOnScreen(coordinates);
                     lParams.x = (int) (coordinates[0] - view.getX());

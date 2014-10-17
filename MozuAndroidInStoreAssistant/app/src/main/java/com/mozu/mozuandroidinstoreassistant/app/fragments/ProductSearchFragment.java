@@ -242,10 +242,10 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
         mToggleGridItem = menu.findItem(R.id.toggle_view);
         mIsGridVisible = prefs.getShowAsGrids();
         if (mIsGridVisible) {
-            mToggleGridItem.setIcon(R.drawable.list);
+            mToggleGridItem.setIcon(R.drawable.actionbar_icon_list_button);
             mToggleGridItem.setTitle(getString(R.string.view_as_list_menu_item_text));
         } else {
-            mToggleGridItem.setIcon(R.drawable.grid);
+            mToggleGridItem.setIcon(R.drawable.actionbar_icon_grid_button);
             mToggleGridItem.setTitle(getString(R.string.view_as_grid_menu_item_text));
         }
 
@@ -287,7 +287,7 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
             prefs.setShowAsGrids(true);
             mUserState.updateUserPreferences();
 
-            mToggleGridItem.setIcon(R.drawable.list);
+            mToggleGridItem.setIcon(R.drawable.actionbar_icon_list_button);
             mToggleGridItem.setTitle(getString(R.string.view_as_list_menu_item_text));
 
             return true;
@@ -302,7 +302,7 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
             prefs.setShowAsGrids(false);
             mUserState.updateUserPreferences();
 
-            mToggleGridItem.setIcon(R.drawable.grid);
+            mToggleGridItem.setIcon(R.drawable.actionbar_icon_grid_button);
             mToggleGridItem.setTitle(getString(R.string.view_as_grid_menu_item_text));
 
             return true;

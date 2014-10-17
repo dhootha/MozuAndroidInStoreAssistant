@@ -14,5 +14,5 @@
 -->
 
 <resources>
-    <integer name="num_of_columns_in_grid">4</integer>
+    <integer name="num_of_columns_in_grid">5</integer>
 </resources>

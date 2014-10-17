@@ -208,10 +208,10 @@ public class CategoryFragment extends Fragment implements AdapterView.OnItemClic
         mIsGridVisible = prefs.getShowAsGrids();
 
         if (mIsGridVisible) {
-            mToggleGridItem.setIcon(R.drawable.list);
+            mToggleGridItem.setIcon(R.drawable.actionbar_icon_list_button);
             mToggleGridItem.setTitle(getString(R.string.view_as_list_menu_item_text));
         } else {
-            mToggleGridItem.setIcon(R.drawable.grid);
+            mToggleGridItem.setIcon(R.drawable.actionbar_icon_grid_button);
             mToggleGridItem.setTitle(getString(R.string.view_as_grid_menu_item_text));
         }
 
@@ -223,6 +223,7 @@ public class CategoryFragment extends Fragment implements AdapterView.OnItemClic
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
         mSearchMenuItem = menu.findItem(R.id.action_search);
         mSearchView = (SearchView) mSearchMenuItem.getActionView();
+        mSearchView.setBackgroundResource(R.drawable.mozu_edit_text_holo_light);
         mSearchView.setQueryHint(getString(R.string.product_search_hint));
         mSearchView.setMaxWidth(1500);
 
@@ -277,7 +278,7 @@ public class CategoryFragment extends Fragment implements AdapterView.OnItemClic
                 prefs.setShowAsGrids(true);
                 mUserState.updateUserPreferences();
 
-                mToggleGridItem.setIcon(R.drawable.list);
+                mToggleGridItem.setIcon(R.drawable.actionbar_icon_list_button);
                 mToggleGridItem.setTitle(getString(R.string.view_as_list_menu_item_text));
 
                 return true;
@@ -291,7 +292,7 @@ public class CategoryFragment extends Fragment implements AdapterView.OnItemClic
                 prefs.setShowAsGrids(false);
                 mUserState.updateUserPreferences();
 
-                mToggleGridItem.setIcon(R.drawable.grid);
+                mToggleGridItem.setIcon(R.drawable.actionbar_icon_grid_button);
                 mToggleGridItem.setTitle(getString(R.string.view_as_grid_menu_item_text));
 
                 return true;
