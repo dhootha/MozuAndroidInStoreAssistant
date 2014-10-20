@@ -66,9 +66,9 @@ public class ProductAdapter extends GridToggleArrayAdapter<Product> {
         }
 
         final Product product = getItem(position);
-
         viewHolder.productName.setText(product.getContent().getProductName());
-
+        viewHolder.productImage.setImageResource(R.drawable.icon_noproductphoto);
+        viewHolder.productImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         //load image asynchronously into the view
         if (product.getContent().getProductImages() != null && product.getContent().getProductImages().size() > 0) {
 
@@ -76,10 +76,14 @@ public class ProductAdapter extends GridToggleArrayAdapter<Product> {
                     .load(mUrlConverter.getFullImageUrl(product.getContent().getProductImages().get(0).getImageUrl()));
 
             if (!isGrid()) {
-               creator = creator.transform(new RoundedTransformation()).placeholder(R.drawable.icon_noproductphoto);
-
+                creator = creator.transform(new RoundedTransformation()).placeholder(R.drawable.icon_noproductphoto);
+                int dimenWidth = getContext().getResources().getDimensionPixelSize(R.dimen.product_list_item_width);
+                int dimenHeight = getContext().getResources().getDimensionPixelSize(R.dimen.product_list_item_height);
+                creator = creator.transform(new RoundedTransformation()).placeholder(R.drawable.icon_nocategoryphoto).resize(dimenWidth, dimenHeight).centerInside();
             } else {
-                creator = creator.placeholder(R.drawable.icon_noproductphoto);
+                int dimenWidth = getContext().getResources().getDimensionPixelSize(R.dimen.category_grid_item_width);
+                int dimenHeight = getContext().getResources().getDimensionPixelSize(R.dimen.category_grid_item_height);
+                creator = creator.placeholder(R.drawable.icon_noproductphoto).resize(dimenWidth, dimenHeight).centerInside();
             }
 
             creator.into(viewHolder.productImage, new Callback() {
@@ -99,6 +103,9 @@ public class ProductAdapter extends GridToggleArrayAdapter<Product> {
                 }
 
             });
+        }else{
+            viewHolder.productImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            viewHolder.productLoading.success();
         }
 
         viewHolder.productSku.setText(product.getProductCode());

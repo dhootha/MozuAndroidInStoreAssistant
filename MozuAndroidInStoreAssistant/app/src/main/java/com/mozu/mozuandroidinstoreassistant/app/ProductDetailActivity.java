@@ -195,9 +195,11 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
         if (mImages != null && mProduct.getContent().getProductImages().size() > 0) {
             mProductImagesLayout.removeAllViews();
             mProductImagesLayout.addView(mMainImageView);
+            int productImageWidth = (int) getResources().getDimension(R.dimen.main_product_image_size);
+            int productImageHeight = (int) getResources().getDimension(R.dimen.main_product_image_size);
             Picasso.with(this)
                     .load(mImageUrlConverter.getFullImageUrl(mProduct.getContent().getProductImages().get(0).getImageUrl()))
-                    .fit().centerCrop()
+                    .resize(productImageWidth,productImageHeight).centerCrop()
                     .into(mMainImageView);
         }
 
@@ -345,7 +347,8 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
 
             Picasso.with(this)
                     .load(mImageUrlConverter.getFullImageUrl(mProduct.getContent().getProductImages().get(firstImagePosition).getImageUrl()))
-                    .fit().centerCrop()
+                    .resize(imageWidth,imageHeight)
+                    .centerCrop()
                     .into(imageViewTop);
 
             if (productImageList.size() > secondImagePosition) {
@@ -367,7 +370,8 @@ public class ProductDetailActivity extends Activity implements LoaderManager.Loa
 
                 Picasso.with(this)
                         .load(mImageUrlConverter.getFullImageUrl(mProduct.getContent().getProductImages().get(secondImagePosition).getImageUrl()))
-                        .fit().centerCrop()
+                        .resize(imageWidth,imageHeight)
+                        .centerCrop()
                         .into(imageViewBottom);
             }
 

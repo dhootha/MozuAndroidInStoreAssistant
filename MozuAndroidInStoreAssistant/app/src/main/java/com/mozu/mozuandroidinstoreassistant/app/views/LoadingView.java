@@ -3,11 +3,10 @@ package com.mozu.mozuandroidinstoreassistant.app.views;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
-import android.widget.ViewFlipper;
 
 import com.mozu.mozuandroidinstoreassistant.app.R;
 
-public class LoadingView extends ViewFlipper {
+public class LoadingView extends CustomViewFlipper {
 
     TextView mTextView;
     public LoadingView(Context context) {

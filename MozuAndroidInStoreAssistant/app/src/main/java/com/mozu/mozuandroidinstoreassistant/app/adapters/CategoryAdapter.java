@@ -50,18 +50,8 @@ public class CategoryAdapter extends GridToggleArrayAdapter<Category> {
         Category category = getItem(position);
 
         viewHolder.categoryName.setText(category.getContent().getName());
-
         viewHolder.categoryImage.setImageResource(R.drawable.icon_nocategoryphoto);
-
-        //load image asynchronously into the view
-        if (category.getContent().getCategoryImages() != null && category.getContent().getCategoryImages().size() > 0) {
-
-            Picasso.with(getContext())
-                    .load(category.getContent().getCategoryImages().get(0).getImageUrl())
-                    .fit().centerCrop()
-                    .into(viewHolder.categoryImage);
-
-        }
+        viewHolder.categoryImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
 
         //load image asynchronously into the view
         if (category.getContent().getCategoryImages() != null && category.getContent().getCategoryImages().size() > 0) {
@@ -74,18 +64,21 @@ public class CategoryAdapter extends GridToggleArrayAdapter<Category> {
                         .load(mUrlConverter.getFullImageUrl(url));
 
                 if (!isGrid()) {
-                    creator = creator.transform(new RoundedTransformation()).placeholder(R.drawable.icon_nocategoryphoto);
+                    int dimenWidth = getContext().getResources().getDimensionPixelSize(R.dimen.category_list_item_width);
+                    int dimenHeight = getContext().getResources().getDimensionPixelSize(R.dimen.category_list_item_height);
+                    creator = creator.transform(new RoundedTransformation()).placeholder(R.drawable.icon_nocategoryphoto).resize(dimenWidth,dimenHeight).centerCrop();
+                    viewHolder.categoryLoading.success();
                 } else {
-                    creator = creator.placeholder(R.drawable.icon_nocategoryphoto);
+                    int dimenWidth = getContext().getResources().getDimensionPixelSize(R.dimen.category_grid_item_width);
+                    int dimenHeight = getContext().getResources().getDimensionPixelSize(R.dimen.category_grid_item_height);
+                    creator = creator.placeholder(R.drawable.icon_nocategoryphoto).resize(dimenWidth,dimenHeight).centerInside();
                 }
                 creator.into(viewHolder.categoryImage, new Callback() {
                     @Override
                     public void onSuccess() {
                         Bitmap bitmap = ((BitmapDrawable) viewHolder.categoryImage.getDrawable()).getBitmap();
                         viewHolder.categoryImage.setBackgroundColor(bitmap.getPixel(0, 0));
-                        viewHolder.categoryImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                         viewHolder.categoryLoading.success();
-
                     }
 
                     @Override
@@ -96,6 +89,9 @@ public class CategoryAdapter extends GridToggleArrayAdapter<Category> {
 
                 });
             }
+        }else{
+            viewHolder.categoryLoading.success();
+            viewHolder.categoryImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         }
 
         return convertView;
