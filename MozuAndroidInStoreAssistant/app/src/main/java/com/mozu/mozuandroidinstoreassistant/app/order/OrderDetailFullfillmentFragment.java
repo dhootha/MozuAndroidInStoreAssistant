@@ -28,12 +28,10 @@ import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentTitleData
 import com.mozu.mozuandroidinstoreassistant.app.data.order.TopRowItem;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.PackageInfoDialogFragment;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.PickupInfoDialogFragment;
-import com.mozu.mozuandroidinstoreassistant.app.fragments.ProductDetailOverviewDialogFragment;
+import com.mozu.mozuandroidinstoreassistant.app.product.ProductDetailOverviewDialogFragment;
 import com.mozu.mozuandroidinstoreassistant.app.models.FulfillmentItem;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Iterator;

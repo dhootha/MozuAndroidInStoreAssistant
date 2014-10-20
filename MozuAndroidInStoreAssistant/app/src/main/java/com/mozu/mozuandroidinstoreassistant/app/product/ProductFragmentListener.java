@@ -1,4 +1,4 @@
-package com.mozu.mozuandroidinstoreassistant.app.fragments;
+package com.mozu.mozuandroidinstoreassistant.app.product;
 
 public interface ProductFragmentListener {
 

@@ -1,4 +1,4 @@
-package com.mozu.mozuandroidinstoreassistant.app.fragments;
+package com.mozu.mozuandroidinstoreassistant.app.category;
 
 import com.mozu.api.contracts.productruntime.Category;
 

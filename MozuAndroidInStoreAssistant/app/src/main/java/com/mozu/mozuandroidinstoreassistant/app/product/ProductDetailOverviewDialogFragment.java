@@ -1,4 +1,4 @@
-package com.mozu.mozuandroidinstoreassistant.app.fragments;
+package com.mozu.mozuandroidinstoreassistant.app.product;
 
 import android.app.DialogFragment;
 import android.graphics.Bitmap;

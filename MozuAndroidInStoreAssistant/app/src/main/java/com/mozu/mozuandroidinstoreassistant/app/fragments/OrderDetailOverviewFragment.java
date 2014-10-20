@@ -23,6 +23,7 @@ import com.mozu.api.contracts.commerceruntime.products.Product;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
+import com.mozu.mozuandroidinstoreassistant.app.product.ProductDetailOverviewDialogFragment;
 
 import java.text.NumberFormat;
 import java.util.List;

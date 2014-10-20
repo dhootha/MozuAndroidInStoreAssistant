@@ -1,4 +1,4 @@
-package com.mozu.mozuandroidinstoreassistant.app.fragments;
+package com.mozu.mozuandroidinstoreassistant.app.product;
 
 import android.app.Dialog;
 import android.app.DialogFragment;

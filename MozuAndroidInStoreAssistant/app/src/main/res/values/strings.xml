@@ -219,6 +219,9 @@
     <string name="refresh">Refresh</string>
     <string name="store_update">CHANGE</string>
     <string name="not_set">Not Set</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="clear_history_prompt">Clear History?</string>
 
 
 </resources>

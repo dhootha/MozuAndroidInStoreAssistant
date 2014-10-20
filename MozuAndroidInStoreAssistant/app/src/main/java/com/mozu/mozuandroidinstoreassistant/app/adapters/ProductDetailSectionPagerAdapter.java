@@ -5,11 +5,10 @@ import android.app.FragmentManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
 
 import com.mozu.api.contracts.productruntime.Product;
-import com.mozu.mozuandroidinstoreassistant.app.fragments.ProductDetailExtrasFragment;
-import com.mozu.mozuandroidinstoreassistant.app.fragments.ProductDetailInventoryFragment;
-import com.mozu.mozuandroidinstoreassistant.app.fragments.ProductDetailOverviewFragment;
-import com.mozu.mozuandroidinstoreassistant.app.fragments.ProductDetailPropertiesFragment;
-import com.mozu.mozuandroidinstoreassistant.app.fragments.ProductDetailShippingFragment;
+import com.mozu.mozuandroidinstoreassistant.app.product.ProductDetailInventoryFragment;
+import com.mozu.mozuandroidinstoreassistant.app.product.ProductDetailOverviewFragment;
+import com.mozu.mozuandroidinstoreassistant.app.product.ProductDetailPropertiesFragment;
+import com.mozu.mozuandroidinstoreassistant.app.product.ProductDetailShippingFragment;
 
 import java.util.List;
 

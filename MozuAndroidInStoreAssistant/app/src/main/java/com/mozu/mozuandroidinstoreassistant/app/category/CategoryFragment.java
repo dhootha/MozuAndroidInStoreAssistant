@@ -1,7 +1,6 @@
-package com.mozu.mozuandroidinstoreassistant.app.fragments;
+package com.mozu.mozuandroidinstoreassistant.app.category;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.database.MatrixCursor;
@@ -82,7 +81,6 @@ public class CategoryFragment extends Fragment implements AdapterView.OnItemClic
     }
 
 
-
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -96,11 +94,16 @@ public class CategoryFragment extends Fragment implements AdapterView.OnItemClic
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(CURRENT_CATEGORY,mCategory);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle b = getArguments();
         mCategory = (Category) b.getSerializable(CURRENT_CATEGORY);
-
         mUserState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
         CategoryFetcher categoryFetcher = new CategoryFetcher();
         mCategoryObservable = AndroidObservable.bindFragment(this, categoryFetcher.getCategoryInformation(mUserState.getTenantId(),mUserState.getSiteId()));
@@ -111,6 +114,9 @@ public class CategoryFragment extends Fragment implements AdapterView.OnItemClic
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            mCategory = (Category) savedInstanceState.getSerializable(CURRENT_CATEGORY);
+        }
         if (mCategory == null || mCategory.getChildrenCategories().size() < 1) {
             reloadData();
         } else {

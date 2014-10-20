@@ -1,7 +1,9 @@
 package com.mozu.mozuandroidinstoreassistant.app.settings;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -80,7 +82,6 @@ public class SettingsFragment extends DialogFragment {
             public void onClick(View view) {
                 String httpString = (AppAuthenticator.isUseSSL()) ? "https:" : "http:";
                 StringBuilder siteDomainBuilder = new StringBuilder(httpString).append("//").append(mUserState.getSiteDomain());
-
                 Intent browse = new Intent(getActivity(), WebViewActivity.class);
                 browse.putExtra(WebViewActivity.URL, siteDomainBuilder.toString());
                 startActivity(browse);
@@ -96,7 +97,20 @@ public class SettingsFragment extends DialogFragment {
             mClearSearch.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    clearSearch();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setMessage(getActivity().getResources().getString(R.string.clear_history_prompt));
+                    builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            clearSearch();
+                        }
+                    });
+                    builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
                 }
             });
         } else {

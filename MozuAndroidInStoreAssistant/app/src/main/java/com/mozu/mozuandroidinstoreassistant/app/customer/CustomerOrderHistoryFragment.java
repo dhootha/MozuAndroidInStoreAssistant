@@ -21,9 +21,11 @@ import com.mozu.mozuandroidinstoreassistant.app.views.LoadingView;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.util.functions.Action1;
 
 public class CustomerOrderHistoryFragment extends Fragment {
 
@@ -50,6 +52,13 @@ public class CustomerOrderHistoryFragment extends Fragment {
         mOrderFetcher = new OrderFetcher();
         UserAuthenticationStateMachine userState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
         mOrderObservable = AndroidObservable.bindFragment(this, mOrderFetcher.getOrdersByCustomerId(userState.getTenantId(), userState.getSiteId()));
+        Observable.just("Hello, world!")
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        System.out.println(s);
+                    }
+                });
     }
 
     @Override
@@ -83,7 +92,7 @@ public class CustomerOrderHistoryFragment extends Fragment {
 
     private void loadData(){
         mOrderFetcher.setCustomerId(mCustomerAccount.getId());
-        mOrderObservable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new OrderSubscriber());
+        mOrderObservable.just(new ArrayList<Order>()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new OrderSubscriber());
     }
 
     private class OrderSubscriber implements rx.Observer<List<Order>> {
