@@ -58,8 +58,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
     @InjectView(R.id.product_grid) GridView mProductGridView;
     @InjectView(R.id.product_list) ListView mProductListView;
 
-    @InjectView(R.id.product_grid_container) SwipeRefreshLayout mProductGridPullToRefresh;
-    @InjectView(R.id.product_list_container) SwipeRefreshLayout mProductListPullToRefresh;
+    @InjectView(R.id.product_grid_container) SwipeRefreshLayout mPullToRefresh;
 
     @InjectView(R.id.product_list_headers) LinearLayout mHeadersView;
     @InjectView(R.id.list_view_border) LinearLayout mHeadersBorderView;
@@ -131,24 +130,17 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
         ButterKnife.inject(this, fragmentView);
 
-        mProductGridPullToRefresh.setOnRefreshListener(this);
-        mProductGridPullToRefresh.setColorScheme(R.color.first_color_swipe_refresh,
+        mPullToRefresh.setOnRefreshListener(this);
+        mPullToRefresh.setColorScheme(R.color.first_color_swipe_refresh,
                 R.color.second_color_swipe_refresh,
                 R.color.third_color_swipe_refresh,
                 R.color.fourth_color_swipe_refresh);
 
-        mProductListPullToRefresh.setOnRefreshListener(this);
-        mProductListPullToRefresh.setColorScheme(R.color.first_color_swipe_refresh,
-                R.color.second_color_swipe_refresh,
-                R.color.third_color_swipe_refresh,
-                R.color.fourth_color_swipe_refresh);
 
         mProductListView.setOnItemClickListener(this);
         mProductGridView.setOnItemClickListener(this);
 
-        mProductGridPullToRefresh.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.VISIBLE);
-        mProductListPullToRefresh.setVisibility(View.GONE);
         mHeadersView.setVisibility(View.GONE);
         mHeadersBorderView.setVisibility(View.GONE);
 
@@ -162,8 +154,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
     public Loader<List<Product>> onCreateLoader(int id, Bundle args) {
 
         if (id == PRODUCT_LOADER) {
-            mProductGridPullToRefresh.setRefreshing(true);
-            mProductListPullToRefresh.setRefreshing(true);
+            mPullToRefresh.setRefreshing(true);
             return new ProductLoader(getActivity(), mUserState.getTenantId(), mUserState.getSiteId(), mCategoryId);
         }
 
@@ -175,8 +166,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         UserPreferences prefs = mUserState.getCurrentUsersPreferences();
 
         if (loader.getId() == PRODUCT_LOADER) {
-            mProductGridPullToRefresh.setRefreshing(false);
-            mProductListPullToRefresh.setRefreshing(false);
+            mPullToRefresh.setRefreshing(false);
 
             if (mIsRefreshing) {
                 mIsRefreshing = false;
@@ -202,15 +192,15 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
             mProductListView.setOnScrollListener(this);
 
             if (prefs.getShowAsGrids()) {
-                mProductGridPullToRefresh.setVisibility(View.VISIBLE);
-                mProductListPullToRefresh.setVisibility(View.GONE);
+                mProductGridView.setVisibility(View.VISIBLE);
+                mProductListView.setVisibility(View.GONE);
                 mHeadersView.setVisibility(View.GONE);
                 mHeadersBorderView.setVisibility(View.GONE);
                 mAdapter.setIsGrid(true);
                 mAdapter.notifyDataSetChanged();
             } else {
-                mProductListPullToRefresh.setVisibility(View.VISIBLE);
-                mProductGridPullToRefresh.setVisibility(View.GONE);
+                mProductGridView.setVisibility(View.GONE);
+                mProductListView.setVisibility(View.VISIBLE);
                 mHeadersView.setVisibility(View.VISIBLE);
                 mHeadersBorderView.setVisibility(View.VISIBLE);
                 mAdapter.setIsGrid(false);
@@ -220,8 +210,9 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
             mProgressBar.setVisibility(View.GONE);
 
             if (mAdapter == null || mAdapter.getCount() < 1) {
-                mProductGridPullToRefresh.setVisibility(View.GONE);
-                mProductListPullToRefresh.setVisibility(View.GONE);
+                mProductGridView.setVisibility(View.GONE);
+                mProductListView.setVisibility(View.GONE);
+
                 mHeadersView.setVisibility(View.GONE);
                 mHeadersBorderView.setVisibility(View.GONE);
                 mEmptyListMessageView.setVisibility(View.VISIBLE);
@@ -270,8 +261,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         } else if (item.getItemId() == R.id.action_search) {
             showSuggestions();
         } else if (item.getItemId() == R.id.refresh_product) {
-            mProductGridPullToRefresh.setRefreshing(true);
-            mProductListPullToRefresh.setRefreshing(true);
+            mPullToRefresh.setRefreshing(true);
             onRefresh();
         }
 
@@ -314,10 +304,10 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
         if (!mIsGridVisible) {
             mIsGridVisible = true;
-            mProductListPullToRefresh.setVisibility(View.GONE);
+            mProductListView.setVisibility(View.GONE);
             mHeadersView.setVisibility(View.GONE);
             mHeadersBorderView.setVisibility(View.GONE);
-            mProductGridPullToRefresh.setVisibility(View.VISIBLE);
+            mProductGridView.setVisibility(View.VISIBLE);
             mProgressBar.setVisibility(View.GONE);
             mAdapter.setIsGrid(true);
             mAdapter.notifyDataSetChanged();
@@ -330,10 +320,10 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
             return true;
         } else {
             mIsGridVisible = false;
-            mProductListPullToRefresh.setVisibility(View.VISIBLE);
+            mProductListView.setVisibility(View.VISIBLE);
             mHeadersView.setVisibility(View.VISIBLE);
             mHeadersBorderView.setVisibility(View.VISIBLE);
-            mProductGridPullToRefresh.setVisibility(View.GONE);
+            mProductGridView.setVisibility(View.GONE);
             mProgressBar.setVisibility(View.GONE);
             mAdapter.setIsGrid(false);
             mAdapter.notifyDataSetChanged();
@@ -349,8 +339,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public void onLoaderReset(Loader<List<Product>> loader) {
-        mProductGridPullToRefresh.setRefreshing(false);
-        mProductListPullToRefresh.setRefreshing(false);
+        mPullToRefresh.setRefreshing(false);
     }
 
     public void setCategoryId(Integer categoryId) {

@@ -25,8 +25,8 @@
           >
             <ImageView
                 android:id="@+id/category_image"
-                android:layout_width="@dimen/grid_layout_width"
-                android:layout_height="@dimen/grid_layout_width"
+                android:layout_width="@dimen/category_grid_item_width"
+                android:layout_height="@dimen/category_grid_item_height"
                 android:src="@drawable/icon_nocategoryphoto"
                 />
         </com.mozu.mozuandroidinstoreassistant.app.views.LoadingView>
