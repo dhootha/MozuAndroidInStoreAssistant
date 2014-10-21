@@ -24,10 +24,8 @@
 
 
             <GridView
-                android:layout_marginBottom="20dp"
-                android:verticalSpacing="10dp"
-                android:horizontalSpacing="10dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginRight="8dp"
                 android:id="@+id/customer_address_grid"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

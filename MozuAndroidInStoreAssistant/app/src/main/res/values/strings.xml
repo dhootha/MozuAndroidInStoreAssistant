@@ -164,10 +164,10 @@
     <string name="payment_status">Status</string>
     <string name="payment_date">Date</string>
     <string name="customer_since">Customer Since</string>
-    <string name="customer_lifetime">Livetime Value</string>
-    <string name="total_visits">Total Visits</string>
-    <string name="fullfilled_orders">Fullfilled Orders</string>
-    <string name="store_credits">Store Credits</string>
+    <string name="customer_lifetime">Lifetime Value</string>
+    <string name="customer_total_visits">Total Visits</string>
+    <string name="customer_fullfilled_orders">Fullfilled Orders</string>
+    <string name="customer_store_credits">Store Credits</string>
     <string name="customer_property">Property</string>
     <string name="title_activity_customer_detail">CustomerDetailActivity</string>
     <string name="customer_order_num">Order No.</string>
@@ -222,6 +222,13 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="clear_history_prompt">Clear History?</string>
+    <string name="customer_id">Customer ID: </string>
+    <string name="customer_email">Email Address</string>
+    <string name="customer_newsletter">Newsletter Subscriber</string>
+    <string name="customer_segments">Customer Segments</string>
+    <string name="customer_tax_exmept">Tax Exempt</string>
+    <string name="no_order_history">No Order History Available</string>
+    <string name="empty_wishlist_items">No Wishlist Items found</string>
 
 
 </resources>

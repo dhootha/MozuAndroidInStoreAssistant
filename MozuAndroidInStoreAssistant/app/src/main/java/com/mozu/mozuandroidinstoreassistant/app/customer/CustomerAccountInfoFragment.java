@@ -11,9 +11,8 @@ import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.data.IData;
 import com.mozu.mozuandroidinstoreassistant.app.data.customer.CustomerAccountAttribute;
-import com.mozu.mozuandroidinstoreassistant.app.data.customer.PrimaryAccountInfo;
+import com.mozu.mozuandroidinstoreassistant.app.data.customer.CustomerOverviewDataItem;
 import com.mozu.api.contracts.customer.CustomerAttribute;
-import com.mozu.mozuandroidinstoreassistant.app.utils.DateUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +24,10 @@ public class CustomerAccountInfoFragment extends Fragment {
 
     private CustomerAccount mCustomerAccount;
 
-    public static CustomerAccountInfoFragment getInstance(CustomerAccount customerAccount){
+    public static CustomerAccountInfoFragment getInstance(CustomerAccount customerAccount) {
         CustomerAccountInfoFragment customerAccountInfoFragment = new CustomerAccountInfoFragment();
         Bundle b = new Bundle();
-        b.putSerializable(CUSTOMER_ACCOUNT,customerAccount);
+        b.putSerializable(CUSTOMER_ACCOUNT, customerAccount);
         customerAccountInfoFragment.setArguments(b);
         return customerAccountInfoFragment;
     }
@@ -50,27 +49,18 @@ public class CustomerAccountInfoFragment extends Fragment {
     }
 
 
-    public ArrayList<IData> getData(CustomerAccount customerAccount){
+    public ArrayList<IData> getData(CustomerAccount customerAccount) {
         ArrayList<IData> resultSet = new ArrayList<IData>();
 
-        String customerSince = DateUtils.getFormattedDate(customerAccount.getAuditInfo().getCreateDate().getMillis());
-        PrimaryAccountInfo accountInfo = new PrimaryAccountInfo();
-        accountInfo.setCustomerSince(customerSince);
-        if (customerAccount.getCommerceSummary() != null ){
-            if(customerAccount.getCommerceSummary().getTotalOrderAmount() != null && customerAccount.getCommerceSummary().getTotalOrderAmount().getAmount() != null) {
-                accountInfo.setLiveTimeValue(customerAccount.getCommerceSummary().getTotalOrderAmount().getAmount());
-            }
-            if (customerAccount.getCommerceSummary().getOrderCount() != null) {
-                accountInfo.setTotalOrders(customerAccount.getCommerceSummary().getOrderCount());
-            }
-            accountInfo.setTotalVisits(customerAccount.getCommerceSummary().getVisitsCount());
-        } else{
-            accountInfo.setLiveTimeValue(null);
-            accountInfo.setTotalOrders(null);
-            accountInfo.setTotalVisits(null);
-        }
+        CustomerOverviewDataItem dataItem = new CustomerOverviewDataItem(getActivity().getResources().getString(R.string.customer_email), mCustomerAccount.getEmailAddress(),
+                getActivity().getResources().getString(R.string.customer_newsletter), (mCustomerAccount.getAcceptsMarketing() != null && mCustomerAccount.getAcceptsMarketing()) ? "Yes" : "No");
 
-        resultSet.add(accountInfo);
+
+        resultSet.add(dataItem);
+        dataItem = new CustomerOverviewDataItem(getActivity().getResources().getString(R.string.customer_segments), mCustomerAccount.getCompanyOrOrganization(),
+                getActivity().getResources().getString(R.string.customer_tax_exmept), (mCustomerAccount.getTaxExempt() != null && mCustomerAccount.getTaxExempt())? "Yes" : "No");
+
+        resultSet.add(dataItem);
 
         List<CustomerAttribute> attributes= customerAccount.getAttributes();
         if (attributes != null) {
@@ -102,5 +92,4 @@ public class CustomerAccountInfoFragment extends Fragment {
     }
 
 
-
- }
+}

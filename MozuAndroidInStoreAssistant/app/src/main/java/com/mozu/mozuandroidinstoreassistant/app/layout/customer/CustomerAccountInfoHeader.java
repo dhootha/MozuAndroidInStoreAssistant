@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.data.IData;
-import com.mozu.mozuandroidinstoreassistant.app.data.customer.PrimaryAccountInfo;
+import com.mozu.mozuandroidinstoreassistant.app.data.customer.CustomerOverviewDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.layout.IRowLayout;
 
 public class CustomerAccountInfoHeader extends LinearLayout implements IRowLayout {
@@ -26,45 +26,40 @@ public class CustomerAccountInfoHeader extends LinearLayout implements IRowLayou
 
     @Override
     public void bindData(IData data) {
-        TextView customerSince = (TextView) findViewById(R.id.customer_since_value);
-        TextView livetimeValue = (TextView) findViewById(R.id.customer_lifetime_value);
-        TextView totalVisits = (TextView)findViewById(R.id.total_visits_value);
-        TextView fullfilledOrders = (TextView)findViewById(R.id.fullfilled_orders_value);
-        TextView storeCredits = (TextView)findViewById(R.id.store_credits_value);
-        if (data instanceof PrimaryAccountInfo) {
-            PrimaryAccountInfo info = (PrimaryAccountInfo) data;
-            if (info.getCustomerSince() != null) {
-                customerSince.setText(info.getCustomerSince());
+        TextView header1 = (TextView) findViewById(R.id.header1);
+        TextView value1 = (TextView) findViewById(R.id.value1);
+        TextView header2 = (TextView) findViewById(R.id.header2);
+        TextView value2 = (TextView) findViewById(R.id.value2);
+        if (data instanceof CustomerOverviewDataItem) {
+            CustomerOverviewDataItem info = (CustomerOverviewDataItem) data;
+
+            if (info.getHeader1() != null) {
+                header1.setText(info.getHeader1());
             } else {
-                customerSince.setText("N/A");
+                header1.setText(getResources().getString(R.string.not_available));
             }
-            if (info.getLiveTimeValue() == null) {
-                livetimeValue.setText("N/A");
+            if (info.getHeader2() == null) {
+                header2.setText(getResources().getString(R.string.not_available));
             } else {
-                livetimeValue.setText(String.valueOf(info.getLiveTimeValue()));
+                header2.setText(info.getHeader2());
             }
-            if (info.getTotalVisits() != null) {
-                totalVisits.setText(String.valueOf(info.getTotalVisits()));
+            if (!TextUtils.isEmpty(info.getValue1())) {
+                value1.setText(info.getValue1());
             } else {
-                totalVisits.setText("N/A");
+                value1.setText(getResources().getString(R.string.not_available));
             }
 
-            if (info.getTotalOrders() != null) {
-                fullfilledOrders.setText(String.valueOf(info.getTotalOrders()));
+            if (!TextUtils.isEmpty(info.getValue2())) {
+                value2.setText(info.getValue2());
             } else {
-                fullfilledOrders.setText("N/A");
+                value2.setText(getResources().getString(R.string.not_available));
             }
-            if (info.getStoreCredits() != null) {
-                storeCredits.setText(info.getStoreCredits());
-            } else {
-                storeCredits.setText("N/A");
-            }
+
         } else {
-            customerSince.setText("N/A");
-            livetimeValue.setText("N/A");
-            totalVisits.setText("N/A");
-            fullfilledOrders.setText("N/A");
-            storeCredits.setText("N/A");
+            header1.setText(getResources().getString(R.string.not_available));
+            header2.setText(getResources().getString(R.string.not_available));
+            value1.setText(getResources().getString(R.string.not_available));
+            value2.setText(getResources().getString(R.string.not_available));
         }
 
     }

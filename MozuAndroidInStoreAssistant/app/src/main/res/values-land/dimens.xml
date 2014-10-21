@@ -10,6 +10,7 @@
     <dimen name="product_grid_item_width">240dp</dimen>
     <dimen name="product_grid_item_height">240dp</dimen>
 
-
+    <dimen name="customer_margin_right">108dp</dimen>
+    <dimen name="customer_margin_left">108dp</dimen>
 
 </resources>

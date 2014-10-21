@@ -18,7 +18,10 @@ import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.settings.SettingsFragment;
+import com.mozu.mozuandroidinstoreassistant.app.utils.DateUtils;
 import com.viewpagerindicator.TabPageIndicator;
+
+import java.text.NumberFormat;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -34,11 +37,12 @@ public class CustomerDetailActivity extends Activity implements SwipeRefreshLayo
     private Integer mUserAccountId;
     public static final String CUSTOMER_ID = "customerId";
 
+    @InjectView(R.id.customer_since_value) TextView mCustomerSince;
+    @InjectView(R.id.customer_lifetime_value) TextView mCustomerLifeTimeValue;
+    @InjectView(R.id.customer_total_visits_value) TextView mCustomerTotalVisitsValue;
+    @InjectView(R.id.customer_fulfilled_orders_value) TextView mCustomerFulfilledValue;
+    @InjectView(R.id.customer_store_credits_value) TextView mCustomerStoreCredits;
     @InjectView(R.id.customer_name) TextView mCustomerName;
-    @InjectView(R.id.customer_email) TextView mCustomerEmail;
-    @InjectView(R.id.customer_newsletter) TextView mCustomerNewsletter;
-    @InjectView(R.id.customer_tax_exempt) TextView mCustomerTaxExempt;
-    @InjectView(R.id.customer_group) TextView mCustomerGroup;
     @InjectView(R.id.customer_id) TextView mCustomerId;
     @InjectView(R.id.customer_detail_container) SwipeRefreshLayout mSwipeRefreshLayout;
     @InjectView(R.id.customer_detail_sections_viewpager) ViewPager mCustomerViewPager;
@@ -104,25 +108,35 @@ public class CustomerDetailActivity extends Activity implements SwipeRefreshLayo
             mCustomerViewPager.setCurrentItem(mViewPagerPos);
         }
 
+        mCustomerId.setText(String.valueOf(customerAccount.getId()));
         mCustomerName.setText(customerAccount.getFirstName() + "  " + customerAccount.getLastName());
-        mCustomerEmail.setText(customerAccount.getEmailAddress());
-        if (customerAccount.getTaxExempt() != null) {
-            mCustomerTaxExempt.setText(customerAccount.getTaxExempt() ? "Yes" : "No");
-        }else{
-            mCustomerTaxExempt.setText("N/A");
-        }
-        if (customerAccount.getAcceptsMarketing() != null) {
-            mCustomerNewsletter.setText(customerAccount.getAcceptsMarketing() ? "Yes" : "No");
-        }else{
-            mCustomerNewsletter.setText("N/A");
-        }
-        if (customerAccount.getCompanyOrOrganization() != null) {
-            mCustomerGroup.setText(customerAccount.getCompanyOrOrganization());
+        if (customerAccount.getAuditInfo() != null && customerAccount.getAuditInfo().getCreateDate() != null) {
+            String customerSince = DateUtils.getFormattedDate(customerAccount.getAuditInfo().getCreateDate().getMillis());
+            mCustomerSince.setText(customerSince);
         } else {
-            mCustomerGroup.setText("N/A");
+            mCustomerSince.setText(getResources().getString(R.string.not_available));
+        }
+        if (customerAccount.getCommerceSummary().getTotalOrderAmount() != null && customerAccount.getCommerceSummary().getTotalOrderAmount().getAmount() != null) {
+            mCustomerLifeTimeValue.setText(NumberFormat.getCurrencyInstance().format(customerAccount.getCommerceSummary().getTotalOrderAmount().getAmount()));
+        } else {
+            mCustomerLifeTimeValue.setText(getResources().getString(R.string.not_available));
         }
 
-        mCustomerId.setText(String.valueOf(customerAccount.getId()));
+        if (customerAccount.getCommerceSummary() != null && customerAccount.getCommerceSummary().getVisitsCount() != null) {
+            mCustomerTotalVisitsValue.setText(String.valueOf(customerAccount.getCommerceSummary().getVisitsCount()));
+        } else {
+            mCustomerTotalVisitsValue.setText(getResources().getString(R.string.not_available));
+        }
+
+        if (customerAccount.getCommerceSummary() != null && customerAccount.getCommerceSummary().getOrderCount() != null) {
+            mCustomerFulfilledValue.setText(String.valueOf(customerAccount.getCommerceSummary().getOrderCount()));
+        } else {
+            mCustomerFulfilledValue.setText(getResources().getString(R.string.not_available));
+        }
+
+        //TODO: ;figure out a way to find this
+        mCustomerStoreCredits.setText(getResources().getString(R.string.not_available));
+
     }
 
 
@@ -156,8 +170,6 @@ public class CustomerDetailActivity extends Activity implements SwipeRefreshLayo
         mCustomerAccountFetcher.setCustomerId(mUserAccountId);
         mSwipeRefreshLayout.setRefreshing(true);
         mCustomerObservable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<CustomerAccount>() {
-
-
             @Override
             public void onCompleted() {
                 setUpViews(mCustomerAccount);
