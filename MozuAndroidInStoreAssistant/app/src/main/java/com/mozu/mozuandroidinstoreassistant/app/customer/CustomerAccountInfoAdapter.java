@@ -1,5 +1,6 @@
 package com.mozu.mozuandroidinstoreassistant.app.customer;
 
+import android.inputmethodservice.Keyboard;
 import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.data.IData;
 import com.mozu.mozuandroidinstoreassistant.app.data.customer.CustomerAccountAttribute;
 import com.mozu.mozuandroidinstoreassistant.app.layout.IRowLayout;
+import com.mozu.mozuandroidinstoreassistant.app.order.OrderDetailFullfillmentAdapter;
 
 import java.util.ArrayList;
 
@@ -29,6 +31,19 @@ public class CustomerAccountInfoAdapter extends BaseAdapter {
         return mData.size();
     }
 
+    public void setData(ArrayList<IData> data){
+        if (data != null) {
+            mData.clear();
+            mData = data;
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return getViewType(getItem(position)).ordinal();
+    }
+
+
     @Override
     public IData getItem(int i) {
         return mData.get(i);
@@ -36,7 +51,7 @@ public class CustomerAccountInfoAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int i) {
-        return i;
+        return (long)i;
     }
 
     @Override
