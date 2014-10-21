@@ -62,7 +62,7 @@ public class CustomerAddressAdapter extends BaseAdapter {
             isPrimary.setVisibility(View.VISIBLE);
             isPrimary.setText(customerContactDataItem.getTypeMessage());
         } else {
-            isPrimary.setVisibility(View.INVISIBLE);
+            isPrimary.setVisibility(View.GONE);
         }
 
 

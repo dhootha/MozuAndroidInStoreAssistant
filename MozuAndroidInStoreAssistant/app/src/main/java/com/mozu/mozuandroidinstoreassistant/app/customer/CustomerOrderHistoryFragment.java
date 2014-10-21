@@ -52,13 +52,6 @@ public class CustomerOrderHistoryFragment extends Fragment {
         mOrderFetcher = new OrderFetcher();
         UserAuthenticationStateMachine userState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
         mOrderObservable = AndroidObservable.bindFragment(this, mOrderFetcher.getOrdersByCustomerId(userState.getTenantId(), userState.getSiteId()));
-        Observable.just("Hello, world!")
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String s) {
-                        System.out.println(s);
-                    }
-                });
     }
 
     @Override
@@ -92,7 +85,7 @@ public class CustomerOrderHistoryFragment extends Fragment {
 
     private void loadData(){
         mOrderFetcher.setCustomerId(mCustomerAccount.getId());
-        mOrderObservable.just(new ArrayList<Order>()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new OrderSubscriber());
+        mOrderObservable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new OrderSubscriber());
     }
 
     private class OrderSubscriber implements rx.Observer<List<Order>> {
@@ -104,7 +97,7 @@ public class CustomerOrderHistoryFragment extends Fragment {
                 mAdapter.setData(mOrderList);
                 mAdapter.notifyDataSetChanged();
             } else {
-                mOrderLoading.setError("No Content Available");
+                mOrderLoading.setError(getResources().getString(R.string.no_order_history));
             }
         }
 

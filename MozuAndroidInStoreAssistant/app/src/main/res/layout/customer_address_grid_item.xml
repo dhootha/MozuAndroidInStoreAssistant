@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    
-    android:paddingTop="25dp"
-    android:paddingBottom="10dp"
-    android:paddingLeft="25dp"
-    android:paddingRight="25dp"
+
+    android:padding="20dp"
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@drawable/product_detail_images_background"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:minHeight="208dp"
+    android:minWidth="228dp"
+    android:layout_width="228dp"
+    android:layout_height="208dp">
 
     <TextView
         android:id="@+id/customer_address_name"
@@ -45,6 +44,10 @@
         android:visibility="invisible"
         android:text="PRIMARY"
         android:textStyle="bold"
+        android:textSize="14sp"
+        android:textAllCaps="true"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/mozu_color"
         android:id="@+id/customer_primary_address"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
