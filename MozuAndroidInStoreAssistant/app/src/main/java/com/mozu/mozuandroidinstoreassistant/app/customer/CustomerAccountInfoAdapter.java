@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.data.IData;
 import com.mozu.mozuandroidinstoreassistant.app.data.customer.CustomerAccountAttribute;
+import com.mozu.mozuandroidinstoreassistant.app.data.customer.CustomerOverviewDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.layout.IRowLayout;
 import com.mozu.mozuandroidinstoreassistant.app.order.OrderDetailFullfillmentAdapter;
 
@@ -19,7 +20,9 @@ public class CustomerAccountInfoAdapter extends BaseAdapter {
 
     private enum RowType{
         HEADER_ROW,
-        ATTRIBUTE_ROW
+        ATTRIBUTE_ROW,
+        EMPTY_ROW
+
     }
     private ArrayList<IData> mData;
     public CustomerAccountInfoAdapter(ArrayList<IData> data){
@@ -61,8 +64,10 @@ public class CustomerAccountInfoAdapter extends BaseAdapter {
     public RowType getViewType(IData dataItem) {
         if (dataItem instanceof CustomerAccountAttribute) {
             return RowType.ATTRIBUTE_ROW;
-        } else {
+        } else if(dataItem instanceof CustomerOverviewDataItem) {
             return RowType.HEADER_ROW;
+        }else{
+            return RowType.EMPTY_ROW;
         }
     }
 
@@ -74,8 +79,10 @@ public class CustomerAccountInfoAdapter extends BaseAdapter {
         if (convertView == null) {
             if (getViewType(dataItem) == RowType.ATTRIBUTE_ROW) {
                 view = inflater.inflate(R.layout.customer_attribute_layout, null);
-            } else {
+            } else if(getViewType(dataItem) == RowType.HEADER_ROW){
                 view = inflater.inflate(R.layout.customer_accountinfo_header, null);
+            }else{
+                view = inflater.inflate(R.layout.empty_row_layout,null);
             }
         } else {
             view = convertView;

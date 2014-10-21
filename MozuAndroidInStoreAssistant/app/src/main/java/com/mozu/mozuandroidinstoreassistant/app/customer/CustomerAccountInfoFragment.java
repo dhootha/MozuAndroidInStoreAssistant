@@ -12,6 +12,7 @@ import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.api.contracts.customer.CustomerAttribute;
 import com.mozu.api.contracts.customer.CustomerAttributeCollection;
 import com.mozu.mozuandroidinstoreassistant.app.R;
+import com.mozu.mozuandroidinstoreassistant.app.data.EmptyRowDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.IData;
 import com.mozu.mozuandroidinstoreassistant.app.data.customer.CustomerAccountAttribute;
 import com.mozu.mozuandroidinstoreassistant.app.data.customer.CustomerOverviewDataItem;
@@ -110,13 +111,15 @@ public class CustomerAccountInfoFragment extends Fragment {
         resultSet.add(dataItem);
 
         List<CustomerAttribute> attributes= customerAttributes;
-        if (attributes != null) {
+        if (attributes != null && attributes.size()>0) {
+            resultSet.add(new EmptyRowDataItem());
             for (CustomerAttribute attribute : attributes) {
                 CustomerAccountAttribute customerAccountAttribute = new CustomerAccountAttribute();
                 customerAccountAttribute.setProperty(getPropertyValue(attribute.getFullyQualifiedName()));
                 customerAccountAttribute.setValue(getValue(attribute.getValues()));
                 resultSet.add(customerAccountAttribute);
             }
+            resultSet.add(new EmptyRowDataItem());
         }
         return resultSet;
     }
