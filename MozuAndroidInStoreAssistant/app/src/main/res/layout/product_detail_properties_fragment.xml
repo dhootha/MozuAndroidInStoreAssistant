@@ -4,8 +4,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="40dp">
-
+    android:paddingTop="40dp"
+    android:paddingBottom="40dp">
     <ListView
         android:id="@+id/properties_list"
         android:layout_width="match_parent"

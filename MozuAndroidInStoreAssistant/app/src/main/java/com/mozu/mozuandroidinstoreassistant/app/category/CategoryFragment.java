@@ -131,6 +131,7 @@ public class CategoryFragment extends Fragment implements AdapterView.OnItemClic
         ButterKnife.inject(this, fragmentView);
         mGridOfCategories.setOnItemClickListener(this);
         mListOfCategories.setOnItemClickListener(this);
+        mListOfCategories.setDivider(null);
         mEmptyListMessageView.setVisibility(View.GONE);
         mCategoryPullToRefresh.setOnRefreshListener(this);
         mCategoryPullToRefresh.setColorScheme(R.color.first_color_swipe_refresh,

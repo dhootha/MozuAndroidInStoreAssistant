@@ -85,6 +85,7 @@
     <style name="ActionBar.Transparent.Mozu" parent="@android:style/Widget.Holo.Light.ActionBar">
         <item name="android:background">@drawable/ab_transparent_mozu</item>
         <item name="android:progressBarStyle">@style/ProgressBar.Mozu</item>
+        <item name="android:height">@dimen/action_bar_height</item>
     </style>
 
     <style name="PopupMenu.Mozu" parent="@android:style/Widget.Holo.Light.ListPopupWindow">
@@ -205,9 +206,9 @@
         <item name="android:paddingLeft">20dp</item>
         <item name="android:paddingRight">20dp</item>
         <item name="android:textAppearance">@style/TextAppearance.TabPageIndicator</item>
-        <item name="android:textSize">15sp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/dark_gray_text</item>
         <item name="android:maxLines">1</item>
-        <item name="android:textColor">#FF555555</item>
     </style>
 
     <style name="boldText">
@@ -219,4 +220,6 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@android:color/darker_gray</item>
     </style>
+
+    <dimen name="action_bar_height">64dp</dimen>
 </resources>

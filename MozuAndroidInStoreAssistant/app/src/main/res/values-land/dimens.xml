@@ -12,5 +12,8 @@
 
     <dimen name="customer_margin_right">108dp</dimen>
     <dimen name="customer_margin_left">108dp</dimen>
+    <dimen name="category_grid_horizontal_spacing">3dp</dimen>
+    <dimen name="category_grid_vertical_spacing">4dp</dimen>
+
 
 </resources>
