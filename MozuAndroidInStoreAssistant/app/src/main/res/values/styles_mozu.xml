@@ -141,7 +141,7 @@
     <style name="TabMozu">
         <item name="android:gravity">center_horizontal</item>
         <item name="android:paddingLeft">16dip</item>
-        <item name="android:paddingRight">16dip</item>
+        <item name="android:paddingRight">16dip</item> q
         <item name="android:background">@drawable/mozu_tab_indicator_holo</item>
         <item name="android:layout_width">0dip</item>
         <item name="android:layout_weight">1</item>
@@ -208,6 +208,7 @@
         <item name="android:textAppearance">@style/TextAppearance.TabPageIndicator</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/dark_gray_text</item>
+        <item name="android:textStyle">normal</item>
         <item name="android:maxLines">1</item>
     </style>
 
