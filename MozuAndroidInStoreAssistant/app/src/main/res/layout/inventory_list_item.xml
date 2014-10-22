@@ -5,34 +5,43 @@
     android:orientation="horizontal"
     android:gravity="center_vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:minHeight="?android:attr/listPreferredItemHeight">
+    android:layout_height="64dp">
 
     <TextView
+        android:textColor="@color/light_gray_text"
+        android:textSize="14sp"
         android:id="@+id/inventory_code"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"/>
 
     <com.mozu.mozuandroidinstoreassistant.app.views.NetworkLocationNameTextView
+        android:textColor="@color/light_gray_text"
+        android:textSize="14sp"
         android:id="@+id/inventory_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"/>
+        android:layout_weight="2"/>
 
     <TextView
+        android:textColor="@color/light_gray_text"
+        android:textSize="14sp"
         android:id="@+id/inventory_available"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"/>
 
     <TextView
+        android:textColor="@color/light_gray_text"
+        android:textSize="14sp"
         android:id="@+id/inventory_on_hand"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"/>
 
     <TextView
+        android:textColor="@color/light_gray_text"
+        android:textSize="14sp"
         android:id="@+id/inventory_on_reserve"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

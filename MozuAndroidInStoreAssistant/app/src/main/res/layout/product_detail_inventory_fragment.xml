@@ -3,8 +3,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="40dp">
+    android:layout_height="match_parent">
     <LinearLayout
         android:id="@+id/dialog_header"
         android:layout_width="@dimen/inventory_dialog_width"
@@ -45,9 +44,9 @@
     <LinearLayout
         android:id="@+id/inventory_header"
         android:orientation="horizontal"
-        android:layout_marginBottom="20dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:gravity="center_vertical"
+        android:layout_height="64dp">
 
         <TextView
             android:layout_width="0dp"
@@ -58,22 +57,30 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:textColor="@color/light_gray_text"
+            android:textSize="14sp"
+            android:layout_weight="2"
             android:text="@string/prod_detail_inventory_table_name_header"/>
 
         <TextView
+            android:textColor="@color/light_gray_text"
+            android:textSize="14sp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/prod_detail_inventory_table_available_header"/>
 
         <TextView
+            android:textColor="@color/light_gray_text"
+            android:textSize="14sp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/prod_detail_inventory_table_on_hand_header"/>
 
         <TextView
+            android:textColor="@color/light_gray_text"
+            android:textSize="14sp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
