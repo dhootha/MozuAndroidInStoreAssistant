@@ -31,7 +31,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class OrderDetailActivity extends Activity implements LoaderManager.LoaderCallbacks<Order>, CustomerAsyncListener, SwipeRefreshLayout.OnRefreshListener{
+public class OrderDetailActivity extends BaseActivity implements LoaderManager.LoaderCallbacks<Order>, CustomerAsyncListener, SwipeRefreshLayout.OnRefreshListener{
 
     public static final String ORDER_NUMBER_EXTRA_KEY = "ORDER_NUMBER";
     public static final String CURRENT_TENANT_ID = "curTenantIdWhenActLoaded";
@@ -138,8 +138,8 @@ public class OrderDetailActivity extends Activity implements LoaderManager.Loade
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.order_detail, menu);
-
         return true;
     }
 
@@ -152,12 +152,7 @@ public class OrderDetailActivity extends Activity implements LoaderManager.Loade
             mOrderSwipeRefresh.setRefreshing(true);
             onRefresh();
             return true;
-        } else if (item.getItemId() == R.id.action_logout) {
-            UserAuthenticationStateMachineProducer.getInstance(getApplicationContext()).getCurrentUserAuthState().signOutUser();
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
-            return true;
-        }else if(item.getItemId() == R.id.settings){
+        } else if(item.getItemId() == R.id.settings){
             SettingsFragment settingsFragment = SettingsFragment.getInstance();
             settingsFragment.show(getFragmentManager(), ORDER_SETTINGS_FRAGMENT);
         }

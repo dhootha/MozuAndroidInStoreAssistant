@@ -404,11 +404,11 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         setTextViewNormalStyle(mOrderStatusHeader);
         setTextViewNormalStyle(mOrderTotalHeader);
 
-        mOrderNumberHeaderSortImage.setVisibility(View.INVISIBLE);
-        mOrderDateHeaderSortImage.setVisibility(View.INVISIBLE);
-        mOrderEmailHeaderSortImage.setVisibility(View.INVISIBLE);
-        mOrderStatusHeaderSortImage.setVisibility(View.INVISIBLE);
-        mOrderTotalHeaderSortImage.setVisibility(View.INVISIBLE);
+        mOrderNumberHeaderSortImage.setVisibility(View.GONE);
+        mOrderDateHeaderSortImage.setVisibility(View.GONE);
+        mOrderEmailHeaderSortImage.setVisibility(View.GONE);
+        mOrderStatusHeaderSortImage.setVisibility(View.GONE);
+        mOrderTotalHeaderSortImage.setVisibility(View.GONE);
 
 
         if (v.getId() == mOrderNumberHeader.getId()) {
@@ -473,14 +473,13 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         setTextViewNormalStyle(mOrderStatusHeader);
         setTextViewNormalStyle(mOrderTotalHeader);
 
-        mOrderNumberHeaderSortImage.setVisibility(View.INVISIBLE);
-        mOrderDateHeaderSortImage.setVisibility(View.INVISIBLE);
-        mOrderEmailHeaderSortImage.setVisibility(View.INVISIBLE);
-        mOrderStatusHeaderSortImage.setVisibility(View.INVISIBLE);
-        mOrderTotalHeaderSortImage.setVisibility(View.INVISIBLE);
+        mOrderNumberHeaderSortImage.setVisibility(View.GONE);
+        mOrderDateHeaderSortImage.setVisibility(View.GONE);
+        mOrderEmailHeaderSortImage.setVisibility(View.GONE);
+        mOrderStatusHeaderSortImage.setVisibility(View.GONE);
+        mOrderTotalHeaderSortImage.setVisibility(View.GONE);
 
         if (mResourceOfCurrentSelectedColumn == mOrderNumberHeader.getId()) {
-
             setTextViewBoldStyle(mOrderNumberHeader);
             mOrderNumberHeaderSortImage.setVisibility(View.VISIBLE);
         } else if (mResourceOfCurrentSelectedColumn == mOrderDateHeader.getId()) {
@@ -502,11 +501,13 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     private void setTextViewBoldStyle(TextView textView) {
+        textView.setTextColor(getResources().getColor(R.color.dark_gray_text));
         textView.setTextAppearance(getActivity(), R.style.boldText);
         textView.setBackgroundResource(android.R.color.transparent);
     }
 
     private void setTextViewNormalStyle(TextView textView) {
+        textView.setTextColor(getResources().getColor(R.color.light_gray_text));
         textView.setTextAppearance(getActivity(), R.style.normalText);
         textView.setBackgroundResource(android.R.color.transparent);
     }

@@ -81,8 +81,8 @@ public class ProductAdapter extends GridToggleArrayAdapter<Product> {
                 int dimenHeight = getContext().getResources().getDimensionPixelSize(R.dimen.product_list_item_height);
                 creator = creator.transform(new RoundedTransformation()).placeholder(R.drawable.icon_nocategoryphoto).resize(dimenWidth, dimenHeight).centerInside();
             } else {
-                int dimenWidth = getContext().getResources().getDimensionPixelSize(R.dimen.category_grid_item_width);
-                int dimenHeight = getContext().getResources().getDimensionPixelSize(R.dimen.category_grid_item_height);
+                int dimenWidth = getContext().getResources().getDimensionPixelSize(R.dimen.category_grid_image_width);
+                int dimenHeight = getContext().getResources().getDimensionPixelSize(R.dimen.category_grid_image_height);
                 creator = creator.placeholder(R.drawable.icon_noproductphoto).resize(dimenWidth, dimenHeight).centerInside();
             }
 

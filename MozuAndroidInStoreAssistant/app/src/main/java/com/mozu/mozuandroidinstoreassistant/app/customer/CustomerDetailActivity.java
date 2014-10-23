@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mozu.api.contracts.customer.CustomerAccount;
+import com.mozu.mozuandroidinstoreassistant.app.BaseActivity;
 import com.mozu.mozuandroidinstoreassistant.app.LoginActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
@@ -30,7 +31,7 @@ import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class CustomerDetailActivity extends Activity implements SwipeRefreshLayout.OnRefreshListener{
+public class CustomerDetailActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener{
 
     private View mView;
     private CustomerFragmentAdapter mCustomerFragmentAdapter;
@@ -142,6 +143,7 @@ public class CustomerDetailActivity extends Activity implements SwipeRefreshLayo
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.customer_menu, menu);
         return true;
     }
@@ -151,12 +153,7 @@ public class CustomerDetailActivity extends Activity implements SwipeRefreshLayo
         if (item.getItemId() == android.R.id.home) {
             finish();
             return true;
-        }else if (item.getItemId() == R.id.action_logout) {
-            UserAuthenticationStateMachineProducer.getInstance(getApplicationContext()).getCurrentUserAuthState().signOutUser();
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
-            return true;
-        } else if (item.getItemId() == R.id.refresh_category_detail) {
+        }else if (item.getItemId() == R.id.refresh_category_detail) {
             onRefresh();
         }else if(item.getItemId() == R.id.settings){
             SettingsFragment settingsFragment = SettingsFragment.getInstance();

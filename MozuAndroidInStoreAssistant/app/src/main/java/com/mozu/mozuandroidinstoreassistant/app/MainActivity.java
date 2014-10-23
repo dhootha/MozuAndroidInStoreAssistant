@@ -175,6 +175,7 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
@@ -183,12 +184,7 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
-        if (id == R.id.action_logout) {
-            UserAuthenticationStateMachineProducer.getInstance(getApplicationContext()).getCurrentUserAuthState().signOutUser();
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
-            return true;
-        } else if (mDrawerToggle != null && mDrawerToggle.onOptionsItemSelected(item)) {
+         if (mDrawerToggle != null && mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         } else if (item.getItemId() == R.id.settings) {
             showSettings();

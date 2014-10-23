@@ -69,8 +69,8 @@ public class CategoryAdapter extends GridToggleArrayAdapter<Category> {
                     creator = creator.transform(new RoundedTransformation()).placeholder(R.drawable.icon_nocategoryphoto).resize(dimenWidth,dimenHeight).centerCrop();
                     viewHolder.categoryLoading.success();
                 } else {
-                    int dimenWidth = getContext().getResources().getDimensionPixelSize(R.dimen.category_grid_item_width);
-                    int dimenHeight = getContext().getResources().getDimensionPixelSize(R.dimen.category_grid_item_height);
+                    int dimenWidth = getContext().getResources().getDimensionPixelSize(R.dimen.category_grid_image_width);
+                    int dimenHeight = getContext().getResources().getDimensionPixelSize(R.dimen.category_grid_image_width);
                     creator = creator.placeholder(R.drawable.icon_nocategoryphoto).resize(dimenWidth,dimenHeight).centerInside();
                 }
                 creator.into(viewHolder.categoryImage, new Callback() {

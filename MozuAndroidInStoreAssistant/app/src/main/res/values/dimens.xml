@@ -21,6 +21,9 @@
     <dimen name="grid_margin_bottom">4dp</dimen>
     <dimen name="category_grid_item_width">246dp</dimen>
     <dimen name="category_grid_item_height">246dp</dimen>
+    <dimen name="category_grid_image_width">226dp</dimen>
+    <dimen name="category_grid_image_height">226dp</dimen>
+
     <dimen name="product_grid_item_width">246dp</dimen>
     <dimen name="product_grid_item_height">246dp</dimen>
 
@@ -34,6 +37,9 @@
     <dimen name="category_grid_horizontal_spacing">10dp</dimen>
     <dimen name="category_grid_vertical_spacing">10dp</dimen>
 
+    <dimen name="product_grid_horizontal_spacing">10dp</dimen>
+    <dimen name="product_grid_vertical_spacing">16dp</dimen>
+    <dimen name="order_header_margin">8dp</dimen>
 
 
 </resources>
