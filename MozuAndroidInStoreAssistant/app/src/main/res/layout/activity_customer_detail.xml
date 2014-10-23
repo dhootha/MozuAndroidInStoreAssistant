@@ -168,7 +168,7 @@
             android:layout_marginLeft="@dimen/customer_margin_left"
             android:paddingRight="@dimen/customer_margin_left"
             android:id="@+id/customer_detail_sections_tab"
-            android:layout_height="wrap_content"
+            android:layout_height="64dp"
             android:layout_width="wrap_content"
             android:layout_marginTop="30dp" />
 

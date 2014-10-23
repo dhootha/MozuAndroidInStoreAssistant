@@ -229,6 +229,7 @@
     <string name="customer_tax_exmept">Tax Exempt</string>
     <string name="no_order_history">No Order History Available</string>
     <string name="empty_wishlist_items">No Wishlist Items found</string>
+    <string name="signout">Signout?</string>
 
 
 </resources>

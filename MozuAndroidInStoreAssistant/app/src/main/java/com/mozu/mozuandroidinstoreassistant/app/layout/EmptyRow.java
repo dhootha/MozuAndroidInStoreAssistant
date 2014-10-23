@@ -21,6 +21,5 @@ public class EmptyRow extends LinearLayout implements IRowLayout {
 
     @Override
     public void bindData(IData data) {
-    String s= "100";
     }
 }

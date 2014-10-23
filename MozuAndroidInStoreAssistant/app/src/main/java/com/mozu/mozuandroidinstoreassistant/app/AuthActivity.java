@@ -1,9 +1,6 @@
 package com.mozu.mozuandroidinstoreassistant.app;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import com.mozu.api.contracts.appdev.AppAuthInfo;
 import com.mozu.api.contracts.core.UserAuthInfo;
@@ -16,7 +13,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 
-public abstract class AuthActivity extends Activity implements Observer {
+public abstract class AuthActivity extends BaseActivity implements Observer {
 
     private AppAuthenticationStateMachine mAppAuthStateMachine;
     private UserAuthenticationStateMachine mUserAuthStateMachine;
