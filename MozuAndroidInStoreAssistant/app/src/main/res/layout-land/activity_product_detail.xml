@@ -3,7 +3,7 @@
     android:id="@+id/product_detail_container"
     android:layout_width="match_parent"
     android:paddingLeft="64dp"
-    android:paddingRight="64dp"
+
     android:layout_height="match_parent">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -13,39 +13,47 @@
         android:orientation="horizontal"
         tools:context="com.mozu.mozuandroidinstoreassistant.app.ProductDetailActivity">
 
-        <ScrollView
-            android:id="@+id/vertical_image_preview"
+        <com.mozu.mozuandroidinstoreassistant.app.views.LoadingView
+            android:id="@+id/image_loading"
             android:layout_width="wrap_content"
-            android:scrollbars="none"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
-            <LinearLayout
-                android:layout_width="@dimen/main_product_image_size"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                tools:ignore="RtlSymmetry">
+            <ScrollView
+                android:id="@+id/vertical_image_preview"
+                android:layout_width="wrap_content"
+                android:scrollbars="none"
+                android:layout_height="wrap_content">
 
                 <LinearLayout
-                    android:id="@+id/product_images_layout"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:background="@drawable/product_detail_images_background">
+                    tools:ignore="RtlSymmetry">
 
-                    <ImageView
-                        android:id="@+id/mainImageView"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/main_product_image_size"
-                        android:background="@color/main_background"
-                        android:src="@drawable/icon_noproductphoto"
-                        android:scaleType="center" />
+
+                    <LinearLayout
+                        android:background="@drawable/product_detail_images_background"
+                        android:id="@+id/product_images_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_margin="8dp"
+                            android:id="@+id/mainImageView"
+                            android:layout_width="@dimen/main_product_image_size"
+                            android:layout_height="wrap_content"
+                            android:background="@color/main_background"
+                            android:src="@drawable/icon_noproductphoto" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
-            </LinearLayout>
 
-        </ScrollView>
+            </ScrollView>
+        </com.mozu.mozuandroidinstoreassistant.app.views.LoadingView>
+
         <ScrollView
-            android:layout_marginLeft="40dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -55,6 +63,8 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:paddingRight="64dp"
+                    android:layout_marginLeft="40dp"
                     android:id="@+id/productCode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -62,18 +72,22 @@
                     android:textColor="@color/mozu_color" />
 
                 <TextView
+                    android:paddingRight="64dp"
+                    android:layout_marginLeft="40dp"
                     android:id="@+id/productName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="2dp"
                     android:textColor="@color/dark_gray_text"
                     android:textSize="34sp" />
 
                 <com.viewpagerindicator.TabPageIndicator
+                    android:paddingRight="64dp"
+                    android:layout_marginLeft="40dp"
                     android:id="@+id/product_detail_sections"
                     android:layout_height="64dp"
                     android:layout_width="wrap_content"
-                    android:layout_marginTop="20dp"/>
+                    android:layout_marginTop="8dp" />
 
                 <View
                     android:layout_width="fill_parent"
@@ -86,9 +100,11 @@
                     android:background="@color/divider_white" />
 
                 <com.mozu.mozuandroidinstoreassistant.app.views.HeightWrappingViewPager
+                    android:layout_marginLeft="40dp"
+                    android:paddingRight="64dp"
                     android:id="@+id/product_detail_sections_viewpager"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content" />
 
             </LinearLayout>
         </ScrollView>

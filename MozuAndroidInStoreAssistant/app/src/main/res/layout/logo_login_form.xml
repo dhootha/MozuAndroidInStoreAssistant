@@ -109,7 +109,7 @@
                             android:inputType="textEmailAddress"
                             android:maxLines="1"
                             android:fontFamily="sans-serif-light"
-                            android:textColor="@color/mozu_color"
+                            android:textColor="@color/dark_gray_text"
                             android:singleLine="true" />
 
                     </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
@@ -156,7 +156,7 @@
                             android:nextFocusUp="@id/email"
                             android:maxLines="1"
                             android:fontFamily="sans-serif-light"
-                            android:textColor="@color/mozu_color"
+                            android:textColor="@color/dark_gray_text"
                             android:singleLine="true" />
 
                     </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>

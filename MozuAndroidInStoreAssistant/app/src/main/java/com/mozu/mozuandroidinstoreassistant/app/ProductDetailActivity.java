@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -26,6 +28,9 @@ import com.mozu.mozuandroidinstoreassistant.app.models.ImageURLConverter;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.settings.SettingsFragment;
 import com.mozu.mozuandroidinstoreassistant.app.views.HeightWrappingViewPager;
+import com.mozu.mozuandroidinstoreassistant.app.views.LoadingView;
+import com.mozu.mozuandroidinstoreassistant.app.views.ProductDetailImageTransformation;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.viewpagerindicator.TabPageIndicator;
 
@@ -72,6 +77,8 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
     private List<String> mTitles;
 
     @InjectView(R.id.product_detail_container) SwipeRefreshLayout mProductSwipeRefresh;
+
+    @InjectView(R.id.image_loading) LoadingView mImageLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -187,15 +194,30 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
             mImages = mProduct.getContent().getProductImages();
         }
 
+        boolean isLandscape;
+        if (mHorizontalScrollView != null) {
+            isLandscape = false;
+        } else {
+            isLandscape= true;
+        }
+
         if (mImages != null && mProduct.getContent().getProductImages().size() > 0) {
             mProductImagesLayout.removeAllViews();
             mProductImagesLayout.addView(mMainImageView);
-            int productImageWidth = (int) getResources().getDimension(R.dimen.main_product_image_size);
-            int productImageHeight = (int) getResources().getDimension(R.dimen.main_product_image_size);
+            int productImageMax =  getResources().getDimensionPixelSize(R.dimen.main_product_image_size);
             Picasso.with(this)
-                    .load(mImageUrlConverter.getFullImageUrl(mProduct.getContent().getProductImages().get(0).getImageUrl()))
-                    .resize(productImageWidth,productImageHeight).centerCrop()
-                    .into(mMainImageView);
+                    .load(mImageUrlConverter.getFullImageUrl(mProduct.getContent().getProductImages().get(0).getImageUrl())).transform(new ProductDetailImageTransformation(isLandscape, productImageMax))
+                    .into(mMainImageView,new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            mImageLoading.success();
+                        }
+
+                        @Override
+                        public void onError() {
+
+                        }
+                    });
         }
 
         if (mImages != null && mProduct.getContent().getProductImages().size() > 1) {
@@ -210,7 +232,6 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
 
         if (mProduct.getContent() != null) {
             mProductName.setText(mProduct.getContent().getProductName());
-           // mProductDescription.setText(mProduct.getContent().getProductFullDescription());
         }
 
         ProductDetailSectionPagerAdapter adapter = new ProductDetailSectionPagerAdapter(getFragmentManager(), mProduct, mTitles, mTenantId, mSiteId);
@@ -227,71 +248,68 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
 
         //go through each image
         for (int i = FIRST_SUB_IMAGE; i <= Math.ceil(productImageList.size() / NUM_OF_COLUMNS_DIVISOR); i++) {
-
-            //add a view to the layout top, bottom, next
-            int productImageWidth = (int) getResources().getDimension(R.dimen.main_product_image_size);
-            int productImageHeight = (int) getResources().getDimension(R.dimen.main_product_image_size);
-
-            int imageWidth = productImageWidth / NUM_OF_COLUMNS_DIVISOR;
-            int imageHeight = productImageHeight / NUM_OF_COLUMNS_DIVISOR;
-
+            int imagewidth = (int) getResources().getDimensionPixelSize(R.dimen.smaller_product_image_size);
+            int imageHeight = (int) getResources().getDimensionPixelSize(R.dimen.smaller_product_image_size);
             int firstImagePosition = i + (i - 1);
             int secondImagePosition = 2 * i;
 
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(imageWidth, productImageHeight);
-
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             LinearLayout layout = new LinearLayout(this);
             layout.setLayoutParams(params);
             layout.setOrientation(LinearLayout.VERTICAL);
-
-            //add two image views if you can
-            LinearLayout.LayoutParams imageLayoutParams = new LinearLayout.LayoutParams(imageWidth, imageHeight);
             int margin = (int) getResources().getDimension(R.dimen.sub_product_image_margin);
-            imageLayoutParams.setMargins(margin, margin, margin, margin);
-
-            //add two text views with the position of the image in question
             LinearLayout firstImageLayout = new LinearLayout(this);
-            firstImageLayout.setLayoutParams(imageLayoutParams);
-
-            TextView textViewPositionOne = new TextView(this);
-            textViewPositionOne.setText(String.valueOf(firstImagePosition));
-            textViewPositionOne.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
-
-            ImageView imageViewTop = new ImageView(this);
-            imageViewTop.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-
+            final ImageView imageViewTop = new ImageView(this);
+            LinearLayout.LayoutParams imageLayoutParams = new LinearLayout.LayoutParams(imagewidth, imageHeight);
+            imageLayoutParams.setMargins(0, margin, margin, 0);
+            imageViewTop.setLayoutParams(imageLayoutParams);
             firstImageLayout.setOnClickListener(this);
-
-            firstImageLayout.addView(textViewPositionOne);
             firstImageLayout.addView(imageViewTop);
             layout.addView(firstImageLayout);
-
             Picasso.with(this)
                     .load(mImageUrlConverter.getFullImageUrl(mProduct.getContent().getProductImages().get(firstImagePosition).getImageUrl()))
-                    .fit().centerCrop()
-                    .into(imageViewTop);
+                    .resize(imagewidth,imageHeight)
+                    .centerInside()
+                    .into(imageViewTop, new Callback() {
+
+                @Override
+                public void onSuccess() {
+                    Bitmap bitmap = ((BitmapDrawable) imageViewTop.getDrawable()).getBitmap();
+                    imageViewTop.setBackgroundColor(bitmap.getPixel(0, 0));
+                    mImageLoading.success();
+                }
+                @Override
+                public void onError() {
+                }
+
+            });
 
             if (productImageList.size() > secondImagePosition) {
                 LinearLayout secondImageLayout = new LinearLayout(this);
-                secondImageLayout.setLayoutParams(imageLayoutParams);
-
-                ImageView imageViewBottom = new ImageView(this);
-                imageViewBottom.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-
-                TextView textViewPositionTwo = new TextView(this);
-                textViewPositionTwo.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
-                textViewPositionTwo.setText(String.valueOf(secondImagePosition));
-
+                final ImageView imageViewBottom = new ImageView(this);
+                imageViewBottom.setLayoutParams(imageLayoutParams);
                 secondImageLayout.setOnClickListener(this);
 
-                secondImageLayout.addView(textViewPositionTwo);
                 secondImageLayout.addView(imageViewBottom);
                 layout.addView(secondImageLayout);
 
                 Picasso.with(this)
                         .load(mImageUrlConverter.getFullImageUrl(mProduct.getContent().getProductImages().get(secondImagePosition).getImageUrl()))
-                        .fit().centerCrop()
-                        .into(imageViewBottom);
+                        .resize(imagewidth,imageHeight)
+                        .centerInside()
+                        .into(imageViewBottom, new Callback() {
+
+                            @Override
+                            public void onSuccess() {
+                                Bitmap bitmap = ((BitmapDrawable) imageViewBottom.getDrawable()).getBitmap();
+                                imageViewBottom.setBackgroundColor(bitmap.getPixel(0, 0));
+                                mImageLoading.success();
+                            }
+                            @Override
+                            public void onError() {
+                            }
+
+                        });
             }
             mProductImagesLayout.addView(layout);
         }
@@ -302,38 +320,31 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
         //go through each image
         for (int i = FIRST_SUB_IMAGE; i <= Math.ceil(productImageList.size() / NUM_OF_COLUMNS_DIVISOR); i++) {
 
-            int productImageWidth = (int) getResources().getDimension(R.dimen.main_product_image_size);
-            int productImageHeight = (int) getResources().getDimension(R.dimen.main_product_image_size);
-
-            //add a view to the layout top, bottom, next
-            int imageWidth = productImageWidth / NUM_OF_COLUMNS_DIVISOR;
-            int imageHeight = productImageHeight / NUM_OF_COLUMNS_DIVISOR;
+            int imagewidth = (int) getResources().getDimensionPixelSize(R.dimen.smaller_product_image_size);
+            int imageHeight = (int) getResources().getDimensionPixelSize(R.dimen.smaller_product_image_size);
 
             int firstImagePosition = i + (i - 1);
             int secondImagePosition = 2 * i;
 
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(productImageWidth, imageHeight);
-
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             LinearLayout layout = new LinearLayout(this);
             layout.setLayoutParams(params);
             layout.setOrientation(LinearLayout.HORIZONTAL);
 
             //add two image views if you can
-            LinearLayout.LayoutParams imageLayoutParams = new LinearLayout.LayoutParams(imageWidth, imageHeight);
             int margin = (int) getResources().getDimension(R.dimen.sub_product_image_margin);
-            imageLayoutParams.setMargins(margin, margin, margin, margin);
 
             //add two text views with the position of the image in question
             LinearLayout firstImageLayout = new LinearLayout(this);
-            firstImageLayout.setLayoutParams(imageLayoutParams);
 
             TextView textViewPositionOne = new TextView(this);
             textViewPositionOne.setText(String.valueOf(firstImagePosition));
             textViewPositionOne.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
 
-            ImageView imageViewTop = new ImageView(this);
-            imageViewTop.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-
+            final ImageView imageViewTop = new ImageView(this);
+            LinearLayout.LayoutParams imageLayoutParams = new LinearLayout.LayoutParams(imagewidth, imageHeight);
+            imageLayoutParams.setMargins(margin, 0,0, margin);
+            imageViewTop.setLayoutParams(imageLayoutParams);
             firstImageLayout.setOnClickListener(this);
 
             firstImageLayout.addView(textViewPositionOne);
@@ -342,16 +353,26 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
 
             Picasso.with(this)
                     .load(mImageUrlConverter.getFullImageUrl(mProduct.getContent().getProductImages().get(firstImagePosition).getImageUrl()))
-                    .resize(imageWidth,imageHeight)
-                    .centerCrop()
-                    .into(imageViewTop);
+                    .resize(imagewidth,imageHeight)
+                    .centerInside()
+                    .into(imageViewTop,new Callback() {
+
+                        @Override
+                        public void onSuccess() {
+                            Bitmap bitmap = ((BitmapDrawable) imageViewTop.getDrawable()).getBitmap();
+                            imageViewTop.setBackgroundColor(bitmap.getPixel(0, 0));
+                        }
+                        @Override
+                        public void onError() {
+                        }
+
+                    });
 
             if (productImageList.size() > secondImagePosition) {
                 LinearLayout secondImageLayout = new LinearLayout(this);
-                secondImageLayout.setLayoutParams(imageLayoutParams);
 
-                ImageView imageViewBottom = new ImageView(this);
-                imageViewBottom.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                final ImageView imageViewBottom = new ImageView(this);
+                imageViewBottom.setLayoutParams(imageLayoutParams);
 
                 TextView textViewPositionTwo = new TextView(this);
                 textViewPositionTwo.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
@@ -365,9 +386,20 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
 
                 Picasso.with(this)
                         .load(mImageUrlConverter.getFullImageUrl(mProduct.getContent().getProductImages().get(secondImagePosition).getImageUrl()))
-                        .resize(imageWidth,imageHeight)
-                        .centerCrop()
-                        .into(imageViewBottom);
+                        .resize(imagewidth,imageHeight)
+                        .centerInside()
+                        .into(imageViewBottom,new Callback() {
+
+                            @Override
+                            public void onSuccess() {
+                                Bitmap bitmap = ((BitmapDrawable) imageViewBottom.getDrawable()).getBitmap();
+                                imageViewBottom.setBackgroundColor(bitmap.getPixel(0, 0));
+                            }
+                            @Override
+                            public void onError() {
+                            }
+
+                        });
             }
 
             mProductImagesLayout.addView(layout);
