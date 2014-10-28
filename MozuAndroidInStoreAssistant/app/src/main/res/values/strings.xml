@@ -215,13 +215,13 @@
     <string name="settings_header">Settings</string>
     <string name="default_store">Default Store</string>
     <string name="settings_website">Website</string>
-    <string name="clear_search_results">CLEAR SEARCH RESULTS</string>
+    <string name="clear_search_history">CLEAR SEARCH HISTORY</string>
     <string name="refresh">Refresh</string>
     <string name="store_update">CHANGE</string>
     <string name="not_set">Not Set</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
-    <string name="clear_history_prompt">Clear History?</string>
+    <string name="clear_history_prompt">Are you sure you want to clear search history?</string>
     <string name="customer_id">Customer ID: </string>
     <string name="customer_email">Email Address</string>
     <string name="customer_newsletter">Newsletter Subscriber</string>

@@ -1,6 +1,5 @@
 package com.mozu.mozuandroidinstoreassistant.app;
 
-import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
@@ -17,7 +16,6 @@ import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.OrderDetailSectionPagerAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.customer.CustomerDetailActivity;
 import com.mozu.mozuandroidinstoreassistant.app.loaders.OrderDetailLoader;
-import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.settings.SettingsFragment;
 import com.mozu.mozuandroidinstoreassistant.app.tasks.CustomerAsyncListener;
 import com.mozu.mozuandroidinstoreassistant.app.tasks.RetrieveCustomerAsyncTask;
@@ -31,7 +29,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class OrderDetailActivity extends BaseActivity implements LoaderManager.LoaderCallbacks<Order>, CustomerAsyncListener, SwipeRefreshLayout.OnRefreshListener{
+public class OrderDetailActivity extends BaseActivity implements LoaderManager.LoaderCallbacks<Order>, CustomerAsyncListener, SwipeRefreshLayout.OnRefreshListener {
 
     public static final String ORDER_NUMBER_EXTRA_KEY = "ORDER_NUMBER";
     public static final String CURRENT_TENANT_ID = "curTenantIdWhenActLoaded";
@@ -148,11 +146,11 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
         if (item.getItemId() == android.R.id.home) {
             finish();
             return true;
-        }else if (item.getItemId() == R.id.refresh_order) {
+        } else if (item.getItemId() == R.id.refresh_order) {
             mOrderSwipeRefresh.setRefreshing(true);
             onRefresh();
             return true;
-        } else if(item.getItemId() == R.id.settings){
+        } else if (item.getItemId() == R.id.settings) {
             SettingsFragment settingsFragment = SettingsFragment.getInstance();
             settingsFragment.show(getFragmentManager(), ORDER_SETTINGS_FRAGMENT);
         }
@@ -161,7 +159,7 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
     }
 
     @Override
-    public void onRefresh(){
+    public void onRefresh() {
         mOrderViewPager.setCurrentItem(0);
         Loader orderLoader = getLoaderManager().getLoader(LOADER_ORDER_DETAIL);
         orderLoader.reset();
@@ -192,7 +190,7 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
 
         mOrderNumberTextView.setText(String.valueOf(mOrder.getOrderNumber()));
 
-        android.text.format.DateFormat dateFormat= new android.text.format.DateFormat();
+        android.text.format.DateFormat dateFormat = new android.text.format.DateFormat();
         String date = mOrder.getSubmittedDate() != null ? dateFormat.format("MM/dd/yy  hh:mm a", new Date(mOrder.getSubmittedDate().getMillis())).toString() : "";
 
         mOrderDate.setText(date);

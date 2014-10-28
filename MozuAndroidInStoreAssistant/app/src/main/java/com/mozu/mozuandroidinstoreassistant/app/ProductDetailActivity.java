@@ -45,6 +45,8 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
     public static final String PRODUCT_CODE_EXTRA_KEY = "PRODUCT_CODE";
     public static final String CURRENT_TENANT_ID = "curTenantIdWhenActLoaded";
     public static final String CURRENT_SITE_ID = "curSiteIdWhenActLoaded";
+    public static final String CURRENT_SITE_DOMAIN = "curSiteDomainWhenActLoaded";
+
     public static final int LOADER_PRODUCT_DETAIL = 4;
     public static final int FIRST_SUB_IMAGE = 1;
     public static final int NUM_OF_COLUMNS_DIVISOR = 2;
@@ -60,6 +62,7 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
     private int mTenantId;
 
     private int mSiteId;
+    private String mSiteDomain;
 
     private ImageURLConverter mImageUrlConverter;
 
@@ -91,10 +94,12 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
             mProductCode = getIntent().getStringExtra(PRODUCT_CODE_EXTRA_KEY);
             mTenantId = getIntent().getIntExtra(CURRENT_TENANT_ID, -1);
             mSiteId = getIntent().getIntExtra(CURRENT_SITE_ID, -1);
+            mSiteDomain = getIntent().getStringExtra(CURRENT_SITE_DOMAIN);
         } else if (savedInstanceState != null) {
             mProductCode = savedInstanceState.getString(PRODUCT_CODE_EXTRA_KEY);
             mTenantId = savedInstanceState.getInt(CURRENT_TENANT_ID, -1);
             mSiteId = savedInstanceState.getInt(CURRENT_SITE_ID, -1);
+            mSiteDomain =savedInstanceState.getString(CURRENT_SITE_DOMAIN);
         }
 
         getActionBar().setDisplayShowHomeEnabled(false);
@@ -106,7 +111,7 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
         //mProductDescription = (TextView) findViewById(R.id.productDescription);
         mProductName = (TextView) findViewById(R.id.productName);
 
-        mImageUrlConverter = new ImageURLConverter(mTenantId, mSiteId);
+        mImageUrlConverter = new ImageURLConverter(mTenantId, mSiteId, mSiteDomain);
 
         mProductImagesLayout = (LinearLayout) findViewById(R.id.product_images_layout);
 
@@ -140,6 +145,8 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
         outState.putString(PRODUCT_CODE_EXTRA_KEY, mProductCode);
         outState.putInt(CURRENT_TENANT_ID, mTenantId);
         outState.putInt(CURRENT_SITE_ID, mSiteId);
+        outState.putString(CURRENT_SITE_DOMAIN, mSiteDomain);
+
 
         super.onSaveInstanceState(outState);
     }

@@ -199,6 +199,7 @@ public class ProductDetailOverviewFragment extends Fragment {
                         intent.putExtra(ProductDetailActivity.PRODUCT_CODE_EXTRA_KEY, bundable.getProductCode());
                         intent.putExtra(ProductDetailActivity.CURRENT_TENANT_ID, userAuthenticationStateMachine.getTenantId());
                         intent.putExtra(ProductDetailActivity.CURRENT_SITE_ID, userAuthenticationStateMachine.getSiteId());
+                        intent.putExtra(ProductDetailActivity.CURRENT_SITE_DOMAIN, userAuthenticationStateMachine.getSiteDomain());
                         startActivity(intent);
                     }
                 };

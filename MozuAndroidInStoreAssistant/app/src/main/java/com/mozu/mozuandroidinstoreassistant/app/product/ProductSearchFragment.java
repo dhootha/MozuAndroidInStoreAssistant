@@ -170,7 +170,7 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
 
         if (loader.getId() == PRODUCT_SEARCH_LOADER) {
             if (mAdapter == null) {
-                mAdapter = new ProductAdapter(getActivity(), mUserState.getTenantId(), mUserState.getSiteId(),this);
+                mAdapter = new ProductAdapter(getActivity(), mUserState.getTenantId(), mUserState.getSiteId(), mUserState.getSiteDomain(),this);
             }
 
             mAdapter.clear();

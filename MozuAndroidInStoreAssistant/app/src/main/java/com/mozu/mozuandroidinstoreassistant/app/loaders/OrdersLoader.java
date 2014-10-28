@@ -28,6 +28,8 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
     private static final String SORT_ORDER_ASC = "asc";
     private static final String SORT_ORDER_DSC = "desc";
 
+    private String RESPONSE_FIELDS = "items(id,ordernumber,status,SubmittedDate,email,total,status)";
+
     public String mCurrentOrderBy = "";
 
     private List<Order> mOrdersList;
@@ -150,7 +152,7 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
             if (!TextUtils.isEmpty(mSearchQueryFilter)) {
                 orderCollection = searchOrders(orderResource);
             } else {
-                orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mCurrentOrderBy+" "+mCurrentSort, null, null, null, null);
+                orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mCurrentOrderBy+" "+mCurrentSort, null, null, null, RESPONSE_FIELDS);
             }
 
             mTotalPages = (int) Math.ceil(orderCollection.getTotalCount() * 1.0f / ITEMS_PER_PAGE * 1.0f);
@@ -170,9 +172,9 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
         OrderCollection orderCollection;
 
         if (StringUtils.isNumber(mSearchQueryFilter)) {
-            orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, null, ORDER_ID_FILTER_BY + mSearchQueryFilter, null, null, null);
+            orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, null, ORDER_ID_FILTER_BY + mSearchQueryFilter, null, null, RESPONSE_FIELDS);
         } else {
-            orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, null, null, mSearchQueryFilter, null, null);
+            orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, null, null, mSearchQueryFilter, null, RESPONSE_FIELDS);
         }
 
         return orderCollection;

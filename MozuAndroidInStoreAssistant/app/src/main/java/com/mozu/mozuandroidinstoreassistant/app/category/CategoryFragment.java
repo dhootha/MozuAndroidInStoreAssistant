@@ -307,7 +307,13 @@ public class CategoryFragment extends Fragment implements AdapterView.OnItemClic
         } else if (item.getItemId() == R.id.action_search) {
             showSuggestions();
         } else if(item.getItemId() == CATEGORY_IMAGELOADER_MENU_ID){
-            //loadCategoryImages(mCategories);
+            List<Category> categories = new ArrayList<Category>();
+            if (mCategoryAdapter != null) {
+                for (int i = 0; i < mCategoryAdapter.getCount(); i++) {
+                    categories.add(mCategoryAdapter.getItem(i));
+                }
+            }
+            loadCategoryImages(categories);
         }else if(item.getItemId() == R.id.refresh_product){
             reloadData();
         }
@@ -318,12 +324,12 @@ public class CategoryFragment extends Fragment implements AdapterView.OnItemClic
 
 
     private void loadCategoryImages(List<Category> mCategories){
-        for(Category category:mCategories) {
-            if (category.getContent().getCategoryImages() == null || category.getContent().getCategoryImages().size() <= 0) {
-                CategoryImageUpdateTask task = new CategoryImageUpdateTask(mCategoryImageUpdateListener,mUserState.getTenantId(), mUserState.getSiteId(),category.getCategoryId());
+       // for(Category category:mCategories) {
+        //    if (category.getContent().getCategoryImages() == null || category.getContent().getCategoryImages().size() <= 0) {
+                CategoryImageUpdateTask task = new CategoryImageUpdateTask(mCategoryImageUpdateListener,mUserState.getTenantId(), mUserState.getSiteId(),5);
                 task.execute();
-            }
-        }
+          //  }
+        //}
     }
 
     private CategoryImageUpdateListener mCategoryImageUpdateListener = new CategoryImageUpdateListener() {
@@ -349,7 +355,7 @@ public class CategoryFragment extends Fragment implements AdapterView.OnItemClic
             mEmptyListMessageView.setVisibility(View.GONE);
         }
         if (mCategoryAdapter == null) {
-            mCategoryAdapter = new CategoryAdapter(getActivity(), mUserState.getTenantId(), mUserState.getSiteId());
+            mCategoryAdapter = new CategoryAdapter(getActivity(), mUserState.getTenantId(), mUserState.getSiteId(), mUserState.getSiteDomain());
             mCategoryAdapter.addAll(categoryList);
         }
 

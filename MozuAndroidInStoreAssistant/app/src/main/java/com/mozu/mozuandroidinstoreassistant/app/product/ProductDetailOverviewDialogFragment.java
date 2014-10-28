@@ -48,6 +48,7 @@ public class ProductDetailOverviewDialogFragment extends DialogFragment {
 
     private int mTenantId;
     private int mSiteId;
+    private String mSiteDomain;
 
     @InjectView(R.id.main_price) TextView mMainPrice;
     @InjectView(R.id.regular_price) TextView mRegPrice;
@@ -71,7 +72,7 @@ public class ProductDetailOverviewDialogFragment extends DialogFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,  Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.product_detail_overview_dialog_fragment, null);
         ImageView overviewClose = (ImageView) view.findViewById(R.id.product_detail_overview_close);
         overviewClose.setOnClickListener(new View.OnClickListener() {
@@ -84,7 +85,7 @@ public class ProductDetailOverviewDialogFragment extends DialogFragment {
         ButterKnife.inject(this, view);
 
         if (mProduct != null) {
-            mImageUrlConverter = new ImageURLConverter(mTenantId, mSiteId);
+            mImageUrlConverter = new ImageURLConverter(mTenantId, mSiteId,mSiteDomain);
 
             setProductOverviewViews(view);
         }
@@ -312,4 +313,10 @@ public class ProductDetailOverviewDialogFragment extends DialogFragment {
     public void setSiteId(int siteId) {
         mSiteId = siteId;
     }
+
+    public void setSiteDomain(String siteDomain) {
+        mSiteDomain = siteDomain;
+    }
+
+
 }

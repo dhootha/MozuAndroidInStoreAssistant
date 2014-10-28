@@ -78,7 +78,7 @@
         android:layout_marginTop="25dp"
         android:background="@drawable/product_detail_images_background"
         android:id="@+id/clear_search"
-        android:text="@string/clear_search_results"
+        android:text="@string/clear_search_history"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

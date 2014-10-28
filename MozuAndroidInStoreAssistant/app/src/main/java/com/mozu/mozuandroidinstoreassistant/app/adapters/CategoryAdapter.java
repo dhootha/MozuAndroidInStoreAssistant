@@ -21,10 +21,10 @@ public class CategoryAdapter extends GridToggleArrayAdapter<Category> {
 
     private ImageURLConverter mUrlConverter;
 
-    public CategoryAdapter(Context context, Integer tenantId, Integer siteId) {
+    public CategoryAdapter(Context context, Integer tenantId, Integer siteId,String siteDomain) {
         super(context, R.layout.category_grid_item, R.layout.category_list_item);
 
-        mUrlConverter = new ImageURLConverter(tenantId, siteId);
+        mUrlConverter = new ImageURLConverter(tenantId, siteId,siteDomain);
     }
 
     @Override

@@ -88,7 +88,7 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
 
         if (savedInstanceState == null) {
             mCurrentlySelectedNavItem = R.id.menu_products_layout;
-            initializeCategoryFragment();
+            initializeCategoryFragment(true);
         } else {
             updateNavView(savedInstanceState.getInt(CURRENTLY_SELECTED_NAV_VIEW_ID, R.id.menu_products_layout));
         }
@@ -205,7 +205,7 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         if (v.getId() == R.id.menu_search_layout) {
             initializeSearchFragment();
         } else if (v.getId() == R.id.menu_products_layout) {
-            initializeCategoryFragment();
+            initializeCategoryFragment(false);
         } else if (v.getId() == R.id.menu_orders_layout) {
             initializeOrdersFragment();
         } else if (v.getId() == R.id.menu_customers_layout) {
@@ -236,43 +236,40 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         }
     }
 
-    private void initializeCategoryFragment() {
-        FragmentManager fragmentManager = getFragmentManager();
-        clearBackstack(fragmentManager);
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        CategoryFragment fragment = CategoryFragment.getInstance(null);
-        fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out);
-        fragmentTransaction.replace(R.id.content_fragment_holder, fragment, CATEGORY_FRAGMENT);
-        fragmentTransaction.commit();
+    private void initializeCategoryFragment(boolean isFirstLaunch) {
+        if(isFirstLaunch) {
+            FragmentManager fragmentManager = getFragmentManager();
+            clearBackstack(fragmentManager);
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            CategoryFragment fragment = CategoryFragment.getInstance(null);
+            fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out);
+            fragmentTransaction.replace(R.id.content_fragment_holder, fragment, CATEGORY_FRAGMENT);
+            fragmentTransaction.commit();
+        }else{
+            CategoryFragment fragment = CategoryFragment.getInstance(null);
+            addMainFragment(fragment,true);
+        }
     }
 
 
+
+
     private void initializeOrdersFragment() {
-        FragmentManager fragmentManager = getFragmentManager();
-        clearBackstack(fragmentManager);
         UserAuthenticationStateMachine userStateMachine = UserAuthenticationStateMachineProducer.getInstance(this);
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         OrderFragment fragment = new OrderFragment();
         fragment.setTenantId(userStateMachine.getTenantId());
         fragment.setSiteId(userStateMachine.getSiteId());
         fragment.setListener(this);
-        fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out);
-        fragmentTransaction.replace(R.id.content_fragment_holder, fragment);
-        fragmentTransaction.commit();
+        addMainFragment(fragment, true);
     }
 
     private void initializeCustomersFragment() {
-        FragmentManager fragmentManager = getFragmentManager();
-        clearBackstack(fragmentManager);
         UserAuthenticationStateMachine userStateMachine = UserAuthenticationStateMachineProducer.getInstance(this);
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         CustomersFragment fragment = new CustomersFragment();
         fragment.setTenantId(userStateMachine.getTenantId());
         fragment.setSiteId(userStateMachine.getSiteId());
         fragment.setListener(this);
-        fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out);
-        fragmentTransaction.replace(R.id.content_fragment_holder, fragment);
-        fragmentTransaction.commit();
+        addMainFragment(fragment,true);
     }
 
     private void initializeProductFragment(Category category) {
@@ -323,7 +320,9 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         Fragment currentFragment = fragmentManager.findFragmentById(R.id.content_fragment_holder);
-        fragmentTransaction.hide(currentFragment);
+        if(currentFragment != null) {
+            fragmentTransaction.hide(currentFragment);
+        }
         fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out);
         fragmentTransaction.add(R.id.content_fragment_holder, newFragment);
         if (addToBackStack) {
@@ -348,7 +347,7 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
 
     private void clearBackstack(FragmentManager fragmentManager) {
         while (getFragmentManager().getBackStackEntryCount() > 0) {
-            fragmentManager.popBackStackImmediate();
+           fragmentManager.popBackStackImmediate();
         }
     }
 

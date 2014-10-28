@@ -6,6 +6,7 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -109,7 +110,9 @@ public class SettingsFragment extends DialogFragment {
                             dialog.dismiss();
                         }
                     });
-                    AlertDialog dialog = builder.create();
+                    AlertDialog dialog = builder.show();
+                    TextView messageText = (TextView)dialog.findViewById(android.R.id.message);
+                    messageText.setGravity(Gravity.CENTER);
                     dialog.show();
                 }
             });

@@ -251,6 +251,7 @@ public class OrderDetailOverviewFragment extends Fragment implements View.OnClic
                     productOverviewFragment.setProduct(item.getProduct());
                     productOverviewFragment.setTenantId(userState.getTenantId());
                     productOverviewFragment.setSiteId(userState.getSiteId());
+                    productOverviewFragment.setSiteDomain(userState.getSiteDomain());
                 }
                 productOverviewFragment.show(manager, "productDialog");
             }

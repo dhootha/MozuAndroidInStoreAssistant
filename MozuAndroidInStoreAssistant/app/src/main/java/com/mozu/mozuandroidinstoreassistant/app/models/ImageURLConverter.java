@@ -5,15 +5,16 @@ import com.mozu.api.contracts.tenant.Site;
 import com.mozu.api.contracts.tenant.Tenant;
 import com.mozu.api.resources.platform.TenantResource;
 import com.mozu.api.security.AppAuthenticator;
+import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 
 public class ImageURLConverter {
 
     private String mSiteDomain;
     private String mHttpString;
 
-    public ImageURLConverter(Integer tenantId, Integer siteId) {
+    public ImageURLConverter(Integer tenantId, Integer siteId,String siteDomain) {
 
-        mSiteDomain = getSiteDomain(tenantId, siteId);
+        mSiteDomain = getCompleteSiteDomain(tenantId, siteId,siteDomain);
         mHttpString = (AppAuthenticator.isUseSSL()) ? "https:" : "http:";
     }
 
@@ -33,30 +34,9 @@ public class ImageURLConverter {
         return imageUrlStringBuffer.toString();
     }
 
-    private String getSiteDomain(Integer tenantId, Integer siteId) {
+    private String getCompleteSiteDomain(Integer tenantId, Integer siteId,String siteDomain) {
         String httpString = (AppAuthenticator.isUseSSL()) ? "https:" : "http:";
-
-        TenantResource tenantResource = new TenantResource();
-        Tenant tenant = null;
-        String imageBaseUrl = null;
-
-        try {
-            tenant = tenantResource.getTenant(tenantId);
-        } catch (Exception e) {
-            Crashlytics.logException(e);
-        }
-
-        if (tenant != null) {
-            for (Site site : tenant.getSites()) {
-                if (siteId.equals(site.getId())) {
-                    imageBaseUrl = site.getDomain();
-                    break;
-                }
-            }
-        }
-
-        StringBuilder siteDomainBuilder = new StringBuilder(httpString).append("//").append(imageBaseUrl);
-
+        StringBuilder siteDomainBuilder = new StringBuilder(httpString).append("//").append(siteDomain);
         return siteDomainBuilder.toString();
     }
 }
