@@ -21,13 +21,19 @@
             android:id="@+id/product_loading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            >
-        <ImageView
-            android:id="@+id/product_image"
-            android:layout_width="@dimen/product_grid_item_width"
-            android:layout_height="@dimen/product_grid_item_height"
-            android:src="@drawable/icon_noproductphoto" />
+            android:layout_centerHorizontal="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/product_image"
+                    android:layout_width="@dimen/product_grid_item_width"
+                    android:layout_height="@dimen/product_grid_item_height"
+                    android:src="@drawable/icon_noproductphoto" />
+            </LinearLayout>
 
         </com.mozu.mozuandroidinstoreassistant.app.views.LoadingView>
 

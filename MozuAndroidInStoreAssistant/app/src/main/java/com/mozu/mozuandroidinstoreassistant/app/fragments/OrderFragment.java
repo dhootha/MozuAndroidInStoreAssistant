@@ -84,6 +84,8 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private int mResourceOfCurrentSelectedColumn = -1;
     private boolean mLaunchFromGlobalSearch = false;
+    private boolean mCurrentSortIsAsc;
+    private String mCurrentSearch;
 
     public OrderFragment() {
 
@@ -163,6 +165,15 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         mSearchView.setMaxWidth(1500);
         mSearchView.setOnCloseListener(this);
         mSearchView.setQueryHint(getString(R.string.order_search_hint_text));
+        if (!TextUtils.isEmpty(mCurrentSearch)) {
+            mSearchView.post(new Runnable() {
+
+                @Override
+                public void run() {
+                    mSearchView.setQuery(mCurrentSearch, false);
+                }
+            });
+        }
 
         mSearchMenuItem.setOnActionExpandListener(this);
         searchManager.setOnCancelListener(this);
@@ -324,11 +335,9 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public boolean onQueryTextSubmit(String query) {
         mSearchView.clearFocus();
-
+        mCurrentSearch = query;
         saveSearchToList(query);
-
         initSuggestions();
-
         getOrdersLoader().reset();
         getOrdersLoader().setFilter(query);
         getOrdersLoader().startLoading();
@@ -347,6 +356,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public boolean onClose() {
         clearSearchReload();
+        mCurrentSearch = null;
 
         return true;
     }
@@ -417,8 +427,10 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
             setTextViewBoldStyle(mOrderNumberHeader);
             mResourceOfCurrentSelectedColumn = mOrderNumberHeader.getId();
             if(getOrdersLoader().isSortAsc()){
+                mCurrentSortIsAsc = true;
                 mOrderNumberHeaderSortImage.setImageResource(R.drawable.icon_sort_up);
             }else{
+                mCurrentSortIsAsc = false;
                 mOrderNumberHeaderSortImage.setImageResource(R.drawable.icon_sort_down);
             }
 
@@ -429,8 +441,11 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
             mResourceOfCurrentSelectedColumn = mOrderDateHeader.getId();
             mOrderDateHeaderSortImage.setVisibility(View.VISIBLE);
             if(getOrdersLoader().isSortAsc()){
+                mCurrentSortIsAsc = true;
+
                 mOrderDateHeaderSortImage.setImageResource(R.drawable.icon_sort_up);
             }else{
+                mCurrentSortIsAsc = false;
                 mOrderDateHeaderSortImage.setImageResource(R.drawable.icon_sort_down);
             }
         } else if (v.getId() == mOrderEmailHeader.getId()) {
@@ -444,8 +459,10 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
             mResourceOfCurrentSelectedColumn = mOrderStatusHeader.getId();
             mOrderStatusHeaderSortImage.setVisibility(View.VISIBLE);
             if(getOrdersLoader().isSortAsc()){
+                mCurrentSortIsAsc = true;
                 mOrderStatusHeaderSortImage.setImageResource(R.drawable.icon_sort_up);
             }else{
+                mCurrentSortIsAsc = false;
                 mOrderStatusHeaderSortImage.setImageResource(R.drawable.icon_sort_down);
             }
         } else if (v.getId() == mOrderTotalHeader.getId()) {
@@ -454,8 +471,10 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
             mResourceOfCurrentSelectedColumn = mOrderTotalHeader.getId();
             mOrderTotalHeaderSortImage.setVisibility(View.VISIBLE);
             if(getOrdersLoader().isSortAsc()){
+                mCurrentSortIsAsc = true;
                 mOrderTotalHeaderSortImage.setImageResource(R.drawable.icon_sort_up);
             }else{
+                mCurrentSortIsAsc = false;
                 mOrderTotalHeaderSortImage.setImageResource(R.drawable.icon_sort_down);
             }
         } else {
@@ -482,10 +501,20 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
 
         if (mResourceOfCurrentSelectedColumn == mOrderNumberHeader.getId()) {
             setTextViewBoldStyle(mOrderNumberHeader);
+            if (mCurrentSortIsAsc) {
+                mOrderNumberHeaderSortImage.setImageResource(R.drawable.icon_sort_up);
+            }else{
+                mOrderNumberHeaderSortImage.setImageResource(R.drawable.icon_sort_down);
+            }
             mOrderNumberHeaderSortImage.setVisibility(View.VISIBLE);
         } else if (mResourceOfCurrentSelectedColumn == mOrderDateHeader.getId()) {
 
             setTextViewBoldStyle(mOrderDateHeader);
+            if (mCurrentSortIsAsc) {
+                mOrderDateHeaderSortImage.setImageResource(R.drawable.icon_sort_up);
+            }else{
+                mOrderDateHeaderSortImage.setImageResource(R.drawable.icon_sort_down);
+            }
             mOrderDateHeaderSortImage.setVisibility(View.VISIBLE);
         } else if (mResourceOfCurrentSelectedColumn == mOrderEmailHeader.getId()) {
 
@@ -493,10 +522,20 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         } else if (mResourceOfCurrentSelectedColumn == mOrderStatusHeader.getId()) {
 
             setTextViewBoldStyle(mOrderStatusHeader);
+            if (mCurrentSortIsAsc) {
+                mOrderStatusHeaderSortImage.setImageResource(R.drawable.icon_sort_up);
+            }else{
+                mOrderStatusHeaderSortImage.setImageResource(R.drawable.icon_sort_down);
+            }
             mOrderStatusHeaderSortImage.setVisibility(View.VISIBLE);
         } else if (mResourceOfCurrentSelectedColumn == mOrderTotalHeader.getId()) {
 
             setTextViewBoldStyle(mOrderTotalHeader);
+            if (mCurrentSortIsAsc) {
+                mOrderTotalHeaderSortImage.setImageResource(R.drawable.icon_sort_up);
+            }else{
+                mOrderTotalHeaderSortImage.setImageResource(R.drawable.icon_sort_down);
+            }
             mOrderTotalHeaderSortImage.setVisibility(View.VISIBLE);
         }
     }

@@ -17,9 +17,13 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
 
     private static final int ITEMS_PER_PAGE = 50;
 
-    private static final String ORDER_ID_FILTER_BY = "customerAccountId eq ";
+    private static final String ORDER_ID_FILTER_BY = "orderNumber eq ";
+
+    private static final String FILTER_ABANDONED = "status ne Abandoned";
 
     private static final String ORDER_ORDER_NUMBER = "orderNumber";
+
+
     private static final String ORDER_ORDER_DATE = "submittedDate";
     private static final String ORDER_ORDER_EMAIL = "email";
     private static final String ORDER_ORDER_STATUS = "status";
@@ -152,7 +156,7 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
             if (!TextUtils.isEmpty(mSearchQueryFilter)) {
                 orderCollection = searchOrders(orderResource);
             } else {
-                orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mCurrentOrderBy+" "+mCurrentSort, null, null, null, RESPONSE_FIELDS);
+                orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mCurrentOrderBy+" "+mCurrentSort, FILTER_ABANDONED, null, null, RESPONSE_FIELDS);
             }
 
             mTotalPages = (int) Math.ceil(orderCollection.getTotalCount() * 1.0f / ITEMS_PER_PAGE * 1.0f);
@@ -172,9 +176,9 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
         OrderCollection orderCollection;
 
         if (StringUtils.isNumber(mSearchQueryFilter)) {
-            orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, null, ORDER_ID_FILTER_BY + mSearchQueryFilter, null, null, RESPONSE_FIELDS);
+            orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, null, ORDER_ID_FILTER_BY + mSearchQueryFilter+" and "+FILTER_ABANDONED, null, null, RESPONSE_FIELDS);
         } else {
-            orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, null, null, mSearchQueryFilter, null, RESPONSE_FIELDS);
+            orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, null, FILTER_ABANDONED, mSearchQueryFilter, null, RESPONSE_FIELDS);
         }
 
         return orderCollection;
