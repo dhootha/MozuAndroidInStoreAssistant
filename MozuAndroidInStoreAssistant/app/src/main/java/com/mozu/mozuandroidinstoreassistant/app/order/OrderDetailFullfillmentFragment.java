@@ -55,8 +55,8 @@ public class OrderDetailFullfillmentFragment extends Fragment {
     private ListView mFullfillmentListview;
     private OrderDetailFullfillmentAdapter mOrderDetailFullfillmentAdapter;
 
-    List<OrderItem> mShipItems = new ArrayList<OrderItem>();
-    List<OrderItem> mPickupItems = new ArrayList<OrderItem>();
+    List<OrderItem> mShipItems;
+    List<OrderItem> mPickupItems;
     private TextView mOrderStatusTextView;
 
     public OrderDetailFullfillmentFragment() {
@@ -67,6 +67,9 @@ public class OrderDetailFullfillmentFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.order_detail_fulfillment_layout, null);
+        mShipItems = new ArrayList<OrderItem>();
+        mPickupItems = new ArrayList<OrderItem>();
+
         mFullfillmentListview = (ListView) view.findViewById(R.id.fullfillment_list);
         mOrderStatusTextView = (TextView)view.findViewById(R.id.order_fulfillment_status);
         if (mOrder != null) {

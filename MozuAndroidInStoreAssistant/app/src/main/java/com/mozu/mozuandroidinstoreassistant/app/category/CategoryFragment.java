@@ -324,12 +324,12 @@ public class CategoryFragment extends Fragment implements AdapterView.OnItemClic
 
 
     private void loadCategoryImages(List<Category> mCategories){
-       // for(Category category:mCategories) {
-        //    if (category.getContent().getCategoryImages() == null || category.getContent().getCategoryImages().size() <= 0) {
+       for(Category category:mCategories) {
+            if (category.getContent().getCategoryImages() == null || category.getContent().getCategoryImages().size() <= 0) {
                 CategoryImageUpdateTask task = new CategoryImageUpdateTask(mCategoryImageUpdateListener,mUserState.getTenantId(), mUserState.getSiteId(),5);
                 task.execute();
-          //  }
-        //}
+            }
+        }
     }
 
     private CategoryImageUpdateListener mCategoryImageUpdateListener = new CategoryImageUpdateListener() {
