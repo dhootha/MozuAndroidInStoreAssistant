@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
@@ -61,6 +62,13 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
 
     private boolean mLaunchSettings;
     public static String LAUNCH_SETTINGS = "launchSettings";
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        reloadFragment();
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -237,7 +245,7 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
     }
 
     private void initializeCategoryFragment(boolean isFirstLaunch) {
-        if(isFirstLaunch) {
+        if (isFirstLaunch) {
             FragmentManager fragmentManager = getFragmentManager();
             clearBackstack(fragmentManager);
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -245,9 +253,9 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
             fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out);
             fragmentTransaction.replace(R.id.content_fragment_holder, fragment, CATEGORY_FRAGMENT);
             fragmentTransaction.commit();
-        }else{
+        } else {
             CategoryFragment fragment = CategoryFragment.getInstance(null);
-            addMainFragment(fragment,true);
+            addMainFragment(fragment, true);
         }
     }
 
@@ -329,6 +337,19 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
             fragmentTransaction.addToBackStack(null);
         }
         fragmentTransaction.commit();
+    }
+
+
+    public void reloadFragment(){
+
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        Fragment currentFragment = fragmentManager.findFragmentById(R.id.content_fragment_holder);
+        if (!(currentFragment instanceof SearchFragment)) {
+            fragmentTransaction.detach(currentFragment);
+            fragmentTransaction.attach(currentFragment);
+            fragmentTransaction.commit();
+        }
     }
 
 
