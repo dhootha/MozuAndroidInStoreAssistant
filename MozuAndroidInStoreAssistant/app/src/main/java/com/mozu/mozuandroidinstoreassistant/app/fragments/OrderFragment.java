@@ -109,6 +109,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         View view = inflater.inflate(R.layout.fragment_order, container, false);
         ButterKnife.inject(this, view);
         if (mLaunchFromGlobalSearch) {
+            mOrderRefreshLayout.setEnabled(false);
             setHasOptionsMenu(false);
             if (!TextUtils.isEmpty(mDefaultSearchQuery)) {
                 mOrdersHeaderLayout.setVisibility(View.VISIBLE);
@@ -537,9 +538,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onRefresh() {
         mSearchMenuItem.collapseActionView();
-
         mOrderRefreshLayout.setRefreshing(true);
-
         clearSearchReload();
     }
 }

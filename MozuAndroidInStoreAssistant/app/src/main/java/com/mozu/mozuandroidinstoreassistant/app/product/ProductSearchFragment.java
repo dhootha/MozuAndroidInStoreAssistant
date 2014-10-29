@@ -131,9 +131,8 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View fragmentView = inflater.inflate(R.layout.fragment_product, container, false);
-
         ButterKnife.inject(this, fragmentView);
-
+        mPullToRefresh.setEnabled(false);
         mProductGridView = (GridView) fragmentView.findViewById(R.id.product_grid);
         mProductListView = (ListView) fragmentView.findViewById(R.id.product_list);
 
