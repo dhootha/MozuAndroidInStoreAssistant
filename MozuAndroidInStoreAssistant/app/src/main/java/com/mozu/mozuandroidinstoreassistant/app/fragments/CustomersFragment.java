@@ -123,6 +123,7 @@ public class CustomersFragment extends Fragment implements LoaderManager.LoaderC
         }
 
         if (mLauncedFromSearch) {
+            mCustomerRefreshLayout.setEnabled(false);
             setHasOptionsMenu(false);
             mCustomerHeaderLayout.setVisibility(View.VISIBLE);
             if (!TextUtils.isEmpty(mDefaultSearchQuery)) {
