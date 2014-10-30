@@ -348,20 +348,20 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         if (!(currentFragment instanceof SearchFragment)) {
             fragmentTransaction.detach(currentFragment);
             fragmentTransaction.attach(currentFragment);
-            fragmentTransaction.commit();
+            fragmentTransaction.commitAllowingStateLoss();
         }
     }
 
 
     @Override
     public void onBackPressed() {
-
         FragmentManager fragmentManager = getFragmentManager();
         Fragment currentFragment = fragmentManager.findFragmentById(R.id.content_fragment_holder);
         if (currentFragment instanceof SearchFragment) {
             ((SearchFragment) currentFragment).onBackPressed();
         } else {
             super.onBackPressed();
+            reloadFragment();
         }
 
     }

@@ -223,7 +223,7 @@ public class CategoryFragment extends Fragment implements AdapterView.OnItemClic
         }
 
         if (BuildConfig.DEBUG) {
-            menu.add(0, CATEGORY_IMAGELOADER_MENU_ID, Menu.NONE, "Load Category Images");
+          //  menu.add(0, CATEGORY_IMAGELOADER_MENU_ID, Menu.NONE, "Load Category Images");
         }
 
         // Get the SearchView and set the searchable configuration
