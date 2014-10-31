@@ -242,6 +242,8 @@
     <string name="fullfilled_header">Fulfilled Items</string>
     <string name="shipment_unshipped_total">Unshipped</string>
     <string name="unfulfilled_total">Unfulfilled</string>
+    <string name="inventory_load_error">Failed to load Inventory</string>
+    <string name="no_inventory">No Inventory Available</string>
 
 
 </resources>

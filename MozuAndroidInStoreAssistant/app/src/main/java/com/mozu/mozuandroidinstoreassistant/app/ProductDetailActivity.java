@@ -73,7 +73,7 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
     private HorizontalScrollView mHorizontalScrollView;
     private ScrollView mVerticalScrollView;
 
-    private HeightWrappingViewPager mProductSectionViewPager;
+    private ViewPager mProductSectionViewPager;
 
     private TabPageIndicator mTabIndicator;
 
@@ -124,7 +124,7 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
         mTitles.add(getString(R.string.shipping_tab_name));
         mTitles.add(getString(R.string.inventory_tab_name));
 
-        mProductSectionViewPager = (HeightWrappingViewPager) findViewById(R.id.product_detail_sections_viewpager);
+        mProductSectionViewPager = (ViewPager) findViewById(R.id.product_detail_sections_viewpager);
         mTabIndicator = (TabPageIndicator) findViewById(R.id.product_detail_sections);
         mMainImageView.setOnClickListener(this);
 

@@ -66,6 +66,7 @@ public class CustomersFragment extends Fragment implements LoaderManager.LoaderC
     private MenuItem mSearchMenuItem;
 
     private CustomerListener mListener;
+    private String mCurrentSearch;
 
     @InjectView(R.id.customer_number_header) TextView mCustomerNumberHeader;
     @InjectView(R.id.customer_last_name_header) TextView mCustomerLastNameHeader;
@@ -163,6 +164,15 @@ public class CustomersFragment extends Fragment implements LoaderManager.LoaderC
         mSearchView.setOnCloseListener(this);
         mSearchView.setQueryHint(getString(R.string.customer_search_hint_text));
         mSearchView.setMaxWidth(1500);
+        if (!TextUtils.isEmpty(mCurrentSearch)) {
+            mSearchView.post(new Runnable() {
+
+                @Override
+                public void run() {
+                    mSearchView.setQuery(mCurrentSearch, false);
+                }
+            });
+        }
 
         mSearchMenuItem.setOnActionExpandListener(this);
         searchManager.setOnCancelListener(this);
@@ -325,7 +335,7 @@ public class CustomersFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public boolean onQueryTextSubmit(String query) {
         mSearchView.clearFocus();
-
+        mCurrentSearch = query;
         saveSearchToList(query);
 
         initSuggestions();
@@ -348,6 +358,7 @@ public class CustomersFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public boolean onClose() {
         clearSearchReload();
+        mCurrentSearch = null;
 
         return true;
     }
@@ -364,24 +375,21 @@ public class CustomersFragment extends Fragment implements LoaderManager.LoaderC
 
     private void clearSearchReload() {
         getcCustomersLoader().removeFilter();
-
         getcCustomersLoader().reset();
         getcCustomersLoader().startLoading();
         getcCustomersLoader().forceLoad();
-
         mCustomerRefreshLayout.setRefreshing(true);
     }
 
     @Override
     public boolean onMenuItemActionExpand(MenuItem item) {
-
         return true;
     }
 
     @Override
     public boolean onMenuItemActionCollapse(MenuItem item) {
         clearSearchReload();
-
+        mCurrentSearch = null;
         return true;
     }
 

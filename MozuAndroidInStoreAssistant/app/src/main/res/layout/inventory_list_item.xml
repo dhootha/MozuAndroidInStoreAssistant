@@ -26,6 +26,7 @@
     <TextView
         android:textColor="@color/light_gray_text"
         android:textSize="14sp"
+        android:gravity="right"
         android:id="@+id/inventory_available"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -34,6 +35,7 @@
     <TextView
         android:textColor="@color/light_gray_text"
         android:textSize="14sp"
+        android:gravity="right"
         android:id="@+id/inventory_on_hand"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -42,6 +44,7 @@
     <TextView
         android:textColor="@color/light_gray_text"
         android:textSize="14sp"
+        android:gravity="right"
         android:id="@+id/inventory_on_reserve"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

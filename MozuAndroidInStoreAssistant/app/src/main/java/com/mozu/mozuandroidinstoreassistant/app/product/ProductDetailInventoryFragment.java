@@ -20,6 +20,7 @@ import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.ProdDetailLocationInventoryAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.loaders.InventoryRetriever;
+import com.mozu.mozuandroidinstoreassistant.app.views.LoadingView;
 
 import java.util.List;
 
@@ -43,8 +44,10 @@ public class ProductDetailInventoryFragment extends DialogFragment implements Ob
     private List<LocationInventory> mInventory;
 
     @InjectView(R.id.inventory_list) ListView mInventoryList;
-    @InjectView(R.id.inventory_progress) ProgressBar mProgress;
+    @InjectView(R.id.inventory_loading) LoadingView mProgress;
     @InjectView(R.id.dialog_header) LinearLayout mDialogLayout;
+    @InjectView(R.id.mainlayout) LinearLayout mMainLayout;
+
 
     private Subscription mSubscription = Subscriptions.empty();
     private Observable<LocationInventoryCollection> mInventoryObservable;
@@ -58,7 +61,6 @@ public class ProductDetailInventoryFragment extends DialogFragment implements Ob
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         mInventoryObservable = AndroidObservable.bindFragment(this, new InventoryRetriever().getInventoryData(mProduct, mTenantId, mSiteId))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -68,7 +70,6 @@ public class ProductDetailInventoryFragment extends DialogFragment implements Ob
     @Override
     public void onResume() {
         super.onResume();
-
         mSubscription = mInventoryObservable.subscribe(this);
     }
 
@@ -77,42 +78,35 @@ public class ProductDetailInventoryFragment extends DialogFragment implements Ob
         View view = inflater.inflate(R.layout.product_detail_inventory_fragment, null);
 
         ButterKnife.inject(this, view);
-
-        if (mInventory == null) {
-            mProgress.setVisibility(View.VISIBLE);
-            mInventoryList.setVisibility(View.GONE);
-        } else {
+        if(mInventory != null){
             onCompleted();
         }
-
         setupForDialog();
-
         return view;
     }
 
     public void onPause() {
         super.onPause();
-
         mSubscription.unsubscribe();
     }
 
     @Override
-
-
     public void onNext(LocationInventoryCollection inventoryCollection) {
         mInventory = inventoryCollection.getItems();
+        if (mInventory.size() > 0) {
+            mProgress.success();
+        } else {
+            mProgress.setError(getString(R.string.no_inventory));
+        }
     }
 
     @Override
     public void onCompleted() {
-        mProgress.setVisibility(View.GONE);
-        mInventoryList.setVisibility(View.VISIBLE);
-
-        mInventoryList.setAdapter(new ProdDetailLocationInventoryAdapter(getActivity(), mInventory,mTenantId,mSiteId));
+        mInventoryList.setAdapter(new ProdDetailLocationInventoryAdapter(getActivity(), mInventory, mTenantId, mSiteId));
     }
 
     public void onError(Throwable error) {
-
+        mProgress.setError(getString(R.string.inventory_load_error));
         Crashlytics.logException(error);
     }
 
@@ -130,8 +124,9 @@ public class ProductDetailInventoryFragment extends DialogFragment implements Ob
 
     private void setupForDialog() {
         if (getShowsDialog()) {
+            int padding = (int) getResources().getDimension(R.dimen.inventory_dialog_padding);
+            mMainLayout.setPadding(padding,padding,padding,padding);
             mDialogLayout.setVisibility(View.VISIBLE);
-
             TextView productCode = (TextView)mDialogLayout.findViewById(R.id.productCode);
             TextView productName = (TextView)mDialogLayout.findViewById(R.id.productName);
             productCode.setText(mProduct.getProductCode());

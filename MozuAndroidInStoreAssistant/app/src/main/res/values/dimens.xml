@@ -35,6 +35,7 @@
     <dimen name="product_list_item_height">40dp</dimen>
     <dimen name="customer_margin_right">64dp</dimen>
     <dimen name="customer_margin_left">64dp</dimen>
+    <dimen name="order_actionbar_margin_left">0dp</dimen>
 
     <dimen name="order_margin_right_total">60dp</dimen>
     <dimen name="order_margin_left_total">60dp</dimen>
@@ -50,6 +51,7 @@
     <dimen name="product_grid_horizontal_spacing">10dp</dimen>
     <dimen name="product_grid_vertical_spacing">16dp</dimen>
     <dimen name="order_header_margin">8dp</dimen>
+    <dimen name="inventory_dialog_padding">32dp</dimen>
 
 
 </resources>

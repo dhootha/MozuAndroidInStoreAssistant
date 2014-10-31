@@ -83,7 +83,7 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
         getActionBar().setDisplayShowHomeEnabled(false);
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setDisplayShowCustomEnabled(true);
-        getActionBar().setTitle("");
+        getActionBar().setTitle(" ");
 
         mOrderStatus = (TextView) findViewById(R.id.order_status_value);
         mOrderDate = (TextView) findViewById(R.id.order_date_value);
@@ -192,7 +192,7 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
         TextView tv = new TextView(this);
         tv.setText("Order #" + mOrder.getOrderNumber());
 
-        tv.setPadding( getResources().getDimensionPixelSize(R.dimen.customer_margin_right), 0, 0, 0);
+        tv.setPadding( getResources().getDimensionPixelSize(R.dimen.order_actionbar_margin_left), 0, 0, 0);
         tv.setGravity(Gravity.CENTER);
         tv.setTextColor(getResources().getColor(R.color.dark_gray_text));
         tv.setTypeface(null, Typeface.BOLD);
