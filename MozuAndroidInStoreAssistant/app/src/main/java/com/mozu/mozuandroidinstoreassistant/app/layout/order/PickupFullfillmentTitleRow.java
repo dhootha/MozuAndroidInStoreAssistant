@@ -7,19 +7,20 @@ import android.widget.TextView;
 
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.data.IData;
+import com.mozu.mozuandroidinstoreassistant.app.data.order.PickupFullfillmentTitleDataitem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.ShipmentFullfillmentTitleDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.layout.IRowLayout;
 
-public class FullfillmentTitleRow extends RelativeLayout implements IRowLayout {
-    public FullfillmentTitleRow(Context context) {
+public class PickupFullfillmentTitleRow extends RelativeLayout implements IRowLayout {
+    public PickupFullfillmentTitleRow(Context context) {
         super(context);
     }
 
-    public FullfillmentTitleRow(Context context, AttributeSet attrs) {
+    public PickupFullfillmentTitleRow(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public FullfillmentTitleRow(Context context, AttributeSet attrs, int defStyle) {
+    public PickupFullfillmentTitleRow(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
@@ -27,16 +28,16 @@ public class FullfillmentTitleRow extends RelativeLayout implements IRowLayout {
     public void bindData(IData data) {
 
         TextView mTitleTextView = (TextView) findViewById(R.id.order_fulfillment_title);
-        TextView mPendingTextView = (TextView) findViewById(R.id.shipment_pending_total);
-        TextView mFulFilledTextView = (TextView) findViewById(R.id.shipment_fulfilled_total);
-        TextView mTotalTextView = (TextView) findViewById(R.id.shipment_total);
-        if(data instanceof ShipmentFullfillmentTitleDataItem){
-            ShipmentFullfillmentTitleDataItem dataItem = (ShipmentFullfillmentTitleDataItem)data;
+        TextView mUnfullfilledTextView = (TextView) findViewById(R.id.unfulfilled_total);
+        TextView mFulFilledTextView = (TextView) findViewById(R.id.fulfilled_total);
+        TextView mTotalTextView = (TextView) findViewById(R.id.total);
+        if(data instanceof PickupFullfillmentTitleDataitem){
+            PickupFullfillmentTitleDataitem dataItem = (PickupFullfillmentTitleDataitem)data;
             if (dataItem.getTitle() != null) {
                 mTitleTextView.setText(dataItem.getTitle());
             }
-            if (dataItem.getUnShippedCount() != null) {
-                mPendingTextView.setText(String.valueOf(dataItem.getUnShippedCount()));
+            if (dataItem.getUnfullfilledCount() != null) {
+                mUnfullfilledTextView.setText(String.valueOf(dataItem.getUnfullfilledCount()));
             }
             if (dataItem.getFullfilledCount() != null) {
                 mFulFilledTextView.setText(String.valueOf(dataItem.getFullfilledCount()));
@@ -46,7 +47,7 @@ public class FullfillmentTitleRow extends RelativeLayout implements IRowLayout {
             }
         }else{
             mTitleTextView.setText("N/A");
-            mPendingTextView.setText("N/A");
+            mUnfullfilledTextView.setText("N/A");
             mFulFilledTextView.setText("N/A");
             mTotalTextView.setText("N/A");
         }

@@ -13,7 +13,8 @@ import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentHeaderDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentPackageDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentPickupItem;
-import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentTitleDataItem;
+import com.mozu.mozuandroidinstoreassistant.app.data.order.PickupFullfillmentTitleDataitem;
+import com.mozu.mozuandroidinstoreassistant.app.data.order.ShipmentFullfillmentTitleDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.TopRowItem;
 import com.mozu.mozuandroidinstoreassistant.app.layout.IRowLayout;
 
@@ -24,7 +25,8 @@ import java.util.List;
 public class OrderDetailFullfillmentAdapter extends BaseAdapter {
 
     public enum RowType{
-        TITLE_ROW,
+        SHIPMENT_TITLE_ROW,
+        PICKUP_TITLE_ROW,
         HEADER_ROW,
         ITEM_ROW,
         PACKAGE_ROW,
@@ -38,12 +40,7 @@ public class OrderDetailFullfillmentAdapter extends BaseAdapter {
 
     @Override
     public boolean isEnabled(int position) {
-        RowType rowType = getRowType(position);
-        if (rowType == RowType.PICKUP_ITEM_ROW || rowType == RowType.ITEM_ROW || rowType == RowType.PACKAGE_ROW) {
-            return true;
-        } else {
-            return false;
-        }
+       return true;
     }
 
     public OrderDetailFullfillmentAdapter(Context context, List<IData> data) {
@@ -59,8 +56,10 @@ public class OrderDetailFullfillmentAdapter extends BaseAdapter {
         IData dataItem = getItem(position);
         if (dataItem instanceof FullfillmentHeaderDataItem) {
             return RowType.HEADER_ROW;
-        } else if (dataItem instanceof FullfillmentTitleDataItem) {
-            return RowType.TITLE_ROW;
+        } else if (dataItem instanceof ShipmentFullfillmentTitleDataItem) {
+            return RowType.SHIPMENT_TITLE_ROW;
+        }else if (dataItem instanceof PickupFullfillmentTitleDataitem) {
+            return RowType.PICKUP_TITLE_ROW;
         } else if (dataItem instanceof FullfillmentDataItem) {
             return RowType.ITEM_ROW;
         } else if (dataItem instanceof FullfillmentPackageDataItem) {
@@ -103,8 +102,10 @@ public class OrderDetailFullfillmentAdapter extends BaseAdapter {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (convertView == null) {
             RowType rowType = getRowType(position);
-            if(rowType == RowType.TITLE_ROW){
+            if(rowType == RowType.SHIPMENT_TITLE_ROW){
                 convertView = inflater.inflate(R.layout.order_fullfilment_title,null);
+            }else if( rowType == RowType.PICKUP_TITLE_ROW){
+                convertView = inflater.inflate(R.layout.order_pickup_fullfillment_title,null);
             }else if( rowType == RowType.HEADER_ROW){
                 convertView = inflater.inflate(R.layout.order_fullfillment_header,null);
             }else if( rowType == RowType.PACKAGE_ROW){

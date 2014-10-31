@@ -2,19 +2,19 @@
 <com.mozu.mozuandroidinstoreassistant.app.layout.order.FullfillmentItemRow xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/list_item_background"
+    android:layout_height="64dp"
     android:gravity="center_vertical"
-    android:minHeight="?android:attr/listPreferredItemHeight">
+    android:background="@drawable/list_item_background"
+    android:minHeight="64dp">
 
-        <TextView
-            android:id="@+id/order_item_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="40dp"
-            android:textStyle="bold"
-            android:textSize="14dp"
-            />
-
-    </com.mozu.mozuandroidinstoreassistant.app.layout.order.FullfillmentItemRow>
+    <TextView
+        android:id="@+id/order_item_name"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textStyle="bold"
+        android:layout_marginLeft="40dp"
+        android:textColor="@color/dark_gray_text"
+        android:text="@string/not_available"
+        android:textSize="14sp" />
+</com.mozu.mozuandroidinstoreassistant.app.layout.order.FullfillmentItemRow>
 

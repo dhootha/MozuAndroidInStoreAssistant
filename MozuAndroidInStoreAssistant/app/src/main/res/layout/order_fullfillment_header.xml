@@ -2,10 +2,8 @@
 <com.mozu.mozuandroidinstoreassistant.app.layout.order.FullfillmentHeaderRow xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:orientation="vertical"
-    android:layout_marginLeft="40dp"
-    android:layout_marginTop="40dp"
     android:gravity="center_vertical"
-    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:minHeight="64dp"
     android:background="@drawable/list_item"
     android:layout_height="match_parent">
 
@@ -14,8 +12,7 @@
         android:id="@+id/fulfillment_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textSize="18dp"
-        android:textColor="@android:color/darker_gray" />
+        android:textSize="14sp"
+        android:textColor="@color/light_gray_text" />
 </com.mozu.mozuandroidinstoreassistant.app.layout.order.FullfillmentHeaderRow>
 

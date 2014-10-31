@@ -5,12 +5,11 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="10dp"
-    android:paddingRight="75dp"
-    android:paddingLeft="75dp"
     android:layout_marginBottom="0dp">
 
     <LinearLayout
+        android:paddingRight="@dimen/order_sub_margin_right"
+        android:paddingLeft="@dimen/order_sub_margin_right"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -32,7 +31,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="28sp"
+                android:textColor="@color/dark_gray_text"
+                android:textSize="24sp"
                 android:text="@string/payments_header" />
 
         </LinearLayout>
@@ -47,7 +47,7 @@
                 android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:gravity="center_horizontal|center_vertical"
+                android:gravity="center_horizontal|left"
                 android:layout_weight="1">
 
                 <TextView
@@ -61,8 +61,8 @@
                     android:id="@+id/status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:textSize="28sp" />
+                    android:textColor="@color/dark_gray_text"
+                    android:textSize="24sp" />
 
             </LinearLayout>
 
@@ -70,7 +70,7 @@
                 android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:gravity="center_horizontal|center_vertical"
+                android:gravity="center_horizontal|left"
                 android:layout_weight="1">
 
                 <TextView
@@ -84,8 +84,8 @@
                     android:id="@+id/order_total"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:textSize="28sp" />
+                    android:textColor="@color/dark_gray_text"
+                    android:textSize="24sp" />
 
             </LinearLayout>
 
@@ -93,7 +93,7 @@
                 android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:gravity="center_horizontal|center_vertical"
+                android:gravity="center_horizontal|left"
                 android:layout_weight="1">
 
                 <TextView
@@ -107,8 +107,8 @@
                     android:id="@+id/payments_received"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:textSize="28sp" />
+                    android:textColor="@color/dark_gray_text"
+                    android:textSize="24sp" />
 
             </LinearLayout>
 
@@ -116,7 +116,7 @@
                 android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:gravity="center_horizontal|center_vertical"
+                android:gravity="center_horizontal|left"
                 android:layout_weight="1">
 
                 <TextView
@@ -130,9 +130,8 @@
                     android:id="@+id/balance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:textSize="28sp" />
-
+                    android:textColor="@color/dark_gray_text"
+                    android:textSize="24sp" />
             </LinearLayout>
 
         </LinearLayout>
@@ -145,10 +144,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_gravity="center"
+        android:paddingRight="@dimen/order_sub_margin_right"
+        android:paddingLeft="@dimen/order_sub_margin_right"
         android:text="@string/empty_payments_message_string"
         android:visibility="gone" />
 
     <ListView
+        android:paddingRight="@dimen/order_sub_margin_right"
+        android:paddingLeft="@dimen/order_sub_margin_right"
         android:id="@+id/payments_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

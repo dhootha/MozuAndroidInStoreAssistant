@@ -147,15 +147,15 @@ public class OrderDetailOverviewFragment extends Fragment implements View.OnClic
             value.setVisibility(View.VISIBLE);
 
             if (TextUtils.isEmpty(attribute.getFullyQualifiedName())) {
-                label.setText("N/A");
+                label.setText(getResources().getString(R.string.not_available));
             } else {
-                label.setText(attribute.getFullyQualifiedName());
+                label.setText(getPropertyValue(attribute.getFullyQualifiedName()));
             }
 
             String valueStr = getStringValueFromAttributesValues(attribute.getValues());
 
             if (TextUtils.isEmpty(valueStr)) {
-                value.setText("N/A");
+                value.setText(getResources().getString(R.string.not_available));
             } else {
                 value.setText(valueStr);
             }
@@ -163,6 +163,16 @@ public class OrderDetailOverviewFragment extends Fragment implements View.OnClic
             mOrderAttributeItemLayout.addView(view);
         }
     }
+
+    private String getPropertyValue(String fullyQualifiedName) {
+        String delimiter = getResources().getString(R.string.attribute_delimiter);
+        if (!TextUtils.isEmpty(fullyQualifiedName)) {
+            return fullyQualifiedName.substring(fullyQualifiedName.indexOf(delimiter)+1, fullyQualifiedName.length()).toUpperCase();
+        } else {
+            return "";
+        }
+    }
+
 
     private String getStringValueFromAttributesValues(List<Object> values) {
         String valueString = "";

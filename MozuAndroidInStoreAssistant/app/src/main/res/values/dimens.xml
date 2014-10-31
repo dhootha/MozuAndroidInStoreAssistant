@@ -35,6 +35,15 @@
     <dimen name="product_list_item_height">40dp</dimen>
     <dimen name="customer_margin_right">64dp</dimen>
     <dimen name="customer_margin_left">64dp</dimen>
+
+    <dimen name="order_margin_right_total">60dp</dimen>
+    <dimen name="order_margin_left_total">60dp</dimen>
+
+    <dimen name="order_margin_right">40dp</dimen>
+    <dimen name="order_margin_left">40dp</dimen>
+    <dimen name="order_sub_margin_right">20dp</dimen>
+    <dimen name="order_sub_margin_left">20dp</dimen>
+
     <dimen name="category_grid_horizontal_spacing">10dp</dimen>
     <dimen name="category_grid_vertical_spacing">10dp</dimen>
 

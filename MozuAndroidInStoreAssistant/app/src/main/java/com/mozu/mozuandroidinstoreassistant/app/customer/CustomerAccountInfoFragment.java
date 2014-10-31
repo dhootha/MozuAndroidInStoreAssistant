@@ -125,7 +125,7 @@ public class CustomerAccountInfoFragment extends Fragment {
     }
 
     private String getPropertyValue(String fullyQualifiedName) {
-        String delimiter = "~";
+        String delimiter = getResources().getString(R.string.attribute_delimiter);
         if (!TextUtils.isEmpty(fullyQualifiedName)) {
             return fullyQualifiedName.substring(fullyQualifiedName.indexOf(delimiter)+1, fullyQualifiedName.length()).toUpperCase();
         } else {

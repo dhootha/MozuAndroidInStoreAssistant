@@ -2,7 +2,7 @@
 <com.mozu.mozuandroidinstoreassistant.app.layout.order.FullfillmentPackageRow xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="64dp"
     android:gravity="center_vertical"
     android:background="@drawable/list_item_background"
     android:minHeight="?android:attr/listPreferredItemHeight">
@@ -19,8 +19,9 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="40dp"
             android:textStyle="bold"
+            android:textColor="@color/dark_gray_text"
             android:text="@string/not_available"
-            android:textSize="14dp"
+            android:textSize="14sp"
             />
 
         <TextView
@@ -28,9 +29,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="40dp"
-            android:textColor="@android:color/darker_gray"
+            android:textColor="@color/dark_gray_text"
             android:text="@string/not_available"
-            android:textSize="14dp"
+            android:textSize="14sp"
             />
 
         <TextView
@@ -40,7 +41,7 @@
             android:layout_marginLeft="40dp"
             android:textColor="@color/mozu_color"
             android:text="@string/not_available"
-            android:textSize="14dp"
+            android:textSize="14sp"
             />
 
     </LinearLayout>
