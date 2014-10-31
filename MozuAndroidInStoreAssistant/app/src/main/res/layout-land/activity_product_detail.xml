@@ -52,11 +52,6 @@
 
             </ScrollView>
         </com.mozu.mozuandroidinstoreassistant.app.views.LoadingView>
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -99,7 +94,7 @@
                     android:layout_height="1dp"
                     android:background="@color/divider_white" />
 
-                <com.mozu.mozuandroidinstoreassistant.app.views.HeightWrappingViewPager
+                <android.support.v4.view.ViewPager
                     android:layout_marginLeft="40dp"
                     android:paddingRight="64dp"
                     android:id="@+id/product_detail_sections_viewpager"
@@ -107,6 +102,5 @@
                     android:layout_height="wrap_content" />
 
             </LinearLayout>
-        </ScrollView>
     </LinearLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

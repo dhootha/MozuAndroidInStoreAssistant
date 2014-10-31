@@ -390,7 +390,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public boolean onMenuItemActionCollapse(MenuItem item) {
         clearSearchReload();
-
+        mCurrentSearch = null;
         return true;
     }
 
