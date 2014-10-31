@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.mozu.mozuandroidinstoreassistant.app.layout.order.FullfillmentTitleRow xmlns:android="http://schemas.android.com/apk/res/android"
+<com.mozu.mozuandroidinstoreassistant.app.layout.order.PickupFullfillmentTitleRow xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:paddingLeft="@dimen/order_sub_margin_left"
     android:paddingRight="@dimen/order_sub_margin_right"
+    android:layout_marginTop="16dp"
     android:layout_height="wrap_content">
 
     <LinearLayout
@@ -39,11 +40,11 @@
             android:layout_height="wrap_content"
             android:textSize="14sp"
             android:textColor="@android:color/darker_gray"
-            android:text="@string/shipment_unshipped_total" />
+            android:text="@string/unfulfilled_total" />
 
         <TextView
             android:layout_gravity="right"
-            android:id="@+id/shipment_pending_total"
+            android:id="@+id/unfulfilled_total"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/not_available"
@@ -69,7 +70,7 @@
 
         <TextView
             android:layout_gravity="right"
-            android:id="@+id/shipment_fulfilled_total"
+            android:id="@+id/fulfilled_total"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -95,7 +96,7 @@
 
         <TextView
             android:layout_gravity="right"
-            android:id="@+id/shipment_total"
+            android:id="@+id/total"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -103,4 +104,4 @@
             android:textSize="28sp" />
 
     </LinearLayout>
-</com.mozu.mozuandroidinstoreassistant.app.layout.order.FullfillmentTitleRow>
+    </com.mozu.mozuandroidinstoreassistant.app.layout.order.PickupFullfillmentTitleRow>

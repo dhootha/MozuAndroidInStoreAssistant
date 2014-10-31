@@ -3,9 +3,12 @@ package com.mozu.mozuandroidinstoreassistant.app;
 import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,10 +41,9 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
 
     private String mOrderNumber;
 
-    private TextView mOrderNumberTextView;
     private TextView mOrderStatus;
     private TextView mOrderDate;
-    private TextView mOrderName;
+    private TextView mCustomerName;
     private TextView mOrderTotal;
 
     private Order mOrder;
@@ -80,14 +82,14 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
 
         getActionBar().setDisplayShowHomeEnabled(false);
         getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setDisplayShowCustomEnabled(true);
         getActionBar().setTitle("");
 
-        mOrderNumberTextView = (TextView) findViewById(R.id.order_number);
-        mOrderStatus = (TextView) findViewById(R.id.order_status);
-        mOrderDate = (TextView) findViewById(R.id.order_date);
-        mOrderName = (TextView) findViewById(R.id.order_name);
-        mOrderTotal = (TextView) findViewById(R.id.order_total);
-        mOrderName.setOnClickListener(new View.OnClickListener() {
+        mOrderStatus = (TextView) findViewById(R.id.order_status_value);
+        mOrderDate = (TextView) findViewById(R.id.order_date_value);
+        mCustomerName = (TextView) findViewById(R.id.customer_value);
+        mOrderTotal = (TextView) findViewById(R.id.order_total_value);
+        mCustomerName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (mOrder != null && mOrder.getCustomerAccountId() != null) {
@@ -187,8 +189,17 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
         }
 
         new RetrieveCustomerAsyncTask(this, this, mSiteId, mTenantId, mOrder.getCustomerAccountId()).execute();
+        TextView tv = new TextView(this);
+        tv.setText("Order #" + mOrder.getOrderNumber());
 
-        mOrderNumberTextView.setText(String.valueOf(mOrder.getOrderNumber()));
+        tv.setPadding( getResources().getDimensionPixelSize(R.dimen.customer_margin_right), 0, 0, 0);
+        tv.setGravity(Gravity.CENTER);
+        tv.setTextColor(getResources().getColor(R.color.dark_gray_text));
+        tv.setTypeface(null, Typeface.BOLD);
+        tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+        getActionBar().setCustomView(tv);
+        //getActionBar().setTitle("Order #" + mOrder.getOrderNumber());
+
 
         android.text.format.DateFormat dateFormat = new android.text.format.DateFormat();
         String date = mOrder.getSubmittedDate() != null ? dateFormat.format("MM/dd/yy  hh:mm a", new Date(mOrder.getSubmittedDate().getMillis())).toString() : "";
@@ -214,13 +225,13 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
 
     @Override
     public void customerRetreived(CustomerAccount customer) {
-        if (mOrderName != null && customer != null) {
-            mOrderName.setText(customer.getFirstName() + " " + customer.getLastName());
+        if (mCustomerName != null && customer != null) {
+            mCustomerName.setText(customer.getFirstName() + " " + customer.getLastName());
         }
     }
 
     @Override
     public void onError(String errorMessage) {
-        mOrderName.setText(getString(R.string.error_message_for_order_customer_name));
+        mCustomerName.setText(getString(R.string.error_message_for_order_customer_name));
     }
 }

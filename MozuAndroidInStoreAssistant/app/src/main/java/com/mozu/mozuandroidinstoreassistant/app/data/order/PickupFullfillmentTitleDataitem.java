@@ -2,10 +2,12 @@ package com.mozu.mozuandroidinstoreassistant.app.data.order;
 
 import com.mozu.mozuandroidinstoreassistant.app.data.IData;
 
-public class FullfillmentTitleDataItem implements IData {
+public class PickupFullfillmentTitleDataitem implements IData {
 
     private String title;
-    private Integer pendingCount;
+    private Integer unFulfilledCount;
+    private Integer fullfilledCount;
+    private Integer totalCount;
 
     public String getTitle() {
         return title;
@@ -15,12 +17,12 @@ public class FullfillmentTitleDataItem implements IData {
         this.title = title;
     }
 
-    public Integer getPendingCount() {
-        return pendingCount;
+    public Integer getUnfullfilledCount() {
+        return unFulfilledCount;
     }
 
-    public void setPendingCount(Integer pendingCount) {
-        this.pendingCount = pendingCount;
+    public void setUnfullfilledCount(Integer unShippedCount) {
+        this.unFulfilledCount = unShippedCount;
     }
 
     public Integer getFullfilledCount() {
@@ -39,7 +41,6 @@ public class FullfillmentTitleDataItem implements IData {
         this.totalCount = totalCount;
     }
 
-    private Integer fullfilledCount;
-    private Integer totalCount;
+
 
 }

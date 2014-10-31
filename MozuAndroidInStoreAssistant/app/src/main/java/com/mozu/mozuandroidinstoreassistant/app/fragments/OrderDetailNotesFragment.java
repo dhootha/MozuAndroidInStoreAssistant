@@ -69,13 +69,13 @@ private LoadingView mNotesLoadingView;
         ListView customerNotesList = (ListView) view.findViewById(R.id.customer_list);
         customerNotesList.setAdapter(new OrderDetailNotesAdapter(mOrder, false));
         if (mOrder == null || mOrder.getNotes().size() < 1) {
-            mNotesLoadingView.setError("No Notes Available");
+            mNotesLoadingView.setError(getActivity().getResources().getString(R.string.not_internal_notes_available));
         } else {
             mNotesLoadingView.success();
         }
 
         if (mOrder == null || mOrder.getShopperNotes() == null) {
-            mCustomerLoadingView.setError("No Notes Available");
+            mCustomerLoadingView.setError(getActivity().getResources().getString(R.string.not_customer_notes_available));
         } else {
             mCustomerLoadingView.success();
         }

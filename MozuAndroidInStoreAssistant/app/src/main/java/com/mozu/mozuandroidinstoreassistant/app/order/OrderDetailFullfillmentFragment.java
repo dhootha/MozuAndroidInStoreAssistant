@@ -24,7 +24,8 @@ import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentHeaderDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentPackageDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentPickupItem;
-import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentTitleDataItem;
+import com.mozu.mozuandroidinstoreassistant.app.data.order.PickupFullfillmentTitleDataitem;
+import com.mozu.mozuandroidinstoreassistant.app.data.order.ShipmentFullfillmentTitleDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.TopRowItem;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.PackageInfoDialogFragment;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.PickupInfoDialogFragment;
@@ -118,32 +119,54 @@ public class OrderDetailFullfillmentFragment extends Fragment {
         List<IData> finalDataList = new ArrayList<IData>();
         List<OrderItem> itemsNotPickedUp = new ArrayList<OrderItem>(pickupItems);
         List<FullfillmentPickupItem> fulFilledItems = new ArrayList<FullfillmentPickupItem>();
+        List<FullfillmentPickupItem> unFulFilledItems = new ArrayList<FullfillmentPickupItem>();
+
+
+        int totalPickupCount = 0;
+        for(OrderItem orderItem:pickupItems){
+            totalPickupCount += orderItem.getQuantity();
+        }
+        int totalFulfilledCount = 0;
         if (pickupItems.size() > 0) {
             int pickUpCount = 0;
             if (mOrder.getPickups() != null && mOrder.getPickups().size() > 0) {
                 for (Pickup pickup : mOrder.getPickups()) {
+                    int fullfilledCount = 0;
                     pickUpCount++;
                     for (PickupItem pickupItem : pickup.getItems()) {
+                        fullfilledCount += pickupItem.getQuantity();
                         itemsNotPickedUp = removeOrderItem(itemsNotPickedUp, pickupItem.getProductCode());
                     }
                     FullfillmentPickupItem item = new FullfillmentPickupItem(pickup, pickUpCount);
-                    fulFilledItems.add(item);
+                    if (pickup.getStatus().equalsIgnoreCase(NOTFULLFILLED)) {
+                        unFulFilledItems.add(item);
+
+                    } else if (pickup.getStatus().equalsIgnoreCase(FULFILLED)) {
+                        fulFilledItems.add(item);
+                        totalFulfilledCount += fullfilledCount;
+                    }
                 }
             }
 
-
-            FullfillmentTitleDataItem fullfillmentTitleDataItem = new FullfillmentTitleDataItem();
-            fullfillmentTitleDataItem.setTitle("In-Store PickUp Items");
-            fullfillmentTitleDataItem.setFullfilledCount(fulFilledItems.size());
-            fullfillmentTitleDataItem.setPendingCount(pickupItems.size() - fulFilledItems.size());
-            fullfillmentTitleDataItem.setTotalCount(pickupItems.size());
+            PickupFullfillmentTitleDataitem fullfillmentTitleDataItem = new PickupFullfillmentTitleDataitem();
+            fullfillmentTitleDataItem.setTitle(getActivity().getResources().getString(R.string.instore_header));
+            fullfillmentTitleDataItem.setFullfilledCount(totalFulfilledCount);
+            fullfillmentTitleDataItem.setUnfullfilledCount(totalPickupCount -totalFulfilledCount);
+            fullfillmentTitleDataItem.setTotalCount(totalPickupCount);
             finalDataList.add(fullfillmentTitleDataItem);
             finalDataList.add(new TopRowItem());
             if (itemsNotPickedUp.size() > 0) {
-                finalDataList.add(new FullfillmentHeaderDataItem("Pending Items"));
+
                 for (OrderItem item : itemsNotPickedUp) {
                     FullfillmentDataItem dataItem = new FullfillmentDataItem(item);
                     finalDataList.add(dataItem);
+                }
+            }
+
+            if (unFulFilledItems.size() > 0) {
+                finalDataList.add(new FullfillmentHeaderDataItem("Pending Items"));
+                for (FullfillmentPickupItem unFullfilleditem : unFulFilledItems) {
+                    finalDataList.add(unFullfilleditem);
                 }
             }
             if (fulFilledItems.size() > 0) {
@@ -162,16 +185,23 @@ public class OrderDetailFullfillmentFragment extends Fragment {
 
     private List<IData> filterShipment(List<OrderItem> shipItems) {
 
+        int totalItemCount = 0;
+        for(OrderItem orderItem:shipItems){
+            totalItemCount += orderItem.getQuantity();
+        }
+        int totalFulfilledCount = 0;
         List<IData> finalDataList = new ArrayList<IData>();
         List<FullfillmentPackageDataItem> pendingItems = new ArrayList<FullfillmentPackageDataItem>();
         List<FullfillmentPackageDataItem> fullfilledItems = new ArrayList<FullfillmentPackageDataItem>();
         List<OrderItem> orderItemsNotPackaged = new ArrayList<OrderItem>(shipItems);
-        mOrder.getPickups();
         if (shipItems.size() > 0) {
             int packageCount = 0;
+
             for (Package orderPackage : mOrder.getPackages()) {
+                int packageItemCount = 0;
                 for (PackageItem item : orderPackage.getItems()) {
                     orderItemsNotPackaged = removeOrderItem(orderItemsNotPackaged, item.getProductCode());
+                    packageItemCount += item.getQuantity();
                 }
                 packageCount++;
                 FulfillmentItem fulfillmentItem = new FulfillmentItem();
@@ -186,6 +216,7 @@ public class OrderDetailFullfillmentFragment extends Fragment {
                     pendingItems.add(new FullfillmentPackageDataItem(fulfillmentItem));
                 } else if (status.equalsIgnoreCase(FULFILLED)) {
                     fulfillmentItem.setFullfilled(true);
+                    totalFulfilledCount += packageItemCount;
                     for (Shipment shipment : mOrder.getShipments()) {
                         if (shipment.getId().equalsIgnoreCase(orderPackage.getShipmentId())) {
                             fulfillmentItem.setShipment(shipment);
@@ -199,11 +230,11 @@ public class OrderDetailFullfillmentFragment extends Fragment {
             }
 
 
-            FullfillmentTitleDataItem fullfillmentTitleDataItem = new FullfillmentTitleDataItem();
-            fullfillmentTitleDataItem.setTitle("Direct Ship Items");
-            fullfillmentTitleDataItem.setFullfilledCount(fullfilledItems.size());
-            fullfillmentTitleDataItem.setPendingCount(shipItems.size() - fullfilledItems.size());
-            fullfillmentTitleDataItem.setTotalCount(shipItems.size());
+            ShipmentFullfillmentTitleDataItem fullfillmentTitleDataItem = new ShipmentFullfillmentTitleDataItem();
+            fullfillmentTitleDataItem.setTitle(getString(R.string.direct_ship_header));
+            fullfillmentTitleDataItem.setFullfilledCount(totalFulfilledCount);
+            fullfillmentTitleDataItem.setUnShippedCount(totalItemCount - totalFulfilledCount);
+            fullfillmentTitleDataItem.setTotalCount(totalItemCount);
 
             finalDataList.add(fullfillmentTitleDataItem);
             finalDataList.add(new TopRowItem());

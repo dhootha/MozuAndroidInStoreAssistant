@@ -108,8 +108,8 @@
     <string name="tax_detail_overview">Tax:</string>
     <string name="direct_ship_header">Direct Ship Items</string>
     <string name="shipment_pending_total">Pending</string>
-    <string name="shipment_fulfilled_total">Fulfilled</string>
-    <string name="shipment_total">Total</string>
+    <string name="fulfilled_total">Fulfilled</string>
+    <string name="total">Total</string>
     <string name="title_activity_auth">AuthActivity</string>
     <string name="error_message_for_order_customer_name">N/A - Could Not Retreive</string>
     <string name="attributes_items_header">Attributes</string>
@@ -230,6 +230,18 @@
     <string name="no_order_history">No Order History Available</string>
     <string name="empty_wishlist_items">No Wishlist Items found</string>
     <string name="signout">Are you sure you want to sign out?</string>
+    <string name="order_date">Order Date</string>
+    <string name="customer">Customer</string>
+    <string name="order_total_header">Order Total</string>
+    <string name="order_status">Order Status</string>
+    <string name="attribute_delimiter">~</string>
+    <string name="not_internal_notes_available">No Internal Notes Available</string>
+    <string name="not_customer_notes_available">No Customer Notes Available</string>
+    <string name="instore_header">In-Store Pickup Items</string>
+    <string name="unshipped_header">Unshipped Items</string>
+    <string name="fullfilled_header">Fulfilled Items</string>
+    <string name="shipment_unshipped_total">Unshipped</string>
+    <string name="unfulfilled_total">Unfulfilled</string>
 
 
 </resources>
