@@ -9,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -213,8 +214,9 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
             mProductImagesLayout.addView(mMainImageView);
             int productImageMax =  getResources().getDimensionPixelSize(R.dimen.main_product_image_size);
             Picasso.with(this)
-                    .load(mImageUrlConverter.getFullImageUrl(mProduct.getContent().getProductImages().get(0).getImageUrl())).transform(new ProductDetailImageTransformation(isLandscape, productImageMax))
-                    .into(mMainImageView,new Callback() {
+                    .load(mImageUrlConverter.getFullImageUrl(mProduct.getContent().getProductImages().get(0).getImageUrl()))
+                    .transform(new ProductDetailImageTransformation(isLandscape, productImageMax))
+                    .into(mMainImageView, new Callback() {
                         @Override
                         public void onSuccess() {
                             mImageLoading.success();
@@ -269,13 +271,19 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
             final ImageView imageViewTop = new ImageView(this);
             LinearLayout.LayoutParams imageLayoutParams = new LinearLayout.LayoutParams(imagewidth, imageHeight);
             imageLayoutParams.setMargins(0, margin, margin, 0);
+
+            TextView textViewPositionOne = new TextView(this);
+            textViewPositionOne.setText(String.valueOf(firstImagePosition));
+            textViewPositionOne.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
+
             imageViewTop.setLayoutParams(imageLayoutParams);
             firstImageLayout.setOnClickListener(this);
+            firstImageLayout.addView(textViewPositionOne);
             firstImageLayout.addView(imageViewTop);
             layout.addView(firstImageLayout);
             Picasso.with(this)
                     .load(mImageUrlConverter.getFullImageUrl(mProduct.getContent().getProductImages().get(firstImagePosition).getImageUrl()))
-                    .resize(imagewidth,imageHeight)
+                    .resize(imagewidth, imageHeight)
                     .centerInside()
                     .into(imageViewTop, new Callback() {
 
@@ -295,14 +303,19 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
                 LinearLayout secondImageLayout = new LinearLayout(this);
                 final ImageView imageViewBottom = new ImageView(this);
                 imageViewBottom.setLayoutParams(imageLayoutParams);
+
+                TextView textViewPositionTwo = new TextView(this);
+                textViewPositionTwo.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
+                textViewPositionTwo.setText(String.valueOf(secondImagePosition));
                 secondImageLayout.setOnClickListener(this);
 
+                secondImageLayout.addView(textViewPositionTwo);
                 secondImageLayout.addView(imageViewBottom);
                 layout.addView(secondImageLayout);
 
                 Picasso.with(this)
                         .load(mImageUrlConverter.getFullImageUrl(mProduct.getContent().getProductImages().get(secondImagePosition).getImageUrl()))
-                        .resize(imagewidth,imageHeight)
+                        .resize(imagewidth, imageHeight)
                         .centerInside()
                         .into(imageViewBottom, new Callback() {
 
@@ -393,7 +406,7 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
 
                 Picasso.with(this)
                         .load(mImageUrlConverter.getFullImageUrl(mProduct.getContent().getProductImages().get(secondImagePosition).getImageUrl()))
-                        .resize(imagewidth,imageHeight)
+                        .resize(imagewidth, imageHeight)
                         .centerInside()
                         .into(imageViewBottom,new Callback() {
 
@@ -419,7 +432,6 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
             startImageViewPagerActivity(0, v);
         } else if (v instanceof LinearLayout) {
             LinearLayout layout = (LinearLayout) v;
-
             for (int i = 0; i < layout.getChildCount(); i++) {
                 if (layout.getChildAt(i) instanceof TextView) {
                     TextView positionText = (TextView) layout.getChildAt(i);
