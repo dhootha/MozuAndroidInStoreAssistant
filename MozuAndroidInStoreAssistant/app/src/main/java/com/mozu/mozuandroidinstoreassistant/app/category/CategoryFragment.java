@@ -134,6 +134,7 @@ public class CategoryFragment extends Fragment implements AdapterView.OnItemClic
         mListOfCategories.setDivider(null);
         mEmptyListMessageView.setVisibility(View.GONE);
         mCategoryPullToRefresh.setOnRefreshListener(this);
+        mCategoryPullToRefresh.setEnabled(false);
         mCategoryPullToRefresh.setColorScheme(R.color.first_color_swipe_refresh,
                 R.color.second_color_swipe_refresh,
                 R.color.third_color_swipe_refresh,

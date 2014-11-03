@@ -60,6 +60,14 @@ public class OrderDetailPaymentFragment extends Fragment {
         }
     }
 
+    private Double getTotalPayment(List<Payment> payments){
+        Double total = 0.0;
+        for(Payment payment:payments){
+            total += payment.getAmountCollected();
+        }
+        return total;
+    }
+
 
     private void setOrderToViews(View view) {
         ListView paymentList = (ListView) view.findViewById(R.id.payments_list);
@@ -86,8 +94,9 @@ public class OrderDetailPaymentFragment extends Fragment {
             status.setText("N/A");
         }
         orderTotal.setText(mNumberFormat.format(mOrder.getTotal()));
-        paymentsReceived.setText(mNumberFormat.format(mOrder.getTotal() - mOrder.getAmountRemainingForPayment()));
-        balance.setText(mNumberFormat.format(mOrder.getAmountRemainingForPayment()));
+        Double amountCollected = getTotalPayment(payments);
+        paymentsReceived.setText(mNumberFormat.format(amountCollected));
+        balance.setText(mNumberFormat.format(mOrder.getTotal() - amountCollected));
         paymentList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {

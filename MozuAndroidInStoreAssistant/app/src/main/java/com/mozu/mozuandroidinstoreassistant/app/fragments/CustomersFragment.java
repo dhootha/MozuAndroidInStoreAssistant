@@ -103,7 +103,7 @@ public class CustomersFragment extends Fragment implements LoaderManager.LoaderC
         View view = inflater.inflate(R.layout.fragment_customer, container, false);
 
         ButterKnife.inject(this, view);
-
+        mCustomerRefreshLayout.setEnabled(false);
         mCustomerRefreshLayout.setOnRefreshListener(this);
         mCustomerRefreshLayout.setColorScheme(R.color.first_color_swipe_refresh,
                 R.color.second_color_swipe_refresh,

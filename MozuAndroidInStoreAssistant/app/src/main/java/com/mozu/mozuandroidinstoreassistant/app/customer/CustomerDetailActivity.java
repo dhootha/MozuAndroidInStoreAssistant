@@ -83,6 +83,7 @@ public class CustomerDetailActivity extends BaseActivity implements SwipeRefresh
         getActionBar().setTitle("");
 
         mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setEnabled(false);
         mSwipeRefreshLayout.setColorScheme(R.color.first_color_swipe_refresh,
                 R.color.second_color_swipe_refresh,
                 R.color.third_color_swipe_refresh,

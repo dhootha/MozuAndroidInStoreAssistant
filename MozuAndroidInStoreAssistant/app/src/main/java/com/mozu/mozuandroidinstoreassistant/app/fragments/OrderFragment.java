@@ -110,8 +110,8 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
 
         View view = inflater.inflate(R.layout.fragment_order, container, false);
         ButterKnife.inject(this, view);
+        mOrderRefreshLayout.setEnabled(false);
         if (mLaunchFromGlobalSearch) {
-            mOrderRefreshLayout.setEnabled(false);
             setHasOptionsMenu(false);
             if (!TextUtils.isEmpty(mDefaultSearchQuery)) {
                 mOrdersHeaderLayout.setVisibility(View.VISIBLE);

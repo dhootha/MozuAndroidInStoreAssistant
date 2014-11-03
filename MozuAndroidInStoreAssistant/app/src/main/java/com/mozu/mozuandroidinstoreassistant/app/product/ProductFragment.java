@@ -124,6 +124,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
         ButterKnife.inject(this, fragmentView);
 
+        mPullToRefresh.setEnabled(false);
         mPullToRefresh.setOnRefreshListener(this);
         mPullToRefresh.setColorScheme(R.color.first_color_swipe_refresh,
                 R.color.second_color_swipe_refresh,

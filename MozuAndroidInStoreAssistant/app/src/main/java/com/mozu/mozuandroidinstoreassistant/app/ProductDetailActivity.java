@@ -135,7 +135,7 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
             getLoaderManager().initLoader(LOADER_PRODUCT_DETAIL, null, this);
         }
         mProductSwipeRefresh.setOnRefreshListener(this);
-        mProductSwipeRefresh.setEnabled(true);
+        mProductSwipeRefresh.setEnabled(false);
         mProductSwipeRefresh.setColorScheme(R.color.first_color_swipe_refresh,
                 R.color.second_color_swipe_refresh,
                 R.color.third_color_swipe_refresh,
