@@ -198,8 +198,6 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
         tv.setTypeface(null, Typeface.BOLD);
         tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
         getActionBar().setCustomView(tv);
-        //getActionBar().setTitle("Order #" + mOrder.getOrderNumber());
-
 
         android.text.format.DateFormat dateFormat = new android.text.format.DateFormat();
         String date = mOrder.getSubmittedDate() != null ? dateFormat.format("MM/dd/yy  hh:mm a", new Date(mOrder.getSubmittedDate().getMillis())).toString() : "";
