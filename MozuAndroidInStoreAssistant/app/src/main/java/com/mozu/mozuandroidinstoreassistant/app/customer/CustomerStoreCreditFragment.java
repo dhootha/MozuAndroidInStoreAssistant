@@ -28,7 +28,7 @@ public class CustomerStoreCreditFragment extends Fragment {
     private ListView mListView;
     private LoadingView mOrderLoading;
     private CustomerStoreCreditAdapter mAdapter;
-    private rx.Observable<List<Credit>> mOrderObservable;
+    private rx.Observable<List<Credit>> mCreditObservable;
     StoreCreditFetcher mCreditFetcher;
 
     public static CustomerStoreCreditFragment getInstance(CustomerAccount customerAccount){
@@ -45,7 +45,7 @@ public class CustomerStoreCreditFragment extends Fragment {
         mCustomerAccount = (CustomerAccount) getArguments().getSerializable(CUSTOMER_ACCOUNT);
         mCreditFetcher = new StoreCreditFetcher();
         UserAuthenticationStateMachine userState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
-        mOrderObservable = AndroidObservable.bindFragment(this, mCreditFetcher.getCreditsByCustomerId(userState.getTenantId(), userState.getSiteId()));
+        mCreditObservable = AndroidObservable.bindFragment(this, mCreditFetcher.getCreditsByCustomerId(userState.getTenantId(), userState.getSiteId()));
     }
 
     @Override
@@ -67,7 +67,7 @@ public class CustomerStoreCreditFragment extends Fragment {
 
     private void loadData(){
         mCreditFetcher.setCustomerId(mCustomerAccount.getId());
-        mOrderObservable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new CreditSubscriber());
+        mCreditObservable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new CreditSubscriber());
     }
 
     private class CreditSubscriber implements rx.Observer<List<Credit>> {

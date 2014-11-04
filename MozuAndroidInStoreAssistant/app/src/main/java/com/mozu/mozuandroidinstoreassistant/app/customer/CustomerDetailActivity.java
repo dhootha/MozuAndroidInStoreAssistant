@@ -13,8 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mozu.api.contracts.customer.CustomerAccount;
+import com.mozu.api.contracts.customer.credit.Credit;
 import com.mozu.mozuandroidinstoreassistant.app.BaseActivity;
-import com.mozu.mozuandroidinstoreassistant.app.LoginActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
@@ -23,6 +23,8 @@ import com.mozu.mozuandroidinstoreassistant.app.utils.DateUtils;
 import com.viewpagerindicator.TabPageIndicator;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -55,8 +57,11 @@ public class CustomerDetailActivity extends BaseActivity implements SwipeRefresh
     private Integer mViewPagerPos;
 
     private rx.Observable<CustomerAccount> mCustomerObservable;
+    private rx.Observable<List<Credit>> mCreditObservable;
+
     private CustomerAccountFetcher mCustomerAccountFetcher;
     private final String CUSTOMER_SETTINGS_FRAGMENT = "Customer_Settings_Fragment";
+    StoreCreditFetcher mCreditFetcher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +79,8 @@ public class CustomerDetailActivity extends BaseActivity implements SwipeRefresh
         UserAuthenticationStateMachine userState = UserAuthenticationStateMachineProducer.getInstance(this);
         mCustomerAccountFetcher = new CustomerAccountFetcher();
         mCustomerObservable = AndroidObservable.bindActivity(this, mCustomerAccountFetcher.getCustomerAccount(userState.getTenantId(), userState.getSiteId()));
+        mCreditFetcher = new StoreCreditFetcher();
+        mCreditObservable = AndroidObservable.bindActivity(this, mCreditFetcher.getCreditsByCustomerId(userState.getTenantId(), userState.getSiteId()));
         setContentView(mView);
         ButterKnife.inject(this);
 
@@ -101,11 +108,46 @@ public class CustomerDetailActivity extends BaseActivity implements SwipeRefresh
         savedInstanceState.putSerializable(CUSTOMER_ACCOUNT, mCustomerAccount);
         super.onSaveInstanceState(savedInstanceState);
     }
+    private void loadCustomerStoreCredits(CustomerAccount customerAccount){
+        mCreditFetcher.setCustomerId(customerAccount.getId());
+        mCreditObservable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new CreditSubscriber());
+    }
+    private class CreditSubscriber implements rx.Observer<List<Credit>> {
+        List<Credit> mCreditList = new ArrayList<Credit>();
+        @Override
+        public void onCompleted() {
+            if (mCreditList.size() > 0) {
+                Double TotalCredit = 0.0;
+                for (Credit credit : mCreditList) {
+                    TotalCredit += credit.getCurrentBalance();
+                }
+                mCustomerStoreCredits.setText(NumberFormat.getCurrencyInstance().format(TotalCredit));
+            } else {
+                mCustomerStoreCredits.setText(getResources().getString(R.string.not_available));
+            }
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            mCustomerStoreCredits.setText(getResources().getString(R.string.not_available));
+        }
+
+        @Override
+        public void onNext(List<Credit> creditList) {
+            mCreditList = creditList;
+
+        }
+    }
 
     public void setUpViews(CustomerAccount customerAccount) {
-        mCustomerFragmentAdapter = new CustomerFragmentAdapter(getFragmentManager(), customerAccount);
-        mCustomerViewPager.setAdapter(mCustomerFragmentAdapter);
-        mTabPageIndicator.setViewPager(mCustomerViewPager);
+        if (mCustomerFragmentAdapter == null) {
+            mCustomerFragmentAdapter = new CustomerFragmentAdapter(getFragmentManager(), customerAccount);
+            mCustomerViewPager.setAdapter(mCustomerFragmentAdapter);
+            mTabPageIndicator.setViewPager(mCustomerViewPager);
+        } else {
+            mCustomerFragmentAdapter.setData(customerAccount);
+            mCustomerFragmentAdapter.notifyDataSetChanged();
+        }
         if (mViewPagerPos != null) {
             mCustomerViewPager.setCurrentItem(mViewPagerPos);
         }
@@ -136,8 +178,7 @@ public class CustomerDetailActivity extends BaseActivity implements SwipeRefresh
             mCustomerFulfilledValue.setText(getResources().getString(R.string.not_available));
         }
 
-        //TODO: ;figure out a way to find this
-        mCustomerStoreCredits.setText(getResources().getString(R.string.not_available));
+        loadCustomerStoreCredits(customerAccount);
 
     }
 
@@ -191,7 +232,6 @@ public class CustomerDetailActivity extends BaseActivity implements SwipeRefresh
 
     @Override
     public void onRefresh() {
-        mCustomerViewPager.setCurrentItem(0);
         loadData();
     }
 

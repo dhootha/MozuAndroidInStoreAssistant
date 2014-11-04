@@ -12,7 +12,7 @@ import rx.Subscriber;
 
 public class StoreCreditFetcher {
     private static final String CUSTOMER_ID_FILTER_BY = "customerId eq ";
-    private final int MAX_PAGE_COUNT = 50;
+    private final int MAX_PAGE_COUNT = 200;
     private Integer mCustomerId;
     public Observable<List<Credit>> getCreditsByCustomerId(Integer tenantId, Integer siteId) {
         final CreditResource creditResource = new CreditResource(new MozuApiContext(tenantId, siteId));
@@ -37,7 +37,6 @@ public class StoreCreditFetcher {
 
     public void setCustomerId(Integer customerId){
         mCustomerId = customerId;
-
     }
 
 }

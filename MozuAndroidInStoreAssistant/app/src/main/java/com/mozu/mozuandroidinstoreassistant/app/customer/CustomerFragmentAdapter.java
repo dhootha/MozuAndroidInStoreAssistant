@@ -24,7 +24,14 @@ public class CustomerFragmentAdapter extends FragmentStatePagerAdapter {
         super(manager);
         mCustomer = customer;
     }
+    @Override
+    public int getItemPosition(Object object) {
+        return POSITION_NONE;
+    }
 
+    public void setData(CustomerAccount customer){
+        mCustomer = customer;
+    }
     @Override
     public int getCount() {
        return TabTypes.values().length;

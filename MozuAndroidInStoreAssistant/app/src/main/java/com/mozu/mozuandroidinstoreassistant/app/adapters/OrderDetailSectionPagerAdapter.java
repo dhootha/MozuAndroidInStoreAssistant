@@ -28,17 +28,21 @@ public class OrderDetailSectionPagerAdapter extends FragmentStatePagerAdapter {
     private int mTenantId;
     private int mSiteId;
 
-    public OrderDetailSectionPagerAdapter(FragmentManager manager, Order product, List<String> pageTitles, int tenantId, int siteId) {
+    public OrderDetailSectionPagerAdapter(FragmentManager manager, Order order, List<String> pageTitles, int tenantId, int siteId) {
         super(manager);
-        mOrder = product;
+        mOrder = order;
         mPageTitles = pageTitles;
         mTenantId = tenantId;
         mSiteId = siteId;
     }
 
     @Override
-    public int getCount() {
+    public int getItemPosition(Object object) {
+        return POSITION_NONE;
+    }
 
+    @Override
+    public int getCount() {
         return NUM_OF_ORDER_DETAIL_TABS;
     }
 
@@ -85,4 +89,7 @@ public class OrderDetailSectionPagerAdapter extends FragmentStatePagerAdapter {
         return null;
     }
 
+    public void setData(Order order) {
+        mOrder = order;
+    }
 }

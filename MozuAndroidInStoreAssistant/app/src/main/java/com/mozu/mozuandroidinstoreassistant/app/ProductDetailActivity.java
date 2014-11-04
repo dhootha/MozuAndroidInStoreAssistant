@@ -84,6 +84,8 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
 
     @InjectView(R.id.image_loading) LoadingView mImageLoading;
 
+    private ProductDetailSectionPagerAdapter mAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -243,9 +245,14 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
             mProductName.setText(mProduct.getContent().getProductName());
         }
 
-        ProductDetailSectionPagerAdapter adapter = new ProductDetailSectionPagerAdapter(getFragmentManager(), mProduct, mTitles, mTenantId, mSiteId);
-        mProductSectionViewPager.setAdapter(adapter);
-        mTabIndicator.setViewPager(mProductSectionViewPager);
+        if (mAdapter == null) {
+            mAdapter = new ProductDetailSectionPagerAdapter(getFragmentManager(), mProduct, mTitles, mTenantId, mSiteId);
+            mProductSectionViewPager.setAdapter(mAdapter);
+            mTabIndicator.setViewPager(mProductSectionViewPager);
+        } else {
+            mAdapter.setData(mProduct);
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -476,7 +483,6 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
     @Override
     public void onRefresh() {
         mProductSwipeRefresh.setRefreshing(true);
-        mProductSectionViewPager.setCurrentItem(0);
         Loader productLoader = getLoaderManager().getLoader(LOADER_PRODUCT_DETAIL);
         productLoader.reset();
         productLoader.startLoading();

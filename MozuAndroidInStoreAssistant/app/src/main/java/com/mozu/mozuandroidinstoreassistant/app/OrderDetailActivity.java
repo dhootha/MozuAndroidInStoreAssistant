@@ -59,6 +59,7 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
     private List<String> mTitles;
 
     private NumberFormat mNumberFormat;
+    private OrderDetailSectionPagerAdapter mAdapter;
 
     @InjectView(R.id.order_detail_container) SwipeRefreshLayout mOrderSwipeRefresh;
     private final String ORDER_SETTINGS_FRAGMENT = "Order_Settings_Fragment";
@@ -162,7 +163,6 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
 
     @Override
     public void onRefresh() {
-        mOrderViewPager.setCurrentItem(0);
         Loader orderLoader = getLoaderManager().getLoader(LOADER_ORDER_DETAIL);
         orderLoader.reset();
         orderLoader.startLoading();
@@ -208,10 +208,14 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
 
         mOrderTotal.setText(mNumberFormat.format(mOrder.getTotal() != null ? mOrder.getTotal() : 0));
 
-        OrderDetailSectionPagerAdapter adapter = new OrderDetailSectionPagerAdapter(getFragmentManager(), mOrder, mTitles, mTenantId, mSiteId);
-        mOrderViewPager.setAdapter(adapter);
-        mTabIndicator.setViewPager(mOrderViewPager);
-        adapter.notifyDataSetChanged();
+        if (mAdapter == null) {
+            mAdapter = new OrderDetailSectionPagerAdapter(getFragmentManager(), mOrder, mTitles, mTenantId, mSiteId);
+            mOrderViewPager.setAdapter(mAdapter);
+            mTabIndicator.setViewPager(mOrderViewPager);
+        } else {
+            mAdapter.setData(mOrder);
+            mAdapter.notifyDataSetChanged();
+        }
 
     }
 

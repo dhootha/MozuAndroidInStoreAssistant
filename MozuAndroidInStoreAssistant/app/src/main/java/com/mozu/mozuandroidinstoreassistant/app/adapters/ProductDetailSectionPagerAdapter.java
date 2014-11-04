@@ -28,18 +28,23 @@ public class ProductDetailSectionPagerAdapter extends FragmentStatePagerAdapter 
 
     public ProductDetailSectionPagerAdapter(FragmentManager manager, Product product, List<String> pageTitles, int tenantId, int siteId) {
         super(manager);
-
         mProduct = product;
         mPageTitles = pageTitles;
-
         mTenantId = tenantId;
         mSiteId = siteId;
     }
 
+    public void setData(Product product){
+        mProduct = product;
+    }
+
     @Override
     public int getCount() {
-
         return NUM_OF_PRODUCT_DETAIL_TABS;
+    }
+    @Override
+    public int getItemPosition(Object object) {
+     return POSITION_NONE;
     }
 
     @Override

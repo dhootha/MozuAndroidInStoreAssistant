@@ -47,6 +47,11 @@ public class ProductOptionsLayout extends LinearLayout {
 
     public void setSpinnerOptions(List<ProductOptionValue> productOptions){
         SpinnerAdapter spinnerAdapter = new SpinnerAdapter(getContext(),R.layout.productoption_spinner_item,R.id.product_option_name,productOptions);
+        if (productOptions.size() > 1) {
+            mSpinner.setClickable(true);
+        } else {
+            mSpinner.setClickable(false);
+        }
         mSpinner.setAdapter(spinnerAdapter);
     }
 
