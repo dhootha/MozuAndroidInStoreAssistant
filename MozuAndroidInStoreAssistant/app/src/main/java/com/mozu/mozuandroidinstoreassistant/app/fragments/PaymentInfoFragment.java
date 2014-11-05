@@ -142,40 +142,46 @@ public class PaymentInfoFragment extends DialogFragment {
         StringBuilder str = new StringBuilder();
         str.append(billingContact.getFirstName()+" "+billingContact.getLastNameOrSurname());
         str.append(lineSeparator);
-        str.append(address.getAddress1());
-        str.append(lineSeparator);
-        if (!TextUtils.isEmpty(address.getAddress2())) {
-            str.append(address.getAddress2());
+        if(address != null) {
+            str.append(address.getAddress1());
             str.append(lineSeparator);
-        }
-        if (!TextUtils.isEmpty(address.getAddress3())) {
-            str.append(address.getAddress3());
-            str.append(lineSeparator);
-        }
-        if (!TextUtils.isEmpty(address.getAddress4())) {
-            str.append(address.getAddress4());
-            str.append(lineSeparator);
-        }
+            if (!TextUtils.isEmpty(address.getAddress2())) {
+                str.append(address.getAddress2());
+                str.append(lineSeparator);
+            }
+            if (!TextUtils.isEmpty(address.getAddress3())) {
+                str.append(address.getAddress3());
+                str.append(lineSeparator);
+            }
+            if (!TextUtils.isEmpty(address.getAddress4())) {
+                str.append(address.getAddress4());
+                str.append(lineSeparator);
+            }
 
-        str.append(address.getCityOrTown().trim());
-        str.append(",");
-        str.append(address.getStateOrProvince());
-        str.append(" ");
-        str.append(address.getPostalOrZipCode());
-        str.append(lineSeparator);
-        str.append(address.getCountryCode());
-        str.append(lineSeparator);
+            str.append(address.getCityOrTown().trim());
+            str.append(",");
+            str.append(address.getStateOrProvince());
+            str.append(" ");
+            str.append(address.getPostalOrZipCode());
+            str.append(lineSeparator);
+            str.append(address.getCountryCode());
+            str.append(lineSeparator);
+        }else{
+            str.append(getString(R.string.not_available));
+        }
 
         String phone;
-        if ((phone = payment.getBillingInfo().getBillingContact().getPhoneNumbers().getWork()) != null) {
-            str.append(phone);
-            str.append(lineSeparator);
-        } else if ((phone = payment.getBillingInfo().getBillingContact().getPhoneNumbers().getMobile()) != null) {
-            str.append(phone);
-            str.append(lineSeparator);
-        } else if ((phone = payment.getBillingInfo().getBillingContact().getPhoneNumbers().getHome()) != null) {
-            str.append(phone);
-            str.append(lineSeparator);
+        if (billingContact != null && billingContact.getPhoneNumbers() != null) {
+            if ((phone = billingContact.getPhoneNumbers().getWork()) != null) {
+                str.append(phone);
+                str.append(lineSeparator);
+            } else if ((phone = billingContact.getPhoneNumbers().getMobile()) != null) {
+                str.append(phone);
+                str.append(lineSeparator);
+            } else if ((phone = billingContact.getPhoneNumbers().getHome()) != null) {
+                str.append(phone);
+                str.append(lineSeparator);
+            }
         }
         return str.toString();
     }

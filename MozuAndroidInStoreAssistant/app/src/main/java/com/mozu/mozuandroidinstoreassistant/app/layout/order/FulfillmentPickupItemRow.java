@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.mozu.api.contracts.commerceruntime.fulfillment.PickupItem;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.data.IData;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentDataItem;
@@ -32,7 +33,13 @@ public class FulfillmentPickupItemRow extends LinearLayout implements IRowLayout
         if (data instanceof FullfillmentPickupItem) {
             FullfillmentPickupItem fullfillmentDataPickUpItem = (FullfillmentPickupItem) data;
             mPickUpNameText.setText(getContext().getResources().getString(R.string.fulfillment_pickup_number)+String.valueOf(fullfillmentDataPickUpItem.getmPickupCount()));
-            mItemCountText.setText(String.valueOf(fullfillmentDataPickUpItem.getPickup().getItems().size())+ " " + getContext().getString(R.string.fulfillment_items_label));
+
+            int totalItemCount = 0;
+            for (PickupItem item : fullfillmentDataPickUpItem.getPickup().getItems()) {
+                totalItemCount += item.getQuantity();
+            }
+
+            mItemCountText.setText(String.valueOf(totalItemCount)+ " " + getContext().getString(R.string.fulfillment_items_label));
         }
 
     }

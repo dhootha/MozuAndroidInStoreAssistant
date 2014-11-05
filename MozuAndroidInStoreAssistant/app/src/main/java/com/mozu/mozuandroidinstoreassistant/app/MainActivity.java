@@ -19,6 +19,7 @@ import com.mozu.api.contracts.productruntime.Category;
 import com.mozu.mozuandroidinstoreassistant.app.customer.CustomerDetailActivity;
 import com.mozu.mozuandroidinstoreassistant.app.category.CategoryFragment;
 import com.mozu.mozuandroidinstoreassistant.app.category.CategoryFragmentListener;
+import com.mozu.mozuandroidinstoreassistant.app.fragments.CategoryProductFragment;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.CustomerListener;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.CustomersFragment;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.OrderFragment;
@@ -470,7 +471,7 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
     }
 
     private void addChildCategoryFragment(Category category) {
-        CategoryFragment categoryFragment = CategoryFragment.getInstance(category);
+        CategoryProductFragment categoryFragment = CategoryProductFragment.getInstance(category);
         addMainFragment(categoryFragment, true);
     }
 
