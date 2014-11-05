@@ -7,7 +7,7 @@
     android:layout_height="64dp"
     android:gravity="center_vertical"
     android:background="@color/semi_white_background"
-    android:minHeight="100dp">
+    android:minHeight="64dp">
 
     <com.mozu.mozuandroidinstoreassistant.app.views.LoadingView
         android:id="@+id/product_loading"

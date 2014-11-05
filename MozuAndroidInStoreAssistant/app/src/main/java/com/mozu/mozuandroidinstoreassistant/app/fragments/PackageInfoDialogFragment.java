@@ -1,6 +1,7 @@
 package com.mozu.mozuandroidinstoreassistant.app.fragments;
 
 import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -8,17 +9,23 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mozu.api.contracts.commerceruntime.fulfillment.Package;
+import com.mozu.api.contracts.commerceruntime.fulfillment.PackageItem;
 import com.mozu.api.contracts.core.Address;
 import com.mozu.api.contracts.core.Contact;
+import com.mozu.mozuandroidinstoreassistant.app.ProductDetailActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.OrderDetailPackageItemAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.models.FulfillmentItem;
+import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
+import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
+import com.mozu.mozuandroidinstoreassistant.app.utils.ProductUtils;
 import com.mozu.mozuandroidinstoreassistant.app.utils.ShipperUtils;
 
 import java.util.Date;
@@ -61,6 +68,20 @@ public class PackageInfoDialogFragment extends DialogFragment {
         if (mFulfillmentItem != null) {
             setFulfillmentItemViews();
         }
+        mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                PackageItem item = (PackageItem) adapterView.getItemAtPosition(position);
+                String productCode = ProductUtils.getPackageorPickupProductCode(item.getProductCode());
+                Intent intent = new Intent(getActivity(), ProductDetailActivity.class);
+                UserAuthenticationStateMachine userAuthenticationStateMachine = UserAuthenticationStateMachineProducer.getInstance(getActivity());
+                intent.putExtra(ProductDetailActivity.PRODUCT_CODE_EXTRA_KEY, productCode);
+                intent.putExtra(ProductDetailActivity.CURRENT_TENANT_ID, userAuthenticationStateMachine.getTenantId());
+                intent.putExtra(ProductDetailActivity.CURRENT_SITE_ID, userAuthenticationStateMachine.getSiteId());
+                startActivity(intent);
+
+            }
+        });
 
         return view;
     }
@@ -138,11 +159,9 @@ public class PackageInfoDialogFragment extends DialogFragment {
     }
 
     private void setPackageItems() {
-
         if (mFulfillmentItem.getOrderPackage() == null || mFulfillmentItem.getOrderPackage().getItems() == null || mFulfillmentItem.getOrderPackage().getItems().size() < 1) {
             return;
         }
-
         OrderDetailPackageItemAdapter adapter = new OrderDetailPackageItemAdapter(getActivity(), mFulfillmentItem.getOrderPackage().getItems(), mTenantId, mSiteId);
 
         mList.setAdapter(adapter);

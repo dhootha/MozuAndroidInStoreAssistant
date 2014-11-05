@@ -1,17 +1,24 @@
 package com.mozu.mozuandroidinstoreassistant.app.fragments;
 
 import android.app.DialogFragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.mozu.api.contracts.commerceruntime.fulfillment.Pickup;
+import com.mozu.api.contracts.commerceruntime.fulfillment.PickupItem;
+import com.mozu.mozuandroidinstoreassistant.app.ProductDetailActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.OrderDetailPickupItemAdapter;
+import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
+import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
+import com.mozu.mozuandroidinstoreassistant.app.utils.ProductUtils;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -83,6 +90,20 @@ public class PickupInfoDialogFragment extends DialogFragment {
         OrderDetailPickupItemAdapter adapter = new OrderDetailPickupItemAdapter(getActivity(), mPickup.getItems(), mTenantId, mSiteId);
 
         mList.setAdapter(adapter);
+        mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                PickupItem item = (PickupItem) adapterView.getItemAtPosition(position);
+                String productCode = ProductUtils.getPackageorPickupProductCode(item.getProductCode());
+                Intent intent = new Intent(getActivity(), ProductDetailActivity.class);
+                UserAuthenticationStateMachine userAuthenticationStateMachine = UserAuthenticationStateMachineProducer.getInstance(getActivity());
+                intent.putExtra(ProductDetailActivity.PRODUCT_CODE_EXTRA_KEY, productCode);
+                intent.putExtra(ProductDetailActivity.CURRENT_TENANT_ID, userAuthenticationStateMachine.getTenantId());
+                intent.putExtra(ProductDetailActivity.CURRENT_SITE_ID, userAuthenticationStateMachine.getSiteId());
+                startActivity(intent);
+
+            }
+        });
 
     }
 

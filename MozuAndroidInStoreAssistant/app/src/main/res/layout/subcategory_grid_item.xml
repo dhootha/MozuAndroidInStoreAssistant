@@ -47,14 +47,13 @@
             <TextView
                 android:layout_centerVertical="true"
                 android:paddingTop="10dp"
-                android:paddingBottom="6dp"
                 android:paddingRight="16dp"
                 android:paddingLeft="16dp"
                 android:id="@+id/category_name"
                 android:layout_width="wrap_content"
-                android:layout_height="46dp"
+                android:layout_height="match_parent"
                 android:textSize="18sp"
-                android:maxLines="1"
+                android:maxLines="2"
                 android:ellipsize="end"
                 android:textColor="@android:color/black" />
         </RelativeLayout>

@@ -7,7 +7,7 @@
     android:layout_height="64dp"
     android:gravity="center_vertical"
     android:background="@color/semi_white_background"
-    android:minHeight="100dp">
+    android:minHeight="64dp">
 
     <com.mozu.mozuandroidinstoreassistant.app.views.LoadingView
         android:id="@+id/category_loading"
@@ -31,7 +31,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight=".18"
+        android:layout_weight=".9"
         android:orientation="horizontal"
         android:gravity="left|center_vertical">
 
@@ -42,68 +42,6 @@
             android:layout_height="wrap_content"
             android:textColor="@color/dark_gray_text" />
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.38"
-        android:visibility="invisible"
-        android:orientation="horizontal"
-        android:gravity="left|center_vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:textColor="@android:color/black" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight=".13"
-        android:visibility="invisible"
-        android:orientation="horizontal"
-        android:gravity="right|center_vertical">
-
-        <TextView
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:textColor="@android:color/darker_gray" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"
-        android:layout_weight=".13"
-        android:orientation="horizontal"
-        android:gravity="right|center_vertical">
-
-        <TextView
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:textStyle="bold"
-            android:textColor="@color/mozu_color" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:visibility="invisible"
-        android:layout_height="wrap_content"
-        android:layout_weight=".08"
-        android:orientation="horizontal"
-        android:gravity="right|center_vertical">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            android:src="@drawable/mozu_btn_inventory" />
     </LinearLayout>
 
 </LinearLayout>
