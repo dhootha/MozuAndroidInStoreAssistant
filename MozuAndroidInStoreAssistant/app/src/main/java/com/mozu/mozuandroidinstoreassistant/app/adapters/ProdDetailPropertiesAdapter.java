@@ -17,8 +17,9 @@ public class ProdDetailPropertiesAdapter extends ArrayAdapter<ProductProperty> {
 
     public ProdDetailPropertiesAdapter(Context context, List<ProductProperty> properties) {
         super(context, R.layout.prod_detail_properties_item);
-
-        addAll(properties);
+        if (properties != null) {
+            addAll(properties);
+        }
     }
 
     @Override

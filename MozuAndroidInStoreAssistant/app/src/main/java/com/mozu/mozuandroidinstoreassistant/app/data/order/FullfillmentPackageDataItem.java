@@ -1,5 +1,6 @@
 package com.mozu.mozuandroidinstoreassistant.app.data.order;
 
+import com.mozu.api.contracts.commerceruntime.fulfillment.PackageItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.IData;
 import com.mozu.mozuandroidinstoreassistant.app.models.FulfillmentItem;
 
@@ -15,7 +16,16 @@ public class FullfillmentPackageDataItem implements IData {
     }
 
     public Integer getPackageCount() {
-        return mFulfillmentItem.getOrderPackage().getItems().size();
+        if (mFulfillmentItem.getOrderPackage() == null || mFulfillmentItem.getOrderPackage().getItems() == null || mFulfillmentItem.getOrderPackage().getItems().size() <= 0) {
+            return 0;
+        }
+
+        int totalItemsCount = 0;
+        for(PackageItem item:mFulfillmentItem.getOrderPackage().getItems()){
+            totalItemsCount += item.getQuantity();
+        }
+
+        return totalItemsCount;
     }
 
 

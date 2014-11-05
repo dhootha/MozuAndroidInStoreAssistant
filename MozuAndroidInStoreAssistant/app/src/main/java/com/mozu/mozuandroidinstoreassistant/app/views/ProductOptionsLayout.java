@@ -18,6 +18,7 @@ public class ProductOptionsLayout extends LinearLayout {
 
     private TextView mTitle;
     private Spinner mSpinner;
+    private TextView mValue;
     public ProductOptionsLayout(Context context) {
         super(context);
         initViews(context);
@@ -28,9 +29,11 @@ public class ProductOptionsLayout extends LinearLayout {
         setOrientation(LinearLayout.VERTICAL);
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        inflater.inflate(R.layout.product_option, this, true);
-        mTitle = (TextView) getChildAt(0);
-        mSpinner = (Spinner)getChildAt(1);
+        View v = inflater.inflate(R.layout.product_option, this, true);
+        mTitle = (TextView) v.findViewById(R.id.product_option_label);
+        mSpinner = (Spinner) v.findViewById(R.id.product_option_spinner);
+        mValue = (TextView) v.findViewById(R.id.product_option_name);
+
     }
 
     @Override
@@ -48,9 +51,14 @@ public class ProductOptionsLayout extends LinearLayout {
     public void setSpinnerOptions(List<ProductOptionValue> productOptions){
         SpinnerAdapter spinnerAdapter = new SpinnerAdapter(getContext(),R.layout.productoption_spinner_item,R.id.product_option_name,productOptions);
         if (productOptions.size() > 1) {
+            mValue.setVisibility(View.GONE);
+            mSpinner.setVisibility(View.VISIBLE);
             mSpinner.setClickable(true);
         } else {
+            mSpinner.setVisibility(View.GONE);
+            mValue.setVisibility(View.VISIBLE);
             mSpinner.setClickable(false);
+            mValue.setText(productOptions.get(0).getStringValue());
         }
         mSpinner.setAdapter(spinnerAdapter);
     }

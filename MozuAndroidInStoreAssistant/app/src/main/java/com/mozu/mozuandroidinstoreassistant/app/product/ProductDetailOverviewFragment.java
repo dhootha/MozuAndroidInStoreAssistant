@@ -97,19 +97,18 @@ public class ProductDetailOverviewFragment extends Fragment {
 
         upc.setText(getUPC(mProduct));
         pn.setText(getPartNumber(mProduct));
-        distrpn.setText("N/A");
+        distrpn.setText(getString(R.string.not_available));
         taxable.setText(mProduct.getIsTaxable() != null && mProduct.getIsTaxable() ? getString(R.string.yes) : getString(R.string.no));
         recurring.setText(mProduct.getIsRecurring() != null && mProduct.getIsRecurring() ? getString(R.string.yes) : getString(R.string.no));
         if (mProduct.getOptions() != null && !mProduct.getOptions().isEmpty()) {
             LinearLayout layout = (LinearLayout) view.findViewById(R.id.options_layout);
             layout.setVisibility(View.VISIBLE);
-            for(ProductOption option: mProduct.getOptions()){
+            for (ProductOption option : mProduct.getOptions()) {
                 ProductOptionsLayout optionsLayout = new ProductOptionsLayout(getActivity());
                 optionsLayout.setTitle(option.getAttributeDetail().getName());
                 optionsLayout.setSpinnerOptions(option.getValues());
                 layout.addView(optionsLayout);
             }
-
         }
 
     }
