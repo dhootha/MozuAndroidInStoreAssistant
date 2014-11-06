@@ -199,7 +199,7 @@
 
             <TextView
                 android:textStyle="bold"
-                android:textSize="40dp"
+                android:textSize="25dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/payment_amount" />
