@@ -61,6 +61,8 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/order_number_header_layout"
+            android:clickable="true"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
@@ -86,6 +88,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/order_date_header_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="3.5"
@@ -113,6 +116,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/order_email_header_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="6"
@@ -139,6 +143,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/order_status_header_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
@@ -165,6 +170,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/order_total_header_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"

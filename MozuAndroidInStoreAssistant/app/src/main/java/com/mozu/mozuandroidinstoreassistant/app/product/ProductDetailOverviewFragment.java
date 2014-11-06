@@ -229,7 +229,8 @@ public class ProductDetailOverviewFragment extends Fragment {
             return new SpannableString("N/A");
         }
 
-        String desc = mProduct.getContent().getProductFullDescription();
+        String htmlString = mProduct.getContent().getProductFullDescription();
+        String desc = htmlString.replaceAll("<img.+?>", "");
         String buttonText;
         ClickableSpan clickableSpan;
         SpannableString spannableString;

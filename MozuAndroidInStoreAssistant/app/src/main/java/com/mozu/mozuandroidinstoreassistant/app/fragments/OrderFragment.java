@@ -73,6 +73,12 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
     @InjectView(R.id.order_status_header) TextView mOrderStatusHeader;
     @InjectView(R.id.order_total_header) TextView mOrderTotalHeader;
 
+    @InjectView(R.id.order_number_header_layout) LinearLayout mOrderNumberHeaderLayout;
+    @InjectView(R.id.order_date_header_layout) LinearLayout mOrderDateHeaderLayout;
+    @InjectView(R.id.order_email_header_layout) LinearLayout mOrderEmailHeaderLayout;
+    @InjectView(R.id.order_status_header_layout) LinearLayout mOrderStatusHeaderLayout;
+    @InjectView(R.id.order_total_header_layout) LinearLayout mOrderTotalHeaderLayout;
+
     @InjectView(R.id.order_number_header_sort_image) ImageView mOrderNumberHeaderSortImage;
     @InjectView(R.id.order_date_header_sort_image) ImageView mOrderDateHeaderSortImage;
     @InjectView(R.id.order_email_header_sort_image) ImageView mOrderEmailHeaderSortImage;
@@ -406,7 +412,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         mListener = listener;
     }
 
-    @OnClick({R.id.order_number_header, R.id.order_date_header, R.id.order_email_header,R.id.order_status_header,R.id.order_total_header})
+    @OnClick({R.id.order_number_header_layout, R.id.order_date_header_layout, R.id.order_email_header_layout,R.id.order_status_header_layout,R.id.order_total_header_layout})
     public void determineSortActionForView(View v) {
 
         setTextViewNormalStyle(mOrderNumberHeader);
@@ -422,7 +428,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         mOrderTotalHeaderSortImage.setVisibility(View.GONE);
 
 
-        if (v.getId() == mOrderNumberHeader.getId()) {
+        if (v.getId() == mOrderNumberHeaderLayout.getId()) {
             getOrdersLoader().orderByNumber();
             setTextViewBoldStyle(mOrderNumberHeader);
             mResourceOfCurrentSelectedColumn = mOrderNumberHeader.getId();
@@ -435,7 +441,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
             }
 
             mOrderNumberHeaderSortImage.setVisibility(View.VISIBLE);
-        } else if (v.getId() == mOrderDateHeader.getId()) {
+        } else if (v.getId() == mOrderDateHeaderLayout.getId()) {
             getOrdersLoader().orderByDate();
             setTextViewBoldStyle(mOrderDateHeader);
             mResourceOfCurrentSelectedColumn = mOrderDateHeader.getId();
@@ -448,12 +454,12 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
                 mCurrentSortIsAsc = false;
                 mOrderDateHeaderSortImage.setImageResource(R.drawable.icon_sort_down);
             }
-        } else if (v.getId() == mOrderEmailHeader.getId()) {
+        } else if (v.getId() == mOrderEmailHeaderLayout.getId()) {
             //TODO: NOT CURRENTLY A WAY TO SORT BY EMAIL
             //            getOrdersLoader().orderByEmail();
             //            clearSearchReload();
             return;
-        } else if (v.getId() == mOrderStatusHeader.getId()) {
+        } else if (v.getId() == mOrderStatusHeaderLayout.getId()) {
             getOrdersLoader().orderByStatus();
             setTextViewBoldStyle(mOrderStatusHeader);
             mResourceOfCurrentSelectedColumn = mOrderStatusHeader.getId();
@@ -465,7 +471,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
                 mCurrentSortIsAsc = false;
                 mOrderStatusHeaderSortImage.setImageResource(R.drawable.icon_sort_down);
             }
-        } else if (v.getId() == mOrderTotalHeader.getId()) {
+        } else if (v.getId() == mOrderTotalHeaderLayout.getId()) {
             getOrdersLoader().orderByTotal();
             setTextViewBoldStyle(mOrderTotalHeader);
             mResourceOfCurrentSelectedColumn = mOrderTotalHeader.getId();
