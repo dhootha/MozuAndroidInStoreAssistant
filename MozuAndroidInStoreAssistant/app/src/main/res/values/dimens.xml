@@ -41,6 +41,8 @@
     <dimen name="order_margin_right_total">60dp</dimen>
     <dimen name="order_margin_left_total">60dp</dimen>
 
+    <dimen name="order_tab_margin_left_total">40dp</dimen>
+
     <dimen name="order_margin_right">40dp</dimen>
     <dimen name="order_margin_left">40dp</dimen>
     <dimen name="order_sub_margin_right">20dp</dimen>
@@ -53,6 +55,7 @@
     <dimen name="product_grid_vertical_spacing">16dp</dimen>
     <dimen name="order_header_margin">8dp</dimen>
     <dimen name="inventory_dialog_padding">32dp</dimen>
+    <dimen name="order_title_margin_right">48dp</dimen>
 
 
 </resources>

@@ -17,6 +17,8 @@ import com.mozu.api.contracts.commerceruntime.fulfillment.PickupItem;
 import com.mozu.api.contracts.commerceruntime.fulfillment.Shipment;
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.commerceruntime.orders.OrderItem;
+import com.mozu.mozuandroidinstoreassistant.app.MainActivity;
+import com.mozu.mozuandroidinstoreassistant.app.OrderDetailActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.data.IData;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.BottomRowItem;
@@ -24,6 +26,7 @@ import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentHeaderDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentPackageDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentPickupItem;
+import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfilmentDividerRowItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.PickupFullfillmentTitleDataitem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.ShipmentFullfillmentTitleDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.TopRowItem;
@@ -58,7 +61,6 @@ public class OrderDetailFullfillmentFragment extends Fragment {
 
     List<OrderItem> mShipItems;
     List<OrderItem> mPickupItems;
-    private TextView mOrderStatusTextView;
 
     public OrderDetailFullfillmentFragment() {
         // Required empty public constructor
@@ -72,10 +74,8 @@ public class OrderDetailFullfillmentFragment extends Fragment {
         mPickupItems = new ArrayList<OrderItem>();
 
         mFullfillmentListview = (ListView) view.findViewById(R.id.fullfillment_list);
-        mOrderStatusTextView = (TextView)view.findViewById(R.id.order_fulfillment_status);
         if (mOrder != null) {
             categorizeOrders(mOrder);
-            mOrderStatusTextView.setText(mOrder.getFulfillmentStatus());
             List<IData> data = filterShipment(mShipItems);
             data.addAll(filterPickUp(mPickupItems));
             mOrderDetailFullfillmentAdapter = new OrderDetailFullfillmentAdapter(getActivity(), data);
@@ -109,6 +109,21 @@ public class OrderDetailFullfillmentFragment extends Fragment {
 
         return orderItems;
     }
+
+    @Override
+    public void setMenuVisibility(final boolean visible) {
+        super.setMenuVisibility(visible);
+        if (getActivity() == null) {
+            return;
+        }
+        if (visible) {
+            ((OrderDetailActivity) getActivity()).setFulfillmentStatus(mOrder.getFulfillmentStatus());
+        } else {
+            ((OrderDetailActivity) getActivity()).clearFulfillmentStatus();
+        }
+
+    }
+
 
 
     public void setOrder(Order order) {
@@ -156,7 +171,6 @@ public class OrderDetailFullfillmentFragment extends Fragment {
             finalDataList.add(fullfillmentTitleDataItem);
             finalDataList.add(new TopRowItem());
             if (itemsNotPickedUp.size() > 0) {
-
                 for (OrderItem item : itemsNotPickedUp) {
                     FullfillmentDataItem dataItem = new FullfillmentDataItem(item);
                     finalDataList.add(dataItem);
@@ -164,12 +178,18 @@ public class OrderDetailFullfillmentFragment extends Fragment {
             }
 
             if (unFulFilledItems.size() > 0) {
+                if (itemsNotPickedUp.size() > 0) {
+                    finalDataList.add(new FullfilmentDividerRowItem());
+                }
                 finalDataList.add(new FullfillmentHeaderDataItem("Pending Items"));
                 for (FullfillmentPickupItem unFullfilleditem : unFulFilledItems) {
                     finalDataList.add(unFullfilleditem);
                 }
             }
             if (fulFilledItems.size() > 0) {
+                if (unFulFilledItems.size() > 0) {
+                    finalDataList.add(new FullfilmentDividerRowItem());
+                }
                 finalDataList.add(new FullfillmentHeaderDataItem("PickedUp Items"));
                 for (FullfillmentPickupItem fullfilleditem : fulFilledItems) {
                     finalDataList.add(fullfilleditem);
@@ -245,10 +265,16 @@ public class OrderDetailFullfillmentFragment extends Fragment {
                 finalDataList.add(new FullfillmentDataItem(orderItem));
             }
             if (pendingItems.size() > 0) {
+                if (orderItemsNotPackaged.size() > 0) {
+                    finalDataList.add(new FullfilmentDividerRowItem());
+                }
                 finalDataList.add(new FullfillmentHeaderDataItem("Created Items"));
             }
             finalDataList.addAll(pendingItems);
             if (fullfilledItems.size() > 0) {
+                if (pendingItems.size() > 0) {
+                    finalDataList.add(new FullfilmentDividerRowItem());
+                }
                 finalDataList.add(new FullfillmentHeaderDataItem("Shipped Items"));
             }
             finalDataList.addAll(fullfilledItems);

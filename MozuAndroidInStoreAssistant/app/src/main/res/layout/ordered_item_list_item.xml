@@ -3,38 +3,37 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="0dp"
-    android:layout_margin="0dp"
+    android:layout_height="64dp"
+    android:layout_marginRight="@dimen/order_sub_margin_left"
+    android:layout_marginLeft="@dimen/order_sub_margin_right"
     android:gravity="center_vertical"
-    android:minHeight="?android:attr/listPreferredItemHeight">
+    android:minHeight="64dp">
 
     <TextView
         android:id="@+id/ordered_item_code"
+
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight=".5"
-        android:layout_marginLeft="10dp" />
+        android:layout_weight=".5" />
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/ordered_item_product"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1.5"
-        android:orientation="horizontal">
+        android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/ordered_item_product"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="9"
-            android:layout_gravity="left"
-            android:textStyle="bold" />
+    <LinearLayout
+        android:gravity="right"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight=".5"
+        android:orientation="horizontal">
 
         <LinearLayout
             android:id="@+id/discount_info_image_layout"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:visibility="invisible"
             android:layout_gravity="right">
 
@@ -46,23 +45,27 @@
                 android:src="@drawable/icon_order_lineinfo" />
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/ordered_item_price"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:gravity="right"
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/ordered_item_price"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight=".5" />
 
     <TextView
         android:id="@+id/ordered_item_quantity"
+        android:gravity="right"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight=".5" />
 
     <TextView
         android:id="@+id/ordered_item_total"
+        android:textStyle="bold"
+        android:gravity="right"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight=".5" />

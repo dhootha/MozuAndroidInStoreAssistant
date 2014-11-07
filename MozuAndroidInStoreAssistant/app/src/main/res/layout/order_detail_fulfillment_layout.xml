@@ -3,29 +3,6 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:paddingLeft="@dimen/order_sub_margin_left"
-        android:paddingRight="@dimen/order_sub_margin_right"
-        android:layout_height="wrap_content">
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:text="@string/order_fulfillment_status"
-          />
-
-        <TextView
-            android:textColor="@color/mozu_color"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:text="@string/not_available"
-            android:id="@+id/order_fulfillment_status" />
-    </LinearLayout>
     <ListView
         android:id="@+id/fullfillment_list"
         android:layout_width="match_parent"

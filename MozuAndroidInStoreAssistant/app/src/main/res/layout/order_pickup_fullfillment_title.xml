@@ -3,7 +3,9 @@
     android:layout_width="match_parent"
     android:paddingLeft="@dimen/order_sub_margin_left"
     android:paddingRight="@dimen/order_sub_margin_right"
-    android:layout_marginTop="16dp"
+    android:minHeight="40dp"
+    android:paddingTop="16dp"
+    android:paddingBottom="8dp"
     android:layout_height="wrap_content">
 
     <LinearLayout
@@ -16,6 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14sp"
+            android:layout_marginBottom="4dp"
             android:textColor="@android:color/transparent"
             android:text="@string/blank_for_alignment" />
 
@@ -28,7 +31,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_marginRight="15dp"
+        android:layout_marginRight="40dp"
         android:orientation="vertical"
         android:id="@+id/ship_pending_layout"
         android:layout_toLeftOf="@+id/ship_fulfilled_layout"
@@ -39,6 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14sp"
+            android:layout_marginBottom="4dp"
             android:textColor="@android:color/darker_gray"
             android:text="@string/unfulfilled_total" />
 
@@ -48,13 +52,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/not_available"
-            android:layout_marginTop="5dp"
             android:textSize="28sp" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:layout_marginRight="15dp"
+        android:layout_marginRight="40dp"
         android:orientation="vertical"
         android:id="@+id/ship_fulfilled_layout"
         android:layout_toLeftOf="@+id/ship_total_layout"
@@ -65,6 +68,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14sp"
+            android:layout_marginBottom="4dp"
             android:textColor="@android:color/darker_gray"
             android:text="@string/fulfilled_total" />
 
@@ -73,7 +77,6 @@
             android:id="@+id/fulfilled_total"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
             android:text="@string/not_available"
             android:textSize="28sp" />
 
@@ -91,6 +94,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14sp"
+            android:layout_marginBottom="4dp"
             android:textColor="@android:color/darker_gray"
             android:text="@string/total" />
 
@@ -99,7 +103,6 @@
             android:id="@+id/total"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
             android:text="@string/not_available"
             android:textSize="28sp" />
 

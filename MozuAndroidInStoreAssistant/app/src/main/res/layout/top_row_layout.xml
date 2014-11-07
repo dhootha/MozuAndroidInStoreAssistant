@@ -2,6 +2,7 @@
 <com.mozu.mozuandroidinstoreassistant.app.layout.order.TopRow xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:background="@drawable/list_item_top"
-    android:layout_height="match_parent">
+    android:minHeight="16dp"
+    android:layout_height="16dp">
     </com.mozu.mozuandroidinstoreassistant.app.layout.order.TopRow>
 

@@ -63,6 +63,7 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
 
     @InjectView(R.id.order_detail_container) SwipeRefreshLayout mOrderSwipeRefresh;
     private final String ORDER_SETTINGS_FRAGMENT = "Order_Settings_Fragment";
+    private TextView mOrderFulfillmentStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +102,8 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
             }
         });
 
+        mOrderFulfillmentStatus = (TextView)findViewById(R.id.order_fulfillment_status);
+
         mTitles = new ArrayList<String>();
         mTitles.add(getString(R.string.overview_tab_name));
         mTitles.add(getString(R.string.fullfillment_tab_name));
@@ -137,6 +140,14 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
         super.onSaveInstanceState(outState);
     }
 
+    public void setFulfillmentStatus(String fulfillmentStatus){
+        mOrderFulfillmentStatus.setText(fulfillmentStatus);
+        mOrderFulfillmentStatus.setVisibility(View.VISIBLE);
+    }
+
+    public void clearFulfillmentStatus(){
+        mOrderFulfillmentStatus.setVisibility(View.GONE);
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);

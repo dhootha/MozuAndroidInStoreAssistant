@@ -8,8 +8,9 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="0dp">
+        android:layout_height="64dp"
+        android:layout_marginTop="16dp"
+      >
         <LinearLayout
             android:paddingLeft="@dimen/order_sub_margin_left"
             android:paddingRight="@dimen/order_sub_margin_right"
@@ -28,19 +29,17 @@
         <LinearLayout
             android:id="@+id/layout_to_add_ordered_items_to"
             android:orientation="vertical"
-            android:paddingLeft="@dimen/order_sub_margin_left"
-            android:paddingRight="@dimen/order_sub_margin_right"
-
+            android:paddingBottom="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/product_detail_images_background">
 
             <LinearLayout
+                android:layout_marginRight="@dimen/order_sub_margin_left"
+                android:layout_marginLeft="@dimen/order_sub_margin_right"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="0dp"
-                android:layout_margin="0dp"
                 android:gravity="center_vertical"
                 android:minHeight="?android:attr/listPreferredItemHeight">
 
@@ -48,7 +47,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight=".5"
-                    android:layout_marginLeft="10dp"
                     android:textSize="14sp"
                     android:textColor="@color/light_gray_text"
                     android:text="@string/order_item_code_header" />
@@ -66,6 +64,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight=".5"
                     android:textSize="14sp"
+                    android:gravity="right"
                     android:textColor="@color/light_gray_text"
                     android:text="@string/order_item_price_header" />
 
@@ -74,6 +73,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight=".5"
                     android:textSize="14sp"
+                    android:gravity="right"
                     android:textColor="@color/light_gray_text"
                     android:text="@string/order_item_quantity_header" />
 
@@ -82,6 +82,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight=".5"
                     android:textSize="14sp"
+                    android:gravity="right"
                     android:textColor="@color/light_gray_text"
                     android:text="@string/order_item_total_header" />
 
@@ -91,7 +92,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_margin="5dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
                 android:orientation="horizontal"
                 android:background="@color/darker_grey">
 
@@ -295,6 +297,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
+                android:layout_marginBottom="64dp"
                 android:orientation="horizontal">
 
                 <LinearLayout

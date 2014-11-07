@@ -12,6 +12,7 @@
         android:padding="0dp">
 
         <LinearLayout
+            android:gravity="center_vertical"
             android:layout_width="match_parent"
             android:layout_height="64dp"
             android:orientation="horizontal"
@@ -21,9 +22,9 @@
 
             <LinearLayout
                 android:gravity="center_vertical"
-                android:layout_weight="1.5"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:orientation="vertical"
+                android:layout_marginRight="@dimen/order_title_margin_right"
                 android:layout_height="match_parent">
 
                 <TextView
@@ -43,9 +44,9 @@
             <LinearLayout
 
                 android:gravity="center_vertical"
-                android:layout_weight="1.5"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:orientation="vertical"
+                android:layout_marginRight="@dimen/order_title_margin_right"
                 android:layout_height="match_parent">
 
                 <TextView
@@ -64,16 +65,16 @@
 
             <LinearLayout
                 android:gravity="center_vertical"
-                android:layout_weight="1"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:orientation="vertical"
+                android:layout_marginRight="@dimen/order_title_margin_right"
                 android:layout_height="match_parent">
 
                 <TextView
                     android:text="@string/order_total_header"
                     android:textColor="@color/light_gray_text"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content" />
 
                 <TextView
                     android:id="@+id/order_total_value"
@@ -85,8 +86,7 @@
 
             <LinearLayout
                 android:gravity="center_vertical"
-                android:layout_weight="1"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:orientation="vertical"
                 android:layout_height="match_parent">
 
@@ -94,7 +94,7 @@
                     android:text="@string/order_status"
                     android:textColor="@color/light_gray_text"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content" />
 
                 <TextView
                     android:id="@+id/order_status_value"
@@ -105,12 +105,31 @@
             </LinearLayout>
         </LinearLayout>
 
-        <com.viewpagerindicator.TabPageIndicator
-            android:id="@+id/order_detail_sections"
-            android:layout_height="48dp"
-            android:paddingLeft="@dimen/order_margin_right_total"
-            android:paddingRight="@dimen/order_margin_left_total"
-            android:layout_width="wrap_content"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:paddingLeft="@dimen/order_tab_margin_left_total"
+            android:paddingRight="@dimen/order_margin_right_total"
+            android:layout_height="wrap_content">
+            <com.viewpagerindicator.TabPageIndicator
+                android:layout_alignParentLeft="true"
+                android:id="@+id/order_detail_sections"
+                android:layout_height="48dp"
+                android:layout_width="wrap_content" />
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/order_fulfillment_status"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:padding="5dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:gravity="center_vertical"
+                android:textColor="@color/semi_white_background"
+                android:background="@color/text_background_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+        </RelativeLayout>
 
         <View
             android:layout_width="fill_parent"
@@ -125,11 +144,9 @@
         <android.support.v4.view.ViewPager
             android:paddingLeft="@dimen/order_margin_right"
             android:paddingRight="@dimen/order_margin_left"
-            android:layout_marginTop="16dp"
             android:id="@+id/order_detail_sections_viewpager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="50dp"
             android:layout_marginLeft="0dp" />
 
     </LinearLayout>

@@ -13,6 +13,7 @@ import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentHeaderDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentPackageDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentPickupItem;
+import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfilmentDividerRowItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.PickupFullfillmentTitleDataitem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.ShipmentFullfillmentTitleDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.TopRowItem;
@@ -33,7 +34,8 @@ public class OrderDetailFullfillmentAdapter extends BaseAdapter {
         PICKUP_ITEM_ROW,
         EMPTY_ROW,
         TOP_ROW,
-        BOTTOM_ROW
+        BOTTOM_ROW,
+        DIVIDER_ROW
     }
 
     List<IData> mData = new ArrayList<IData>();
@@ -70,7 +72,9 @@ public class OrderDetailFullfillmentAdapter extends BaseAdapter {
             return RowType.BOTTOM_ROW;
         } else if(dataItem instanceof FullfillmentPickupItem){
             return RowType.PICKUP_ITEM_ROW;
-        }else {
+        }else if(dataItem instanceof FullfilmentDividerRowItem) {
+            return RowType.DIVIDER_ROW;
+        } else{
             return RowType.EMPTY_ROW;
         }
     }
@@ -118,6 +122,8 @@ public class OrderDetailFullfillmentAdapter extends BaseAdapter {
                 convertView = inflater.inflate(R.layout.bottom_row,null);
             }else if(rowType == RowType.PICKUP_ITEM_ROW){
                 convertView = inflater.inflate(R.layout.fulfillment_pickup_item,null);
+            }else if(rowType == RowType.DIVIDER_ROW){
+                convertView = inflater.inflate(R.layout.order_fullfillment_divider_row,null);
             }
         }
 

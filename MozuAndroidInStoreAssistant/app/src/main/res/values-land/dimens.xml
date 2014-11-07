@@ -18,9 +18,15 @@
     <dimen name="order_margin_right_total">104dp</dimen>
     <dimen name="order_margin_left_total">104dp</dimen>
 
+    <dimen name="order_tab_margin_left_total">84dp</dimen>
+
     <dimen name="order_margin_right">64dp</dimen>
     <dimen name="order_margin_left">64dp</dimen>
+
+
     <dimen name="order_sub_margin_right">40dp</dimen>
+    <dimen name="order_sub_margin_left">40dp</dimen>
+
     <dimen name="order_actionbar_margin_left">40dp</dimen>
 
 
@@ -29,7 +35,7 @@
 
     <dimen name="product_grid_horizontal_spacing">dp</dimen>
     <dimen name="product_grid_vertical_spacing">12dp</dimen>
-
+    <dimen name="order_title_margin_right">64dp</dimen>
 
 
 </resources>

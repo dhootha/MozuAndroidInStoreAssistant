@@ -25,6 +25,7 @@
 
                 <TextView
                     android:id="@+id/header"
+                    android:layout_centerVertical="true"
                     android:layout_alignParentLeft="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -33,6 +34,7 @@
                     android:text="@string/internal_notes_header" />
 
                 <TextView
+                    android:layout_centerVertical="true"
                     android:layout_alignBottom="@+id/header"
                     android:id="@+id/show_customer_notes"
                     android:clickable="true"
@@ -49,7 +51,6 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
                 android:background="@drawable/product_detail_images_background">
 
                 <LinearLayout
@@ -126,6 +127,7 @@
                 android:layout_height="56dp">
 
                 <TextView
+                    android:layout_centerVertical="true"
                     android:id="@+id/customer_header"
                     android:layout_alignParentLeft="true"
                     android:layout_width="wrap_content"
@@ -135,6 +137,7 @@
                     android:text="@string/customer_notes_header" />
 
                 <TextView
+                    android:layout_centerVertical="true"
                     android:layout_alignBottom="@+id/customer_header"
                     android:gravity="center"
                     android:textColor="@color/mozu_color"
@@ -151,7 +154,6 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
                 android:background="@drawable/product_detail_images_background">
 
                 <LinearLayout

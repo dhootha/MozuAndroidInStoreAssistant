@@ -105,6 +105,7 @@ public class OrderDetailReturnsFragment extends Fragment  {
         public void onCompleted() {
             if (mReturnList.size() > 0) {
                 mReturnAdapter.setData(mReturnList);
+                setOrderToViews(mReturnList);
                 mReturnAdapter.notifyDataSetChanged();
                 mReturnLoading.success();
             } else {
@@ -156,10 +157,6 @@ public class OrderDetailReturnsFragment extends Fragment  {
                 items.add(wrapper);
             }
         }
-
-
-
-
         if (items.size() < 1) {
             mListOfReturnsLayout.setVisibility(View.INVISIBLE);
             mEmptyReturnsMessage.setVisibility(View.VISIBLE);
