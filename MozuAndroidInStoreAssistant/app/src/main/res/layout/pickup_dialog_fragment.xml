@@ -4,72 +4,83 @@
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:padding="20dp">
+    android:paddingBottom="32dp"
+    android:paddingTop="32dp">
 
-    <ImageView
-        android:id="@+id/pickup_close"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:clickable="true"
-        android:src="@drawable/icon_close" />
-
-
-    <LinearLayout
+    <RelativeLayout
+        android:paddingLeft="64dp"
+        android:paddingRight="64dp"
         android:id="@+id/pickup_detail_layout"
-        android:layout_width="650dp"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/package_dialog_width"
+        android:layout_height="48dp"
+        android:gravity="center_vertical"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/pickup_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
+            android:textSize="16sp"
             android:text="@string/pickup_header_text"
             android:textStyle="bold" />
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:layout_height="wrap_content">
-
-        <TextView
+        <ImageView
+            android:layout_alignParentRight="true"
+            android:id="@+id/pickup_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/pickup_status"
-            android:layout_marginRight="5dp"
-            android:textStyle="bold" />
+            android:layout_gravity="right"
+            android:clickable="true"
+            android:src="@drawable/icon_close" />
 
-        <TextView
-            android:id="@+id/pickup_status_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
-
-    </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
-        android:layout_width="650dp"
+        android:paddingLeft="64dp"
+        android:paddingRight="64dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-       >
+        android:orientation="horizontal">
 
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:text="@string/pickup_location"
-            android:layout_marginRight="5dp"
-            android:textStyle="bold" />
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/pickup_location_value"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pickup_status"
+                android:textColor="@android:color/darker_gray"
+                android:textAllCaps="true"
+                android:singleLine="true" />
 
+            <TextView
+                android:id="@+id/pickup_status_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginLeft="32dp"
+            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pickup_location"
+                android:textColor="@android:color/darker_gray"
+                android:textAllCaps="true"
+                android:singleLine="true" />
+
+            <TextView
+                android:id="@+id/pickup_location_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -79,9 +90,12 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:paddingLeft="64dp"
+            android:paddingRight="64dp"
             android:id="@+id/header_layout_for_items"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="64dp"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <TextView
@@ -102,15 +116,17 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight=".2"
+                android:gravity="right"
                 android:text="@string/package_item_header_quantity"
                 android:textColor="@android:color/darker_gray" />
 
         </LinearLayout>
 
         <View
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_margin="10dp"
             android:background="@color/darker_grey" />
 
         <ListView

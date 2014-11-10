@@ -105,7 +105,7 @@ public class UserAuthenticationStateMachine extends Observable implements Refres
         new WriteAuthProfileToDiskAsyncTask(mAuthProfile, getContext()).execute();
     }
 
-    protected UserAuthInfo getUserAuthInfo() {
+    public UserAuthInfo getUserAuthInfo() {
 
         return mUserAuthInfo;
     }

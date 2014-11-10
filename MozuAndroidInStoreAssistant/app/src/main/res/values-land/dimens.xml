@@ -37,5 +37,5 @@
     <dimen name="product_grid_vertical_spacing">12dp</dimen>
     <dimen name="order_title_margin_right">64dp</dimen>
 
-
+    <dimen name="package_dialog_width">944dp</dimen>
 </resources>

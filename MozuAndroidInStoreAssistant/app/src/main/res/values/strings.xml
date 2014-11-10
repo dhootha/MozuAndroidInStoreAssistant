@@ -244,6 +244,14 @@
     <string name="unfulfilled_total">Unfulfilled</string>
     <string name="inventory_load_error">Failed to load Inventory</string>
     <string name="no_inventory">No Inventory Available</string>
+    <string name="register">Register</string>
+    <string name="register_email_subject">App Access</string>
+    <string name="register_email_address">android.mozu@gmail.com</string>
+    <string name="register_email_body">Thank you for downloading the Mozu In-Store Sales Assistant app. Please verify the following information listed below before sending it to us so we can configure your access.</string>
+    <string name="register_devices_os_label">Device OS : Android -</string>
+    <string name="register_device_model">Device : </string>
+    <string name="register_email_label">Username : </string>
+    <string name="register_tenant_label">Tenant : </string>
 
 
 </resources>

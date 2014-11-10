@@ -23,7 +23,6 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
 
     private static final String ORDER_ORDER_NUMBER = "orderNumber";
 
-
     private static final String ORDER_ORDER_DATE = "submittedDate";
     private static final String ORDER_ORDER_EMAIL = "email";
     private static final String ORDER_ORDER_STATUS = "status";

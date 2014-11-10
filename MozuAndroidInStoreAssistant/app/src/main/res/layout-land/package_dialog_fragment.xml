@@ -5,8 +5,8 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:paddingTop="32dp"
-    android:paddingBottom="32dp">
-
+    android:paddingBottom="32dp"
+    >
     <LinearLayout
         android:paddingLeft="64dp"
         android:paddingRight="64dp"
@@ -68,7 +68,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="24dp"
+                android:layout_marginLeft="32dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -88,7 +88,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="24dp"
+                android:layout_marginLeft="32dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -108,7 +108,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="24dp"
+                android:layout_marginLeft="32dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -127,17 +127,10 @@
 
             </LinearLayout>
 
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:gravity="center_vertical"
-            android:layout_height="64dp">
-
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="32dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -157,7 +150,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="24dp"
+                android:layout_marginLeft="32dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -173,6 +166,7 @@
                     android:layout_height="wrap_content" />
 
             </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>

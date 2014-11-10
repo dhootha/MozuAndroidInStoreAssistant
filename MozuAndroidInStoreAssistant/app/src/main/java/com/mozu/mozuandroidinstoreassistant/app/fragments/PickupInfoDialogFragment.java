@@ -58,6 +58,7 @@ public class PickupInfoDialogFragment extends DialogFragment {
         });
 
         ButterKnife.inject(this, view);
+        mList.setDivider(null);
 
         if (mPickup != null) {
             setPickupViews();

@@ -107,7 +107,6 @@ public class ImageViewPageFragment extends Fragment {
             bmImg = BitmapFactory.decodeStream(is, null, options);
             return bmImg;
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             Log.d("Error", e.toString());
             return null;
         }

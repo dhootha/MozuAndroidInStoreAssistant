@@ -2,117 +2,112 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="0dp">
+    android:layout_height="wrap_content">
 
-    <LinearLayout
+    <RelativeLayout
         android:paddingRight="@dimen/order_sub_margin_right"
         android:paddingLeft="@dimen/order_sub_margin_right"
         android:orientation="horizontal"
         android:layout_width="match_parent"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
         android:layout_height="wrap_content">
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="left|center_vertical"
-            android:layout_weight="1">
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
+                android:layout_marginBottom="4dp"
                 android:textColor="@android:color/transparent"
                 android:text="@string/blank_for_alignment" />
 
             <TextView
                 android:gravity="center_vertical"
                 android:layout_width="wrap_content"
-                android:layout_height="56dp"
+                android:layout_height="wrap_content"
                 android:textSize="28sp"
+                android:textColor="@color/dark_gray_text"
                 android:text="@string/returns_header" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:gravity="right|center_vertical"
+            android:layout_toLeftOf="@+id/refunded_layout"
+            android:orientation="vertical"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight=".3">
+            android:layout_height="wrap_content">
 
-            <LinearLayout
-                android:orientation="vertical"
+            <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_horizontal|center_vertical"
-                android:layout_weight="1">
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:layout_marginBottom="4dp"
+                android:textColor="@android:color/darker_gray"
+                android:text="@string/replaced_total" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:textColor="@android:color/darker_gray"
-                    android:text="@string/replaced_total" />
-
-                <TextView
-                    android:id="@+id/replaced_total"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:textSize="28sp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="vertical"
+            <TextView
+                android:id="@+id/replaced_total"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_horizontal|center_vertical"
-                android:layout_weight="1">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:textColor="@android:color/darker_gray"
-                    android:text="@string/refunded_total" />
-
-                <TextView
-                    android:id="@+id/refunded_total"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:textSize="28sp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_horizontal|center_vertical"
-                android:layout_weight="1">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:textColor="@android:color/darker_gray"
-                    android:text="@string/total_returned_items" />
-
-                <TextView
-                    android:id="@+id/total_returned"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:textSize="28sp" />
-
-            </LinearLayout>
+                android:layout_height="wrap_content"
+                android:textSize="28sp" />
 
         </LinearLayout>
 
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/refunded_layout"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+
+            android:layout_toLeftOf="@+id/returned_layout">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:layout_marginBottom="4dp"
+                android:textColor="@android:color/darker_gray"
+                android:text="@string/refunded_total" />
+
+            <TextView
+                android:id="@+id/refunded_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="28sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/returned_layout"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_alignParentRight="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:layout_marginBottom="4dp"
+                android:textColor="@android:color/darker_gray"
+                android:text="@string/total_returned_items" />
+
+            <TextView
+                android:id="@+id/total_returned"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="28sp" />
+        </LinearLayout>
+
+    </RelativeLayout>
 
     <TextView
         android:paddingRight="@dimen/order_sub_margin_right"
@@ -121,7 +116,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="20dp"
         android:text="@string/empty_order_items_text"
         android:visibility="gone" />
 
@@ -171,8 +165,7 @@
                 android:layout_weight="1"
                 android:textStyle="bold"
                 android:textColor="@android:color/darker_gray"
-                android:text="@string/return_type_header"
-                />
+                android:text="@string/return_type_header" />
 
             <TextView
                 android:layout_width="0dp"
@@ -193,30 +186,31 @@
                 android:gravity="center_horizontal|right" />
 
         </LinearLayout>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:orientation="horizontal"
-            android:background="@color/darker_grey"/>
+            android:background="@color/darker_grey" />
 
 
         <com.mozu.mozuandroidinstoreassistant.app.views.LoadingView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/order_return_loading">
-
-        <ListView
-            android:paddingRight="@dimen/order_sub_margin_right"
-            android:paddingLeft="@dimen/order_sub_margin_right"
-            android:id="@+id/returns_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="none"
-            android:dividerHeight="0dp"
-            android:divider="@android:color/transparent" />
-            </com.mozu.mozuandroidinstoreassistant.app.views.LoadingView>
+            android:layout_height="match_parent"
+            android:id="@+id/order_return_loading">
+
+            <ListView
+                android:paddingRight="@dimen/order_sub_margin_right"
+                android:paddingLeft="@dimen/order_sub_margin_right"
+                android:id="@+id/returns_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none"
+                android:dividerHeight="0dp"
+                android:divider="@android:color/transparent" />
+        </com.mozu.mozuandroidinstoreassistant.app.views.LoadingView>
 
     </LinearLayout>
 

@@ -1,10 +1,15 @@
 package com.mozu.mozuandroidinstoreassistant.app;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mozu.api.contracts.tenant.Site;
@@ -199,12 +204,51 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
     @Override
     public void retrievedTenant(Tenant tenant) {
         if (tenant == null) {
-            Toast.makeText(this, getString(R.string.tenant_unavailable_for_account), Toast.LENGTH_LONG).show();
-            showTenantChooser();
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(getString(R.string.tenant_unavailable_for_account));
+            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                    showTenantChooser();
+                }
+            });
+            builder.setNegativeButton(R.string.register, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.setType("message/rfc822");
+                    intent.putExtra(Intent.EXTRA_EMAIL, new String[]{getString(R.string.register_email_address)});
+                    intent.putExtra(Intent.EXTRA_SUBJECT,getString(R.string.register_email_subject));
+                    StringBuilder str = new StringBuilder();
+                    str.append(getString(R.string.register_email_body)+"\n\n\n");
+
+                    str.append(getString(R.string.register_email_label)+ getCurrentUserEmail()+"\n");
+                    str.append(getString(R.string.register_tenant_label)+ getCurrentTenant()+"\n");
+
+                    str.append(getString(R.string.register_device_model)+ Build.MODEL+"\n");
+                    str.append(getString(R.string.register_devices_os_label)+Build.VERSION.SDK_INT+"\n");
+                    intent.putExtra(Intent.EXTRA_TEXT,str.toString());
+                    startActivity(Intent.createChooser(intent, getString(R.string.register)));
+                    finish();
+                }
+            });
+            AlertDialog dialog = builder.show();
+            TextView messageText = (TextView)dialog.findViewById(android.R.id.message);
+            messageText.setGravity(Gravity.CENTER);
+            dialog.show();
             return;
         }
 
         showSiteChooser(tenant.getSites());
+    }
+
+    private String getCurrentUserEmail(){
+        String email = mUserAuthStateMachine.getAuthProfile().getUserProfile().getEmailAddress();
+        return email;
+    }
+
+    private String getCurrentTenant(){
+        String email = String.valueOf(mUserAuthStateMachine.getTenantId());
+        return email;
     }
 
     @Override

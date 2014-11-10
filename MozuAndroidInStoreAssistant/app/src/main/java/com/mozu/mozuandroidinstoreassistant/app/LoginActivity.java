@@ -248,11 +248,8 @@ public class LoginActivity extends AuthActivity implements LoaderCallbacks<Curso
     }
 
     public void loginSuccess() {
-
         showProgress(true);
-
         if (getUserAuthStateMachine().getCurrentUserAuthState().isTenantSelectedState() && getUserAuthStateMachine().getTenantId() != null && getUserAuthStateMachine().getSiteId() != null) {
-
             startActivity(new Intent(this, MainActivity.class));
         } else {
 
@@ -264,7 +261,6 @@ public class LoginActivity extends AuthActivity implements LoaderCallbacks<Curso
 
     public void loginFailure() {
         showProgress(false);
-
         //ewww, don't like this check here, not polymorphic and not cohesive to this class. This is the only activity
         //currently that contains showing this error, and I don't have time to come up with something else right now
         //I will keep it this way for now and readdress in a bit

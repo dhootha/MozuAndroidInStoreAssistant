@@ -65,6 +65,7 @@ public class PackageInfoDialogFragment extends DialogFragment {
 
         ButterKnife.inject(this, view);
 
+        mList.setDivider(null);
         if (mFulfillmentItem != null) {
             setFulfillmentItemViews();
         }
