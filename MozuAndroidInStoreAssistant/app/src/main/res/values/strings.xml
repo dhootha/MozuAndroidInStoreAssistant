@@ -35,7 +35,7 @@
     <string name="title_activity_image_list">ImageListActivity</string>
 
     <!-- Tabs For Product Detail -->
-    <string name="overview_tab_name">Overview</string>
+       <string name="overview_tab_name">Overview</string>
     <string name="properties_tab_name">Properties</string>
     <string name="extras_tab_name">Extras</string>
     <string name="shipping_tab_name">Shipping</string>
