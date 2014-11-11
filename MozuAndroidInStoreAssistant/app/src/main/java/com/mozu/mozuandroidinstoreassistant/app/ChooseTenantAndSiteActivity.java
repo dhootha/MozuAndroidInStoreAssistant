@@ -228,15 +228,16 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
                 public void onClick(DialogInterface dialog, int id) {
                     Intent intent = new Intent(Intent.ACTION_SEND);
                     intent.setType("message/rfc822");
-                    intent.putExtra(Intent.EXTRA_EMAIL, new String[]{getString(R.string.register_email_address)});
+                    intent.putExtra(Intent.EXTRA_EMAIL, getResources().getStringArray(R.array.register_email_address));
+                    intent.putExtra(Intent.EXTRA_CC, new String[]{getCurrentUserEmail()});
                     intent.putExtra(Intent.EXTRA_SUBJECT,getString(R.string.register_email_subject));
                     StringBuilder str = new StringBuilder();
                     str.append(getString(R.string.register_email_body)+"\n\n\n");
 
-                    str.append(getString(R.string.register_email_label)+ getCurrentUserEmail()+"\n");
-                    str.append(getString(R.string.register_tenant_label)+ getCurrentTenant()+"\n");
+                    str.append(getString(R.string.register_email_label)+getCurrentUserEmail()+"\n");
+                    str.append(getString(R.string.register_tenant_label)+getCurrentTenant()+"\n");
 
-                    str.append(getString(R.string.register_device_model) + Build.MODEL + "\n");
+                    str.append(getString(R.string.register_device_model)+Build.MODEL + "\n");
                     str.append(getString(R.string.register_devices_os_label)+Build.VERSION.SDK_INT+"\n");
                     intent.putExtra(Intent.EXTRA_TEXT, str.toString());
                     startActivityForResult(Intent.createChooser(intent, getString(R.string.register)),EMAIL_NAVIGATION_REQUEST);

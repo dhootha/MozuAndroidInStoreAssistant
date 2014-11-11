@@ -23,7 +23,7 @@
     <string name="drawer_close">drawer closed</string>
     <string name="hockey_app_id">4fbc83986e51a19bb0c9137e06e88363</string>
     <string name="try_again_app_auth_button_text">Try Again</string>
-    <string name="tenant_unavailable_for_account">Current Account Cannot Retrieve This Tenant. Would you like to request access? </string>
+    <string name="tenant_unavailable_for_account">The current account does not have access to this tenant. Would you like to request access? </string>
     <string name="connection_unavailable">Please check your connection and try again or contact our support team for further assistance.</string>
     <string name="view_as_list_menu_item_text">View as List</string>
     <string name="view_as_grid_menu_item_text">View as Grid</string>
@@ -247,11 +247,14 @@
     <string name="register">Register</string>
     <string name="register_email_subject">App Access</string>
     <string name="register_email_address">android.mozu@gmail.com</string>
-    <string name="register_email_body">Thank you for downloading the Mozu In-Store Sales Assistant app. Please verify the following information listed below before sending it to us so we can configure your access.</string>
-    <string name="register_devices_os_label">Device OS : Android -</string>
-    <string name="register_device_model">Device : </string>
-    <string name="register_email_label">Username : </string>
-    <string name="register_tenant_label">Tenant : </string>
-
-
+    <string name="register_email_body">Thank you for downloading the Mozu In-Store Sales Assistant!\n\nBefore hitting the Send button, please verify the information listed below so we can correctly configure your access.</string>
+    <string name="register_devices_os_label">"Device OS - Android "</string>
+    <string name="register_device_model">"Device - "</string>
+    <string name="register_email_label">"Username - "</string>
+    <string name="register_tenant_label">"Tenant ID - "</string>
+    <string-array name="register_email_address">
+        <item>mozuops@mozu.com</item>
+        <item>integrations@mozu.com</item>
+        <item>android.mozu@gmail.com</item>
+    </string-array>
 </resources>
