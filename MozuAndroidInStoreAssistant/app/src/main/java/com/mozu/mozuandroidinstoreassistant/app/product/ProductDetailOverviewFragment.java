@@ -229,34 +229,59 @@ public class ProductDetailOverviewFragment extends Fragment {
             return new SpannableString("N/A");
         }
 
-        String htmlString = mProduct.getContent().getProductFullDescription();
-        String desc = htmlString.replaceAll("<img.+?>", "");
+        String htmlString ;
         String buttonText;
         ClickableSpan clickableSpan;
         SpannableString spannableString;
         if (showLargeDescription) {
-            buttonText = getString(R.string.show_less_click_link);
-            clickableSpan = mContractClickableSpan;
-            Spanned spannedText = Html.fromHtml(desc, null, new HTMLTagHandler());
-            spannableString = new SpannableString(spannedText);
-        } else {
-            buttonText = getString(R.string.full_description_click_link);
-            clickableSpan = mExpandClickableSpan;
-
-            if (desc.length() > MAX_DESC_LENGTH) {
-                desc = desc.subSequence(0, MAX_DESC_LENGTH).toString();
+            if (!TextUtils.isEmpty(mProduct.getContent().getProductFullDescription())) {
+                htmlString = mProduct.getContent().getProductFullDescription();
+                String desc = htmlString.replaceAll("<img.+?>", "");
+                buttonText = getString(R.string.show_less_click_link);
+                clickableSpan = mContractClickableSpan;
+                Spanned spannedText = Html.fromHtml(desc, null, new HTMLTagHandler());
+                spannableString = new SpannableString(spannedText);
+                if (!TextUtils.isEmpty(mProduct.getContent().getProductShortDescription())) {
+                    SpannableString linkSpan = new SpannableString(buttonText);
+                    linkSpan.setSpan(clickableSpan, 0, buttonText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    linkSpan.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.mozu_color)), 0, buttonText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    return new SpannableString(TextUtils.concat(spannableString, linkSpan));
+                } else {
+                    return spannableString;
+                }
+            } else {
+                htmlString = mProduct.getContent().getProductShortDescription();
+                String desc = htmlString.replaceAll("<img.+?>", "");
+                Spanned spannedText = Html.fromHtml(desc, null, new HTMLTagHandler());
+                spannableString = new SpannableString(spannedText);
+                return spannableString;
             }
-            Spanned spannedText = Html.fromHtml(desc, null, new HTMLTagHandler());
-            spannableString = new SpannableString(spannedText);
-        }
 
-        if (showExpandButton(mProduct.getContent().getProductFullDescription())) {
-            SpannableString linkSpan = new SpannableString(buttonText);
-            linkSpan.setSpan(clickableSpan, 0, buttonText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            linkSpan.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.mozu_color)), 0, buttonText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            return new SpannableString(TextUtils.concat(spannableString, linkSpan));
         } else {
-            return spannableString;
+            if (!TextUtils.isEmpty(mProduct.getContent().getProductShortDescription())) {
+                htmlString = mProduct.getContent().getProductShortDescription();
+                String desc = htmlString.replaceAll("<img.+?>", "");
+                buttonText = getString(R.string.full_description_click_link);
+                clickableSpan = mExpandClickableSpan;
+                Spanned spannedText = Html.fromHtml(desc, null, new HTMLTagHandler());
+                spannableString = new SpannableString(spannedText);
+                if (!TextUtils.isEmpty(mProduct.getContent().getProductFullDescription())) {
+                    SpannableString linkSpan = new SpannableString(buttonText);
+                    linkSpan.setSpan(clickableSpan, 0, buttonText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    linkSpan.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.mozu_color)), 0, buttonText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    return new SpannableString(TextUtils.concat(spannableString, linkSpan));
+                } else {
+                    return spannableString;
+                }
+            } else {
+                htmlString = mProduct.getContent().getProductFullDescription();
+                String desc = htmlString.replaceAll("<img.+?>", "");
+                Spanned spannedText = Html.fromHtml(desc, null, new HTMLTagHandler());
+                spannableString = new SpannableString(spannedText);
+                return spannableString;
+            }
+
+
         }
 
     }

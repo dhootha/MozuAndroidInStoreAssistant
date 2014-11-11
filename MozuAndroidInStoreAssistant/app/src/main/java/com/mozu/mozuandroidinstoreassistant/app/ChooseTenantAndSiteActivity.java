@@ -231,6 +231,7 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
                     intent.putExtra(Intent.EXTRA_EMAIL, getResources().getStringArray(R.array.register_email_address));
                     intent.putExtra(Intent.EXTRA_CC, new String[]{getCurrentUserEmail()});
                     intent.putExtra(Intent.EXTRA_SUBJECT,getString(R.string.register_email_subject));
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     StringBuilder str = new StringBuilder();
                     str.append(getString(R.string.register_email_body)+"\n\n\n");
 
