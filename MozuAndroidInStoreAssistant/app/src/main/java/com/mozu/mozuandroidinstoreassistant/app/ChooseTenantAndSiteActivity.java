@@ -37,6 +37,7 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
     private static final String TENANT_FRAGMENT_TAG = "tenants";
     private static final String SITE_FRAGMENT_TAG = "sites";
     private static final String SET_DEFAULT_FRAGMENT_TAG = "set_default_tag";
+    private static final int EMAIL_NAVIGATION_REQUEST =  10034;
 
     private TenantFragment mTenantFragment;
     private SiteFragment mSiteFragment;
@@ -67,6 +68,17 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
     @Override
     protected void onResume() {
         super.onResume();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if(requestCode == EMAIL_NAVIGATION_REQUEST){
+            showTenantChooser();
+
+        }else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override
@@ -206,13 +218,13 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
         if (tenant == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(getString(R.string.tenant_unavailable_for_account));
-            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(R.string.no, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     dialog.dismiss();
                     showTenantChooser();
                 }
             });
-            builder.setNegativeButton(R.string.register, new DialogInterface.OnClickListener() {
+            builder.setNegativeButton(R.string.yes, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     Intent intent = new Intent(Intent.ACTION_SEND);
                     intent.setType("message/rfc822");
@@ -224,11 +236,10 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
                     str.append(getString(R.string.register_email_label)+ getCurrentUserEmail()+"\n");
                     str.append(getString(R.string.register_tenant_label)+ getCurrentTenant()+"\n");
 
-                    str.append(getString(R.string.register_device_model)+ Build.MODEL+"\n");
+                    str.append(getString(R.string.register_device_model) + Build.MODEL + "\n");
                     str.append(getString(R.string.register_devices_os_label)+Build.VERSION.SDK_INT+"\n");
-                    intent.putExtra(Intent.EXTRA_TEXT,str.toString());
-                    startActivity(Intent.createChooser(intent, getString(R.string.register)));
-                    finish();
+                    intent.putExtra(Intent.EXTRA_TEXT, str.toString());
+                    startActivityForResult(Intent.createChooser(intent, getString(R.string.register)),EMAIL_NAVIGATION_REQUEST);
                 }
             });
             AlertDialog dialog = builder.show();

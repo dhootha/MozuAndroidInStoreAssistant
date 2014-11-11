@@ -12,8 +12,15 @@
     <dimen name="category_grid_image_width">220dp</dimen>
     <dimen name="category_grid_image_height">220dp</dimen>
 
-    <dimen name="customer_margin_right">108dp</dimen>
-    <dimen name="customer_margin_left">108dp</dimen>
+    <dimen name="customer_margin_right_total">108dp</dimen>
+    <dimen name="customer_margin_left_total">108dp</dimen>
+
+    <dimen name="customer_sub_margin_right">68dp</dimen>
+    <dimen name="customer_sub_margin_left">68dp</dimen>
+    <dimen name="customer_margin_right">40dp</dimen>
+    <dimen name="customer_margin_left">40dp</dimen>
+
+    <dimen name="customer_tab_margin_left">88dp</dimen>
 
     <dimen name="order_margin_right_total">104dp</dimen>
     <dimen name="order_margin_left_total">104dp</dimen>

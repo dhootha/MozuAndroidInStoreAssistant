@@ -34,8 +34,17 @@
 
     <dimen name="product_list_item_width">40dp</dimen>
     <dimen name="product_list_item_height">40dp</dimen>
-    <dimen name="customer_margin_right">64dp</dimen>
-    <dimen name="customer_margin_left">64dp</dimen>
+
+    <dimen name="customer_margin_right_total">64dp</dimen>
+    <dimen name="customer_margin_left_total">64dp</dimen>
+    <dimen name="customer_sub_margin_right">44dp</dimen>
+    <dimen name="customer_sub_margin_left">44dp</dimen>
+    <dimen name="customer_margin_right">20dp</dimen>
+    <dimen name="customer_margin_left">20dp</dimen>
+
+    <dimen name="customer_tab_margin_left">44dp</dimen>
+
+
     <dimen name="order_actionbar_margin_left">0dp</dimen>
 
     <dimen name="order_margin_right_total">60dp</dimen>

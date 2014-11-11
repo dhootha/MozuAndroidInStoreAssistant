@@ -1,36 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-    <com.mozu.mozuandroidinstoreassistant.app.views.LoadingView
-        xmlns:android="http://schemas.android.com/apk/res/android"
+<com.mozu.mozuandroidinstoreassistant.app.views.LoadingView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:paddingRight="@dimen/customer_margin_right_total"
+    android:paddingLeft="@dimen/customer_margin_left_total"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/customer_address_loading">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/customer_address_loading">
+        android:layout_height="match_parent">
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:paddingTop="20dp"
-            android:paddingBottom="20dp"
+        <TextView
+            android:id="@+id/billing_header"
+            android:textSize="28sp"
+            android:layout_marginBottom="5dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/billing_header"
-                android:textSize="28sp"
-                android:layout_marginBottom="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/billing" />
+            android:layout_height="wrap_content"
+            android:text="@string/billing" />
 
 
-            <GridView
-                android:layout_marginBottom="8dp"
-                android:layout_marginRight="8dp"
-                android:id="@+id/customer_address_grid"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scrollbars="none"
-                android:numColumns="@integer/num_of_columns_in_grid" />
+        <GridView
+            android:layout_marginBottom="8dp"
+            android:layout_marginRight="8dp"
+            android:id="@+id/customer_address_grid"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            android:numColumns="@integer/num_of_columns_in_grid" />
 
-        </LinearLayout>
-    </com.mozu.mozuandroidinstoreassistant.app.views.LoadingView>
+    </LinearLayout>
+</com.mozu.mozuandroidinstoreassistant.app.views.LoadingView>

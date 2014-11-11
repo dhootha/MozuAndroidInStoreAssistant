@@ -23,7 +23,7 @@
     <string name="drawer_close">drawer closed</string>
     <string name="hockey_app_id">4fbc83986e51a19bb0c9137e06e88363</string>
     <string name="try_again_app_auth_button_text">Try Again</string>
-    <string name="tenant_unavailable_for_account">Current Account Cannot Retrieve This Tenant.</string>
+    <string name="tenant_unavailable_for_account">Current Account Cannot Retrieve This Tenant. Would you like to request access? </string>
     <string name="connection_unavailable">Please check your connection and try again or contact our support team for further assistance.</string>
     <string name="view_as_list_menu_item_text">View as List</string>
     <string name="view_as_grid_menu_item_text">View as Grid</string>

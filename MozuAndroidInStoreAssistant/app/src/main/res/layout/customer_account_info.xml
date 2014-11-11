@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:paddingRight="@dimen/customer_margin_right_total"
+    android:paddingLeft="@dimen/customer_margin_left_total"
     android:layout_height="match_parent">
     <com.mozu.mozuandroidinstoreassistant.app.views.LoadingView
         android:layout_width="match_parent"

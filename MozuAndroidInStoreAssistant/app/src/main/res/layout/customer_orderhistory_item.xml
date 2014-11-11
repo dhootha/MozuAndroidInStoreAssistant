@@ -27,6 +27,7 @@
             android:id="@+id/customer_order_status_value"
             android:layout_height="wrap_content" />
         <TextView
+            android:gravity="right"
             android:textColor="@color/mozu_color"
             android:layout_weight="1"
             android:layout_width="0dp"

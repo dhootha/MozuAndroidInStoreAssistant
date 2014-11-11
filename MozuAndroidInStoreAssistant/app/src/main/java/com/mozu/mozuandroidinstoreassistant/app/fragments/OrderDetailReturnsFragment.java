@@ -127,6 +127,9 @@ public class OrderDetailReturnsFragment extends Fragment  {
 
     private void setOrderToViews(List<Return> returnList) {
         if (returnList == null) {
+            mReplacedTotal.setText(getString(R.string.not_available));
+            mRefundedTotal.setText(getString(R.string.not_available));
+            mTotal.setText(getString(R.string.not_available));
             return;
         }
 

@@ -5,61 +5,80 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:gravity="center_vertical"
-        android:layout_height="64dp">
-        <TextView
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:text="@string/customer_order_num"
-            android:textSize="14sp"
-            android:textColor="@color/light_gray_text"
-            android:layout_height="wrap_content" />
+        android:background="@drawable/product_detail_images_background"
+        android:layout_marginRight="@dimen/customer_sub_margin_left"
+        android:layout_marginLeft="@dimen/customer_sub_margin_left"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_width="match_parent">
 
-        <TextView
-            android:layout_weight="2"
-            android:layout_width="0dp"
-            android:text="@string/customer_order_date"
-            android:textSize="14sp"
-            android:textColor="@color/light_gray_text"
-            android:layout_height="wrap_content" />
+        <LinearLayout
+            android:paddingLeft="@dimen/customer_margin_left"
+            android:paddingRight="@dimen/customer_margin_right"
+            android:layout_width="match_parent"
+            android:gravity="center_vertical"
+            android:layout_height="64dp">
 
-        <TextView
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:text="@string/customer_status"
-            android:textSize="14sp"
-            android:textColor="@color/light_gray_text"
-            android:layout_height="wrap_content" />
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:text="@string/customer_order_num"
+                android:textSize="14sp"
+                android:textColor="@color/light_gray_text"
+                android:layout_height="wrap_content" />
 
-        <TextView
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:text="@string/customer_order_amount"
-            android:textSize="14sp"
-            android:textColor="@color/light_gray_text"
-            android:layout_height="wrap_content" />
+            <TextView
+                android:layout_weight="2"
+                android:layout_width="0dp"
+                android:text="@string/customer_order_date"
+                android:textSize="14sp"
+                android:textColor="@color/light_gray_text"
+                android:layout_height="wrap_content" />
+
+            <TextView
+
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:text="@string/customer_status"
+                android:textSize="14sp"
+                android:textColor="@color/light_gray_text"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:gravity="right"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:text="@string/customer_order_amount"
+                android:textSize="14sp"
+                android:textColor="@color/light_gray_text"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <View
+
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider_black" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider_white" />
+
+        <com.mozu.mozuandroidinstoreassistant.app.views.LoadingView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/orderhistory_loading">
+
+            <ListView
+                android:paddingLeft="@dimen/customer_margin_left"
+                android:paddingRight="@dimen/customer_margin_right"
+                android:id="@+id/customer_order_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </com.mozu.mozuandroidinstoreassistant.app.views.LoadingView>
 
     </LinearLayout>
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@color/divider_black" />
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@color/divider_white" />
-
-    <com.mozu.mozuandroidinstoreassistant.app.views.LoadingView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/orderhistory_loading">
-
-        <ListView
-            android:id="@+id/customer_order_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </com.mozu.mozuandroidinstoreassistant.app.views.LoadingView>
 
 </LinearLayout>
