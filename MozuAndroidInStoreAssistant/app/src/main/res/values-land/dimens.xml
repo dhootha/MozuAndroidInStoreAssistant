@@ -9,8 +9,8 @@
     <dimen name="category_grid_item_height">240dp</dimen>
     <dimen name="product_grid_item_width">240dp</dimen>
     <dimen name="product_grid_item_height">240dp</dimen>
-    <dimen name="category_grid_image_width">220dp</dimen>
-    <dimen name="category_grid_image_height">220dp</dimen>
+    <dimen name="category_grid_image_width">160dp</dimen>
+    <dimen name="category_grid_image_height">160dp</dimen>
 
     <dimen name="customer_margin_right_total">108dp</dimen>
     <dimen name="customer_margin_left_total">108dp</dimen>

@@ -253,8 +253,6 @@
     <string name="register_email_label">"Username - "</string>
     <string name="register_tenant_label">"Tenant ID - "</string>
     <string-array name="register_email_address">
-        <item>mozuops@mozu.com</item>
-        <item>integrations@mozu.com</item>
-        <item>android.mozu@gmail.com</item>
+        <item>mozumobile@volusion.com</item>
     </string-array>
 </resources>

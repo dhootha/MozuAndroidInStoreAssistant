@@ -40,7 +40,7 @@ public class CategoryAdapter extends GridToggleArrayAdapter<Category> {
         if (convertView == null ||
             (isGrid() && convertView.getId() != getGridResource()) ||
             (!isGrid() && convertView.getId() != getListResource())) {
-            convertView = LayoutInflater.from(getContext()).inflate(getCurrentResource(), parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(getCurrentResource(), null);
             viewHolder = new CategoryViewHolder(convertView);
             convertView.setTag(viewHolder);
         } else {

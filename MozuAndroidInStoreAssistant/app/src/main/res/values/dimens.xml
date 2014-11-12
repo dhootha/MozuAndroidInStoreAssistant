@@ -23,8 +23,8 @@
     <dimen name="grid_margin_bottom">4dp</dimen>
     <dimen name="category_grid_item_width">246dp</dimen>
     <dimen name="category_grid_item_height">246dp</dimen>
-    <dimen name="category_grid_image_width">226dp</dimen>
-    <dimen name="category_grid_image_height">226dp</dimen>
+    <dimen name="category_grid_image_width">166dp</dimen>
+    <dimen name="category_grid_image_height">166dp</dimen>
 
     <dimen name="product_grid_item_width">246dp</dimen>
     <dimen name="product_grid_item_height">246dp</dimen>

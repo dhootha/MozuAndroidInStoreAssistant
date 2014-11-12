@@ -6,6 +6,7 @@ import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -52,6 +53,10 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (!getResources().getBoolean(R.bool.allow_portrait)) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
+
         setContentView(R.layout.activity_choose_tenant_and_site);
         isLaunchedFromSettings = getIntent().getBooleanExtra(LAUNCH_FROM_SETTINGS,false);
         mUserAuthStateMachine = UserAuthenticationStateMachineProducer.getInstance(getApplicationContext());

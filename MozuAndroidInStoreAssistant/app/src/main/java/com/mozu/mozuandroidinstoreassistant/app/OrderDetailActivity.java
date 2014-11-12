@@ -3,6 +3,7 @@ package com.mozu.mozuandroidinstoreassistant.app;
 import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -68,6 +69,10 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (!getResources().getBoolean(R.bool.allow_portrait)) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
+
         setContentView(R.layout.activity_order_detail);
 
         ButterKnife.inject(this);

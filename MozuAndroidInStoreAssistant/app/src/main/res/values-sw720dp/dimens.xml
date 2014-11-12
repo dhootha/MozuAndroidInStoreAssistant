@@ -1,0 +1,4 @@
+<resources>
+    <dimen name="category_grid_image_width">226dp</dimen>
+    <dimen name="category_grid_image_height">226dp</dimen>
+</resources>

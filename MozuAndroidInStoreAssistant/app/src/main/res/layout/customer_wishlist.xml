@@ -59,6 +59,7 @@
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:text="@string/customer_wishlist_purchasable"
+                android:gravity="center_horizontal"
                 android:textColor="@color/light_gray_text"
                 android:textSize="14sp"
                 android:layout_height="wrap_content" />

@@ -1,5 +1,6 @@
 package com.mozu.mozuandroidinstoreassistant.app.customer;
 
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -64,6 +65,10 @@ public class CustomerDetailActivity extends BaseActivity implements SwipeRefresh
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (!getResources().getBoolean(R.bool.allow_portrait)) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
+
         if (getIntent() != null) {
             mUserAccountId =  getIntent().getIntExtra(CUSTOMER_ID,-1);
         }

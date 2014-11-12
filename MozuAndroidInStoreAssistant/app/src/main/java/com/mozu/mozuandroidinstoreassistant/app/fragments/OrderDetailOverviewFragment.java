@@ -270,14 +270,14 @@ public class OrderDetailOverviewFragment extends Fragment implements View.OnClic
     }
 
     @Override
-    public void onClick(View v) {
+    public void onClick(final View v) {
         if (mToggleDetailsView.getId() == v.getId()) {
             if (mDetailLayout.getVisibility() == View.GONE) {
                 mDetailLayout.setVisibility(View.VISIBLE);
                 mScrollView.post(new Runnable() {
                     @Override
                     public void run() {
-                        mScrollView.fullScroll(View.FOCUS_DOWN);
+                        mScrollView.scrollTo(0,mDetailLayout.getBottom());
                     }
                 });
             } else {

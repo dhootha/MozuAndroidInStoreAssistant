@@ -27,7 +27,8 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 19
-        versionName "0.9 - Build No. " + System.getenv("BUILD_NUMBER")
+        versionCode 100
+        versionName "1.0.0 - "+getDate()+" - Build " + System.getenv("BUILD_NUMBER")
         testPackageName "com.mozu.mozuandroidinstoreassistant.app.test"
         testInstrumentationRunner 'com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner'
         testHandleProfiling true
@@ -48,7 +49,7 @@ android {
             debuggable true
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-            ext.betaDistributionEmails="shadaab_kazi@volusion.com, adam_dutton@volusion.com,santhosh_mankala@volusion.com, volusionmozu@gmail.com"
+            ext.betaDistributionEmails="mozubuilddistr@volusion.com"
             ext.betaDistributionReleaseNotesFilePath=file('releasenotes.txt')
         }
     }
@@ -66,6 +67,8 @@ android {
     testOptions {
         reportDir = "$project.buildDir/mozu/tests/report"
     }
+
+
 }
 
 dependencies {
@@ -82,4 +85,10 @@ dependencies {
     compile 'com.netflix.rxjava:rxjava-android:0.17.5'
 
     androidTestCompile files('libs/espresso-1.1-bundled.jar')
+}
+
+def getDate() {
+    def date = new Date()
+    def formattedDate = date.format('yyyyMMdd')
+    return formattedDate
 }

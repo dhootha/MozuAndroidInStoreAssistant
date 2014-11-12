@@ -1,15 +1,18 @@
 package com.mozu.mozuandroidinstoreassistant.app.customer;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.mozu.api.contracts.commerceruntime.wishlists.Wishlist;
 import com.mozu.api.contracts.commerceruntime.wishlists.WishlistItem;
 import com.mozu.api.contracts.customer.CustomerAccount;
+import com.mozu.mozuandroidinstoreassistant.app.ProductDetailActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
@@ -57,6 +60,19 @@ public class CustomerWishListFragment extends Fragment {
         mAdapter = new CustomerWishListAdapter(new ArrayList<WishlistItem>());
         mListView.setAdapter(mAdapter);
         mListView.setDivider(null);
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                 WishlistItem item = mAdapter.getItem(i);
+                 String productCode = item.getProduct().getProductCode();
+                Intent intent = new Intent(getActivity(), ProductDetailActivity.class);
+                UserAuthenticationStateMachine userAuthenticationStateMachine = UserAuthenticationStateMachineProducer.getInstance(getActivity());
+                intent.putExtra(ProductDetailActivity.PRODUCT_CODE_EXTRA_KEY, productCode);
+                intent.putExtra(ProductDetailActivity.CURRENT_TENANT_ID, userAuthenticationStateMachine.getTenantId());
+                intent.putExtra(ProductDetailActivity.CURRENT_SITE_ID, userAuthenticationStateMachine.getSiteId());
+                startActivity(intent);
+            }
+        });
         return fragmentView;
     }
 
