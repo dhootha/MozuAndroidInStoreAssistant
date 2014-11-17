@@ -142,6 +142,9 @@ public class CategoryImageUpdateTask extends AsyncTask<Void,Void,Category> {
     public com.mozu.api.contracts.productadmin.Category updateCategory(ApiContext apiContext,com.mozu.api.contracts.productadmin.Category category, Integer categoryId, Boolean cascadeVisibility, String responseFields) throws Exception
     {
 
+        return null;
+        /*
+
         MozuUrl url = com.mozu.api.urls.commerce.catalog.admin.CategoryUrl.updateCategoryUrl(cascadeVisibility, categoryId, responseFields);
         String verb = "PUT";
         Class<?> clz = com.mozu.api.contracts.productadmin.Category.class;
@@ -153,11 +156,12 @@ public class CategoryImageUpdateTask extends AsyncTask<Void,Void,Category> {
         mozuClient.setContext(apiContext);
         mozuClient.executeRequest();
         return mozuClient.getResult();
+        */
 
     }
 
 
-
+/*
      private class FakeMozuClient<TResult> {
         private final ObjectMapper mapper = JsonUtils.initObjectMapper();
 
@@ -384,6 +388,6 @@ public class CategoryImageUpdateTask extends AsyncTask<Void,Void,Category> {
         }
     }
 
-
+*/
 
 }
