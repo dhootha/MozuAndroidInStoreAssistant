@@ -29,7 +29,6 @@
         <activity
             android:name=".BaseActivity"
             android:label="@string/app_name"
-            android:launchMode="singleInstance"
             android:theme="@style/Theme.Mozu.NoActionBar"></activity>
         <activity
             android:name=".LoginActivity"
