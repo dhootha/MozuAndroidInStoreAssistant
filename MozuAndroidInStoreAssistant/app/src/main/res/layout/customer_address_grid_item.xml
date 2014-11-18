@@ -42,7 +42,7 @@
 
     <TextView
         android:visibility="invisible"
-        android:text="PRIMARY"
+        android:text="@string/primary_address"
         android:textStyle="bold"
         android:textSize="14sp"
         android:textAllCaps="true"

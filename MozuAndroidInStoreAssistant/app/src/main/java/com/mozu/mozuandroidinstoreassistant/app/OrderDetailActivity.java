@@ -17,9 +17,8 @@ import android.widget.TextView;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.customer.CustomerAccount;
-import com.mozu.mozuandroidinstoreassistant.app.adapters.OrderDetailSectionPagerAdapter;
-import com.mozu.mozuandroidinstoreassistant.app.customer.CustomerDetailActivity;
-import com.mozu.mozuandroidinstoreassistant.app.loaders.OrderDetailLoader;
+import com.mozu.mozuandroidinstoreassistant.app.order.adapters.OrderDetailSectionPagerAdapter;
+import com.mozu.mozuandroidinstoreassistant.app.order.loaders.OrderDetailLoader;
 import com.mozu.mozuandroidinstoreassistant.app.settings.SettingsFragment;
 import com.mozu.mozuandroidinstoreassistant.app.tasks.CustomerAsyncListener;
 import com.mozu.mozuandroidinstoreassistant.app.tasks.RetrieveCustomerAsyncTask;

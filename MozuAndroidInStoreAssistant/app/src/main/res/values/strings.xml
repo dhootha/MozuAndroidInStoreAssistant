@@ -252,6 +252,11 @@
     <string name="register_device_model">"Device - "</string>
     <string name="register_email_label">"Username - "</string>
     <string name="register_tenant_label">"Tenant ID - "</string>
+    <string name="primary_address">PRIMARY</string>
+    <string name="orders">Orders</string>
+    <string name="view_all">VIEW ALL</string>
+    <string name="products">Products</string>
+    <string name="customers">Customers</string>
     <string-array name="register_email_address">
         <item>mozumobile@volusion.com</item>
     </string-array>

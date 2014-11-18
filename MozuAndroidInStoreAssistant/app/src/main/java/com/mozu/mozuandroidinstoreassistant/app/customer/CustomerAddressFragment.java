@@ -13,7 +13,6 @@ import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.api.contracts.customer.CustomerContact;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.data.customer.CustomerContactDataItem;
-import com.mozu.mozuandroidinstoreassistant.app.views.ExpandedGridView;
 import com.mozu.mozuandroidinstoreassistant.app.views.LoadingView;
 
 import java.util.ArrayList;
@@ -25,16 +24,12 @@ public class CustomerAddressFragment extends Fragment {
     private static String CUSTOMER_ACCOUNT = "customerAccount";
     private static String BILLING = "billing";
     private static String SHIPPING = "shipping";
-    private CustomerAddressAdapter mShippingAdapter;
     private List<CustomerContactDataItem> mBillingContacts;
     private List<CustomerContactDataItem> mShippingContacts;
     private CustomerAccount mCustomerAccount;
     private LoadingView mAddressLoading ;
-
     private final String SHIPPING_DEFAULT_TYPE = "Default Shipping";
     private final String BILLING_DEFAULT_TYPE = "Default Billing";
-
-
 
     public static CustomerAddressFragment getInstance(CustomerAccount customerAccount){
         CustomerAddressFragment customerAddressFragment = new CustomerAddressFragment();

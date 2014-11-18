@@ -10,7 +10,6 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
@@ -18,8 +17,8 @@ import com.mozu.api.contracts.productadmin.LocationInventory;
 import com.mozu.api.contracts.productadmin.LocationInventoryCollection;
 import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.mozuandroidinstoreassistant.app.R;
-import com.mozu.mozuandroidinstoreassistant.app.adapters.ProdDetailLocationInventoryAdapter;
-import com.mozu.mozuandroidinstoreassistant.app.loaders.InventoryRetriever;
+import com.mozu.mozuandroidinstoreassistant.app.product.adapter.ProdDetailLocationInventoryAdapter;
+import com.mozu.mozuandroidinstoreassistant.app.product.loaders.InventoryRetriever;
 import com.mozu.mozuandroidinstoreassistant.app.views.LoadingView;
 
 import java.util.List;

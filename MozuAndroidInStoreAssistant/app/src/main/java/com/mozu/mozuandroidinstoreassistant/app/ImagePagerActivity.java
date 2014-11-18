@@ -15,7 +15,7 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 
-import com.mozu.mozuandroidinstoreassistant.app.adapters.ProductImagesPagerAdapter;
+import com.mozu.mozuandroidinstoreassistant.app.product.adapter.ProductImagesPagerAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.views.ZoomOutPageTransformer;
 
 import java.util.ArrayList;

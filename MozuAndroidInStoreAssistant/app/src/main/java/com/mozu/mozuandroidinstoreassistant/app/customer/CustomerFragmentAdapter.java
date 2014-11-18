@@ -8,33 +8,38 @@ import com.mozu.api.contracts.customer.CustomerAccount;
 
 public class CustomerFragmentAdapter extends FragmentStatePagerAdapter {
 
-    private enum TabTypes{
+    private enum TabTypes {
         ACCOUNT_INFO("ACCOUNT INFO"),
         ADDRESSES("ADDRESSES"),
         ORDER_HISTORY("ORDER HISTORY"),
         WISHLIST("WISHLIST"),
         STORE_CREDIT("STORE CREDIT");
         String mDisplayTitle;
-        TabTypes(String displayTitle){
+
+        TabTypes(String displayTitle) {
             mDisplayTitle = displayTitle;
         }
     }
+
     private CustomerAccount mCustomer;
+
     public CustomerFragmentAdapter(FragmentManager manager, CustomerAccount customer) {
         super(manager);
         mCustomer = customer;
     }
+
     @Override
     public int getItemPosition(Object object) {
         return POSITION_NONE;
     }
 
-    public void setData(CustomerAccount customer){
+    public void setData(CustomerAccount customer) {
         mCustomer = customer;
     }
+
     @Override
     public int getCount() {
-       return TabTypes.values().length;
+        return TabTypes.values().length;
     }
 
     @Override

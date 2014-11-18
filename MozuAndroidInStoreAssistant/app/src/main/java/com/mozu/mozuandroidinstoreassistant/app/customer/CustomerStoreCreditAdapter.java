@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.customer.credit.Credit;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.utils.DateUtils;
@@ -18,7 +17,7 @@ public class CustomerStoreCreditAdapter extends BaseAdapter {
 
     private List<Credit> mData;
 
-    public CustomerStoreCreditAdapter(List<Credit> data){
+    public CustomerStoreCreditAdapter(List<Credit> data) {
         mData = data;
     }
 
@@ -44,16 +43,16 @@ public class CustomerStoreCreditAdapter extends BaseAdapter {
         View view;
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (convertView == null) {
-            view = inflater.inflate(R.layout.customer_storecredit_item,null);
+            view = inflater.inflate(R.layout.customer_storecredit_item, null);
         } else {
             view = convertView;
         }
-        TextView creditAmount = (TextView)view.findViewById(R.id.customer_credit_amount_value);
-        TextView creditBalance = (TextView)view.findViewById(R.id.customer_credit_balance_value);
-        TextView creditCode = (TextView)view.findViewById(R.id.customer_credit_code_value);
-        TextView creditDate = (TextView)view.findViewById(R.id.customer_credit_date_issued_value);
-        TextView creditType = (TextView)view.findViewById(R.id.customer_store_credit_type_value);
-        TextView creditExpires = (TextView)view.findViewById(R.id.customer_credit_expires_value);
+        TextView creditAmount = (TextView) view.findViewById(R.id.customer_credit_amount_value);
+        TextView creditBalance = (TextView) view.findViewById(R.id.customer_credit_balance_value);
+        TextView creditCode = (TextView) view.findViewById(R.id.customer_credit_code_value);
+        TextView creditDate = (TextView) view.findViewById(R.id.customer_credit_date_issued_value);
+        TextView creditType = (TextView) view.findViewById(R.id.customer_store_credit_type_value);
+        TextView creditExpires = (TextView) view.findViewById(R.id.customer_credit_expires_value);
 
         creditAmount.setText(NumberFormat.getCurrencyInstance().format(credit.getInitialBalance()));
         creditCode.setText(credit.getCode());

@@ -21,11 +21,9 @@ import com.mozu.mozuandroidinstoreassistant.app.views.LoadingView;
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.Observable;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import rx.util.functions.Action1;
 
 public class CustomerOrderHistoryFragment extends Fragment {
 
@@ -37,10 +35,10 @@ public class CustomerOrderHistoryFragment extends Fragment {
     private rx.Observable<List<Order>> mOrderObservable;
     OrderFetcher mOrderFetcher;
 
-    public static CustomerOrderHistoryFragment getInstance(CustomerAccount customerAccount){
+    public static CustomerOrderHistoryFragment getInstance(CustomerAccount customerAccount) {
         CustomerOrderHistoryFragment customerOrderHistoryFragment = new CustomerOrderHistoryFragment();
         Bundle b = new Bundle();
-        b.putSerializable(CUSTOMER_ACCOUNT,customerAccount);
+        b.putSerializable(CUSTOMER_ACCOUNT, customerAccount);
         customerOrderHistoryFragment.setArguments(b);
         return customerOrderHistoryFragment;
     }
@@ -58,14 +56,14 @@ public class CustomerOrderHistoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View fragmentView = inflater.inflate(R.layout.customer_order_history, container, false);
         mListView = (ListView) fragmentView.findViewById(R.id.customer_order_list);
-        mOrderLoading = (LoadingView)fragmentView.findViewById(R.id.orderhistory_loading);
+        mOrderLoading = (LoadingView) fragmentView.findViewById(R.id.orderhistory_loading);
         mAdapter = new CustomerOrderHistoryAdapter(new ArrayList<Order>());
         mListView.setAdapter(mAdapter);
         mListView.setDivider(null);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Order order =  mAdapter.getItem(position);
+                Order order = mAdapter.getItem(position);
                 UserAuthenticationStateMachine userAuthenticationStateMachine = UserAuthenticationStateMachineProducer.getInstance(getActivity());
                 Intent intent = new Intent(getActivity(), OrderDetailActivity.class);
                 intent.putExtra(OrderDetailActivity.ORDER_NUMBER_EXTRA_KEY, order.getId());
@@ -80,16 +78,17 @@ public class CustomerOrderHistoryFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-       loadData();
+        loadData();
     }
 
-    private void loadData(){
+    private void loadData() {
         mOrderFetcher.setCustomerId(mCustomerAccount.getId());
         mOrderObservable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new OrderSubscriber());
     }
 
     private class OrderSubscriber implements rx.Observer<List<Order>> {
         List<Order> mOrderList = new ArrayList<Order>();
+
         @Override
         public void onCompleted() {
             if (mOrderList.size() > 0) {
@@ -108,7 +107,7 @@ public class CustomerOrderHistoryFragment extends Fragment {
 
         @Override
         public void onNext(List<Order> orderList) {
-           mOrderList = orderList;
+            mOrderList = orderList;
         }
     }
 

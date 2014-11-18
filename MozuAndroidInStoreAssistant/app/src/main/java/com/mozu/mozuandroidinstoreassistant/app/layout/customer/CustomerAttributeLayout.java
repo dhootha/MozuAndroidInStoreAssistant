@@ -32,7 +32,7 @@ public class CustomerAttributeLayout extends LinearLayout implements IRowLayout 
             attributeValue.setText(customerAccountAttribute.getValue());
             attributeProperty.setText(customerAccountAttribute.getProperty());
         } else {
-            attributeValue.setText("N/A");
+            attributeValue.setText(getResources().getString(R.string.not_available));
         }
 
     }

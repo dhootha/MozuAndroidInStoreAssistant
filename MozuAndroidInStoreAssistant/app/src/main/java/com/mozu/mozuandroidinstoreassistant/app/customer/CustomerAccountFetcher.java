@@ -12,6 +12,7 @@ import rx.Subscriber;
 
 public class CustomerAccountFetcher {
     private Integer mCustomerId;
+
     public Observable<CustomerAccount> getCustomerAccount(Integer tenantId, Integer siteId) {
         final CustomerAccountResource customerAccountResource = new CustomerAccountResource(new MozuApiContext(tenantId, siteId));
         return Observable
@@ -36,7 +37,7 @@ public class CustomerAccountFetcher {
                 });
     }
 
-    public void setCustomerId(Integer customerId){
+    public void setCustomerId(Integer customerId) {
         mCustomerId = customerId;
     }
 
@@ -63,7 +64,6 @@ public class CustomerAccountFetcher {
                     }
                 });
     }
-
 
 
 }

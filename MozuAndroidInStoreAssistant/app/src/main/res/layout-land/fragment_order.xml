@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@android:color/white"
-    tools:context="com.mozu.mozuandroidinstoreassistant.app.fragments.OrderFragment">
+    tools:context="com.mozu.mozuandroidinstoreassistant.app.order.OrderFragment">
 
     <LinearLayout
         android:visibility="gone"
@@ -37,6 +37,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:baselineAligned="false"
         android:id="@+id/order_list_header"
         android:orientation="horizontal"
         android:layout_width="match_parent"

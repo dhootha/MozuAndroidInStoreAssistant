@@ -1,6 +1,5 @@
 package com.mozu.mozuandroidinstoreassistant.app;
 
-import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
@@ -10,7 +9,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,12 +22,10 @@ import android.widget.TextView;
 
 import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.api.contracts.productruntime.ProductImage;
-import com.mozu.mozuandroidinstoreassistant.app.adapters.ProductDetailSectionPagerAdapter;
-import com.mozu.mozuandroidinstoreassistant.app.loaders.ProductDetailLoader;
+import com.mozu.mozuandroidinstoreassistant.app.product.adapter.ProductDetailSectionPagerAdapter;
+import com.mozu.mozuandroidinstoreassistant.app.product.loaders.ProductDetailLoader;
 import com.mozu.mozuandroidinstoreassistant.app.models.ImageURLConverter;
-import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.settings.SettingsFragment;
-import com.mozu.mozuandroidinstoreassistant.app.views.HeightWrappingViewPager;
 import com.mozu.mozuandroidinstoreassistant.app.views.LoadingView;
 import com.mozu.mozuandroidinstoreassistant.app.views.ProductDetailImageTransformation;
 import com.squareup.picasso.Callback;

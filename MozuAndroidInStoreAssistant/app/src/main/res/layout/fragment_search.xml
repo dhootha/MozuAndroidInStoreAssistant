@@ -11,7 +11,7 @@
         android:paddingRight="45dp"
         android:paddingLeft="45dp"
         android:background="@color/main_background"
-        tools:context="com.mozu.mozuandroidinstoreassistant.app.fragments.OrderFragment">
+        tools:context="com.mozu.mozuandroidinstoreassistant.app.order.OrderFragment">
 
         <RelativeLayout
             android:visibility="gone"
@@ -74,7 +74,7 @@
                     android:layout_height="match_parent"
                     android:textSize="18sp"
                     android:gravity="center"
-                    android:text="Orders" />
+                    android:text="@string/orders" />
 
                 <TextView
                     android:layout_marginLeft="5dp"
@@ -98,7 +98,7 @@
                     android:layout_height="match_parent"
                     android:textSize="15sp"
                     android:textColor="@color/mozu_text_button"
-                    android:text="VIEW ALL" />
+                    android:text="@string/view_all" />
 
             </RelativeLayout>
 
@@ -149,7 +149,7 @@
                     android:layout_height="match_parent"
                     android:textSize="18sp"
                     android:gravity="center"
-                    android:text="Products" />
+                    android:text="@string/products" />
 
                 <TextView
                     android:layout_marginLeft="5dp"
@@ -172,7 +172,7 @@
                     android:layout_height="match_parent"
                     android:textSize="15sp"
                     android:textColor="@color/mozu_text_button"
-                    android:text="VIEW ALL" />
+                    android:text="@string/view_all" />
 
 
 
@@ -226,7 +226,7 @@
                     android:layout_height="match_parent"
                     android:textSize="18sp"
                     android:gravity="center"
-                    android:text="Customers" />
+                    android:text="@string/customers" />
 
                 <TextView
                     android:layout_marginLeft="5dp"
@@ -249,7 +249,7 @@
                     android:layout_height="match_parent"
                     android:textSize="15sp"
                     android:textColor="@color/mozu_text_button"
-                    android:text="VIEW ALL" />
+                    android:text="@string/view_all" />
 
             </RelativeLayout>
 

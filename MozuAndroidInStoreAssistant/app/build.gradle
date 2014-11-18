@@ -2,13 +2,12 @@ buildscript {
     repositories {
         maven { url 'http://download.crashlytics.com/maven' }
     }
-
     dependencies {
         classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
     }
 }
 
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 apply plugin: 'crashlytics'
 
 repositories {
@@ -16,7 +15,6 @@ repositories {
     mavenLocal()
     maven { url 'http://download.crashlytics.com/maven' }
     maven { url "https://oss.sonatype.org/content/groups/staging/"}
-
     flatDir {
         dirs 'libs'
     }
@@ -38,10 +36,11 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file('../../mozu_android.jks')
-            storePassword 'mozumozu'
-            keyAlias 'Mozu'
-            keyPassword 'mozumozu'
+            //These are fetched from $GRADLE_HOME/.gradle/gradle.properties
+            storeFile file(releaseStoreLocation)
+            storePassword releaseStorePassword
+            keyAlias releaseKeyAlias
+            keyPassword releaseKeyPassword
         }
     }
     buildTypes {
@@ -76,9 +75,7 @@ dependencies {
     compile 'com.mozu:mozu-api-android:1.13.0-RC2'
     compile 'com.crashlytics.android:crashlytics:1.+'
     compile 'com.squareup.picasso:picasso:2.3.4'
-
     compile 'com.android.support:support-v13:19.+'
-    compile 'com.android.support:appcompat-v7:19.+'
 
     compile 'org.joda:joda-convert:1.6'
     compile 'com.jakewharton:butterknife:5.1.2'

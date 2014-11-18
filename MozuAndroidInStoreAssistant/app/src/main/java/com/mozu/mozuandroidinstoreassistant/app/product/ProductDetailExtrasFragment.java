@@ -9,8 +9,6 @@ import android.widget.ListView;
 
 import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.mozuandroidinstoreassistant.app.R;
-import com.mozu.mozuandroidinstoreassistant.app.adapters.ProdDetailExtrasAdapter;
-import com.mozu.mozuandroidinstoreassistant.app.adapters.ProdDetailPropertiesAdapter;
 
 
 public class ProductDetailExtrasFragment extends Fragment {
