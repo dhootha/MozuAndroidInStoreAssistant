@@ -101,12 +101,12 @@ public class CustomerAccountInfoFragment extends Fragment {
         ArrayList<IData> resultSet = new ArrayList<IData>();
 
         CustomerOverviewDataItem dataItem = new CustomerOverviewDataItem(getActivity().getResources().getString(R.string.customer_email), mCustomerAccount.getEmailAddress(),
-                getActivity().getResources().getString(R.string.customer_newsletter), (mCustomerAccount.getAcceptsMarketing() != null && mCustomerAccount.getAcceptsMarketing()) ? "Yes" : "No");
+                getActivity().getResources().getString(R.string.customer_newsletter), (mCustomerAccount.getAcceptsMarketing() != null && mCustomerAccount.getAcceptsMarketing()) ? getString(R.string.yes) : getString(R.string.no));
 
 
         resultSet.add(dataItem);
         dataItem = new CustomerOverviewDataItem(getActivity().getResources().getString(R.string.customer_segments), mCustomerAccount.getCompanyOrOrganization(),
-                getActivity().getResources().getString(R.string.customer_tax_exmept), (mCustomerAccount.getTaxExempt() != null && mCustomerAccount.getTaxExempt())? "Yes" : "No");
+                getActivity().getResources().getString(R.string.customer_tax_exmept), (mCustomerAccount.getTaxExempt() != null && mCustomerAccount.getTaxExempt())? getString(R.string.yes) : getString(R.string.no));
 
         resultSet.add(dataItem);
 

@@ -33,7 +33,7 @@ public class OrderReturnDetailDialogFragment extends DialogFragment {
     private Return mReturn;
     private View mView;
     private ListView mReturnListView;
-    private OrderDetailReturnAdapter mOrderDetailReturnAdapter;
+    private OrderDetailReturnDialogAdapter mOrderDetailReturnDialogAdapter;
     private ImageView closeImageView;
 
 
@@ -57,8 +57,8 @@ public class OrderReturnDetailDialogFragment extends DialogFragment {
         mView = inflater.inflate(R.layout.order_return_info, null);
         closeImageView = (ImageView)mView.findViewById(R.id.return_close);
         mReturnListView = (ListView) mView.findViewById(R.id.returns_list);
-        mOrderDetailReturnAdapter = new OrderDetailReturnAdapter(getActivity(), setUpData());
-        mReturnListView.setAdapter(mOrderDetailReturnAdapter);
+        mOrderDetailReturnDialogAdapter = new OrderDetailReturnDialogAdapter(getActivity(), setUpData());
+        mReturnListView.setAdapter(mOrderDetailReturnDialogAdapter);
         mReturnListView.setDivider(null);
         closeImageView.setOnClickListener(new View.OnClickListener() {
             @Override

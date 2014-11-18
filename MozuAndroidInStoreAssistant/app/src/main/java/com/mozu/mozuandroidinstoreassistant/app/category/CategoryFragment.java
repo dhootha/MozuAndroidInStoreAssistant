@@ -25,9 +25,9 @@ import com.mozu.api.contracts.productruntime.Category;
 import com.mozu.mozuandroidinstoreassistant.app.BuildConfig;
 import com.mozu.mozuandroidinstoreassistant.app.MainActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
-import com.mozu.mozuandroidinstoreassistant.app.adapters.CategoryAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.SearchSuggestionsCursorAdapter;
-import com.mozu.mozuandroidinstoreassistant.app.loaders.CategoryFetcher;
+import com.mozu.mozuandroidinstoreassistant.app.category.adapters.CategoryAdapter;
+import com.mozu.mozuandroidinstoreassistant.app.category.loaders.CategoryFetcher;
 import com.mozu.mozuandroidinstoreassistant.app.models.RecentSearch;
 import com.mozu.mozuandroidinstoreassistant.app.models.UserPreferences;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
@@ -48,7 +48,6 @@ import rx.schedulers.Schedulers;
 
 public class CategoryFragment extends Fragment implements AdapterView.OnItemClickListener, SearchView.OnQueryTextListener, SearchView.OnSuggestionListener, SwipeRefreshLayout.OnRefreshListener {
 
-    private static final int CATEGORY_LOADER = 0;
     public static final int MAX_NUMBER_OF_SEARCHES = 5;
     private static final int CATEGORY_IMAGELOADER_MENU_ID = 100;
     private static final String CURRENT_CATEGORY = "currentCategory" ;

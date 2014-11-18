@@ -18,8 +18,7 @@ public class SitesAdapter extends ArrayAdapter<Site> {
 
     @Override
     public long getItemId(int position) {
-
-         return position;
+        return position;
     }
 
     @Override

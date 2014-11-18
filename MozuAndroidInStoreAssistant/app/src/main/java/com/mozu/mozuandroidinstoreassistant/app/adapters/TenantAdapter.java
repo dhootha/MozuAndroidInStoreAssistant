@@ -18,8 +18,7 @@ public class TenantAdapter extends ArrayAdapter<Scope> {
 
     @Override
     public long getItemId(int position) {
-
-         return position;
+        return position;
     }
 
     @Override

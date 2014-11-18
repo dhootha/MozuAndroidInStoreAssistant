@@ -19,7 +19,7 @@ public class CustomerAddressAdapter extends BaseAdapter {
 
     private List<CustomerContactDataItem> mData;
 
-    public CustomerAddressAdapter(List<CustomerContactDataItem> data){
+    public CustomerAddressAdapter(List<CustomerContactDataItem> data) {
         mData = data;
     }
 
@@ -46,18 +46,18 @@ public class CustomerAddressAdapter extends BaseAdapter {
         View view;
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (convertView == null) {
-            view = inflater.inflate(R.layout.customer_address_grid_item,null);
+            view = inflater.inflate(R.layout.customer_address_grid_item, null);
         } else {
             view = convertView;
         }
-        TextView name = (TextView)view.findViewById(R.id.customer_address_name);
-        TextView company = (TextView)view.findViewById(R.id.customer_address_company_name);
-        TextView address1 = (TextView)view.findViewById(R.id.customer_address_line1);
-        TextView email = (TextView)view.findViewById(R.id.customer_email);
-        TextView contact_num = (TextView)view.findViewById(R.id.customer_contact_num);
+        TextView name = (TextView) view.findViewById(R.id.customer_address_name);
+        TextView company = (TextView) view.findViewById(R.id.customer_address_company_name);
+        TextView address1 = (TextView) view.findViewById(R.id.customer_address_line1);
+        TextView email = (TextView) view.findViewById(R.id.customer_email);
+        TextView contact_num = (TextView) view.findViewById(R.id.customer_contact_num);
 
 
-        TextView isPrimary = (TextView)view.findViewById(R.id.customer_primary_address);
+        TextView isPrimary = (TextView) view.findViewById(R.id.customer_primary_address);
         if (customerContactDataItem.getTypeMessage() != null) {
             isPrimary.setVisibility(View.VISIBLE);
             isPrimary.setText(customerContactDataItem.getTypeMessage());
@@ -66,7 +66,7 @@ public class CustomerAddressAdapter extends BaseAdapter {
         }
 
 
-        name.setText(customerContact.getFirstName()+" "+customerContact.getLastNameOrSurname());
+        name.setText(customerContact.getFirstName() + " " + customerContact.getLastNameOrSurname());
         address1.setText(constructAddress(customerContact.getAddress()));
         company.setText(customerContact.getCompanyOrOrganization());
         email.setText(customerContact.getEmail());
@@ -82,7 +82,6 @@ public class CustomerAddressAdapter extends BaseAdapter {
         }
         return view;
     }
-
 
 
     private String constructAddress(Address address) {

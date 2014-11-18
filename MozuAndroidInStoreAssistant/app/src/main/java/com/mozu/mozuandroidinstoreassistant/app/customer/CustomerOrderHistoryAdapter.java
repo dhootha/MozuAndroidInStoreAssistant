@@ -17,7 +17,7 @@ public class CustomerOrderHistoryAdapter extends BaseAdapter {
 
     private List<Order> mData;
 
-    public CustomerOrderHistoryAdapter(List<Order> data){
+    public CustomerOrderHistoryAdapter(List<Order> data) {
         mData = data;
     }
 
@@ -43,14 +43,14 @@ public class CustomerOrderHistoryAdapter extends BaseAdapter {
         View view;
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (convertView == null) {
-            view = inflater.inflate(R.layout.customer_orderhistory_item,null);
+            view = inflater.inflate(R.layout.customer_orderhistory_item, null);
         } else {
             view = convertView;
         }
-        TextView orderNum = (TextView)view.findViewById(R.id.customer_order_num_value);
-        TextView orderDate = (TextView)view.findViewById(R.id.customer_order_date_value);
-        TextView orderStatus = (TextView)view.findViewById(R.id.customer_order_status_value);
-        TextView orderAmount = (TextView)view.findViewById(R.id.customer_order_amount_value);
+        TextView orderNum = (TextView) view.findViewById(R.id.customer_order_num_value);
+        TextView orderDate = (TextView) view.findViewById(R.id.customer_order_date_value);
+        TextView orderStatus = (TextView) view.findViewById(R.id.customer_order_status_value);
+        TextView orderAmount = (TextView) view.findViewById(R.id.customer_order_amount_value);
         orderNum.setText(String.valueOf(order.getOrderNumber()));
         if (order.getSubmittedDate() != null) {
             orderDate.setText(DateUtils.getFormattedDateTime(order.getSubmittedDate().getMillis()));

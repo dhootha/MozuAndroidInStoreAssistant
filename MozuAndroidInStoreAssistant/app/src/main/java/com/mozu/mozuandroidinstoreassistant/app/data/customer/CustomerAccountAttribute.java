@@ -1,6 +1,6 @@
 package com.mozu.mozuandroidinstoreassistant.app.data.customer;
 
-import com.mozu.mozuandroidinstoreassistant.app.data.IData;
+        import com.mozu.mozuandroidinstoreassistant.app.data.IData;
 
 public class CustomerAccountAttribute implements IData {
 
