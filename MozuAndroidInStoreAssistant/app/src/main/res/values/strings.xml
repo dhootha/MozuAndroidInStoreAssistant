@@ -35,7 +35,7 @@
     <string name="title_activity_image_list">ImageListActivity</string>
 
     <!-- Tabs For Product Detail -->
-       <string name="overview_tab_name">Overview</string>
+    <string name="overview_tab_name">Overview</string>
     <string name="properties_tab_name">Properties</string>
     <string name="extras_tab_name">Extras</string>
     <string name="shipping_tab_name">Shipping</string>
@@ -79,7 +79,7 @@
     <string name="returns_header">Returned Items</string>
     <string name="replaced_total">REPLACED</string>
     <string name="refunded_total">REFUNDED</string>
-    <string name="total_returned_items">TOTAL</string>
+    <string name="total_returned_items">TOTAL RETURNS</string>
     <string name="date_return_header">Date</string>
     <string name="code_return_header">Code</string>
     <string name="product_return_header">Product</string>
@@ -201,7 +201,7 @@
     <string name="return_loss_header">Loss</string>
     <string name="return_restockable_header">Restockable</string>
     <string name="return_reason_header">Reason</string>
-    <string name="return_quantity_returned_header">Quantity Returned</string>
+    <string name="return_quantity_returned_header">"Qty Ret'd"</string>
     <string name="refund_payment_type">PaymentType</string>
     <string name="refund_payment_cardtype">CardType</string>
     <string name="refund_payment_cardnumber">CardNumber</string>
@@ -257,6 +257,9 @@
     <string name="view_all">VIEW ALL</string>
     <string name="products">Products</string>
     <string name="customers">Customers</string>
+    <string name="returns">Returns</string>
+    <string name="refunds">Refunds</string>
+    <string name="returns_due_on">"Returns Due On: "</string>
     <string-array name="register_email_address">
         <item>mozumobile@volusion.com</item>
     </string-array>

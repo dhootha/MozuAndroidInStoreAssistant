@@ -3,13 +3,13 @@
     android:layout_width="match_parent"
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
-    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:minHeight="64dp"
     android:layout_height="wrap_content">
     <TextView
-        android:layout_marginTop="30dp"
+        android:gravity="center_vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textSize="30dp"
+        android:textSize="28sp"
         android:text="@string/not_available"
         android:id="@+id/header_text" />
 </com.mozu.mozuandroidinstoreassistant.app.layout.order.OrderReturnTitleRow>

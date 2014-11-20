@@ -60,6 +60,7 @@ public class OrderReturnDataItem implements IData{
         if (mOrderReturnItem.getReasons() != null && mOrderReturnItem.getReasons().size() > 0) {
             String reason = "";
             for (ReturnReason returnReason : mOrderReturnItem.getReasons()) {
+
                 if (reason.length() > 0) {
                     reason = reason + ",";
                 }
@@ -72,8 +73,8 @@ public class OrderReturnDataItem implements IData{
     }
 
     public String getQuantity() {
-        if (mOrderReturnItem.getQuantityShipped() != null ) {
-            return String.valueOf(mOrderReturnItem.getQuantityShipped());
+        if (mOrderReturnItem.getReasons() != null) {
+            return String.valueOf(mOrderReturnItem.getReasons().get(0).getQuantity());
         } else {
             return "N/A";
         }

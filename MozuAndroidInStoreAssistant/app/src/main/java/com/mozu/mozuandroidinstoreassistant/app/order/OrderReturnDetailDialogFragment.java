@@ -55,7 +55,7 @@ public class OrderReturnDetailDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.order_return_info, null);
-        closeImageView = (ImageView)mView.findViewById(R.id.return_close);
+        closeImageView = (ImageView) mView.findViewById(R.id.return_close);
         mReturnListView = (ListView) mView.findViewById(R.id.returns_list);
         mOrderDetailReturnDialogAdapter = new OrderDetailReturnDialogAdapter(getActivity(), setUpData());
         mReturnListView.setAdapter(mOrderDetailReturnDialogAdapter);
@@ -78,7 +78,7 @@ public class OrderReturnDetailDialogFragment extends DialogFragment {
     private List<IData> setUpData() {
         List<IData> resultList = new ArrayList<IData>();
         if (mReturn != null && mReturn.getItems().size() > 0) {
-            OrderReturnTitleDataItem orderReturnTitleDataItem = new OrderReturnTitleDataItem("Returns");
+            OrderReturnTitleDataItem orderReturnTitleDataItem = new OrderReturnTitleDataItem(getString(R.string.returns));
             resultList.add(orderReturnTitleDataItem);
             resultList.add(new TopRowItem());
             resultList.add(new OrderReturnHeaderDataItem());
@@ -89,13 +89,13 @@ public class OrderReturnDetailDialogFragment extends DialogFragment {
             resultList.add(new BottomRowItem());
         }
         if (mReturn.getRmaDeadline() != null) {
-            resultList.add(new OrderReturnTitleDataItem("Return Due on: "+DateUtils.getFormattedDate(mReturn.getRmaDeadline().getMillis())));
-        }else{
-            resultList.add(new OrderReturnTitleDataItem("Return Due on: N/A"));
+            resultList.add(new OrderReturnTitleDataItem(getString(R.string.returns_due_on) + DateUtils.getFormattedDate(mReturn.getRmaDeadline().getMillis())));
+        } else {
+            resultList.add(new OrderReturnTitleDataItem(getString(R.string.returns_due_on) + getString(R.string.not_available)));
         }
 
         if (mReturn.getPayments() != null && mReturn.getPayments().size() > 0) {
-            OrderReturnTitleDataItem orderReturnTitleDataItem = new OrderReturnTitleDataItem("Refunds");
+            OrderReturnTitleDataItem orderReturnTitleDataItem = new OrderReturnTitleDataItem(getString(R.string.refunds));
             resultList.add(orderReturnTitleDataItem);
             resultList.add(new TopRowItem());
             resultList.add(new OrderRefundHeaderItem());

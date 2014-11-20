@@ -32,9 +32,6 @@ import rx.schedulers.Schedulers;
 
 
 public class OrderDetailReturnsFragment extends Fragment  {
-
-
-    private static final int LOADER_ORDER_DETAIL = 141;
     public static final String REPLACE = "Replace";
     public static final String REFUND = "Refund";
     public static final String UNKNOWN = "Unknown";
@@ -42,8 +39,6 @@ public class OrderDetailReturnsFragment extends Fragment  {
 
     private Order mOrder;
 
-    private TextView mReplacedTotal;
-    private TextView mRefundedTotal;
     private TextView mTotal;
     private TextView mEmptyReturnsMessage;
     private ListView mItemList;
@@ -127,15 +122,11 @@ public class OrderDetailReturnsFragment extends Fragment  {
 
     private void setOrderToViews(List<Return> returnList) {
         if (returnList == null) {
-            mReplacedTotal.setText(getString(R.string.not_available));
-            mRefundedTotal.setText(getString(R.string.not_available));
             mTotal.setText(getString(R.string.not_available));
             return;
         }
 
         mListOfReturnsLayout = (LinearLayout) mView.findViewById(R.id.list_of_returns_layout);
-        mReplacedTotal = (TextView) mView.findViewById(R.id.replaced_total);
-        mRefundedTotal = (TextView) mView.findViewById(R.id.refunded_total);
         mTotal = (TextView) mView.findViewById(R.id.total_returned);
         mEmptyReturnsMessage = (TextView) mView.findViewById(R.id.empty_returns_message);
 
@@ -167,9 +158,6 @@ public class OrderDetailReturnsFragment extends Fragment  {
             mListOfReturnsLayout.setVisibility(View.VISIBLE);
             mEmptyReturnsMessage.setVisibility(View.GONE);
         }
-
-        mReplacedTotal.setText(String.valueOf(replacedCount));
-        mRefundedTotal.setText(String.valueOf(refundedCount));
         mTotal.setText(String.valueOf(items.size()));
     }
 

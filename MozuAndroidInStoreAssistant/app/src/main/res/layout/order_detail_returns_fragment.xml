@@ -38,53 +38,6 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_toLeftOf="@+id/refunded_layout"
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:layout_marginBottom="4dp"
-                android:textColor="@android:color/darker_gray"
-                android:text="@string/replaced_total" />
-
-            <TextView
-                android:id="@+id/replaced_total"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="28sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/refunded_layout"
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="40dp"
-
-            android:layout_toLeftOf="@+id/returned_layout">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:layout_marginBottom="4dp"
-                android:textColor="@android:color/darker_gray"
-                android:text="@string/refunded_total" />
-
-            <TextView
-                android:id="@+id/refunded_total"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="28sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
             android:id="@+id/returned_layout"
             android:orientation="vertical"
             android:layout_width="wrap_content"
@@ -93,7 +46,7 @@
             android:layout_alignParentRight="true">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
                 android:layout_marginBottom="4dp"
@@ -101,8 +54,9 @@
                 android:text="@string/total_returned_items" />
 
             <TextView
+                android:gravity="center_horizontal"
                 android:id="@+id/total_returned"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="28sp" />
         </LinearLayout>
@@ -139,40 +93,40 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textStyle="bold"
-                android:textColor="@android:color/darker_gray"
+                android:textSize="14sp"
+                android:textColor="@color/light_gray_text"
                 android:text="@string/return_id_header" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textStyle="bold"
-                android:textColor="@android:color/darker_gray"
+                android:textSize="14sp"
+                android:textColor="@color/light_gray_text"
                 android:text="@string/return_status_header" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textStyle="bold"
-                android:textColor="@android:color/darker_gray"
+                android:textSize="14sp"
+                android:textColor="@color/light_gray_text"
                 android:text="@string/return_create_date_header" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textStyle="bold"
-                android:textColor="@android:color/darker_gray"
+                android:textSize="14sp"
+                android:textColor="@color/light_gray_text"
                 android:text="@string/return_type_header" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textStyle="bold"
-                android:textColor="@android:color/darker_gray"
+                android:textSize="14sp"
+                android:textColor="@color/light_gray_text"
                 android:text="@string/return_amount_header"
                 android:gravity="center_horizontal|right" />
 
@@ -180,8 +134,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textStyle="bold"
-                android:textColor="@android:color/darker_gray"
+                android:textSize="14sp"
+                android:textColor="@color/light_gray_text"
                 android:text="@string/return_quantity_header"
                 android:gravity="center_horizontal|right" />
 
