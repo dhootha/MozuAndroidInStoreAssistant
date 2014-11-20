@@ -1,4 +1,7 @@
 MozuAndroidInStoreAssistant
 ===========================
+Mozu Android Instore Sales Assitant Version 1.0.1
 
-Mozu Android In Store Assistant 
+This is the repository for the Mozu Android app.
+ -  test: test
+
