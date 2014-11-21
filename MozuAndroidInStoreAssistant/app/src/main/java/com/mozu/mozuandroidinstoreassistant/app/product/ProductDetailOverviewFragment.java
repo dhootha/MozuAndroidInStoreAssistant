@@ -1,6 +1,5 @@
 package com.mozu.mozuandroidinstoreassistant.app.product;
 
-import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -133,10 +132,7 @@ public class ProductDetailOverviewFragment extends Fragment {
     }
 
     private boolean hasSalePrice(Product product){
-        if (product.getPrice() != null && product.getPrice().getSalePrice() != null) {
-            return true;
-        }
-        return false;
+        return product.getPrice() != null && product.getPrice().getSalePrice() != null;
     }
 
     private String getSalePriceText(NumberFormat format) {
@@ -172,13 +168,7 @@ public class ProductDetailOverviewFragment extends Fragment {
 
     private String getMAPPriceText(NumberFormat format) {
         String mapString = "N/A";
-
-//MAP Price unprovided currently
-//        if (mProduct.getPrice() != null && mProduct.getPrice(). != null) {
-//
-//            mapString = format.format(mProduct.getPrice().getSalePrice());
-//        }
-
+        //MAP Price unprovided currently
         return mapString;
     }
 
@@ -217,10 +207,7 @@ public class ProductDetailOverviewFragment extends Fragment {
     }
 
    private boolean showExpandButton(String text){
-       if (text != null && text.length() > MAX_DESC_LENGTH)
-           return true;
-
-       return false;
+       return text != null && text.length() > MAX_DESC_LENGTH;
 
    }
 

@@ -21,7 +21,7 @@ public class OrderDetailPendingFulfillmentAdapter extends ArrayAdapter<OrderItem
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        OrderDetailDirectShipPendingFulfillmentViewHolder viewHolder = null;
+        OrderDetailDirectShipPendingFulfillmentViewHolder viewHolder;
 
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.fulfillment_direct_ship_pending_list_item, parent, false);

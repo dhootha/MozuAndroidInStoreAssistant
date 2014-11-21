@@ -33,7 +33,7 @@ public class CustomerWishListFragment extends Fragment {
     private LoadingView mWishListLoading;
     private CustomerWishListAdapter mAdapter;
     private rx.Observable<List<Wishlist>> mWishListObservable;
-    CustomerWishListFetcher mCustomerWishListFetcher;
+    private CustomerWishListFetcher mCustomerWishListFetcher;
 
     public static CustomerWishListFragment getInstance(CustomerAccount customerAccount){
         CustomerWishListFragment customerWishListFragment = new CustomerWishListFragment();

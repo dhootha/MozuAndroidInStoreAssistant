@@ -1,4 +1,4 @@
-package com.mozu.mozuandroidinstoreassistant.app.models.authentication;;
+package com.mozu.mozuandroidinstoreassistant.app.models.authentication;
 
 public class UserAuthenticatedTenantSet extends UserAuthenticatedState {
 

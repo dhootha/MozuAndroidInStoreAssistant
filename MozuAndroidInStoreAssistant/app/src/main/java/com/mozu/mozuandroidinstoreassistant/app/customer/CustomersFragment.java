@@ -57,13 +57,9 @@ public class CustomersFragment extends Fragment implements LoaderManager.LoaderC
     @InjectView(R.id.customer_list_progress) LinearLayout mProgress;
 
     private CustomersLoader mCustomersLoader;
-
     private CustomersAdapter mAdapter;
-
     private SearchView mSearchView;
-
     private MenuItem mSearchMenuItem;
-
     private CustomerListener mListener;
     private String mCurrentSearch;
 
@@ -504,7 +500,6 @@ public class CustomersFragment extends Fragment implements LoaderManager.LoaderC
 
             setTextViewBoldStyle(mCustomerEmailHeader);
             mCustomerEmailHeaderSortImage.setVisibility(View.VISIBLE);
-            return;
         } else if (mResourceOfCurrentSelectedColumn == mcCustomerFirstNameHeader.getId()) {
 
             setTextViewBoldStyle(mcCustomerFirstNameHeader);

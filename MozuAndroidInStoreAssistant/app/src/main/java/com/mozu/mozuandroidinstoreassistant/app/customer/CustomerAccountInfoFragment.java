@@ -97,7 +97,7 @@ public class CustomerAccountInfoFragment extends Fragment {
         mCustomerObservable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new AttributeFetcher());
     }
 
-    public ArrayList<IData> getData(List<CustomerAttribute> customerAttributes) {
+    protected ArrayList<IData> getData(List<CustomerAttribute> customerAttributes) {
         ArrayList<IData> resultSet = new ArrayList<IData>();
 
         CustomerOverviewDataItem dataItem = new CustomerOverviewDataItem(getActivity().getResources().getString(R.string.customer_email), mCustomerAccount.getEmailAddress(),
@@ -110,7 +110,7 @@ public class CustomerAccountInfoFragment extends Fragment {
 
         resultSet.add(dataItem);
 
-        List<CustomerAttribute> attributes= customerAttributes;
+        List<CustomerAttribute> attributes = customerAttributes;
         if (attributes != null && attributes.size()>0) {
             resultSet.add(new EmptyRowDataItem());
             for (CustomerAttribute attribute : attributes) {
@@ -142,7 +142,7 @@ public class CustomerAccountInfoFragment extends Fragment {
             try {
                 resultValue.append(String.valueOf(obj));
             } catch (Exception e) {
-
+                return null;
             }
 
         }

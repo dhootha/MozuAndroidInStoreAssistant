@@ -1,7 +1,6 @@
 package com.mozu.mozuandroidinstoreassistant.app.tasks;
 
 import android.content.Context;
-import android.os.AsyncTask;
 
 import com.crashlytics.android.Crashlytics;
 import com.mozu.api.MozuApiContext;

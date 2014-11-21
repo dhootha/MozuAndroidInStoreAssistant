@@ -58,7 +58,7 @@ import rx.schedulers.Schedulers;
 
 public class CategoryProductFragment extends Fragment implements AdapterView.OnItemClickListener,AbsListView.OnScrollListener, SearchView.OnQueryTextListener, SearchView.OnSuggestionListener, SwipeRefreshLayout.OnRefreshListener,InventoryButtonClickListener {
 
-    public static final int MAX_NUMBER_OF_SEARCHES = 5;
+    private static final int MAX_NUMBER_OF_SEARCHES = 5;
     private static final int CATEGORY_IMAGELOADER_MENU_ID = 100;
     private static final String CURRENT_CATEGORY = "currentCategory";
     private final static String PRODUCT_INVENTORY_DIALOG_TAG = "product_inventory_tag";
@@ -87,7 +87,7 @@ public class CategoryProductFragment extends Fragment implements AdapterView.OnI
     TextView mEmptyListMessageView;
     @InjectView(R.id.category_container)
     SwipeRefreshLayout mCategoryPullToRefresh;
-    CategoryFetcher mCategoryFetcher;
+    private CategoryFetcher mCategoryFetcher;
     private int mCurrentPage = 0;
     private Integer mProductCount= 0;
 
@@ -218,7 +218,7 @@ public class CategoryProductFragment extends Fragment implements AdapterView.OnI
         return fragmentView;
     }
 
-    public void reloadData() {
+    void reloadData() {
         mCategoryPullToRefresh.setRefreshing(true);
         mCategoryObservable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .flatMap(new Func1<List<Category>, Observable<Category>>() {
@@ -232,10 +232,7 @@ public class CategoryProductFragment extends Fragment implements AdapterView.OnI
                 if (mCategory == null) {
                     return true;
                 }
-                if (mCategory.getCategoryId() == category.getCategoryId()) {
-                    return true;
-                }
-                return false;
+                return mCategory.getCategoryId().equals(category.getCategoryId());
             }
         })
                 .subscribe(new CategorySubscriber());

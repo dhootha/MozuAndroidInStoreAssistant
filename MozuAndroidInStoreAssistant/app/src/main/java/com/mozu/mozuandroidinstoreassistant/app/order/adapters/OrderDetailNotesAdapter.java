@@ -1,6 +1,7 @@
 package com.mozu.mozuandroidinstoreassistant.app.order.adapters;
 
 import android.content.Context;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,8 +71,7 @@ public class OrderDetailNotesAdapter extends BaseAdapter {
                 TextView comment = (TextView) convertView.findViewById(R.id.note_comment);
                 TextView employee = (TextView)convertView.findViewById(R.id.note_employee);
 
-                android.text.format.DateFormat dateFormat= new android.text.format.DateFormat();
-                String dateString = note.getAuditInfo() != null && note.getAuditInfo().getCreateDate() != null ? dateFormat.format("MM/dd/yy", new Date(note.getAuditInfo().getCreateDate().getMillis())).toString() : "";
+                String dateString = note.getAuditInfo() != null && note.getAuditInfo().getCreateDate() != null ? DateFormat.format("MM/dd/yy", new Date(note.getAuditInfo().getCreateDate().getMillis())).toString() : "";
                 noteDate.setText(dateString);
                 employee.setText(note.getAuditInfo().getCreateBy());
 
@@ -90,8 +90,7 @@ public class OrderDetailNotesAdapter extends BaseAdapter {
                 TextView noteDate = (TextView) convertView.findViewById(R.id.note_date);
                 TextView comment = (TextView) convertView.findViewById(R.id.note_comment);
 
-                android.text.format.DateFormat dateFormat= new android.text.format.DateFormat();
-                String dateString = mOrder.getAuditInfo() != null && mOrder.getAuditInfo().getCreateDate() != null ? dateFormat.format("MM/dd/yy", new Date(mOrder.getAuditInfo().getCreateDate().getMillis())).toString() : "";
+                String dateString = mOrder.getAuditInfo() != null && mOrder.getAuditInfo().getCreateDate() != null ? DateFormat.format("MM/dd/yy", new Date(mOrder.getAuditInfo().getCreateDate().getMillis())).toString() : "";
                 noteDate.setText(dateString);
 
                 comment.setText(note.getComments());

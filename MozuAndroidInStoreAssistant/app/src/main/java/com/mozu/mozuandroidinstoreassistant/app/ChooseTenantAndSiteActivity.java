@@ -11,7 +11,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.mozu.api.contracts.tenant.Site;
 import com.mozu.api.contracts.tenant.Tenant;
@@ -26,7 +25,6 @@ import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthen
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.tasks.RetrieveTenantAsyncTask;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -117,7 +115,7 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
         mUserAuthStateMachine.updateScope(scope);
     }
 
-    public void showTenantChooser() {
+    void showTenantChooser() {
         //only show tenant chooser if there is more than one tenant
         if (mUserAuthStateMachine.getAuthProfile().getAuthorizedScopes().size() == 1) {
             tenantWasChosen(mUserAuthStateMachine.getAuthProfile().getAuthorizedScopes().get(0));
@@ -240,11 +238,11 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
                     StringBuilder str = new StringBuilder();
                     str.append(getString(R.string.register_email_body)+"\n\n\n");
 
-                    str.append(getString(R.string.register_email_label)+getCurrentUserEmail()+"\n");
-                    str.append(getString(R.string.register_tenant_label)+getCurrentTenant()+"\n");
+                    str.append(getString(R.string.register_email_label)).append(getCurrentUserEmail()).append("\n");
+                    str.append(getString(R.string.register_tenant_label)).append(getCurrentTenant()).append("\n");
 
-                    str.append(getString(R.string.register_device_model)+Build.MODEL + "\n");
-                    str.append(getString(R.string.register_devices_os_label)+Build.VERSION.SDK_INT+"\n");
+                    str.append(getString(R.string.register_device_model)).append(Build.MODEL).append("\n");
+                    str.append(getString(R.string.register_devices_os_label)).append(Build.VERSION.SDK_INT).append("\n");
                     intent.putExtra(Intent.EXTRA_TEXT, str.toString());
                     startActivityForResult(Intent.createChooser(intent, getString(R.string.register)),EMAIL_NAVIGATION_REQUEST);
                 }
@@ -260,13 +258,11 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
     }
 
     private String getCurrentUserEmail(){
-        String email = mUserAuthStateMachine.getAuthProfile().getUserProfile().getEmailAddress();
-        return email;
+        return mUserAuthStateMachine.getAuthProfile().getUserProfile().getEmailAddress();
     }
 
     private String getCurrentTenant(){
-        String email = String.valueOf(mUserAuthStateMachine.getTenantId());
-        return email;
+        return String.valueOf(mUserAuthStateMachine.getTenantId());
     }
 
     @Override

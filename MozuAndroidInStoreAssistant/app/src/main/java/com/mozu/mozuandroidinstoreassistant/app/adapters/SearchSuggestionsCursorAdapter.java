@@ -31,9 +31,7 @@ public class SearchSuggestionsCursorAdapter extends CursorAdapter {
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.item, parent, false);
-        return view;
-
+        return inflater.inflate(R.layout.item, parent, false);
     }
 
 }

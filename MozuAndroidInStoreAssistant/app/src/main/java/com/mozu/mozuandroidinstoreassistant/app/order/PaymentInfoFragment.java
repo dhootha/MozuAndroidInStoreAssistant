@@ -140,7 +140,7 @@ public class PaymentInfoFragment extends DialogFragment {
         Contact billingContact =  payment.getBillingInfo().getBillingContact();
         Address address = billingContact.getAddress();
         StringBuilder str = new StringBuilder();
-        str.append(billingContact.getFirstName()+" "+billingContact.getLastNameOrSurname());
+        str.append(billingContact.getFirstName()).append(" ").append(billingContact.getLastNameOrSurname());
         str.append(lineSeparator);
         if(address != null) {
             str.append(address.getAddress1());

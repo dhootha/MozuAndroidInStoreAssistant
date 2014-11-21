@@ -26,16 +26,14 @@ public abstract class AuthActivity extends BaseActivity implements Observer {
     @Override
     protected void onResume() {
         super.onResume();
-
         setupAppAuth();
     }
 
-    public void setupAppAuth() {
+    void setupAppAuth() {
         AppAuthInfo authInfo = new AppAuthInfo();
-        authInfo.setApplicationId(getString(R.string.app_auth_appid));
-        authInfo.setSharedSecret(getString(R.string.app_auth_shared_secret));
-
-        mAppAuthStateMachine = AppAuthenticationStateMachineProducer.getInstance(this, authInfo, getString(R.string.service_url));
+        authInfo.setApplicationId(BuildConfig.APP_AUTH_APPID);
+        authInfo.setSharedSecret(BuildConfig.APP_AUTH_SHARED_SECRET);
+        mAppAuthStateMachine = AppAuthenticationStateMachineProducer.getInstance(this, authInfo, BuildConfig.SERVICE_URL);
         mAppAuthStateMachine.addObserver(this);
 
         if (!mAppAuthStateMachine.getCurrentAppAuthState().isAuthenticatedState() && !mAppAuthStateMachine.getCurrentAppAuthState().isErrorState()) {
@@ -168,7 +166,6 @@ public abstract class AuthActivity extends BaseActivity implements Observer {
         //user is already authenticated
         if (getUserAuthStateMachine() == null) {
             setupUserAuth();
-            return;
         }
     }
 

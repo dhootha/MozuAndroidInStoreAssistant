@@ -13,14 +13,12 @@ public class DateUtils {
 
 
     public static String getFormattedDateTime(long Millis){
-       DateFormat dateFormat= new DateFormat();
-       return dateFormat.format(standardDateTimeFormat, new Date(Millis)).toString();
+       return DateFormat.format(standardDateTimeFormat, new Date(Millis)).toString();
 
     }
 
     public static String getFormattedDate(long Millis){
-        DateFormat dateFormat= new DateFormat();
-        return dateFormat.format(standardDateFormat, new Date(Millis)).toString();
+        return DateFormat.format(standardDateFormat, new Date(Millis)).toString();
 
     }
 

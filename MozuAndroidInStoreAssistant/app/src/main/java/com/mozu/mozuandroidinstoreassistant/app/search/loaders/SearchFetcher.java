@@ -56,7 +56,6 @@ public class SearchFetcher {
                 .create(new Observable.OnSubscribe<ProductSearchResult>() {
                     @Override
                     public void call(Subscriber<? super ProductSearchResult> subscriber) {
-                        ProductSearchResult productSearchResult;
                         try {
                             ProductSearchResult result = productSearchResultResource.search(mQueryString, null,
                                     null, null, null, null, null, null, null, null, null, null, null,

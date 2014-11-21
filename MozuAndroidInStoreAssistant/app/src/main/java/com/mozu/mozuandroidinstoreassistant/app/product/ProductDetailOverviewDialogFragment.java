@@ -186,11 +186,8 @@ public class ProductDetailOverviewDialogFragment extends DialogFragment {
     }
 
     private boolean hasSalePrice(Product product){
-        if (product.getPrice() != null && product.getPrice().getSalePrice() != null) {
-            return true;
-        }
+        return product.getPrice() != null && product.getPrice().getSalePrice() != null;
 
-        return false;
     }
 
     private String getSalePriceText(NumberFormat format) {
@@ -225,8 +222,8 @@ public class ProductDetailOverviewDialogFragment extends DialogFragment {
     }
 
     private String getMAPPriceText(NumberFormat format) {
+        ///This API is not avaiable
         String mapString = "N/A";
-
         return mapString;
     }
 

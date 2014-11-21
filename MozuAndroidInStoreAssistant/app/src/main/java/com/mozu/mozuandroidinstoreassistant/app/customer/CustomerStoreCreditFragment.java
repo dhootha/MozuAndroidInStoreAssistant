@@ -29,7 +29,7 @@ public class CustomerStoreCreditFragment extends Fragment {
     private LoadingView mOrderLoading;
     private CustomerStoreCreditAdapter mAdapter;
     private rx.Observable<List<Credit>> mCreditObservable;
-    StoreCreditFetcher mCreditFetcher;
+    private StoreCreditFetcher mCreditFetcher;
 
     public static CustomerStoreCreditFragment getInstance(CustomerAccount customerAccount){
         CustomerStoreCreditFragment customerStoreCreditFragment = new CustomerStoreCreditFragment();

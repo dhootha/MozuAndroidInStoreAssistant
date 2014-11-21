@@ -22,7 +22,7 @@ public class OrderDetailDirectShipFulfillmentAdapter extends ArrayAdapter<Fulfil
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        OrderDetailDirectShipFulfillmentViewHolder viewHolder = null;
+        OrderDetailDirectShipFulfillmentViewHolder viewHolder;
 
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.fulfillment_direct_ship_list_item, parent, false);

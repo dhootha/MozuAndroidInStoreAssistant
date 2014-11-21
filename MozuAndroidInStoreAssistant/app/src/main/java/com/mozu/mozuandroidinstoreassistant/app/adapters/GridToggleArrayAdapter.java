@@ -10,7 +10,7 @@ public class GridToggleArrayAdapter<T> extends ArrayAdapter<T> {
     private int mGridResource;
     private int mListResource;
 
-    public GridToggleArrayAdapter(Context context, int gridResource, int listResource) {
+    protected GridToggleArrayAdapter(Context context, int gridResource, int listResource) {
         super(context, gridResource);
 
         if (gridResource == 0 || listResource == 0) {
@@ -21,8 +21,7 @@ public class GridToggleArrayAdapter<T> extends ArrayAdapter<T> {
         mListResource = listResource;
     }
 
-    public boolean isGrid() {
-
+    protected boolean isGrid() {
         return mIsGrid;
     }
 

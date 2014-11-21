@@ -39,11 +39,7 @@ public class OrderDetailReturnDialogAdapter extends BaseAdapter {
     @Override
     public boolean isEnabled(int position) {
         RowType rowType = getRowType(position);
-        if (rowType == RowType.RETURN_ITEM_ROW || rowType == RowType.REFUND_ITEM_ROW) {
-            return true;
-        } else {
-            return false;
-        }
+        return (rowType == RowType.RETURN_ITEM_ROW || rowType == RowType.REFUND_ITEM_ROW);
     }
 
     public OrderDetailReturnDialogAdapter(Context context, List<IData> data) {

@@ -77,9 +77,11 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
 
     private List<String> mTitles;
 
-    @InjectView(R.id.product_detail_container) SwipeRefreshLayout mProductSwipeRefresh;
+    @InjectView(R.id.product_detail_container)
+    SwipeRefreshLayout mProductSwipeRefresh;
 
-    @InjectView(R.id.image_loading) LoadingView mImageLoading;
+    @InjectView(R.id.image_loading)
+    LoadingView mImageLoading;
 
     private ProductDetailSectionPagerAdapter mAdapter;
 
@@ -103,12 +105,13 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
             mProductCode = savedInstanceState.getString(PRODUCT_CODE_EXTRA_KEY);
             mTenantId = savedInstanceState.getInt(CURRENT_TENANT_ID, -1);
             mSiteId = savedInstanceState.getInt(CURRENT_SITE_ID, -1);
-            mSiteDomain =savedInstanceState.getString(CURRENT_SITE_DOMAIN);
+            mSiteDomain = savedInstanceState.getString(CURRENT_SITE_DOMAIN);
         }
-
-        getActionBar().setDisplayShowHomeEnabled(false);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setTitle("");
+        if (getActionBar() != null) {
+            getActionBar().setDisplayShowHomeEnabled(false);
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+            getActionBar().setTitle("");
+        }
 
         mMainImageView = (ImageView) findViewById(R.id.mainImageView);
         mProductCodeTextView = (TextView) findViewById(R.id.productCode);
@@ -144,6 +147,7 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
                 R.color.third_color_swipe_refresh,
                 R.color.fourth_color_swipe_refresh);
     }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putString(PRODUCT_CODE_EXTRA_KEY, mProductCode);
@@ -170,9 +174,9 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
             finish();
             return true;
         } else if (item.getItemId() == R.id.refresh_product_detail) {
-           onRefresh();
+            onRefresh();
             return true;
-        } else if( item.getItemId() == R.id.settings){
+        } else if (item.getItemId() == R.id.settings) {
             SettingsFragment settingsFragment = SettingsFragment.getInstance();
             settingsFragment.show(getFragmentManager(), "settings_frag");
         }
@@ -205,17 +209,12 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
             mImages = mProduct.getContent().getProductImages();
         }
 
-        boolean isLandscape;
-        if (mHorizontalScrollView != null) {
-            isLandscape = false;
-        } else {
-            isLandscape= true;
-        }
+        boolean isLandscape = mHorizontalScrollView == null;
 
         if (mImages != null && mProduct.getContent().getProductImages().size() > 0) {
             mProductImagesLayout.removeAllViews();
             mProductImagesLayout.addView(mMainImageView);
-            int productImageMax =  getResources().getDimensionPixelSize(R.dimen.main_product_image_size);
+            int productImageMax = getResources().getDimensionPixelSize(R.dimen.main_product_image_size);
             Picasso.with(this)
                     .load(mImageUrlConverter.getFullImageUrl(mProduct.getContent().getProductImages().get(0).getImageUrl()))
                     .transform(new ProductDetailImageTransformation(isLandscape, productImageMax))
@@ -295,17 +294,18 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
                     .centerInside()
                     .into(imageViewTop, new Callback() {
 
-                @Override
-                public void onSuccess() {
-                    Bitmap bitmap = ((BitmapDrawable) imageViewTop.getDrawable()).getBitmap();
-                    imageViewTop.setBackgroundColor(bitmap.getPixel(0, 0));
-                    mImageLoading.success();
-                }
-                @Override
-                public void onError() {
-                }
+                        @Override
+                        public void onSuccess() {
+                            Bitmap bitmap = ((BitmapDrawable) imageViewTop.getDrawable()).getBitmap();
+                            imageViewTop.setBackgroundColor(bitmap.getPixel(0, 0));
+                            mImageLoading.success();
+                        }
 
-            });
+                        @Override
+                        public void onError() {
+                        }
+
+                    });
 
             if (productImageList.size() > secondImagePosition) {
                 LinearLayout secondImageLayout = new LinearLayout(this);
@@ -333,6 +333,7 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
                                 imageViewBottom.setBackgroundColor(bitmap.getPixel(0, 0));
                                 mImageLoading.success();
                             }
+
                             @Override
                             public void onError() {
                             }
@@ -371,7 +372,7 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
 
             final ImageView imageViewTop = new ImageView(this);
             LinearLayout.LayoutParams imageLayoutParams = new LinearLayout.LayoutParams(imagewidth, imageHeight);
-            imageLayoutParams.setMargins(margin, 0,0, margin);
+            imageLayoutParams.setMargins(margin, 0, 0, margin);
             imageViewTop.setLayoutParams(imageLayoutParams);
             firstImageLayout.setOnClickListener(this);
 
@@ -381,15 +382,16 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
 
             Picasso.with(this)
                     .load(mImageUrlConverter.getFullImageUrl(mProduct.getContent().getProductImages().get(firstImagePosition).getImageUrl()))
-                    .resize(imagewidth,imageHeight)
+                    .resize(imagewidth, imageHeight)
                     .centerInside()
-                    .into(imageViewTop,new Callback() {
+                    .into(imageViewTop, new Callback() {
 
                         @Override
                         public void onSuccess() {
                             Bitmap bitmap = ((BitmapDrawable) imageViewTop.getDrawable()).getBitmap();
                             imageViewTop.setBackgroundColor(bitmap.getPixel(0, 0));
                         }
+
                         @Override
                         public void onError() {
                         }
@@ -416,13 +418,14 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
                         .load(mImageUrlConverter.getFullImageUrl(mProduct.getContent().getProductImages().get(secondImagePosition).getImageUrl()))
                         .resize(imagewidth, imageHeight)
                         .centerInside()
-                        .into(imageViewBottom,new Callback() {
+                        .into(imageViewBottom, new Callback() {
 
                             @Override
                             public void onSuccess() {
                                 Bitmap bitmap = ((BitmapDrawable) imageViewBottom.getDrawable()).getBitmap();
                                 imageViewBottom.setBackgroundColor(bitmap.getPixel(0, 0));
                             }
+
                             @Override
                             public void onError() {
                             }
@@ -457,7 +460,7 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
         intent.putStringArrayListExtra(ImagePagerActivity.IMAGE_URLS_FOR_PRODUCTS, imageUrls);
         intent.putExtra(ImagePagerActivity.IMAGE_PAGER_INDEX, index);
 
-        int [] screenLocation = new int[2];
+        int[] screenLocation = new int[2];
 
         view.getLocationOnScreen(screenLocation);
 
@@ -474,8 +477,8 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
     private ArrayList<String> getImageUrlsArrayList() {
         ArrayList<String> list = new ArrayList<String>();
 
-        for (int i= 0; i < mImages.size(); i++) {
-            list.add(mImageUrlConverter.getFullImageUrl(mImages.get(i).getImageUrl()));
+        for (ProductImage image : mImages) {
+            list.add(mImageUrlConverter.getFullImageUrl(image.getImageUrl()));
         }
 
         return list;

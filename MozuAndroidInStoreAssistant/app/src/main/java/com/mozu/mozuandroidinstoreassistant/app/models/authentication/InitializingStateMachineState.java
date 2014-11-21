@@ -7,7 +7,6 @@ import com.mozu.api.security.AuthenticationProfile;
 import com.mozu.mozuandroidinstoreassistant.app.models.UserPreferences;
 import com.mozu.mozuandroidinstoreassistant.app.tasks.ObtainAuthProfileFromDiskAsyncTask;
 import com.mozu.mozuandroidinstoreassistant.app.tasks.ReadUserPrefsFromDiskAsyncTask;
-import com.mozu.mozuandroidinstoreassistant.app.tasks.UserAuthenticateAsyncTask;
 
 import java.util.ArrayList;
 import java.util.List;

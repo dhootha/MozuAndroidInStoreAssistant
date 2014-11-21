@@ -8,7 +8,6 @@ import android.widget.TextView;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.data.IData;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.PickupFullfillmentTitleDataitem;
-import com.mozu.mozuandroidinstoreassistant.app.data.order.ShipmentFullfillmentTitleDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.layout.IRowLayout;
 
 public class PickupFullfillmentTitleRow extends RelativeLayout implements IRowLayout {
@@ -46,10 +45,10 @@ public class PickupFullfillmentTitleRow extends RelativeLayout implements IRowLa
                 mTotalTextView.setText(String.valueOf(dataItem.getTotalCount()));
             }
         }else{
-            mTitleTextView.setText("N/A");
-            mUnfullfilledTextView.setText("N/A");
-            mFulFilledTextView.setText("N/A");
-            mTotalTextView.setText("N/A");
+            mTitleTextView.setText(getResources().getString(R.string.not_available));
+            mUnfullfilledTextView.setText(getResources().getString(R.string.not_available));
+            mFulFilledTextView.setText(getResources().getString(R.string.not_available));
+            mTotalTextView.setText(getResources().getString(R.string.not_available));
         }
 
     }

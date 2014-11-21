@@ -46,7 +46,6 @@ public class GlobalSearchCustomerAdapter extends BaseAdapter {
     public View getView(int i, View convertview, ViewGroup parent) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         GlobalSearchOrderViewHolder viewHolder;
-        View v;
         if (convertview == null) {
             convertview = inflater.inflate(R.layout.globalsearch_customer_item, parent,false);
             viewHolder = new GlobalSearchOrderViewHolder();

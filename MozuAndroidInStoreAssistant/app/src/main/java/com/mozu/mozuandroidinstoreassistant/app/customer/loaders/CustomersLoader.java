@@ -22,7 +22,7 @@ public class CustomersLoader extends InternetConnectedAsyncTaskLoader<List<Custo
     private static final String SORT_CUSTOMER_ASC = "asc";
     private static final String SORT_CUSTOMER_DSC = "desc";
 
-    public String mCurrentOrderBy = "";
+    private String mCurrentOrderBy = "";
 
     private List<CustomerAccount> mCustomersList;
     private Integer mTenantId;
@@ -33,7 +33,7 @@ public class CustomersLoader extends InternetConnectedAsyncTaskLoader<List<Custo
 
     private boolean mIsLoading;
 
-    public String mSearchQueryFilter;
+    private String mSearchQueryFilter;
     private String mCurrentSort;
 
     public CustomersLoader(Context context, Integer tenantId, Integer siteId) {
@@ -46,10 +46,10 @@ public class CustomersLoader extends InternetConnectedAsyncTaskLoader<List<Custo
     }
 
     public boolean isSortAsc() {
-        return SORT_CUSTOMER_ASC.equals(mCurrentSort) ? true : false;
+        return SORT_CUSTOMER_ASC.equals(mCurrentSort);
     }
 
-    public void init() {
+    protected void init() {
         cancelLoad();
 
         mCurrentPage = 0;

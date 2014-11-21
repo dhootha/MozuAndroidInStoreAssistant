@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -115,7 +116,7 @@ public class PackageInfoDialogFragment extends DialogFragment {
                     @Override
                     public void onClick(View view) {
                         String shippingCode = orderPackage.getShippingMethodCode();
-                        String Url = "";
+                        String Url;
                         if (shippingCode.toLowerCase().startsWith(ShipperUtils.Shipper.DHL.toString().toLowerCase())) {
                             Url = ShipperUtils.Shipper.DHL.getTrackingUrl(orderPackage.getTrackingNumber());
                         } else if (shippingCode.toLowerCase().startsWith(ShipperUtils.Shipper.FEDEX.toString().toLowerCase())) {
@@ -143,8 +144,7 @@ public class PackageInfoDialogFragment extends DialogFragment {
             }
 
             if (orderPackage.getAuditInfo().getCreateDate() != null) {
-                android.text.format.DateFormat dateFormat = new android.text.format.DateFormat();
-                String date = dateFormat.format("MM/dd/yy  hh:mm a", new Date(orderPackage.getAuditInfo().getCreateDate().getMillis())).toString();
+                String date = DateFormat.format("MM/dd/yy  hh:mm a", new Date(orderPackage.getAuditInfo().getCreateDate().getMillis())).toString();
                 mShipDate.setText(date);
             }
         }

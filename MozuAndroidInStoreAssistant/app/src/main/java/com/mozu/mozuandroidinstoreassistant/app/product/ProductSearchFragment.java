@@ -155,8 +155,6 @@ public class ProductSearchFragment extends Fragment implements LoaderManager.Loa
     public Loader<List<Product>> onCreateLoader(int id, Bundle args) {
 
         if (id == PRODUCT_SEARCH_LOADER) {
-            UserPreferences prefs = mUserState.getCurrentUsersPreferences();
-
             return new ProductSearchLoader(getActivity(), mUserState.getTenantId(), mUserState.getSiteId(), mCategoryId, mQueryString);
         }
 

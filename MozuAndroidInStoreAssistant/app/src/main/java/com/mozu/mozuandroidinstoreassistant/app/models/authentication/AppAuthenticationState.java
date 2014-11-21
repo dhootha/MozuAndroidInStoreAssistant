@@ -8,11 +8,11 @@ public abstract class AppAuthenticationState {
 
     private String mErrorMessage;
 
-    public AppAuthenticationState(AppAuthenticationStateMachine stateMachine) {
+    AppAuthenticationState(AppAuthenticationStateMachine stateMachine) {
         mStateMachine = stateMachine;
     }
 
-    protected AppAuthenticationStateMachine getStateMachine() {
+    AppAuthenticationStateMachine getStateMachine() {
         return mStateMachine;
     }
 
@@ -32,7 +32,7 @@ public abstract class AppAuthenticationState {
         return mErrorMessage;
     }
 
-    public void setErrorMessage(String errorMessage) {
+    void setErrorMessage(String errorMessage) {
         mErrorMessage = errorMessage;
     }
 }

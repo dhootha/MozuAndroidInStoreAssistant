@@ -12,7 +12,7 @@ import com.mozu.mozuandroidinstoreassistant.app.models.authentication.AppAuthent
 
 public class AppAuthenticateAsyncTask extends InternetConnectedAsyncTask<Void, Void, Boolean> {
 
-    public static final int HOUR_OF_MILLIS = 3600000;
+    private static final int HOUR_OF_MILLIS = 3600000;
     private AppAuthenticatorAsyncListener mListener;
     private AppAuthInfo mAppAuthInfo;
     private String mBaseUrl;

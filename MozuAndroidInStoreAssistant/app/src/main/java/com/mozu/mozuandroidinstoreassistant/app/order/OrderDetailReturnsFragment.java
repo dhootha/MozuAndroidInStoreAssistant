@@ -131,16 +131,12 @@ public class OrderDetailReturnsFragment extends Fragment  {
         mEmptyReturnsMessage = (TextView) mView.findViewById(R.id.empty_returns_message);
 
         List<ReturnItemForAdapterWrapper> items = new ArrayList<ReturnItemForAdapterWrapper>();
-        int replacedCount = 0;
-        int refundedCount = 0;
 
         for (Return item: returnList) {
-            String returnType = new String();
+            String returnType = "";
             if (item.getCustomerInteractionType().equalsIgnoreCase(REPLACE)) {
-                replacedCount += item.getReturnNumber();
                 returnType = REPLACE;
             } else if (item.getCustomerInteractionType().equalsIgnoreCase(REFUND)) {
-                refundedCount += item.getReturnNumber();
                 returnType = REFUND;
             } else if (item.getCustomerInteractionType().equalsIgnoreCase(UNKNOWN)) {
                 returnType = UNKNOWN;

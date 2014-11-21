@@ -8,7 +8,6 @@ import android.widget.TextView;
 import com.mozu.api.contracts.commerceruntime.fulfillment.PickupItem;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.data.IData;
-import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentPickupItem;
 import com.mozu.mozuandroidinstoreassistant.app.layout.IRowLayout;
 
