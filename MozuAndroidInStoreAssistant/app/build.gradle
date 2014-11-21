@@ -113,9 +113,6 @@ android {
 
 }
 
-File crashlyticsProperties = new File("${project.projectDir.absolutePath}/crashlytics.properties")
-
-
 dependencies {
     compile(name:'viewpager', ext:'aar')
     compile 'com.mozu:mozu-api-android:1.13.0-RC2'
