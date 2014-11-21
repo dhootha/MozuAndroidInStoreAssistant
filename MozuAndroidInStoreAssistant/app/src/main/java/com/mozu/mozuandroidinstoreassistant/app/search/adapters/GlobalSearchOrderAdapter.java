@@ -4,7 +4,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
@@ -51,7 +50,6 @@ public class GlobalSearchOrderAdapter extends BaseAdapter {
     public View getView(int i, View convertview, ViewGroup parent) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         GlobalSearchOrderViewHolder viewHolder;
-        View v;
         if (convertview == null) {
             convertview = inflater.inflate(R.layout.globalsearch_order_item, parent,false);
             viewHolder = new GlobalSearchOrderViewHolder();

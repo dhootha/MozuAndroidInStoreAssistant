@@ -156,10 +156,7 @@ public class CategoryFragment extends Fragment implements AdapterView.OnItemClic
                         if (mCategory == null) {
                             return true;
                         }
-                        if (mCategory.getCategoryId() == category.getCategoryId()) {
-                            return true;
-                        }
-                        return false;
+                        return mCategory.getCategoryId().equals(category.getCategoryId());
                      }
                 })
                 .subscribe(new CategorySubscriber());

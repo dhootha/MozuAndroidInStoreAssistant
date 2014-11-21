@@ -94,7 +94,7 @@ public class ImageViewPageFragment extends Fragment {
 
     public static Bitmap getBitmapFromURL(String src,int reqWidth,int reqHeight) {
         Bitmap bmImg;
-        URL myFileUrl = null;
+        URL myFileUrl;
         try {
             myFileUrl = new URL(src);
             HttpURLConnection conn= (HttpURLConnection)myFileUrl.openConnection();

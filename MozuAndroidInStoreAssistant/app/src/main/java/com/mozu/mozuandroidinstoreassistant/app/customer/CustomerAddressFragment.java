@@ -75,7 +75,7 @@ public class CustomerAddressFragment extends Fragment {
     }
 
 
-    public void updateContacts(CustomerAccount customerAccount){
+    protected void updateContacts(CustomerAccount customerAccount){
         List<CustomerContact> customerContacts = customerAccount.getContacts();
         if(customerContacts == null)
             return;

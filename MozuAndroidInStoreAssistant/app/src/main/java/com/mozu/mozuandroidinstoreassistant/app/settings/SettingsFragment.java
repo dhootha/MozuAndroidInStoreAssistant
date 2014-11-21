@@ -35,9 +35,9 @@ public class SettingsFragment extends DialogFragment {
     @InjectView(R.id.update_store) Button mUpdateStore;
 
     private UserAuthenticationStateMachine mUserState;
-    public static SettingsFragment getInstance(){
-        SettingsFragment fragment = new SettingsFragment();
-        return fragment;
+
+    public static SettingsFragment getInstance() {
+        return new SettingsFragment();
     }
 
     @Override

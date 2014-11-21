@@ -42,7 +42,7 @@ public class ProductOptionsLayout extends LinearLayout {
         MarginLayoutParams margins = MarginLayoutParams.class.cast(getLayoutParams());
         margins.setMargins(0,0,20,0);
         setLayoutParams(margins);
-    };
+    }
 
     public void setTitle(String title){
         mTitle.setText(title);

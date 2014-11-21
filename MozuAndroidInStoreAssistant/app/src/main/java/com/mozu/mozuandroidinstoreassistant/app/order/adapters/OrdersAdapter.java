@@ -1,6 +1,7 @@
 package com.mozu.mozuandroidinstoreassistant.app.order.adapters;
 
 import android.content.Context;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,8 +39,7 @@ public class OrdersAdapter extends ArrayAdapter<Order> {
 
         viewHolder.orderNumber.setText(String.valueOf(order.getOrderNumber()));
 
-        android.text.format.DateFormat dateFormat= new android.text.format.DateFormat();
-        String date = order.getSubmittedDate() != null ? dateFormat.format("MM/dd/yy  hh:mm a", new Date(order.getSubmittedDate().getMillis())).toString() : "";
+        String date = order.getSubmittedDate() != null ? DateFormat.format("MM/dd/yy  hh:mm a", new Date(order.getSubmittedDate().getMillis())).toString() : "";
 
         viewHolder.orderDate.setText(date);
         viewHolder.email.setText(order.getEmail());

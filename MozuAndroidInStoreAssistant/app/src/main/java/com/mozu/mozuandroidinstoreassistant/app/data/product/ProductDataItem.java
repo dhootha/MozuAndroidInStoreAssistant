@@ -1,6 +1,5 @@
 package com.mozu.mozuandroidinstoreassistant.app.data.product;
 
-import com.mozu.api.contracts.productadmin.Category;
 import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.mozuandroidinstoreassistant.app.data.IData;
 

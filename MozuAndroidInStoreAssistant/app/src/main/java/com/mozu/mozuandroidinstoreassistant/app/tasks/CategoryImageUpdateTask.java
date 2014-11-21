@@ -66,7 +66,7 @@ public class CategoryImageUpdateTask extends AsyncTask<Void,Void,Category> {
     @Override
     protected Category doInBackground(Void... voids) {
         CategoryResource categoryResource = new CategoryResource(new MozuApiContext(mTenantId,mSiteId));
-        Category category = null;
+        Category category;
         try {
             category = categoryResource.getCategory(mCategoryId);
             Category tempCat = category;

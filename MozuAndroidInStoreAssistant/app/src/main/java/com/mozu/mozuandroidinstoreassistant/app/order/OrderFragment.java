@@ -524,7 +524,6 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
             mOrderDateHeaderSortImage.setVisibility(View.VISIBLE);
         } else if (mResourceOfCurrentSelectedColumn == mOrderEmailHeader.getId()) {
 
-            return;
         } else if (mResourceOfCurrentSelectedColumn == mOrderStatusHeader.getId()) {
 
             setTextViewBoldStyle(mOrderStatusHeader);

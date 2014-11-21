@@ -18,7 +18,7 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -52,15 +52,14 @@ public class LoginActivity extends AuthActivity implements LoaderCallbacks<Curso
         if (!getResources().getBoolean(R.bool.allow_portrait)) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
-
-
-        Crashlytics.start(this);
         setContentView(R.layout.activity_login);
         setUpViews();
         showProgress(true);
     }
 
     private void setUpViews(){
+
+
         mAppAuthErrorView = findViewById(R.id.app_auth_error_layout);
 
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
@@ -94,6 +93,7 @@ public class LoginActivity extends AuthActivity implements LoaderCallbacks<Curso
         if (mEmails != null) {
             addEmailsToAutoComplete(mEmails);
         }
+
     }
 
     @Override
@@ -191,6 +191,7 @@ public class LoginActivity extends AuthActivity implements LoaderCallbacks<Curso
                 mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             }
         });
+
 
     }
 
@@ -295,6 +296,8 @@ public class LoginActivity extends AuthActivity implements LoaderCallbacks<Curso
 
     @Override
     public void onClick(View v) {
+
+
         if (v.getId() == R.id.try_app_auth_again_button) {
             showProgress(true);
             findViewById(R.id.try_app_auth_again_button).setOnClickListener(null);

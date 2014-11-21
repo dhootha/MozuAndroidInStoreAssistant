@@ -25,7 +25,7 @@ public class OrderDetailPickupAdapter extends ArrayAdapter<Pickup> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        OrderDetailPickupFulfillmentViewHolder viewHolder = null;
+        OrderDetailPickupFulfillmentViewHolder viewHolder;
 
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.fulfillment_pickup_list_item, parent, false);

@@ -88,10 +88,11 @@ public class CustomerDetailActivity extends BaseActivity implements SwipeRefresh
         setContentView(mView);
         ButterKnife.inject(this);
 
-
-        getActionBar().setDisplayShowHomeEnabled(false);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setTitle("");
+        if (getActionBar() != null) {
+            getActionBar().setDisplayShowHomeEnabled(false);
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+            getActionBar().setTitle("");
+        }
 
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setEnabled(false);
@@ -143,7 +144,7 @@ public class CustomerDetailActivity extends BaseActivity implements SwipeRefresh
         }
     }
 
-    public void setUpViews(CustomerAccount customerAccount) {
+    protected void setUpViews(CustomerAccount customerAccount) {
         if (mCustomerFragmentAdapter == null) {
             mCustomerFragmentAdapter = new CustomerFragmentAdapter(getFragmentManager(), customerAccount);
             mCustomerViewPager.setAdapter(mCustomerFragmentAdapter);
@@ -209,7 +210,7 @@ public class CustomerDetailActivity extends BaseActivity implements SwipeRefresh
         return super.onOptionsItemSelected(item);
     }
 
-    public void loadData(){
+    protected void loadData(){
         mCustomerAccountFetcher.setCustomerId(mUserAccountId);
         mSwipeRefreshLayout.setRefreshing(true);
         mCustomerObservable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<CustomerAccount>() {

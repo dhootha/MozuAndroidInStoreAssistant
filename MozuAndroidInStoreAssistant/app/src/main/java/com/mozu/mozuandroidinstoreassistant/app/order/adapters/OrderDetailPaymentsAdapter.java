@@ -1,6 +1,7 @@
 package com.mozu.mozuandroidinstoreassistant.app.order.adapters;
 
 import android.content.Context;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,8 +38,7 @@ public class OrderDetailPaymentsAdapter extends ArrayAdapter<Payment> {
         TextView paymentTypeOrCreditCard = (TextView) convertView.findViewById(R.id.payment_type_or_credit_number);
         TextView paymentAmount = (TextView) convertView.findViewById(R.id.payment_amount);
 
-        android.text.format.DateFormat dateFormat= new android.text.format.DateFormat();
-        String date = payment.getAuditInfo() != null && payment.getAuditInfo().getCreateDate() != null ? dateFormat.format("MM/dd/yy  hh:mm a", new Date(payment.getAuditInfo().getCreateDate().getMillis())).toString() : "";
+        String date = payment.getAuditInfo() != null && payment.getAuditInfo().getCreateDate() != null ? DateFormat.format("MM/dd/yy  hh:mm a", new Date(payment.getAuditInfo().getCreateDate().getMillis())).toString() : "";
 
         paymentDate.setText(date);
         payment.getPaymentType();

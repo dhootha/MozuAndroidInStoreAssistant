@@ -42,6 +42,12 @@ android {
             keyAlias releaseKeyAlias
             keyPassword releaseKeyPassword
         }
+        debug {
+            storeFile file('debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
     }
     buildTypes {
         release {
@@ -50,8 +56,46 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             ext.betaDistributionEmails="shadaab_kazi@volusion.com, adam_dutton@volusion.com, santhosh_mankala@volusion.com, chris_pound@volusion.com, rabin_joshi@volusion.com, volusionmozu@gmail.com"
             ext.betaDistributionReleaseNotesFilePath=file('releasenotes.txt')
+            ext.enableCrashlytics = enableCrashlytics.toBoolean()
+            buildConfigField "String", "APP_AUTH_APPID","\""+mozuAuthAppId+"\""
+            buildConfigField "String", "APP_AUTH_SHARED_SECRET","\""+mozuAuthSharedSecret+"\""
+            buildConfigField "String", "SERVICE_URL","\""+mozuServiceURL+"\""
+            if(enableCrashlytics.toBoolean()) {
+                buildConfigField "boolean", "ENABLE_CRASHLYTICS", "true"
+            }else{
+                buildConfigField "boolean", "ENABLE_CRASHLYTICS", "false"
+            }
+        }
+        debug {
+            runProguard false
+            signingConfig signingConfigs.debug
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            ext.betaDistributionEmails="shadaab_kazi@volusion.com, adam_dutton@volusion.com, santhosh_mankala@volusion.com, chris_pound@volusion.com, rabin_joshi@volusion.com, volusionmozu@gmail.com"
+            ext.betaDistributionReleaseNotesFilePath=file('releasenotes.txt')
+            ext.enableCrashlytics = enableCrashlytics.toBoolean()
+            buildConfigField "String", "APP_AUTH_APPID","\""+mozuAuthAppId+"\""
+            buildConfigField "String", "APP_AUTH_SHARED_SECRET","\""+mozuAuthSharedSecret+"\""
+            buildConfigField "String", "SERVICE_URL","\""+mozuServiceURL+"\""
+            if(enableCrashlytics.toBoolean()) {
+                buildConfigField "boolean", "ENABLE_CRASHLYTICS", "true"
+            }else{
+                buildConfigField "boolean", "ENABLE_CRASHLYTICS", "false"
+            }
+        }
+
+        applicationVariants.all { variant ->
+            if (variant.name == "debug"  && enableCrashlytics.toBoolean()) {
+                File crashlyticsProperties = new File("${project.projectDir.absolutePath}/crashlytics.properties")
+                Properties properties = new Properties()
+                properties.put("apiSecret",crashlyticsApiSecret)
+                properties.put("apiKey", crashlyticsApiKey)
+                properties.store(new FileWriter(crashlyticsProperties), "")
+            }
         }
     }
+
+
+
     packagingOptions {
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/NOTICE'
@@ -67,8 +111,10 @@ android {
         reportDir = "$project.buildDir/mozu/tests/report"
     }
 
-
 }
+
+File crashlyticsProperties = new File("${project.projectDir.absolutePath}/crashlytics.properties")
+
 
 dependencies {
     compile(name:'viewpager', ext:'aar')

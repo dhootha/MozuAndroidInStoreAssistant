@@ -33,7 +33,7 @@ public class CustomerOrderHistoryFragment extends Fragment {
     private LoadingView mOrderLoading;
     private CustomerOrderHistoryAdapter mAdapter;
     private rx.Observable<List<Order>> mOrderObservable;
-    OrderFetcher mOrderFetcher;
+    private OrderFetcher mOrderFetcher;
 
     public static CustomerOrderHistoryFragment getInstance(CustomerAccount customerAccount) {
         CustomerOrderHistoryFragment customerOrderHistoryFragment = new CustomerOrderHistoryFragment();

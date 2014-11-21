@@ -58,7 +58,7 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
     }
 
     public boolean isSortAsc() {
-        return SORT_ORDER_ASC.equals(mCurrentSort) ? true : false;
+        return SORT_ORDER_ASC.equals(mCurrentSort);
     }
 
     public void init() {

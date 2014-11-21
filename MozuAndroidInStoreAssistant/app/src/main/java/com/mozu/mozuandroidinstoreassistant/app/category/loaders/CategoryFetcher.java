@@ -3,7 +3,6 @@ package com.mozu.mozuandroidinstoreassistant.app.category.loaders;
 import com.mozu.api.MozuApiContext;
 import com.mozu.api.contracts.productruntime.Category;
 import com.mozu.api.contracts.productruntime.CategoryCollection;
-import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.api.contracts.productruntime.ProductCollection;
 import com.mozu.api.resources.commerce.catalog.storefront.CategoryResource;
 import com.mozu.api.resources.commerce.catalog.storefront.ProductResource;

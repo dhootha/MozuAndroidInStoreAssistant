@@ -1,6 +1,5 @@
 package com.mozu.mozuandroidinstoreassistant.app.data.order;
 
-import com.mozu.api.contracts.commerceruntime.returns.Return;
 import com.mozu.api.contracts.commerceruntime.returns.ReturnItem;
 import com.mozu.api.contracts.commerceruntime.returns.ReturnReason;
 import com.mozu.mozuandroidinstoreassistant.app.data.IData;

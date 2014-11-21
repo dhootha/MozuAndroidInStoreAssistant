@@ -27,9 +27,6 @@ public class UserNotAuthenticatedNoAuthTicket extends UserAuthenticationState im
         }
 
         getStateMachine().setAuthProfile(profile);
-
-        UserPreferences pref = getStateMachine().getCurrentUsersPreferences();
-
         if (profile.getActiveScope() != null) {
             getStateMachine().setTenantId(profile.getActiveScope());
             getStateMachine().setCurrentUserAuthState(getStateMachine().userAuthenticatedTenantSet);

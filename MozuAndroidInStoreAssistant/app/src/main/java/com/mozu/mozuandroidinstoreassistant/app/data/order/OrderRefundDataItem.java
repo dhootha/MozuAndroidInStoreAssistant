@@ -2,7 +2,6 @@ package com.mozu.mozuandroidinstoreassistant.app.data.order;
 
 import android.text.TextUtils;
 
-import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.commerceruntime.payments.BillingInfo;
 import com.mozu.api.contracts.commerceruntime.payments.Payment;
 import com.mozu.mozuandroidinstoreassistant.app.data.IData;

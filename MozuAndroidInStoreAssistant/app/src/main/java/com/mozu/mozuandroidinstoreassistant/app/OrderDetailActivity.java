@@ -8,6 +8,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.format.DateFormat;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
@@ -61,7 +62,8 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
     private NumberFormat mNumberFormat;
     private OrderDetailSectionPagerAdapter mAdapter;
 
-    @InjectView(R.id.order_detail_container) SwipeRefreshLayout mOrderSwipeRefresh;
+    @InjectView(R.id.order_detail_container)
+    SwipeRefreshLayout mOrderSwipeRefresh;
     private final String ORDER_SETTINGS_FRAGMENT = "Order_Settings_Fragment";
     private TextView mOrderFulfillmentStatus;
 
@@ -86,10 +88,12 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
             mSiteId = savedInstanceState.getInt(CURRENT_SITE_ID, -1);
         }
 
-        getActionBar().setDisplayShowHomeEnabled(false);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setDisplayShowCustomEnabled(true);
-        getActionBar().setTitle(" ");
+        if (getActionBar() != null) {
+            getActionBar().setDisplayShowHomeEnabled(false);
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+            getActionBar().setDisplayShowCustomEnabled(true);
+            getActionBar().setTitle(" ");
+        }
 
         mOrderStatus = (TextView) findViewById(R.id.order_status_value);
         mOrderDate = (TextView) findViewById(R.id.order_date_value);
@@ -106,7 +110,7 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
             }
         });
 
-        mOrderFulfillmentStatus = (TextView)findViewById(R.id.order_fulfillment_status);
+        mOrderFulfillmentStatus = (TextView) findViewById(R.id.order_fulfillment_status);
 
         mTitles = new ArrayList<String>();
         mTitles.add(getString(R.string.overview_tab_name));
@@ -144,14 +148,15 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
         super.onSaveInstanceState(outState);
     }
 
-    public void setFulfillmentStatus(String fulfillmentStatus){
+    public void setFulfillmentStatus(String fulfillmentStatus) {
         mOrderFulfillmentStatus.setText(fulfillmentStatus);
         mOrderFulfillmentStatus.setVisibility(View.VISIBLE);
     }
 
-    public void clearFulfillmentStatus(){
+    public void clearFulfillmentStatus() {
         mOrderFulfillmentStatus.setVisibility(View.GONE);
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
@@ -207,15 +212,14 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
         TextView tv = new TextView(this);
         tv.setText("Order #" + mOrder.getOrderNumber());
 
-        tv.setPadding( getResources().getDimensionPixelSize(R.dimen.order_actionbar_margin_left), 0, 0, 0);
+        tv.setPadding(getResources().getDimensionPixelSize(R.dimen.order_actionbar_margin_left), 0, 0, 0);
         tv.setGravity(Gravity.CENTER);
         tv.setTextColor(getResources().getColor(R.color.dark_gray_text));
         tv.setTypeface(null, Typeface.BOLD);
         tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
         getActionBar().setCustomView(tv);
 
-        android.text.format.DateFormat dateFormat = new android.text.format.DateFormat();
-        String date = mOrder.getSubmittedDate() != null ? dateFormat.format("MM/dd/yy  hh:mm a", new Date(mOrder.getSubmittedDate().getMillis())).toString() : "";
+        String date = mOrder.getSubmittedDate() != null ? DateFormat.format("MM/dd/yy  hh:mm a", new Date(mOrder.getSubmittedDate().getMillis())).toString() : "";
 
         mOrderDate.setText(date);
 

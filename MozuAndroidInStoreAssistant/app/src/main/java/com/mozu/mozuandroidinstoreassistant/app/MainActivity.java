@@ -92,10 +92,12 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         mCustomersLayout = (LinearLayout) findViewById(R.id.menu_customers_layout);
         mCustomersLayout.setOnClickListener(this);
 
-        getActionBar().setTitle(R.string.menu_products_text);
-        getActionBar().setIcon(getResources().getDrawable(android.R.color.transparent));
-        getActionBar().setLogo(getResources().getDrawable(android.R.color.transparent));
-        getActionBar().setDisplayUseLogoEnabled(false);
+        if (getActionBar() != null) {
+            getActionBar().setTitle(R.string.menu_products_text);
+            getActionBar().setIcon(getResources().getDrawable(android.R.color.transparent));
+            getActionBar().setLogo(getResources().getDrawable(android.R.color.transparent));
+            getActionBar().setDisplayUseLogoEnabled(false);
+        }
         mProductsLayout.setSelected(true);
 
         if (savedInstanceState == null) {
@@ -194,9 +196,7 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-         if (mDrawerToggle != null && mDrawerToggle.onOptionsItemSelected(item)) {
+        if (mDrawerToggle != null && mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         } else if (item.getItemId() == R.id.settings) {
             showSettings();
@@ -264,8 +264,6 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
     }
 
 
-
-
     private void initializeOrdersFragment() {
         UserAuthenticationStateMachine userStateMachine = UserAuthenticationStateMachineProducer.getInstance(this);
         OrderFragment fragment = new OrderFragment();
@@ -281,7 +279,7 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         fragment.setTenantId(userStateMachine.getTenantId());
         fragment.setSiteId(userStateMachine.getSiteId());
         fragment.setListener(this);
-        addMainFragment(fragment,true);
+        addMainFragment(fragment, true);
     }
 
     private void initializeProductFragment(Category category) {
@@ -332,7 +330,7 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         Fragment currentFragment = fragmentManager.findFragmentById(R.id.content_fragment_holder);
-        if(currentFragment != null) {
+        if (currentFragment != null) {
             fragmentTransaction.hide(currentFragment);
         }
         fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out);
@@ -344,7 +342,7 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
     }
 
 
-    public void reloadFragment(){
+    public void reloadFragment() {
 
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -372,7 +370,7 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
 
     private void clearBackstack(FragmentManager fragmentManager) {
         while (getFragmentManager().getBackStackEntryCount() > 0) {
-           fragmentManager.popBackStackImmediate();
+            fragmentManager.popBackStackImmediate();
         }
     }
 

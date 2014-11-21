@@ -3,10 +3,7 @@ package com.mozu.mozuandroidinstoreassistant.app.customer;
 import com.mozu.api.MozuApiContext;
 import com.mozu.api.contracts.commerceruntime.wishlists.Wishlist;
 import com.mozu.api.contracts.commerceruntime.wishlists.WishlistCollection;
-import com.mozu.api.contracts.customer.credit.Credit;
-import com.mozu.api.contracts.customer.credit.CreditCollection;
 import com.mozu.api.resources.commerce.WishlistResource;
-import com.mozu.api.resources.commerce.customer.CreditResource;
 
 import java.util.List;
 

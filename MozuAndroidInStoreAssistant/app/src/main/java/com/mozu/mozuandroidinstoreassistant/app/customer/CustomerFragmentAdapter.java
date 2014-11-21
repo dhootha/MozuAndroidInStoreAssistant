@@ -51,23 +51,15 @@ public class CustomerFragmentAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (TabTypes.values()[position]) {
             case ACCOUNT_INFO:
-                CustomerAccountInfoFragment customerAccountInfoFragment = CustomerAccountInfoFragment.getInstance(mCustomer);
-                return customerAccountInfoFragment;
+                return CustomerAccountInfoFragment.getInstance(mCustomer);
             case ADDRESSES:
-                CustomerAddressFragment customerAddressFragment = CustomerAddressFragment.getInstance(mCustomer);
-                return customerAddressFragment;
-
+                return CustomerAddressFragment.getInstance(mCustomer);
             case ORDER_HISTORY:
-                CustomerOrderHistoryFragment customerOrderHistoryFragment = CustomerOrderHistoryFragment.getInstance(mCustomer);
-                return customerOrderHistoryFragment;
-
+                return CustomerOrderHistoryFragment.getInstance(mCustomer);
             case STORE_CREDIT:
-                CustomerStoreCreditFragment customerStoreCreditFragment = CustomerStoreCreditFragment.getInstance(mCustomer);
-                return customerStoreCreditFragment;
-
+                return CustomerStoreCreditFragment.getInstance(mCustomer);
             case WISHLIST:
-                CustomerWishListFragment customerWishListFragment = CustomerWishListFragment.getInstance(mCustomer);
-                return customerWishListFragment;
+                return CustomerWishListFragment.getInstance(mCustomer);
 
         }
 

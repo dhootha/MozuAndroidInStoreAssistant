@@ -4,7 +4,6 @@ package com.mozu.mozuandroidinstoreassistant.app.models.authentication;
 import android.content.Context;
 
 import com.mozu.api.contracts.appdev.AppAuthInfo;
-import com.mozu.mozuandroidinstoreassistant.app.models.UserPreferences;
 
 import java.util.Observable;
 
@@ -14,9 +13,9 @@ public class AppAuthenticationStateMachine extends Observable {
 
     private AppAuthenticationState mCurrentAppAuthState;
 
-    protected AppAuthenticated appAuthenticatedState;
+    AppAuthenticated appAuthenticatedState;
     protected AppNotAuthenticatedNoAuthTicket appNotAuthenticatedNoAuthTicket;
-    protected AppAuthenticationFailed appAuthenticationFailed;
+    AppAuthenticationFailed appAuthenticationFailed;
 
     public AppAuthenticationStateMachine(Context context, AppAuthInfo info, String baseUrl) {
         mContext = context;
@@ -35,8 +34,7 @@ public class AppAuthenticationStateMachine extends Observable {
         notifyObservers();
     }
 
-    protected Context getContext() {
-
+    Context getContext() {
         return mContext;
     }
 
