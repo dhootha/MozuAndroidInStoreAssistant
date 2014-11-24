@@ -14,7 +14,6 @@ repositories {
     mavenCentral()
     mavenLocal()
     maven { url 'http://download.crashlytics.com/maven' }
-    maven { url "https://oss.sonatype.org/content/groups/staging/"}
     flatDir {
         dirs 'libs'
     }
@@ -115,7 +114,7 @@ android {
 
 dependencies {
     compile(name:'viewpager', ext:'aar')
-    compile 'com.mozu:mozu-api-android:1.13.0-RC2'
+    compile 'com.mozu:mozu-api-android:1.13.0'
     compile 'com.crashlytics.android:crashlytics:1.+'
     compile 'com.squareup.picasso:picasso:2.3.4'
     compile 'com.android.support:support-v13:19.+'

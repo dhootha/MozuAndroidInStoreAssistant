@@ -12,6 +12,7 @@ import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.api.contracts.customer.CustomerAttribute;
 import com.mozu.api.contracts.customer.CustomerAttributeCollection;
 import com.mozu.mozuandroidinstoreassistant.app.R;
+import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.CustomerAccountFetcher;
 import com.mozu.mozuandroidinstoreassistant.app.data.EmptyRowDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.IData;
 import com.mozu.mozuandroidinstoreassistant.app.data.customer.CustomerAccountAttribute;

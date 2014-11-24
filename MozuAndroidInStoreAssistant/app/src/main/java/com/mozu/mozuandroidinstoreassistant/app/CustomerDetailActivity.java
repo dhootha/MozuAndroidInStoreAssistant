@@ -13,9 +13,9 @@ import android.widget.Toast;
 
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.api.contracts.customer.credit.Credit;
-import com.mozu.mozuandroidinstoreassistant.app.customer.CustomerAccountFetcher;
+import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.CustomerAccountFetcher;
 import com.mozu.mozuandroidinstoreassistant.app.customer.CustomerFragmentAdapter;
-import com.mozu.mozuandroidinstoreassistant.app.customer.StoreCreditFetcher;
+import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.StoreCreditFetcher;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.settings.SettingsFragment;

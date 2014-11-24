@@ -14,6 +14,7 @@ import com.mozu.api.contracts.commerceruntime.wishlists.WishlistItem;
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.mozuandroidinstoreassistant.app.ProductDetailActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
+import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.CustomerWishListFetcher;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.views.LoadingView;

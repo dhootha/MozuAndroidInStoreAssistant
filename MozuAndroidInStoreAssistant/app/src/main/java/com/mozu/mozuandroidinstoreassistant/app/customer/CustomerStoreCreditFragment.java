@@ -10,6 +10,7 @@ import android.widget.ListView;
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.api.contracts.customer.credit.Credit;
 import com.mozu.mozuandroidinstoreassistant.app.R;
+import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.StoreCreditFetcher;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.views.LoadingView;

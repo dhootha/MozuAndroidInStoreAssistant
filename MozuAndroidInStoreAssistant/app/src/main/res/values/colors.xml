@@ -22,12 +22,6 @@
     <color name="dark_black_border">#0D000000</color>
 
     <color name="text_background_color">#BFBFBF</color>
-
-
-
-
-
-
     <color name="first_color_swipe_refresh">@color/mozu_color</color>
     <color name="second_color_swipe_refresh">#FFFFFF</color>
     <color name="third_color_swipe_refresh">@color/mozu_color</color>

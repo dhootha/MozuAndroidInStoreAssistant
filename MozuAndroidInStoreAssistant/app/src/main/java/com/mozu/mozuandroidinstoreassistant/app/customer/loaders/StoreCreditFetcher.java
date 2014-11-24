@@ -1,4 +1,4 @@
-package com.mozu.mozuandroidinstoreassistant.app.customer;
+package com.mozu.mozuandroidinstoreassistant.app.customer.loaders;
 
 import com.mozu.api.MozuApiContext;
 import com.mozu.api.contracts.customer.credit.Credit;

@@ -1,4 +1,4 @@
-package com.mozu.mozuandroidinstoreassistant.app.customer;
+package com.mozu.mozuandroidinstoreassistant.app.customer.loaders;
 
 import com.mozu.api.MozuApiContext;
 import com.mozu.api.contracts.commerceruntime.wishlists.Wishlist;
@@ -12,7 +12,7 @@ import rx.Subscriber;
 
 public class CustomerWishListFetcher {
     private static final String CUSTOMER_ID_FILTER_BY = "customerAccountId eq ";
-    private final int MAX_PAGE_COUNT = 50;
+    private final int MAX_PAGE_COUNT = 200;
     private Integer mCustomerId;
     public Observable<List<Wishlist>> getWishListsByCustomerId(Integer tenantId, Integer siteId) {
         final WishlistResource wishlistResource = new WishlistResource(new MozuApiContext(tenantId, siteId));
