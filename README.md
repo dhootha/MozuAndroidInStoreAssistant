@@ -8,8 +8,8 @@ This is the  code repository for the Mozu Android Instore Sales Assistant.(https
 
 Required Setup
 --------------
-<p> Add below mentioned parameters in 'gradle.properties' file 
- - <b>Mozu appId</b> and <b>Mozu shared secret</b> can be obtained from www.mozu.com/login and registering mobile app
+<p> Add below mentioned parameters in 'gradle.properties' file located at ~/.gradle.<br>
+<b>Mozu appId</b> and <b>Mozu shared secret</b> can be obtained from https://developer.mozu.com/Console/app by either creating a new or referencing an existing Application.
 </p>
 
       ~/.gradle/gradle.properties
