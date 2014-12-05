@@ -75,7 +75,7 @@
 <p>TabPage indicator(https://github.com/JakeWharton/Android-ViewPagerIndicator/blob/master/library/src/com/viewpagerindicator/TabPageIndicator.java) compiled as an aar file and included in the project:</p>
       compile(name:'viewpager', ext:'aar')
 
-<h2>Enrolling and Distributing the App</h2>
+<h2>Registering and Distributing the App</h2>
 <p>To add the app to Mozu, you need to register the app. When the app customization and extension is complete, you can register the app in Mozu. You can add the app directly through the Mozu Dev Center Console. Follow the process as detailed in the Console to register the app. On completion, the app displays in the Mozu Admin in the <b>Settings > Application</b> section.</p>
 <p><b>Important:</b> When registering an app with Mozu, you must follow the certification process. For more information, see the Mozu Dev Center (http://developer.mozu.com/learn/application-development/application-management/certify-application).</p>
 <p>To provide the app directly to sales associates, you add the app to Google Play. When registration in Mozu completes, you can distribute the app through Google Play store. You must include the release parameters to generate a release build. Follow all registration information and instructions presented by Google Play. You may be required to add a short description and screenshots. Sales associates in your company can download, install, and use the app to interact with Mozu customer records, orders, and inventory. </p>
