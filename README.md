@@ -53,6 +53,12 @@
 - All styles are configured in: styles_mozu.xml. 
 - The app Icon is located at: drawable/ic_launcher.
 - All colors are configured in: colors_mozu.xml.
+ 
+<h2>Screenshots</h2>
+![ScreenShot](https://github.com/Mozu/MozuAndroidInStoreAssistant/blob/master/MozuAndroidInStoreAssistant/screenshots/products-overview.png)
+![ScreenShot](https://github.com/Mozu/MozuAndroidInStoreAssistant/blob/master/MozuAndroidInStoreAssistant/screenshots/product-details.png)
+![ScreenShot](https://github.com/Mozu/MozuAndroidInStoreAssistant/blob/master/MozuAndroidInStoreAssistant/screenshots/customer-details.png)
+![ScreenShot](https://github.com/Mozu/MozuAndroidInStoreAssistant/blob/master/MozuAndroidInStoreAssistant/screenshots/order-details.png)
       
 <h2>External dependencies</h2>
 
