@@ -5,7 +5,6 @@ import android.os.Bundle;
 import com.mozu.api.contracts.appdev.AppAuthInfo;
 import com.mozu.api.contracts.core.UserAuthInfo;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.AppAuthenticationStateMachine;
-import com.mozu.mozuandroidinstoreassistant.app.models.authentication.AppAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 
@@ -33,19 +32,17 @@ public abstract class AuthActivity extends BaseActivity implements Observer {
         AppAuthInfo authInfo = new AppAuthInfo();
         authInfo.setApplicationId(BuildConfig.APP_AUTH_APPID);
         authInfo.setSharedSecret(BuildConfig.APP_AUTH_SHARED_SECRET);
-        mAppAuthStateMachine = AppAuthenticationStateMachineProducer.getInstance(this, authInfo, BuildConfig.SERVICE_URL);
+        mAppAuthStateMachine = AppAuthenticationStateMachine.getInstance(this, authInfo, BuildConfig.SERVICE_URL);
         mAppAuthStateMachine.addObserver(this);
 
         if (!mAppAuthStateMachine.getCurrentAppAuthState().isAuthenticatedState() && !mAppAuthStateMachine.getCurrentAppAuthState().isErrorState()) {
             loadingState();
             mAppAuthStateMachine.authenticateApp();
-
             return;
         }
 
         if (mAppAuthStateMachine.getCurrentAppAuthState().isErrorState()) {
             authError();
-
             return;
         } else {
             stoppedLoading();
@@ -68,12 +65,10 @@ public abstract class AuthActivity extends BaseActivity implements Observer {
 
         //user is already authenticated
         if (mUserAuthStateMachine.getCurrentUserAuthState().isAuthenticatedState()) {
-
             loginSuccess();
         }
 
         if (mUserAuthStateMachine.getCurrentUserAuthState().isErrorState()) {
-
             loginFailure();
         }
 
@@ -122,17 +117,14 @@ public abstract class AuthActivity extends BaseActivity implements Observer {
             AppAuthenticationStateMachine machine = (AppAuthenticationStateMachine)observable;
 
             if (machine.getCurrentAppAuthState().isErrorState()) {
-
+                authError();
                 return;
             }
 
             if (machine.getCurrentAppAuthState().isAuthenticatedState()) {
-                appAuthenticated();
-
                 if (getUserAuthStateMachine() == null) {
                     setupUserAuth();
                 }
-
                 return;
             }
         }
@@ -143,29 +135,19 @@ public abstract class AuthActivity extends BaseActivity implements Observer {
 
             if (machine.getCurrentUserAuthState().isErrorState()) {
                 loginFailure();
-
                 return;
             }
 
             if (machine.getCurrentUserAuthState().isAuthenticatedState()) {
                 loginSuccess();
-
                 return;
             }
 
             if (machine.getCurrentUserAuthState().isLoadingState()) {
                 loadingState();
-                loadingState();
             } else {
                 stoppedLoading();
             }
-        }
-    }
-
-    private void appAuthenticated() {
-        //user is already authenticated
-        if (getUserAuthStateMachine() == null) {
-            setupUserAuth();
         }
     }
 
