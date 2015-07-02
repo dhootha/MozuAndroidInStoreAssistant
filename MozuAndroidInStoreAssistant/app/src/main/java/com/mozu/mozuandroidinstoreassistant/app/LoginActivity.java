@@ -96,14 +96,7 @@ public class LoginActivity extends AuthActivity implements LoaderCallbacks<Curso
 
     }
 
-    @Override
-    protected void onDestroy() {
-
-        super.onDestroy();
-    }
-
     private void populateAutoComplete() {
-
         getLoaderManager().initLoader(CONTACT_LOADER, null, this);
     }
 
@@ -159,8 +152,7 @@ public class LoginActivity extends AuthActivity implements LoaderCallbacks<Curso
     }
 
     private boolean isEmailValid(String email) {
-
-        return email.contains("@");
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
     public void showProgress(final boolean show) {
@@ -183,16 +175,7 @@ public class LoginActivity extends AuthActivity implements LoaderCallbacks<Curso
                 mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
             }
         });
-
         mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-        mProgressView.animate().setDuration(shortAnimTime).alpha(show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            }
-        });
-
-
     }
 
     private void showErrorAuthenticatingApp() {
@@ -232,7 +215,7 @@ public class LoginActivity extends AuthActivity implements LoaderCallbacks<Curso
             cursor.moveToNext();
         }
 
-        for (UserPreferences pref: getUserAuthStateMachine().getAllUserPrefs()) {
+        for (UserPreferences pref : getUserAuthStateMachine().getAllUserPrefs()) {
             mEmails.add(pref.getEmail());
         }
 
@@ -291,12 +274,12 @@ public class LoginActivity extends AuthActivity implements LoaderCallbacks<Curso
 
     @Override
     public void authError() {
+        mProgressView.setVisibility(View.GONE);
         showErrorAuthenticatingApp();
     }
 
     @Override
     public void onClick(View v) {
-
 
         if (v.getId() == R.id.try_app_auth_again_button) {
             showProgress(true);
@@ -306,7 +289,7 @@ public class LoginActivity extends AuthActivity implements LoaderCallbacks<Curso
     }
 
     private void hideKeyboard() {
-        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(mEmailView.getWindowToken(), 0);
     }
 

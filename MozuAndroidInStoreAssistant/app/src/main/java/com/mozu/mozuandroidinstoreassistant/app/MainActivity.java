@@ -36,17 +36,6 @@ import com.mozu.mozuandroidinstoreassistant.app.settings.SettingsFragment;
 public class MainActivity extends AuthActivity implements View.OnClickListener, CategoryFragmentListener, ProductFragmentListener, ProductListListener, OrderListener, CustomerListener, SearchFragment.GlobalSearchListener {
 
     private static final String CATEGORY_FRAGMENT = "category_fragment_taggy_tag_tag";
-    private static final String SEARCH_FRAGMENT = "search_fragment_taggy_tag_tag";
-    private static final String PRODUCTS_FRAGMENT = "products_fragment_taggy_tag_tag";
-    private static final String ORDERS_FRAGMENT = "orders_fragment_taggy_tag_tag";
-    private static final String CUSTOMERS_FRAGMENT = "customers_fragment_taggy_tag_tag";
-    private static final String PRODUCTS_SEARCH_FRAGMENT_BACKSTACK = "product_PRODUCTS_SEARCH_FRAGMENT_BACKSTACK";
-
-    private static final String CATEGORY_FRAGMENT_BACKSTACK = "category_fragment_taggy_tag_tag_BACKSTACK";
-    private static final String SEARCH_FRAGMENT_BACKSTACK = "search_fragment_taggy_tag_tag_BACKSTACK";
-    private static final String PRODUCTS_FRAGMENT_BACKSTACK = "products_fragment_taggy_tag_tag_BACKSTACK";
-    private static final String ORDERS_FRAGMENT_BACKSTACK = "orders_fragment_taggy_tag_tag_BACKSTACK";
-    private static final String CUSTOMERS_FRAGMENT_BACKSTACK = "customers_fragment_taggy_tag_tag_BACKSTACK";
     private static final String CURRENTLY_SELECTED_NAV_VIEW_ID = "CURRENTLY_SELECTED_NAV_VIEW_ID";
 
     private LinearLayout mSearchMenuLayout;
@@ -57,8 +46,6 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
 
-    //private boolean mWasCreatedInPortrait = false;
-
     private int mCurrentlySelectedNavItem;
 
     private boolean mLaunchSettings;
@@ -68,7 +55,6 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         reloadFragment();
-
     }
 
     @Override
@@ -109,9 +95,6 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         if (mLaunchSettings) {
             showSettings();
         }
-
-
-        //mWasCreatedInPortrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
 
         setupDrawer();
     }

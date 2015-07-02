@@ -57,7 +57,6 @@ public class UserAuthenticationStateMachine extends Observable implements Refres
 
     protected void setCurrentUserAuthState(UserAuthenticationState userAuthState) {
         mCurrentUserAuthState = userAuthState;
-
         if (mCurrentUserAuthState.isAuthenticatedState()) {
             updateUserPreferences();
         }
@@ -78,12 +77,10 @@ public class UserAuthenticationStateMachine extends Observable implements Refres
 
     public void updateScope(Scope scope) {
         setTenantId(scope);
-
         mCurrentUserAuthState.updateScope(scope);
     }
 
     protected Context getContext() {
-
         return mContext;
     }
 

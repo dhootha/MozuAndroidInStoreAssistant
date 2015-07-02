@@ -16,20 +16,24 @@ public class AppAuthenticationStateMachine extends Observable {
     AppAuthenticated appAuthenticatedState;
     protected AppNotAuthenticatedNoAuthTicket appNotAuthenticatedNoAuthTicket;
     AppAuthenticationFailed appAuthenticationFailed;
+    private static AppAuthenticationStateMachine mStateMachine;
+    public static AppAuthenticationStateMachine getInstance(Context context, AppAuthInfo info, String baseUrl) {
+        if (mStateMachine == null) {
+            mStateMachine = new AppAuthenticationStateMachine(context, info, baseUrl);
+        }
+        return mStateMachine;
+    }
 
     public AppAuthenticationStateMachine(Context context, AppAuthInfo info, String baseUrl) {
         mContext = context;
-
         appAuthenticatedState = new AppAuthenticated(this);
         appNotAuthenticatedNoAuthTicket = new AppNotAuthenticatedNoAuthTicket(this, info, baseUrl);
         appAuthenticationFailed = new AppAuthenticationFailed(this, info, baseUrl);
-
         mCurrentAppAuthState = appNotAuthenticatedNoAuthTicket;
     }
 
     protected void setCurrentAppAuthState(AppAuthenticationState appAuthState) {
         mCurrentAppAuthState = appAuthState;
-
         setChanged();
         notifyObservers();
     }
