@@ -83,7 +83,7 @@ dependencies {
     compile(name: 'viewpager', ext: 'aar')
     compile 'com.mozu:mozu-api-android:1.13.0'
     compile 'com.crashlytics.android:crashlytics:1.+'
-    compile 'com.squareup.picasso:picasso:2.3.4'
+    compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.android.support:support-v13:19.+'
 
     compile 'org.joda:joda-convert:1.6'
