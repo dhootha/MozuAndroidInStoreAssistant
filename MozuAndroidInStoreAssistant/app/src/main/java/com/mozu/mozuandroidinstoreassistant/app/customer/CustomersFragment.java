@@ -1,12 +1,12 @@
 package com.mozu.mozuandroidinstoreassistant.app.customer;
 
+import android.app.Fragment;
 import android.app.LoaderManager;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Loader;
 import android.database.MatrixCursor;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -26,8 +26,8 @@ import android.widget.TextView;
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.mozuandroidinstoreassistant.app.MainActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
-import com.mozu.mozuandroidinstoreassistant.app.customer.adapters.CustomersAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.SearchSuggestionsCursorAdapter;
+import com.mozu.mozuandroidinstoreassistant.app.customer.adapters.CustomersAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.CustomersLoader;
 import com.mozu.mozuandroidinstoreassistant.app.models.RecentSearch;
 import com.mozu.mozuandroidinstoreassistant.app.models.UserPreferences;
@@ -390,7 +390,9 @@ public class CustomersFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        mSearchView.setQuery("", false);
+        if (mSearchView != null) {
+            mSearchView.setQuery("", false);
+        }
         mListener.customerSelected((CustomerAccount) mCustomersList.getAdapter().getItem(position));
     }
 
