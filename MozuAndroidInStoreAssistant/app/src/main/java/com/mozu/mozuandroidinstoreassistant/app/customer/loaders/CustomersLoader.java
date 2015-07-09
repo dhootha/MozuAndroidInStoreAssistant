@@ -142,7 +142,8 @@ public class CustomersLoader extends InternetConnectedAsyncTaskLoader<List<Custo
 
         try {
             if (!TextUtils.isEmpty(mSearchQueryFilter)) {
-                customerCollection = customerResource.getAccounts(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, null, null, null, mSearchQueryFilter, null, false, null);
+                String filter = "firstName sw " + mSearchQueryFilter + " or lastName sw " + mSearchQueryFilter + " or emailAddress cont " + mSearchQueryFilter;
+                customerCollection = customerResource.getAccounts(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, null, filter, null, null, null, false, null);
             } else {
                 customerCollection = customerResource.getAccounts(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mCurrentOrderBy +" "+mCurrentSort, null, null, null, null, false, null);
             }

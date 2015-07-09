@@ -48,7 +48,7 @@ public class SearchFetcher {
                 });
     }
 
-    public Observable<ProductSearchResult> searchProduct( Integer tenantId, Integer siteId) {
+    public Observable<ProductSearchResult> searchProduct(Integer tenantId, Integer siteId) {
 
         final ProductSearchResultResource productSearchResultResource = new ProductSearchResultResource(new MozuApiContext(tenantId, siteId));
 
@@ -59,7 +59,7 @@ public class SearchFetcher {
                         try {
                             ProductSearchResult result = productSearchResultResource.search(mQueryString, null,
                                     null, null, null, null, null, null, null, null, null, null, null,
-                                    PRODUCT_SORT_BY, ITEMS_PER_PAGE, 0, null);
+                                    PRODUCT_SORT_BY, ITEMS_PER_PAGE, 0, null, null);
                             Thread.sleep(5000);
                             subscriber.onNext(result);
                             subscriber.onCompleted();
@@ -71,7 +71,7 @@ public class SearchFetcher {
     }
 
 
-    public Observable<CustomerAccountCollection> searchCustomer( Integer tenantId, Integer siteId) {
+    public Observable<CustomerAccountCollection> searchCustomer(Integer tenantId, Integer siteId) {
         final CustomerAccountResource customerResource = new CustomerAccountResource(new MozuApiContext(tenantId, siteId));
         return Observable
                 .create(new Observable.OnSubscribe<CustomerAccountCollection>() {
@@ -79,7 +79,8 @@ public class SearchFetcher {
                     public void call(Subscriber<? super CustomerAccountCollection> subscriber) {
                         CustomerAccountCollection customerCollection;
                         try {
-                            customerCollection = customerResource.getAccounts(0, ITEMS_PER_PAGE, null, null, null, mQueryString, null, false, null);
+                            String filter = "firstName sw " + mQueryString + " or lastName sw " + mQueryString + " or emailAddress cont " + mQueryString;
+                            customerCollection = customerResource.getAccounts(0, ITEMS_PER_PAGE, null, filter, null, null, null, false, null);
                             subscriber.onNext(customerCollection);
                             subscriber.onCompleted();
                         } catch (Exception e) {
@@ -88,7 +89,6 @@ public class SearchFetcher {
                     }
                 });
     }
-
 
 
 }
