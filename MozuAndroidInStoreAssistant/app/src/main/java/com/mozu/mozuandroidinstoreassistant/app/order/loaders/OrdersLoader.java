@@ -28,11 +28,12 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
     private static final String ORDER_ORDER_EMAIL = "email";
     private static final String ORDER_ORDER_STATUS = "status";
     private static final String ORDER_ORDER_TOTAL = "total";
+    private static final String ORDER_ORDER_PAYMENT_STATUS = "paymentStatus";
 
     private static final String SORT_ORDER_ASC = "asc";
     private static final String SORT_ORDER_DSC = "desc";
 
-    private String RESPONSE_FIELDS = "items(id,ordernumber,status,SubmittedDate,email,total,status)";
+    private String RESPONSE_FIELDS = "items(id,ordernumber,status,SubmittedDate,paymentStatus,total,status)";
 
     public String mCurrentOrderBy = "";
 
@@ -248,6 +249,16 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
             mCurrentSort = SORT_ORDER_DSC;
         }
 
+    }
+
+    public void orderByPaymentStatus() {
+        mCurrentPage = 0;
+        if (ORDER_ORDER_PAYMENT_STATUS.equalsIgnoreCase(mCurrentOrderBy)) {
+            toggleCurrentSortOrder();
+        } else {
+            mCurrentOrderBy = ORDER_ORDER_PAYMENT_STATUS;
+            mCurrentSort = SORT_ORDER_DSC;
+        }
     }
 
     public void orderByTotal() {

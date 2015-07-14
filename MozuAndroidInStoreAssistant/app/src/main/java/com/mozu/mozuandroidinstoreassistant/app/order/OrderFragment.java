@@ -1,12 +1,12 @@
 package com.mozu.mozuandroidinstoreassistant.app.order;
 
+import android.app.Fragment;
 import android.app.LoaderManager;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Loader;
 import android.database.MatrixCursor;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -26,13 +26,13 @@ import android.widget.TextView;
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.mozuandroidinstoreassistant.app.MainActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
-import com.mozu.mozuandroidinstoreassistant.app.order.adapters.OrdersAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.SearchSuggestionsCursorAdapter;
-import com.mozu.mozuandroidinstoreassistant.app.order.loaders.OrdersLoader;
 import com.mozu.mozuandroidinstoreassistant.app.models.RecentSearch;
 import com.mozu.mozuandroidinstoreassistant.app.models.UserPreferences;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
+import com.mozu.mozuandroidinstoreassistant.app.order.adapters.OrdersAdapter;
+import com.mozu.mozuandroidinstoreassistant.app.order.loaders.OrdersLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,19 +69,19 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @InjectView(R.id.order_number_header) TextView mOrderNumberHeader;
     @InjectView(R.id.order_date_header) TextView mOrderDateHeader;
-    @InjectView(R.id.order_email_header) TextView mOrderEmailHeader;
+    @InjectView(R.id.order_payment_status_header) TextView mOrderPaymentStatusHeader;
     @InjectView(R.id.order_status_header) TextView mOrderStatusHeader;
     @InjectView(R.id.order_total_header) TextView mOrderTotalHeader;
 
     @InjectView(R.id.order_number_header_layout) LinearLayout mOrderNumberHeaderLayout;
     @InjectView(R.id.order_date_header_layout) LinearLayout mOrderDateHeaderLayout;
-    @InjectView(R.id.order_email_header_layout) LinearLayout mOrderEmailHeaderLayout;
+    @InjectView(R.id.order_payment_status_header_layout) LinearLayout mOrderPaymentStatusHeaderLayout;
     @InjectView(R.id.order_status_header_layout) LinearLayout mOrderStatusHeaderLayout;
     @InjectView(R.id.order_total_header_layout) LinearLayout mOrderTotalHeaderLayout;
 
     @InjectView(R.id.order_number_header_sort_image) ImageView mOrderNumberHeaderSortImage;
     @InjectView(R.id.order_date_header_sort_image) ImageView mOrderDateHeaderSortImage;
-    @InjectView(R.id.order_email_header_sort_image) ImageView mOrderEmailHeaderSortImage;
+    @InjectView(R.id.order_payment_status_header_sort_image) ImageView mOrderPaymentStatusHeaderSortImage;
     @InjectView(R.id.order_status_header_sort_image) ImageView mOrderStatusHeaderSortImage;
     @InjectView(R.id.order_total_header_sort_image) ImageView mOrderTotalHeaderSortImage;
     @InjectView(R.id.orders_header) LinearLayout mOrdersHeaderLayout;
@@ -412,18 +412,18 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         mListener = listener;
     }
 
-    @OnClick({R.id.order_number_header_layout, R.id.order_date_header_layout, R.id.order_email_header_layout,R.id.order_status_header_layout,R.id.order_total_header_layout})
+    @OnClick({R.id.order_number_header_layout, R.id.order_date_header_layout, R.id.order_payment_status_header_layout,R.id.order_status_header_layout,R.id.order_total_header_layout})
     public void determineSortActionForView(View v) {
 
         setTextViewNormalStyle(mOrderNumberHeader);
         setTextViewNormalStyle(mOrderDateHeader);
-        setTextViewNormalStyle(mOrderEmailHeader);
+        setTextViewNormalStyle(mOrderPaymentStatusHeader);
         setTextViewNormalStyle(mOrderStatusHeader);
         setTextViewNormalStyle(mOrderTotalHeader);
 
         mOrderNumberHeaderSortImage.setVisibility(View.GONE);
         mOrderDateHeaderSortImage.setVisibility(View.GONE);
-        mOrderEmailHeaderSortImage.setVisibility(View.GONE);
+        mOrderPaymentStatusHeaderSortImage.setVisibility(View.GONE);
         mOrderStatusHeaderSortImage.setVisibility(View.GONE);
         mOrderTotalHeaderSortImage.setVisibility(View.GONE);
 
@@ -454,11 +454,18 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
                 mCurrentSortIsAsc = false;
                 mOrderDateHeaderSortImage.setImageResource(R.drawable.icon_sort_down);
             }
-        } else if (v.getId() == mOrderEmailHeaderLayout.getId()) {
-            //TODO: NOT CURRENTLY A WAY TO SORT BY EMAIL
-            //            getOrdersLoader().orderByEmail();
-            //            clearSearchReload();
-            return;
+        } else if (v.getId() == mOrderPaymentStatusHeaderLayout.getId()) {
+            getOrdersLoader().orderByPaymentStatus();
+            setTextViewBoldStyle(mOrderPaymentStatusHeader);
+            mResourceOfCurrentSelectedColumn = mOrderPaymentStatusHeader.getId();
+            mOrderPaymentStatusHeaderSortImage.setVisibility(View.VISIBLE);
+            if(getOrdersLoader().isSortAsc()){
+                mCurrentSortIsAsc = true;
+                mOrderPaymentStatusHeaderSortImage.setImageResource(R.drawable.icon_sort_up);
+            }else{
+                mCurrentSortIsAsc = false;
+                mOrderPaymentStatusHeaderSortImage.setImageResource(R.drawable.icon_sort_down);
+            }
         } else if (v.getId() == mOrderStatusHeaderLayout.getId()) {
             getOrdersLoader().orderByStatus();
             setTextViewBoldStyle(mOrderStatusHeader);
@@ -495,13 +502,13 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
 
         setTextViewNormalStyle(mOrderNumberHeader);
         setTextViewNormalStyle(mOrderDateHeader);
-        setTextViewNormalStyle(mOrderEmailHeader);
+        setTextViewNormalStyle(mOrderPaymentStatusHeader);
         setTextViewNormalStyle(mOrderStatusHeader);
         setTextViewNormalStyle(mOrderTotalHeader);
 
         mOrderNumberHeaderSortImage.setVisibility(View.GONE);
         mOrderDateHeaderSortImage.setVisibility(View.GONE);
-        mOrderEmailHeaderSortImage.setVisibility(View.GONE);
+        mOrderPaymentStatusHeaderSortImage.setVisibility(View.GONE);
         mOrderStatusHeaderSortImage.setVisibility(View.GONE);
         mOrderTotalHeaderSortImage.setVisibility(View.GONE);
 
@@ -522,8 +529,13 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
                 mOrderDateHeaderSortImage.setImageResource(R.drawable.icon_sort_down);
             }
             mOrderDateHeaderSortImage.setVisibility(View.VISIBLE);
-        } else if (mResourceOfCurrentSelectedColumn == mOrderEmailHeader.getId()) {
-
+        } else if (mResourceOfCurrentSelectedColumn == mOrderPaymentStatusHeader.getId()) {
+            setTextViewBoldStyle(mOrderPaymentStatusHeader);
+            if (mCurrentSortIsAsc) {
+                mOrderPaymentStatusHeaderSortImage.setImageResource(R.drawable.icon_sort_up);
+            }else{
+                mOrderPaymentStatusHeaderSortImage.setImageResource(R.drawable.icon_sort_down);
+            }
         } else if (mResourceOfCurrentSelectedColumn == mOrderStatusHeader.getId()) {
 
             setTextViewBoldStyle(mOrderStatusHeader);
