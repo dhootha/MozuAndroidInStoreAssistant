@@ -2,20 +2,26 @@ package com.mozu.mozuandroidinstoreassistant.app.product;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
 import com.mozu.api.contracts.productadmin.LocationInventory;
 import com.mozu.api.contracts.productadmin.LocationInventoryCollection;
 import com.mozu.api.contracts.productruntime.Product;
+import com.mozu.api.contracts.productruntime.VariationOption;
+import com.mozu.api.contracts.productruntime.VariationSummary;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.product.adapter.ProdDetailLocationInventoryAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.product.loaders.InventoryRetriever;
@@ -42,10 +48,22 @@ public class ProductDetailInventoryFragment extends DialogFragment implements Ob
 
     private List<LocationInventory> mInventory;
 
-    @InjectView(R.id.inventory_list) ListView mInventoryList;
-    @InjectView(R.id.inventory_loading) LoadingView mProgress;
-    @InjectView(R.id.dialog_header) LinearLayout mDialogLayout;
-    @InjectView(R.id.mainlayout) LinearLayout mMainLayout;
+    @InjectView(R.id.inventory_list)
+    ListView mInventoryList;
+    @InjectView(R.id.inventory_loading)
+    LoadingView mProgress;
+    @InjectView(R.id.dialog_header)
+    LinearLayout mDialogLayout;
+    @InjectView(R.id.mainlayout)
+    LinearLayout mMainLayout;
+    @InjectView(R.id.product_variation_spinner)
+    Spinner mProductVariation;
+
+    @InjectView(R.id.product_variation_layout)
+    LinearLayout mProductVariationLayout;
+
+    private String mVariatonProductCode;
+    private InventoryRetriever mInventoryRetriever;
 
 
     private Subscription mSubscription = Subscriptions.empty();
@@ -60,28 +78,94 @@ public class ProductDetailInventoryFragment extends DialogFragment implements Ob
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mInventoryObservable = AndroidObservable.bindFragment(this, new InventoryRetriever().getInventoryData(mProduct, mTenantId, mSiteId))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+
 
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mSubscription = mInventoryObservable.subscribe(this);
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.product_detail_inventory_fragment, null);
-
         ButterKnife.inject(this, view);
-        if(mInventory != null){
+        if (mInventory != null) {
             onCompleted();
         }
+        if (mProduct.getVariations().size() > 1) {
+            mProductVariationLayout.setVisibility(View.VISIBLE);
+            mVariatonProductCode = mProduct.getVariations().get(0).getProductCode();
+            SpinnerAdapter spinnerAdapter = new SpinnerAdapter(getActivity(), R.layout.productinventory_spinner_item, R.id.product_option_name, mProduct.getVariations());
+            mProductVariation.setAdapter(spinnerAdapter);
+            mProductVariation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                    mVariatonProductCode = ((VariationSummary) adapterView.getItemAtPosition(position)).getProductCode();
+                    loadData();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
+        } else {
+            mProductVariationLayout.setVisibility(View.GONE);
+            mVariatonProductCode = mProduct.getProductCode();
+        }
+
         setupForDialog();
+        loadData();
         return view;
+    }
+
+    private void loadData() {
+        AndroidObservable.bindFragment(this, new InventoryRetriever().getInventoryData(mVariatonProductCode, mTenantId, mSiteId))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(this);
+    }
+
+    class SpinnerAdapter extends ArrayAdapter<VariationSummary> {
+        public SpinnerAdapter(Context context, int res, int textViewResourceId, List<VariationSummary> objects) {
+            super(context, res, textViewResourceId, objects);
+        }
+
+        @Override
+        public View getDropDownView(int position, View convertView, ViewGroup parent) {
+            if (convertView == null) {
+                LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+                convertView = inflater.inflate(R.layout.productinventory_spinner_item, parent, false);
+            }
+            TextView mTextView = (TextView) convertView.findViewById(R.id.product_option_name);
+            VariationSummary variationSummary = getItem(position);
+            mTextView.setText(getDisplayText(variationSummary));
+            return convertView;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            TextView textView = (TextView) View.inflate(parent.getContext(), R.layout.product_inventory_dropdown, null);
+            textView.setText(getDisplayText(getItem(position)));
+            return textView;
+        }
+
+        private String getDisplayText(VariationSummary variationSummary) {
+            StringBuffer optionString = new StringBuffer();
+            optionString.append(variationSummary.getProductCode());
+            optionString.append("  ");
+            optionString.append(mProduct.getContent().getProductName());
+            optionString.append("(");
+            for (VariationOption option : variationSummary.getOptions()) {
+                optionString.append(option.getValue());
+                optionString.append(" ");
+            }
+            optionString.append(")");
+            return optionString.toString();
+        }
+
     }
 
     public void onPause() {
@@ -124,10 +208,10 @@ public class ProductDetailInventoryFragment extends DialogFragment implements Ob
     private void setupForDialog() {
         if (getShowsDialog()) {
             int padding = (int) getResources().getDimension(R.dimen.inventory_dialog_padding);
-            mMainLayout.setPadding(padding,padding,padding,padding);
+            mMainLayout.setPadding(padding, padding, padding, padding);
             mDialogLayout.setVisibility(View.VISIBLE);
-            TextView productCode = (TextView)mDialogLayout.findViewById(R.id.productCode);
-            TextView productName = (TextView)mDialogLayout.findViewById(R.id.productName);
+            TextView productCode = (TextView) mDialogLayout.findViewById(R.id.productCode);
+            TextView productName = (TextView) mDialogLayout.findViewById(R.id.productName);
             productCode.setText(mProduct.getProductCode());
             productName.setText(mProduct.getContent().getProductName());
             ImageView dismissView = (ImageView) mDialogLayout.findViewById(R.id.imageView_close);
