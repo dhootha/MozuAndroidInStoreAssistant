@@ -95,7 +95,7 @@ public class ProductDetailInventoryFragment extends DialogFragment implements Ob
         if (mInventory != null) {
             onCompleted();
         }
-        if (mProduct.getVariations().size() > 1) {
+        if (mProduct.getVariations() != null && mProduct.getVariations().size() > 1) {
             mProductVariationLayout.setVisibility(View.VISIBLE);
             mVariatonProductCode = mProduct.getVariations().get(0).getProductCode();
             SpinnerAdapter spinnerAdapter = new SpinnerAdapter(getActivity(), R.layout.productinventory_spinner_item, R.id.product_option_name, mProduct.getVariations());
