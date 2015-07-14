@@ -42,7 +42,7 @@ public class OrdersAdapter extends ArrayAdapter<Order> {
         String date = order.getSubmittedDate() != null ? DateFormat.format("MM/dd/yy  hh:mm a", new Date(order.getSubmittedDate().getMillis())).toString() : "";
 
         viewHolder.orderDate.setText(date);
-        viewHolder.email.setText(order.getEmail());
+        viewHolder.paymentStatus.setText(order.getPaymentStatus());
         viewHolder.status.setText(order.getStatus());
 
         viewHolder.total.setText(mNumberFormat.format(order.getTotal()));

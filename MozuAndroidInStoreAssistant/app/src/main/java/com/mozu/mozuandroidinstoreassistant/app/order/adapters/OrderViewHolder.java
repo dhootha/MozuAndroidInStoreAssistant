@@ -12,7 +12,7 @@ public class OrderViewHolder {
 
     @InjectView(R.id.order_number) TextView orderNumber;
     @InjectView(R.id.order_date) TextView orderDate;
-    @InjectView(R.id.order_email) TextView email;
+    @InjectView(R.id.order_payment_status) TextView paymentStatus;
     @InjectView(R.id.order_status) TextView status;
     @InjectView(R.id.order_total) TextView total;
 

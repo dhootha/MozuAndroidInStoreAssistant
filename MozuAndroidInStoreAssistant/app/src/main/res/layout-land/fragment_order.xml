@@ -115,36 +115,10 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/order_email_header_layout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="6"
-            android:orientation="horizontal"
-            android:gravity="left|center_vertical">
-
-            <TextView
-                android:id="@+id/order_email_header"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:textColor="@color/light_gray_text"
-                android:textSize="14sp"
-                android:text="@string/order_list_order_email_header" />
-
-            <ImageView
-                android:layout_marginLeft="@dimen/order_header_margin"
-                android:id="@+id/order_email_header_sort_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/icon_sort_down"
-                android:visibility="invisible" />
-
-        </LinearLayout>
-
-        <LinearLayout
             android:id="@+id/order_status_header_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="4"
             android:orientation="horizontal"
             android:gravity="left|center_vertical">
 
@@ -162,6 +136,32 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/icon_sort_up"
+                android:visibility="invisible" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/order_payment_status_header_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:orientation="horizontal"
+            android:gravity="left|center_vertical">
+
+            <TextView
+                android:id="@+id/order_payment_status_header"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:textColor="@color/light_gray_text"
+                android:textSize="14sp"
+                android:text="@string/order_list_order_payment_status_header" />
+
+            <ImageView
+                android:layout_marginLeft="@dimen/order_header_margin"
+                android:id="@+id/order_payment_status_header_sort_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_sort_down"
                 android:visibility="invisible" />
 
         </LinearLayout>
