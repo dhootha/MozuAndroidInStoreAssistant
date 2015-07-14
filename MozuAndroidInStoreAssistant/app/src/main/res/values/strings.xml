@@ -255,6 +255,7 @@
     <string name="returns">Returns</string>
     <string name="refunds">Refunds</string>
     <string name="returns_due_on">"Returns Due On: "</string>
+    <string name="inventory_store_label">Select a Product:</string>
     <string-array name="register_email_address">
         <item>mozumobile@volusion.com</item>
     </string-array>
