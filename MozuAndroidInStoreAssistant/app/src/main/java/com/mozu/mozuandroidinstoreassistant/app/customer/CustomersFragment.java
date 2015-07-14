@@ -52,9 +52,12 @@ public class CustomersFragment extends Fragment implements LoaderManager.LoaderC
     private Integer mTenantId;
     private Integer mSiteId;
 
-    @InjectView(R.id.customer_list_container) SwipeRefreshLayout mCustomerRefreshLayout;
-    @InjectView(R.id.customer_list) ListView mCustomersList;
-    @InjectView(R.id.customer_list_progress) LinearLayout mProgress;
+    @InjectView(R.id.customer_list_container)
+    SwipeRefreshLayout mCustomerRefreshLayout;
+    @InjectView(R.id.customer_list)
+    ListView mCustomersList;
+    @InjectView(R.id.customer_list_progress)
+    LinearLayout mProgress;
 
     private CustomersLoader mCustomersLoader;
     private CustomersAdapter mAdapter;
@@ -63,20 +66,32 @@ public class CustomersFragment extends Fragment implements LoaderManager.LoaderC
     private CustomerListener mListener;
     private String mCurrentSearch;
 
-    @InjectView(R.id.customer_number_header) TextView mCustomerNumberHeader;
-    @InjectView(R.id.customer_last_name_header) TextView mCustomerLastNameHeader;
-    @InjectView(R.id.customer_first_name_header) TextView mcCustomerFirstNameHeader;
-    @InjectView(R.id.customer_email_header) TextView mCustomerEmailHeader;
-    @InjectView(R.id.customer_lifetime_value_header) TextView mCustomerLifetimeValueHeader;
+    @InjectView(R.id.customer_number_header)
+    TextView mCustomerNumberHeader;
+    @InjectView(R.id.customer_last_name_header)
+    TextView mCustomerLastNameHeader;
+    @InjectView(R.id.customer_first_name_header)
+    TextView mcCustomerFirstNameHeader;
+    @InjectView(R.id.customer_email_header)
+    TextView mCustomerEmailHeader;
+    @InjectView(R.id.customer_lifetime_value_header)
+    TextView mCustomerLifetimeValueHeader;
 
-    @InjectView(R.id.customer_number_header_sort_image) ImageView mCustomerNumberHeaderSortImage;
-    @InjectView(R.id.customer_last_name_header_sort_image) ImageView mCustomerLastNameHeaderSortImage;
-    @InjectView(R.id.customer_first_name_sort_image) ImageView mCustomerFirstNameHeaderSortImage;
-    @InjectView(R.id.customer_status_header_email_image) ImageView mCustomerEmailHeaderSortImage;
-    @InjectView(R.id.customer_lifetime_value_header_sort_image) ImageView mCustomerLifetimeValueHeaderSortImage;
+    @InjectView(R.id.customer_number_header_sort_image)
+    ImageView mCustomerNumberHeaderSortImage;
+    @InjectView(R.id.customer_last_name_header_sort_image)
+    ImageView mCustomerLastNameHeaderSortImage;
+    @InjectView(R.id.customer_first_name_sort_image)
+    ImageView mCustomerFirstNameHeaderSortImage;
+    @InjectView(R.id.customer_status_header_email_image)
+    ImageView mCustomerEmailHeaderSortImage;
+    @InjectView(R.id.customer_lifetime_value_header_sort_image)
+    ImageView mCustomerLifetimeValueHeaderSortImage;
 
-    @InjectView(R.id.customers_header) LinearLayout mCustomerHeaderLayout;
-    @InjectView(R.id.customer_search_query) TextView mCustomerSearchQuery;
+    @InjectView(R.id.customers_header)
+    LinearLayout mCustomerHeaderLayout;
+    @InjectView(R.id.customer_search_query)
+    TextView mCustomerSearchQuery;
 
     private int mResourceOfCurrentSelectedColumn = -1;
     private String mDefaultSearchQuery;
@@ -88,12 +103,12 @@ public class CustomersFragment extends Fragment implements LoaderManager.LoaderC
         setHasOptionsMenu(true);
     }
 
-    public void setLauncedFromSearch(){
+    public void setLauncedFromSearch() {
         mLauncedFromSearch = true;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_customer, container, false);
 
@@ -141,7 +156,7 @@ public class CustomersFragment extends Fragment implements LoaderManager.LoaderC
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if (!hidden) {
-            ((MainActivity)getActivity()).setCustomersSelected();
+            ((MainActivity) getActivity()).setCustomersSelected();
         }
     }
 
@@ -192,16 +207,12 @@ public class CustomersFragment extends Fragment implements LoaderManager.LoaderC
         List<RecentSearch> recentCustomerSearches = prefs.getRecentCustomerSearches();
 
         // Load data from list to cursor
-        String[] columns = new String[] { "_id", "text" };
-        Object[] temp = new Object[] { 0, "default" };
+        String[] columns = new String[]{"_id", "text"};
+        Object[] temp = new Object[]{0, "default"};
 
         MatrixCursor cursor = new MatrixCursor(columns);
 
-        if (recentCustomerSearches == null || recentCustomerSearches.size() < 1) {
-            return;
-        }
-
-        for(int i = 0; i < recentCustomerSearches.size(); i++) {
+        for (int i = 0; i < recentCustomerSearches.size(); i++) {
 
             temp[0] = i;
             temp[1] = recentCustomerSearches.get(i);
@@ -209,9 +220,7 @@ public class CustomersFragment extends Fragment implements LoaderManager.LoaderC
             cursor.addRow(temp);
 
         }
-
         mSearchView.setSuggestionsAdapter(new SearchSuggestionsCursorAdapter(getActivity(), cursor, recentCustomerSearches));
-
         mSearchView.setOnSuggestionListener(this);
     }
 
@@ -259,7 +268,7 @@ public class CustomersFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public Loader<List<CustomerAccount>> onCreateLoader(int id, Bundle args) {
-        CustomersLoader loader =  new CustomersLoader(getActivity(), mTenantId, mSiteId);
+        CustomersLoader loader = new CustomersLoader(getActivity(), mTenantId, mSiteId);
         if (!TextUtils.isEmpty(mDefaultSearchQuery)) {
             loader.setFilter(mDefaultSearchQuery);
         }
@@ -419,9 +428,9 @@ public class CustomersFragment extends Fragment implements LoaderManager.LoaderC
             getcCustomersLoader().customerByNumber();
             setTextViewBoldStyle(mCustomerNumberHeader);
             mResourceOfCurrentSelectedColumn = mCustomerNumberHeader.getId();
-            if(getcCustomersLoader().isSortAsc()){
+            if (getcCustomersLoader().isSortAsc()) {
                 mCustomerNumberHeaderSortImage.setImageResource(R.drawable.icon_sort_up);
-            }else{
+            } else {
                 mCustomerNumberHeaderSortImage.setImageResource(R.drawable.icon_sort_down);
             }
             mCustomerNumberHeaderSortImage.setVisibility(View.VISIBLE);
@@ -463,9 +472,9 @@ public class CustomersFragment extends Fragment implements LoaderManager.LoaderC
             setTextViewBoldStyle(mCustomerLifetimeValueHeader);
             mResourceOfCurrentSelectedColumn = mCustomerLifetimeValueHeader.getId();
             mCustomerLifetimeValueHeaderSortImage.setVisibility(View.VISIBLE);
-            if(getcCustomersLoader().isSortAsc()){
+            if (getcCustomersLoader().isSortAsc()) {
                 mCustomerLifetimeValueHeaderSortImage.setImageResource(R.drawable.icon_sort_up);
-            }else{
+            } else {
                 mCustomerLifetimeValueHeaderSortImage.setImageResource(R.drawable.icon_sort_down);
             }
         } else {
@@ -531,16 +540,15 @@ public class CustomersFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public boolean onSuggestionClick(int position) {
         UserAuthenticationStateMachine userState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
-
         UserPreferences prefs = userState.getCurrentUsersPreferences();
-
         List<RecentSearch> recentProductSearches = prefs.getRecentCustomerSearches();
-
-        String searchTerm = recentProductSearches.get(position).getSearchTerm();
-
-        mSearchView.setQuery(searchTerm, false);
-
-        onQueryTextSubmit(searchTerm);
+        if (recentProductSearches.size() > 0) {
+            String searchTerm = recentProductSearches.get(position).getSearchTerm();
+            mSearchView.setQuery(searchTerm, false);
+            onQueryTextSubmit(searchTerm);
+        } else {
+            initSuggestions();
+        }
 
         return true;
     }

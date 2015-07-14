@@ -7,6 +7,7 @@
     android:layout_marginLeft="0dp"
     android:layout_marginRight="0dp"
     tools:context="com.mozu.mozuandroidinstoreassistant.app.fragments.CustomerFragment">
+
     <LinearLayout
         android:visibility="gone"
         android:id="@+id/customers_header"
@@ -49,7 +50,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
-            android:layout_weight=".3"/>
+            android:layout_weight=".3" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -64,14 +65,14 @@
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
                 android:textColor="@android:color/darker_gray"
-                android:text="@string/customer_list_customer_no_header"/>
+                android:text="@string/customer_list_customer_no_header" />
 
             <ImageView
                 android:id="@+id/customer_number_header_sort_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/icon_sort_up"
-                android:visibility="invisible"/>
+                android:visibility="invisible" />
 
         </LinearLayout>
 
@@ -88,14 +89,14 @@
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
                 android:textColor="@android:color/darker_gray"
-                android:text="@string/customer_list_date_header"/>
+                android:text="@string/customer_list_date_header" />
 
             <ImageView
                 android:id="@+id/customer_last_name_header_sort_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/icon_sort_down"
-                android:visibility="invisible"/>
+                android:visibility="invisible" />
 
         </LinearLayout>
 
@@ -112,14 +113,14 @@
                 android:layout_width="wrap_content"
                 android:textStyle="bold"
                 android:textColor="@android:color/darker_gray"
-                android:text="@string/customer_list_customer_first_name_header"/>
+                android:text="@string/customer_list_customer_first_name_header" />
 
             <ImageView
                 android:id="@+id/customer_first_name_sort_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/icon_sort_down"
-                android:visibility="invisible"/>
+                android:visibility="invisible" />
 
         </LinearLayout>
 
@@ -136,14 +137,14 @@
                 android:layout_width="wrap_content"
                 android:textStyle="bold"
                 android:textColor="@android:color/darker_gray"
-                android:text="@string/customer_list_customer_email_header"/>
+                android:text="@string/customer_list_customer_email_header" />
 
             <ImageView
                 android:id="@+id/customer_status_header_email_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/icon_sort_up"
-                android:visibility="invisible"/>
+                android:visibility="invisible" />
 
         </LinearLayout>
 
@@ -169,7 +170,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/icon_sort_up"
-                android:visibility="invisible"/>
+                android:visibility="invisible" />
 
         </LinearLayout>
 
@@ -188,8 +189,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:background="@android:color/transparent"
-            />
+            android:background="@android:color/transparent" />
 
     </LinearLayout>
 
@@ -198,15 +198,29 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ListView
-            android:id="@+id/customer_list"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:dividerHeight="0dp"
-            android:scrollbars="none"
-            android:background="@android:color/white"
-            android:divider="@android:color/transparent"
-            android:visibility="gone"/>
+            android:layout_height="wrap_content">
+
+            <ListView
+                android:id="@+id/customer_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:dividerHeight="0dp"
+                android:scrollbars="none"
+                android:background="@android:color/white"
+                android:divider="@android:color/transparent"
+                android:visibility="gone" />
+
+            <TextView
+                android:gravity="center"
+                android:id="@android:id/empty"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="20sp"
+                android:text="No Results" />
+        </LinearLayout>
 
     </android.support.v4.widget.SwipeRefreshLayout>
 

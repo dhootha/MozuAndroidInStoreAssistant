@@ -1,6 +1,7 @@
 package com.mozu.mozuandroidinstoreassistant.app.product;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.LoaderManager;
 import android.app.SearchManager;
@@ -8,7 +9,6 @@ import android.content.Context;
 import android.content.Loader;
 import android.database.MatrixCursor;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,13 +27,13 @@ import android.widget.TextView;
 import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.mozuandroidinstoreassistant.app.MainActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
-import com.mozu.mozuandroidinstoreassistant.app.product.adapter.ProductAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.SearchSuggestionsCursorAdapter;
-import com.mozu.mozuandroidinstoreassistant.app.product.loaders.ProductLoader;
 import com.mozu.mozuandroidinstoreassistant.app.models.RecentSearch;
 import com.mozu.mozuandroidinstoreassistant.app.models.UserPreferences;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
+import com.mozu.mozuandroidinstoreassistant.app.product.adapter.ProductAdapter;
+import com.mozu.mozuandroidinstoreassistant.app.product.loaders.ProductLoader;
 import com.mozu.mozuandroidinstoreassistant.app.tasks.InventoryButtonClickListener;
 
 import java.util.ArrayList;
@@ -53,16 +53,22 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
     private boolean mIsRefreshing = false;
 
-    @InjectView(R.id.product_grid) GridView mProductGridView;
-    @InjectView(R.id.product_list) ListView mProductListView;
+    @InjectView(R.id.product_grid)
+    GridView mProductGridView;
+    @InjectView(R.id.product_list)
+    ListView mProductListView;
 
-    @InjectView(R.id.product_grid_container) SwipeRefreshLayout mPullToRefresh;
+    @InjectView(R.id.product_grid_container)
+    SwipeRefreshLayout mPullToRefresh;
 
-    @InjectView(R.id.product_list_headers) LinearLayout mHeadersView;
-    @InjectView(R.id.list_view_border) LinearLayout mHeadersBorderView;
+    @InjectView(R.id.product_list_headers)
+    LinearLayout mHeadersView;
+    @InjectView(R.id.list_view_border)
+    LinearLayout mHeadersBorderView;
 
     private ProductAdapter mAdapter;
-    @InjectView(R.id.progress) LinearLayout mProgressBar;
+    @InjectView(R.id.progress)
+    LinearLayout mProgressBar;
 
     private ProductLoader mProductLoader;
 
@@ -77,7 +83,8 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
     private ProductFragmentListener mListener = sProductListener;
 
-    @InjectView(R.id.empty_list) TextView mEmptyListMessageView;
+    @InjectView(R.id.empty_list)
+    TextView mEmptyListMessageView;
 
     public ProductFragment() {
         // Required empty public constructor
@@ -98,11 +105,12 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         super.onAttach(activity);
         mListener = (ProductFragmentListener) activity;
     }
+
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if (!hidden) {
-            ((MainActivity)getActivity()).setProductSelected();
+            ((MainActivity) getActivity()).setProductSelected();
         }
     }
 
@@ -172,7 +180,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
             if (mAdapter == null) {
 
-                mAdapter = new ProductAdapter(getActivity(), mUserState.getTenantId(), mUserState.getSiteId(), mUserState.getSiteDomain(),this);
+                mAdapter = new ProductAdapter(getActivity(), mUserState.getTenantId(), mUserState.getSiteId(), mUserState.getSiteDomain(), this);
             }
 
             mAdapter.clear();
@@ -269,16 +277,12 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         List<RecentSearch> recentProductSearches = prefs.getRecentProductSearches();
 
         // Load data from list to cursor
-        String[] columns = new String[] { "_id", "text" };
-        Object[] temp = new Object[] { 0, "default" };
+        String[] columns = new String[]{"_id", "text"};
+        Object[] temp = new Object[]{0, "default"};
 
         MatrixCursor cursor = new MatrixCursor(columns);
 
-        if (recentProductSearches == null || recentProductSearches.size() < 1) {
-            return;
-        }
-
-        for(int i = 0; i < recentProductSearches.size(); i++) {
+        for (int i = 0; i < recentProductSearches.size(); i++) {
 
             temp[0] = i;
             temp[1] = recentProductSearches.get(i);
@@ -440,9 +444,11 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         UserPreferences prefs = mUserState.getCurrentUsersPreferences();
 
         List<RecentSearch> recentProductSearches = prefs.getRecentProductSearches();
-
-        onQueryTextSubmit(recentProductSearches.get(position).getSearchTerm());
-
+        if (recentProductSearches.size() > 0) {
+            onQueryTextSubmit(recentProductSearches.get(position).getSearchTerm());
+        } else {
+            showSuggestions();
+        }
         return true;
     }
 
