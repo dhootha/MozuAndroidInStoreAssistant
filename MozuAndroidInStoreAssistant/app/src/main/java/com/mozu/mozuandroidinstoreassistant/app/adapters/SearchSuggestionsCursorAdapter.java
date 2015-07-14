@@ -25,7 +25,9 @@ public class SearchSuggestionsCursorAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         TextView text = (TextView) view.findViewById(R.id.text);
-        text.setText(mItems.get(cursor.getPosition()).getSearchTerm());
+        if (mItems != null && mItems.size() > 0) {
+            text.setText(mItems.get(cursor.getPosition()).getSearchTerm());
+        }
     }
 
     @Override
