@@ -25,7 +25,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.crashlytics.android.Crashlytics;
 import com.mozu.api.contracts.core.UserAuthInfo;
 import com.mozu.mozuandroidinstoreassistant.app.loaders.ProfileQuery;
 import com.mozu.mozuandroidinstoreassistant.app.models.UserPreferences;
@@ -34,7 +33,6 @@ import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthen
 import java.util.ArrayList;
 import java.util.List;
 
-import io.fabric.sdk.android.Fabric;
 
 public class LoginActivity extends AuthActivity implements LoaderCallbacks<Cursor>, OnClickListener {
 
@@ -50,7 +48,6 @@ public class LoginActivity extends AuthActivity implements LoaderCallbacks<Curso
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(this, new Crashlytics());
         if (!getResources().getBoolean(R.bool.allow_portrait)) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
