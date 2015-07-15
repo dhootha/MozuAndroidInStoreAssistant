@@ -42,14 +42,6 @@ android {
             minifyEnabled false
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-        }
-        debug {
-            minifyEnabled false
-            signingConfig signingConfigs.debug
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-        }
-
-        applicationVariants.all { variant ->
             if (enableCrashlytics.toBoolean()) {
                 File crashlyticsProperties = new File("${project.projectDir.absolutePath}/crashlytics.properties")
                 Properties properties = new Properties()
@@ -57,10 +49,28 @@ android {
                 properties.put("apiKey", crashlyticsApiKey)
                 properties.store(new FileWriter(crashlyticsProperties), "")
             }
-
             ext.betaDistributionEmails = "shadaab_kazi@volusion.com, adam_dutton@volusion.com, santhosh_mankala@volusion.com, chris_pound@volusion.com, rabin_joshi@volusion.com, james_buckley@volusion.com"
             ext.betaDistributionReleaseNotesFilePath = file('releasenotes.txt')
             ext.enableCrashlytics = enableCrashlytics.toBoolean()
+        }
+        debug {
+            minifyEnabled false
+            signingConfig signingConfigs.debug
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            if (enableCrashlytics.toBoolean()) {
+                File crashlyticsProperties = new File("${project.projectDir.absolutePath}/crashlytics.properties")
+                Properties properties = new Properties()
+                properties.put("apiSecret", crashlyticsApiSecret)
+                properties.put("apiKey", crashlyticsApiKey)
+                properties.store(new FileWriter(crashlyticsProperties), "")
+            }
+            ext.betaDistributionEmails = "shadaab_kazi@volusion.com, adam_dutton@volusion.com, santhosh_mankala@volusion.com, chris_pound@volusion.com, rabin_joshi@volusion.com, james_buckley@volusion.com"
+            ext.betaDistributionReleaseNotesFilePath = file('releasenotes.txt')
+            ext.enableCrashlytics = enableCrashlytics.toBoolean()
+
+        }
+
+        applicationVariants.all { variant ->
             buildConfigField "String", "APP_AUTH_APPID", "\"" + mozuAuthAppId + "\""
             buildConfigField "String", "APP_AUTH_SHARED_SECRET", "\"" + mozuAuthSharedSecret + "\""
             buildConfigField "String", "SERVICE_URL", "\"" + mozuServiceURL + "\""
@@ -82,7 +92,7 @@ android {
 dependencies {
     compile(name: 'viewpager', ext: 'aar')
     compile 'com.mozu:mozu-api-android:1.17.0'
-    compile('com.crashlytics.sdk.android:crashlytics:2.3.2@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.4.0@aar') {
         transitive = true;
     }
     compile 'com.squareup.picasso:picasso:2.5.2'
