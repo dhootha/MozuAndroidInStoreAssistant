@@ -21,11 +21,11 @@ public class ProductOptionsContainer {
         if (o == null || getClass() != o.getClass()) return false;
 
         ProductOptionsContainer that = (ProductOptionsContainer) o;
-        if (optionsMap != null) {
+        if (this.optionsMap != null) {
             for (String e : that.optionsMap.keySet()) {
-                if (!optionsMap.containsKey(e))
+                if (!this.optionsMap.containsKey(e))
                     return false;
-                if (!optionsMap.get(e).equals(that.optionsMap.get(e)))
+                if (!this.optionsMap.get(e).equals(that.optionsMap.get(e)))
                     return false;
             }
             return true;

@@ -44,7 +44,7 @@ public class ProductOptionsLayout extends LinearLayout {
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-                    //DO NOTHING
+                //DO NOTHING
             }
         });
         mValue = (TextView) v.findViewById(R.id.product_option_name);
@@ -70,8 +70,6 @@ public class ProductOptionsLayout extends LinearLayout {
         return mAttributeFQN;
     }
 
-
-
     public String getAttributeValue() {
         if (mValue.getVisibility() == View.VISIBLE) {
             return mValue.getText().toString();
@@ -79,7 +77,6 @@ public class ProductOptionsLayout extends LinearLayout {
             return ((ProductOptionValue) mSpinner.getSelectedItem()).getValue().toString();
         }
     }
-
 
     public void setSpinnerOptions(List<ProductOptionValue> productOptions) {
         SpinnerAdapter spinnerAdapter = new SpinnerAdapter(getContext(), R.layout.productoption_spinner_item, R.id.product_option_name, productOptions);
