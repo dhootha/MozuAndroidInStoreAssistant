@@ -33,20 +33,17 @@ import java.util.Observer;
 
 public class ChooseTenantAndSiteActivity extends Activity implements TenantResourceAsyncListener, TenantSelectionFragmentListener, SiteSelectionFragmentListener, SetDefaultFragmentListener, Observer {
 
+    public static final String LAUNCH_FROM_SETTINGS = "launchfromSettings";
     private static final String TENANT_FRAGMENT_TAG = "tenants";
     private static final String SITE_FRAGMENT_TAG = "sites";
     private static final String SET_DEFAULT_FRAGMENT_TAG = "set_default_tag";
     private static final int EMAIL_NAVIGATION_REQUEST =  10034;
-
     private TenantFragment mTenantFragment;
     private SiteFragment mSiteFragment;
     private SetDefaultFragment mSetDefaultFragment;
-
     private UserAuthenticationStateMachine mUserAuthStateMachine;
-
     private boolean mTenantOrSiteNotChosenAuto = false;
     private boolean isLaunchedFromSettings = false;
-    public static final String LAUNCH_FROM_SETTINGS = "launchfromSettings";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,7 +127,10 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
         if (mTenantFragment == null) {
 
             List<Scope> tenants = mUserAuthStateMachine.getAuthProfile().getAuthorizedScopes();
-
+            if (tenants == null || tenants.isEmpty()) {
+                showNoTenantsError();
+                return;
+            }
             Collections.sort(tenants, new ScopeComparator());
 
             mTenantFragment = new TenantFragment();
@@ -140,34 +140,18 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
         }
     }
 
-    private class ScopeComparator implements Comparator<Scope> {
-
-        @Override
-        public int compare(Scope lhs, Scope rhs) {
-
-            return lhs.getName().compareTo(rhs.getName());
-        }
-
-        @Override
-        public boolean equals(Object object) {
-            return false;
-        }
-
-    }
-
-    private class SiteComparator implements Comparator<Site> {
-
-        @Override
-        public int compare(Site lhs, Site rhs) {
-
-            return lhs.getName().compareTo(rhs.getName());
-        }
-
-        @Override
-        public boolean equals(Object object) {
-            return false;
-        }
-
+    private void showNoTenantsError() {
+        AlertDialog.Builder noTenantsAlertBuilder = new AlertDialog.Builder(this);
+        noTenantsAlertBuilder.setTitle(R.string.no_tenants_alert);
+        noTenantsAlertBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                UserAuthenticationStateMachineProducer.getInstance(getApplicationContext()).getCurrentUserAuthState().signOutUser();
+                startActivity(new Intent(ChooseTenantAndSiteActivity.this, LoginActivity.class));
+                finish();
+            }
+        });
+        noTenantsAlertBuilder.create().show();
     }
 
     private void showSiteChooser(List<Site> sites) {
@@ -199,7 +183,7 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
 
         if (observable instanceof UserAuthenticationStateMachine) {
 
-            UserAuthenticationStateMachine stateMachine = (UserAuthenticationStateMachine)observable;
+            UserAuthenticationStateMachine stateMachine = (UserAuthenticationStateMachine) observable;
 
             if (!stateMachine.getCurrentUserAuthState().isAuthenticatedState() && stateMachine.getCurrentUserAuthState().isErrorState()) {
 
@@ -233,10 +217,10 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
                     intent.setType("message/rfc822");
                     intent.putExtra(Intent.EXTRA_EMAIL, getResources().getStringArray(R.array.register_email_address));
                     intent.putExtra(Intent.EXTRA_CC, new String[]{getCurrentUserEmail()});
-                    intent.putExtra(Intent.EXTRA_SUBJECT,getString(R.string.register_email_subject));
+                    intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.register_email_subject));
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     StringBuilder str = new StringBuilder();
-                    str.append(getString(R.string.register_email_body)+"\n\n\n");
+                    str.append(getString(R.string.register_email_body) + "\n\n\n");
 
                     str.append(getString(R.string.register_email_label)).append(getCurrentUserEmail()).append("\n");
                     str.append(getString(R.string.register_tenant_label)).append(getCurrentTenant()).append("\n");
@@ -244,11 +228,11 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
                     str.append(getString(R.string.register_device_model)).append(Build.MODEL).append("\n");
                     str.append(getString(R.string.register_devices_os_label)).append(Build.VERSION.SDK_INT).append("\n");
                     intent.putExtra(Intent.EXTRA_TEXT, str.toString());
-                    startActivityForResult(Intent.createChooser(intent, getString(R.string.register)),EMAIL_NAVIGATION_REQUEST);
+                    startActivityForResult(Intent.createChooser(intent, getString(R.string.register)), EMAIL_NAVIGATION_REQUEST);
                 }
             });
             AlertDialog dialog = builder.show();
-            TextView messageText = (TextView)dialog.findViewById(android.R.id.message);
+            TextView messageText = (TextView) dialog.findViewById(android.R.id.message);
             messageText.setGravity(Gravity.CENTER);
             dialog.show();
             return;
@@ -257,11 +241,11 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
         showSiteChooser(tenant.getSites());
     }
 
-    private String getCurrentUserEmail(){
+    private String getCurrentUserEmail() {
         return mUserAuthStateMachine.getAuthProfile().getUserProfile().getEmailAddress();
     }
 
-    private String getCurrentTenant(){
+    private String getCurrentTenant() {
         return String.valueOf(mUserAuthStateMachine.getTenantId());
     }
 
@@ -284,7 +268,7 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
         if (isLaunchedFromSettings) {
             mUserAuthStateMachine.persistSiteTenantId();
             Intent mainIntent = new Intent(this, MainActivity.class);
-            mainIntent.putExtra(MainActivity.LAUNCH_SETTINGS,true);
+            mainIntent.putExtra(MainActivity.LAUNCH_SETTINGS, true);
             mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(mainIntent);
             finish();
@@ -318,5 +302,35 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
     public void doNotSetDefault() {
         startActivity(new Intent(this, MainActivity.class));
         finish();
+    }
+
+    private class ScopeComparator implements Comparator<Scope> {
+
+        @Override
+        public int compare(Scope lhs, Scope rhs) {
+
+            return lhs.getName().compareTo(rhs.getName());
+        }
+
+        @Override
+        public boolean equals(Object object) {
+            return false;
+        }
+
+    }
+
+    private class SiteComparator implements Comparator<Site> {
+
+        @Override
+        public int compare(Site lhs, Site rhs) {
+
+            return lhs.getName().compareTo(rhs.getName());
+        }
+
+        @Override
+        public boolean equals(Object object) {
+            return false;
+        }
+
     }
 }
