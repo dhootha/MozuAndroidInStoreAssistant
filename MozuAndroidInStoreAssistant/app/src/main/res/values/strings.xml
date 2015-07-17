@@ -257,7 +257,27 @@
     <string name="refunds">Refunds</string>
     <string name="returns_due_on">"Returns Due On: "</string>
     <string name="inventory_store_label">Select a Product:</string>
+    <string name="filter">Filter</string>
     <string-array name="register_email_address">
         <item>mozumobile@volusion.com</item>
+    </string-array>
+    <string-array name="order_statuses">
+        <item>All</item>
+        <item>Open</item>
+        <item>Submitted</item>
+        <item>Pressing</item>
+        <item>Pending</item>
+        <item>Pending Review</item>
+        <item>Accepted</item>
+        <item>Completed</item>
+        <item>Cancelled</item>
+        <item>Closed</item>
+        <item>Validated</item>
+    </string-array>
+    <string-array name="order_payment_statuses">
+        <item>All</item>
+        <item>Paid</item>
+        <item>Pending</item>
+        <item>Unpaid</item>
     </string-array>
 </resources>

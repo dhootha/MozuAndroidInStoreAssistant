@@ -48,37 +48,19 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
     private static final String CURRENT_SORT_COLUMN_EXTRA = "currensortcolumnextra";
 
     private static final int LOADER_ORDERS = 523;
-
-    private Integer mTenantId;
-    private Integer mSiteId;
-    private String mDefaultSearchQuery;
-
     @InjectView(R.id.order_list_container) SwipeRefreshLayout mOrderRefreshLayout;
     @InjectView(R.id.order_list) ListView mOrdersList;
     @InjectView(R.id.order_list_progress) LinearLayout mProgress;
-
-    private OrdersLoader mOrdersLoader;
-
-    private OrdersAdapter mAdapter;
-
-    private SearchView mSearchView;
-
-    private MenuItem mSearchMenuItem;
-
-    private OrderListener mListener;
-
     @InjectView(R.id.order_number_header) TextView mOrderNumberHeader;
     @InjectView(R.id.order_date_header) TextView mOrderDateHeader;
     @InjectView(R.id.order_payment_status_header) TextView mOrderPaymentStatusHeader;
     @InjectView(R.id.order_status_header) TextView mOrderStatusHeader;
     @InjectView(R.id.order_total_header) TextView mOrderTotalHeader;
-
     @InjectView(R.id.order_number_header_layout) LinearLayout mOrderNumberHeaderLayout;
     @InjectView(R.id.order_date_header_layout) LinearLayout mOrderDateHeaderLayout;
     @InjectView(R.id.order_payment_status_header_layout) LinearLayout mOrderPaymentStatusHeaderLayout;
     @InjectView(R.id.order_status_header_layout) LinearLayout mOrderStatusHeaderLayout;
     @InjectView(R.id.order_total_header_layout) LinearLayout mOrderTotalHeaderLayout;
-
     @InjectView(R.id.order_number_header_sort_image) ImageView mOrderNumberHeaderSortImage;
     @InjectView(R.id.order_date_header_sort_image) ImageView mOrderDateHeaderSortImage;
     @InjectView(R.id.order_payment_status_header_sort_image) ImageView mOrderPaymentStatusHeaderSortImage;
@@ -86,8 +68,14 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
     @InjectView(R.id.order_total_header_sort_image) ImageView mOrderTotalHeaderSortImage;
     @InjectView(R.id.orders_header) LinearLayout mOrdersHeaderLayout;
     @InjectView(R.id.order_search_query) TextView order_search_query;
-
-
+    private Integer mTenantId;
+    private Integer mSiteId;
+    private String mDefaultSearchQuery;
+    private OrdersLoader mOrdersLoader;
+    private OrdersAdapter mAdapter;
+    private SearchView mSearchView;
+    private MenuItem mSearchMenuItem;
+    private OrderListener mListener;
     private int mResourceOfCurrentSelectedColumn = -1;
     private boolean mLaunchFromGlobalSearch = false;
     private boolean mCurrentSortIsAsc;
@@ -192,9 +180,19 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
             initSuggestions();
         } else if (item.getItemId() == R.id.refresh_orders) {
             onRefresh();
+        } else if (item.getItemId() == R.id.action_filter) {
+            onFilter();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void onFilter() {
+        OrderFilterDialogFragment filterFragment = new OrderFilterDialogFragment();
+        filterFragment.setStyle(android.app.DialogFragment.STYLE_NO_FRAME, 0);
+        filterFragment.show(getFragmentManager(), "filter");
+
+        // TODO: 7/16/15 CALLBACK
     }
 
     private void initSuggestions() {
