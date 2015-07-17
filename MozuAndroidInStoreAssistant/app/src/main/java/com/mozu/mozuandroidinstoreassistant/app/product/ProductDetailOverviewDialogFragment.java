@@ -159,7 +159,7 @@ public class ProductDetailOverviewDialogFragment extends DialogFragment {
             layout.setVisibility(View.VISIBLE);
 
             for(ProductOption option: mProduct.getOptions()){
-                ProductOptionsLayout optionsLayout = new ProductOptionsLayout(getActivity());
+                ProductOptionsLayout optionsLayout = new ProductOptionsLayout(getActivity(),null);
                 optionsLayout.setTitle(option.getName());
 
                 List<ProductOptionValue> optionValues = new ArrayList<ProductOptionValue>();
