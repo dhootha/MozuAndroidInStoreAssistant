@@ -25,6 +25,7 @@ import com.mozu.api.contracts.productadmin.ProductVariationPagedCollection;
 import com.mozu.api.contracts.productruntime.BundledProduct;
 import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.api.contracts.productruntime.ProductOption;
+import com.mozu.api.resources.commerce.catalog.admin.ProductResource;
 import com.mozu.api.resources.commerce.catalog.admin.products.ProductVariationResource;
 import com.mozu.mozuandroidinstoreassistant.app.ProductDetailActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
@@ -55,6 +56,7 @@ public class ProductDetailOverviewFragment extends Fragment implements ProductOp
     private static final int MAX_DESC_LENGTH = 500;
     private View mView;
     TextView msrpPrice = null;
+    TextView mapPrice = null;
     HashMap<ProductOptionsContainer, Double> variationMap;
 
     public ProductDetailOverviewFragment() {
@@ -75,6 +77,40 @@ public class ProductDetailOverviewFragment extends Fragment implements ProductOp
         }
 
         return mView;
+    }
+
+    private void getMAPPrice(final NumberFormat format) {
+        AndroidObservable.bindFragment(this, Observable.create(new Observable.OnSubscribe<com.mozu.api.contracts.productadmin.Product>() {
+            @Override
+            public void call(Subscriber<? super com.mozu.api.contracts.productadmin.Product> subscriber) {
+                UserAuthenticationStateMachine mUserState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
+                ProductResource adminProductResource = new ProductResource(new MozuApiContext(mUserState.getTenantId(), mUserState.getSiteId()));
+                try {
+                    com.mozu.api.contracts.productadmin.Product product = adminProductResource.getProduct(mProduct.getProductCode());
+                    subscriber.onNext(product);
+                    subscriber.onCompleted();
+                } catch (Exception e) {
+                    subscriber.onError(e);
+                }
+            }
+        })).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<com.mozu.api.contracts.productadmin.Product>() {
+                    @Override
+                    public void onCompleted() {
+                        onOptionChanged();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        mapPrice.setText("N/A");
+                    }
+
+                    @Override
+                    public void onNext(com.mozu.api.contracts.productadmin.Product product) {
+                        mapPrice.setText(format.format(product.getPrice().getMap()));
+                    }
+                });
     }
 
 
@@ -124,7 +160,7 @@ public class ProductDetailOverviewFragment extends Fragment implements ProductOp
         TextView mainPrice = (TextView) view.findViewById(R.id.main_price);
         TextView regPrice = (TextView) view.findViewById(R.id.regular_price);
         msrpPrice = (TextView) view.findViewById(R.id.msrp_price);
-        TextView mapPrice = (TextView) view.findViewById(R.id.map_price);
+        mapPrice = (TextView) view.findViewById(R.id.map_price);
         TextView includes = (TextView) view.findViewById(R.id.includes);
         mDescription = (TextView) view.findViewById(R.id.product_description);
         TextView upc = (TextView) view.findViewById(R.id.upc);
@@ -142,8 +178,7 @@ public class ProductDetailOverviewFragment extends Fragment implements ProductOp
             mainPrice.setVisibility(View.GONE);
         }
         regPrice.setText(getRegularPriceText(defaultFormat));
-        msrpPrice.setText(getMSRPPriceText(defaultFormat));
-        mapPrice.setText(getMAPPriceText(defaultFormat));
+        getMAPPrice(defaultFormat);
         if (mProduct.getBundledProducts() == null || mProduct.getBundledProducts().isEmpty()) {
             includesLayout.setVisibility(View.GONE);
         } else {
@@ -226,12 +261,6 @@ public class ProductDetailOverviewFragment extends Fragment implements ProductOp
         }
 
         return msrpPriceString;
-    }
-
-    private String getMAPPriceText(NumberFormat format) {
-        String mapString = "N/A";
-        //MAP Price unprovided currently
-        return mapString;
     }
 
 
