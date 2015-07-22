@@ -10,7 +10,7 @@
 
     <item
         android:id="@+id/action_filter"
-        android:icon="@android:drawable/ic_dialog_alert"
+        android:icon="@drawable/icon_filter"
         android:showAsAction="ifRoom"
         android:title="@string/filter" />
 

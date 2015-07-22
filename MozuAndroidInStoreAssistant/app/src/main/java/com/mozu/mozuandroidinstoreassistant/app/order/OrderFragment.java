@@ -41,33 +41,53 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class OrderFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Order>>, AbsListView.OnScrollListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, SearchManager.OnCancelListener, SearchManager.OnDismissListener, SearchView.OnSuggestionListener, MenuItem.OnActionExpandListener, AdapterView.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class OrderFragment extends Fragment implements OrderFilterListener, LoaderManager.LoaderCallbacks<List<Order>>, AbsListView.OnScrollListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, SearchManager.OnCancelListener, SearchManager.OnDismissListener, SearchView.OnSuggestionListener, MenuItem.OnActionExpandListener, AdapterView.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     private static final int MAX_NUMBER_OF_ORDER_SEARCHES = 200;
 
     private static final String CURRENT_SORT_COLUMN_EXTRA = "currensortcolumnextra";
 
     private static final int LOADER_ORDERS = 523;
-    @InjectView(R.id.order_list_container) SwipeRefreshLayout mOrderRefreshLayout;
-    @InjectView(R.id.order_list) ListView mOrdersList;
-    @InjectView(R.id.order_list_progress) LinearLayout mProgress;
-    @InjectView(R.id.order_number_header) TextView mOrderNumberHeader;
-    @InjectView(R.id.order_date_header) TextView mOrderDateHeader;
-    @InjectView(R.id.order_payment_status_header) TextView mOrderPaymentStatusHeader;
-    @InjectView(R.id.order_status_header) TextView mOrderStatusHeader;
-    @InjectView(R.id.order_total_header) TextView mOrderTotalHeader;
-    @InjectView(R.id.order_number_header_layout) LinearLayout mOrderNumberHeaderLayout;
-    @InjectView(R.id.order_date_header_layout) LinearLayout mOrderDateHeaderLayout;
-    @InjectView(R.id.order_payment_status_header_layout) LinearLayout mOrderPaymentStatusHeaderLayout;
-    @InjectView(R.id.order_status_header_layout) LinearLayout mOrderStatusHeaderLayout;
-    @InjectView(R.id.order_total_header_layout) LinearLayout mOrderTotalHeaderLayout;
-    @InjectView(R.id.order_number_header_sort_image) ImageView mOrderNumberHeaderSortImage;
-    @InjectView(R.id.order_date_header_sort_image) ImageView mOrderDateHeaderSortImage;
-    @InjectView(R.id.order_payment_status_header_sort_image) ImageView mOrderPaymentStatusHeaderSortImage;
-    @InjectView(R.id.order_status_header_sort_image) ImageView mOrderStatusHeaderSortImage;
-    @InjectView(R.id.order_total_header_sort_image) ImageView mOrderTotalHeaderSortImage;
-    @InjectView(R.id.orders_header) LinearLayout mOrdersHeaderLayout;
-    @InjectView(R.id.order_search_query) TextView order_search_query;
+    @InjectView(R.id.order_list_container)
+    SwipeRefreshLayout mOrderRefreshLayout;
+    @InjectView(R.id.order_list)
+    ListView mOrdersList;
+    @InjectView(R.id.order_list_progress)
+    LinearLayout mProgress;
+    @InjectView(R.id.order_number_header)
+    TextView mOrderNumberHeader;
+    @InjectView(R.id.order_date_header)
+    TextView mOrderDateHeader;
+    @InjectView(R.id.order_payment_status_header)
+    TextView mOrderPaymentStatusHeader;
+    @InjectView(R.id.order_status_header)
+    TextView mOrderStatusHeader;
+    @InjectView(R.id.order_total_header)
+    TextView mOrderTotalHeader;
+    @InjectView(R.id.order_number_header_layout)
+    LinearLayout mOrderNumberHeaderLayout;
+    @InjectView(R.id.order_date_header_layout)
+    LinearLayout mOrderDateHeaderLayout;
+    @InjectView(R.id.order_payment_status_header_layout)
+    LinearLayout mOrderPaymentStatusHeaderLayout;
+    @InjectView(R.id.order_status_header_layout)
+    LinearLayout mOrderStatusHeaderLayout;
+    @InjectView(R.id.order_total_header_layout)
+    LinearLayout mOrderTotalHeaderLayout;
+    @InjectView(R.id.order_number_header_sort_image)
+    ImageView mOrderNumberHeaderSortImage;
+    @InjectView(R.id.order_date_header_sort_image)
+    ImageView mOrderDateHeaderSortImage;
+    @InjectView(R.id.order_payment_status_header_sort_image)
+    ImageView mOrderPaymentStatusHeaderSortImage;
+    @InjectView(R.id.order_status_header_sort_image)
+    ImageView mOrderStatusHeaderSortImage;
+    @InjectView(R.id.order_total_header_sort_image)
+    ImageView mOrderTotalHeaderSortImage;
+    @InjectView(R.id.orders_header)
+    LinearLayout mOrdersHeaderLayout;
+    @InjectView(R.id.order_search_query)
+    TextView order_search_query;
     private Integer mTenantId;
     private Integer mSiteId;
     private String mDefaultSearchQuery;
@@ -189,10 +209,36 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private void onFilter() {
         OrderFilterDialogFragment filterFragment = new OrderFilterDialogFragment();
-        filterFragment.setStyle(android.app.DialogFragment.STYLE_NO_FRAME, 0);
+        filterFragment.setStyle(android.app.DialogFragment.STYLE_NO_FRAME, R.style.DialogMozu);
+        filterFragment.setTargetFragment(this, 0);
         filterFragment.show(getFragmentManager(), "filter");
+    }
 
-        // TODO: 7/16/15 CALLBACK
+    public void filter(String start, String end, String status, String paymentStatus) {
+        getOrdersLoader().reset();
+        getOrdersLoader().removeFilter();
+        String filter = (start != null ? "submittedDate gt " + start : "");
+
+        if (!filter.isEmpty() && end != null) {
+            filter = filter + " and ";
+        }
+
+        filter = filter + (end != null ? "submittedDate lt " + end : "");
+
+        if (!filter.isEmpty() && status != null) {
+            filter = filter + " and ";
+        }
+
+        filter = filter + (status != null ? "status eq " + status : "");
+
+        if (!filter.isEmpty() && paymentStatus != null) {
+            filter = filter + " and ";
+        }
+
+        filter = filter + (paymentStatus != null ? "paymentStatus eq " + paymentStatus : "");
+        getOrdersLoader().setFilter(filter);
+        getOrdersLoader().startLoading();
+        getOrdersLoader().forceLoad();
     }
 
     private void initSuggestions() {
@@ -272,7 +318,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
     public Loader<List<Order>> onCreateLoader(int id, Bundle args) {
         OrdersLoader loader = new OrdersLoader(getActivity(), mTenantId, mSiteId);
         if (!TextUtils.isEmpty(mDefaultSearchQuery)) {
-            loader.setFilter(mDefaultSearchQuery);
+            loader.setQueryFilter(mDefaultSearchQuery);
         }
         return loader;
     }
@@ -340,7 +386,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         saveSearchToList(query);
         initSuggestions();
         getOrdersLoader().reset();
-        getOrdersLoader().setFilter(query);
+        getOrdersLoader().setQueryFilter(query);
         getOrdersLoader().startLoading();
         getOrdersLoader().forceLoad();
 
@@ -373,8 +419,8 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     private void clearSearchReload() {
+        getOrdersLoader().removeQuery();
         getOrdersLoader().removeFilter();
-
         getOrdersLoader().reset();
         getOrdersLoader().startLoading();
         getOrdersLoader().forceLoad();
@@ -407,7 +453,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         mListener = listener;
     }
 
-    @OnClick({R.id.order_number_header_layout, R.id.order_date_header_layout, R.id.order_payment_status_header_layout,R.id.order_status_header_layout,R.id.order_total_header_layout})
+    @OnClick({R.id.order_number_header_layout, R.id.order_date_header_layout, R.id.order_payment_status_header_layout, R.id.order_status_header_layout, R.id.order_total_header_layout})
     public void determineSortActionForView(View v) {
 
         setTextViewNormalStyle(mOrderNumberHeader);
@@ -454,10 +500,10 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
             setTextViewBoldStyle(mOrderPaymentStatusHeader);
             mResourceOfCurrentSelectedColumn = mOrderPaymentStatusHeader.getId();
             mOrderPaymentStatusHeaderSortImage.setVisibility(View.VISIBLE);
-            if(getOrdersLoader().isSortAsc()){
+            if (getOrdersLoader().isSortAsc()) {
                 mCurrentSortIsAsc = true;
                 mOrderPaymentStatusHeaderSortImage.setImageResource(R.drawable.icon_sort_up);
-            }else{
+            } else {
                 mCurrentSortIsAsc = false;
                 mOrderPaymentStatusHeaderSortImage.setImageResource(R.drawable.icon_sort_down);
             }
@@ -528,7 +574,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
             setTextViewBoldStyle(mOrderPaymentStatusHeader);
             if (mCurrentSortIsAsc) {
                 mOrderPaymentStatusHeaderSortImage.setImageResource(R.drawable.icon_sort_up);
-            }else{
+            } else {
                 mOrderPaymentStatusHeaderSortImage.setImageResource(R.drawable.icon_sort_down);
             }
         } else if (mResourceOfCurrentSelectedColumn == mOrderStatusHeader.getId()) {
@@ -586,7 +632,7 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         } else {
             initSuggestions();
         }
-        
+
         return true;
     }
 
@@ -596,4 +642,5 @@ public class OrderFragment extends Fragment implements LoaderManager.LoaderCallb
         mOrderRefreshLayout.setRefreshing(true);
         clearSearchReload();
     }
+
 }

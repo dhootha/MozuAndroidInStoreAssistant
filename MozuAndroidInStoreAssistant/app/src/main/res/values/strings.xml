@@ -259,6 +259,9 @@
     <string name="inventory_store_label">Select a Product:</string>
     <string name="filter">Filter</string>
     <string name="no_tenants_alert">Access Denied</string>
+    <string name="order_filter_payment_status_label">Payment Status</string>
+    <string name="order_filter_status_label">Status</string>
+    <string name="order_filter_range_label">Range</string>
     <string-array name="register_email_address">
         <item>mozumobile@volusion.com</item>
     </string-array>
@@ -266,7 +269,7 @@
         <item>All</item>
         <item>Open</item>
         <item>Submitted</item>
-        <item>Pressing</item>
+        <item>Processing</item>
         <item>Pending</item>
         <item>Pending Review</item>
         <item>Accepted</item>
