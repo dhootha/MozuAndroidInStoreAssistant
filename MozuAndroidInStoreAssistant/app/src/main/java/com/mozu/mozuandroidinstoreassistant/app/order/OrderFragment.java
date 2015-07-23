@@ -236,6 +236,7 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
         }
 
         filter = filter + (paymentStatus != null ? "paymentStatus eq " + paymentStatus : "");
+        mOrderRefreshLayout.setRefreshing(true);
         getOrdersLoader().setFilter(filter);
         getOrdersLoader().startLoading();
         getOrdersLoader().forceLoad();
