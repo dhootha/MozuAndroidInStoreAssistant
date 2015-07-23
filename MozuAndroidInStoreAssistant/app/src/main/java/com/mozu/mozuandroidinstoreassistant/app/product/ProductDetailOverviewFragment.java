@@ -98,7 +98,6 @@ public class ProductDetailOverviewFragment extends Fragment implements ProductOp
                 .subscribe(new Subscriber<com.mozu.api.contracts.productadmin.Product>() {
                     @Override
                     public void onCompleted() {
-                        onOptionChanged();
                     }
 
                     @Override
@@ -390,7 +389,7 @@ public class ProductDetailOverviewFragment extends Fragment implements ProductOp
         }
         if (mProduct.getOptions() != null && !mProduct.getOptions().isEmpty()) {
             LinearLayout layout = (LinearLayout) mView.findViewById(R.id.options_layout);
-            ProductOptionsContainer productOptionsContainer = new ProductOptionsContainer();
+            final ProductOptionsContainer productOptionsContainer = new ProductOptionsContainer();
             for (int i = 0; i < layout.getChildCount(); i++) {
                 if (layout.getChildAt(i) instanceof ProductOptionsLayout) {
                     ProductOptionsLayout productOptionsLayout = (ProductOptionsLayout) layout.getChildAt(i);
@@ -398,11 +397,12 @@ public class ProductDetailOverviewFragment extends Fragment implements ProductOp
                 }
             }
 
-            NumberFormat format = NumberFormat.getCurrencyInstance();
+            final NumberFormat format = NumberFormat.getCurrencyInstance();
             if (variationMap.get(productOptionsContainer) != null) {
-                msrpPrice.setText(format.format(variationMap.get(productOptionsContainer)));
+                msrpPrice.setText(variationMap.get(productOptionsContainer) + "");
+
             } else {
-                msrpPrice.setText(getMSRPPriceText(format));
+                msrpPrice.setText("N/A");
             }
         }
 
