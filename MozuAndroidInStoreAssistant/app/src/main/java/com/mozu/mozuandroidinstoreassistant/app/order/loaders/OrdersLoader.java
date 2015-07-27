@@ -20,6 +20,7 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
     private static final int ITEMS_PER_PAGE = 50;
     private static final String ORDER_ID_FILTER_BY = "orderNumber eq ";
     private static final String FILTER_ABANDONED = "status ne Abandoned";
+    private static final String FILTER_PENDING = "status ne Pending";
     private static final String ORDER_ORDER_NUMBER = "orderNumber";
 
     private static final String ORDER_ORDER_DATE = "submittedDate";
@@ -40,7 +41,7 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
     private int mTotalPages;
     private boolean mIsLoading;
     private String mCurrentSort;
-    private String mFilter = FILTER_ABANDONED;
+    private String mFilter = FILTER_ABANDONED + " and " +FILTER_PENDING;
 
     public OrdersLoader(Context context, Integer tenantId, Integer siteId) {
         super(context);
@@ -193,6 +194,9 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
     }
 
     public void setFilter(String filter) {
+        if(filter != null && filter.contains("status eq Pending")) {
+            mFilter = FILTER_ABANDONED;
+        }
         if (filter != null && !filter.isEmpty()) {
             mFilter = mFilter + " and " + filter;
         }
@@ -203,7 +207,7 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
     }
 
     public void removeFilter() {
-        mFilter = FILTER_ABANDONED;
+        mFilter = FILTER_ABANDONED + " and " + FILTER_PENDING;
     }
 
     private void toggleCurrentSortOrder() {
