@@ -16,12 +16,11 @@ import java.util.List;
 
 public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> {
 
+    public static final String FILTER_BY_STATUS = "status eq Accepted";
     private static final int ITEMS_PER_PAGE = 50;
-
     private static final String ORDER_ID_FILTER_BY = "orderNumber eq ";
-
     private static final String FILTER_ABANDONED = "status ne Abandoned";
-
+    private static final String FILTER_PENDING = "status ne Pending";
     private static final String ORDER_ORDER_NUMBER = "orderNumber";
 
     private static final String ORDER_ORDER_DATE = "submittedDate";
@@ -32,22 +31,17 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
 
     private static final String SORT_ORDER_ASC = "asc";
     private static final String SORT_ORDER_DSC = "desc";
-
-    private String RESPONSE_FIELDS = "items(id,ordernumber,status,SubmittedDate,paymentStatus,total,status)";
-
     public String mCurrentOrderBy = "";
-
+    public String mSearchQueryFilter;
+    private String RESPONSE_FIELDS = "items(id,ordernumber,status,SubmittedDate,paymentStatus,total,status)";
     private List<Order> mOrdersList;
     private Integer mTenantId;
     private Integer mSiteId;
-
     private int mCurrentPage;
     private int mTotalPages;
-
     private boolean mIsLoading;
-
-    public String mSearchQueryFilter;
     private String mCurrentSort;
+    private String mFilter = FILTER_ABANDONED + " and " +FILTER_PENDING;
 
     public OrdersLoader(Context context, Integer tenantId, Integer siteId) {
         super(context);
@@ -157,7 +151,7 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
             if (!TextUtils.isEmpty(mSearchQueryFilter)) {
                 orderCollection = searchOrders(orderResource);
             } else {
-                orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mCurrentOrderBy+" "+mCurrentSort, FILTER_ABANDONED, null, null, RESPONSE_FIELDS);
+                orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mCurrentOrderBy + " " + mCurrentSort, mFilter, null, null, RESPONSE_FIELDS);
             }
 
             mTotalPages = (int) Math.ceil(orderCollection.getTotalCount() * 1.0f / ITEMS_PER_PAGE * 1.0f);
@@ -177,7 +171,7 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
         OrderCollection orderCollection;
 
         if (StringUtils.isNumber(mSearchQueryFilter)) {
-            orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, null, ORDER_ID_FILTER_BY + mSearchQueryFilter+" and "+FILTER_ABANDONED, null, null, RESPONSE_FIELDS);
+            orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, null, ORDER_ID_FILTER_BY + mSearchQueryFilter + " and " + FILTER_ABANDONED, null, null, RESPONSE_FIELDS);
         } else {
             orderCollection = orderResource.getOrders(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, null, FILTER_ABANDONED, mSearchQueryFilter, null, RESPONSE_FIELDS);
         }
@@ -195,19 +189,32 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
         return mIsLoading;
     }
 
-    public void setFilter(String filter) {
-        mSearchQueryFilter = filter;
+    public void setQueryFilter(String query) {
+        mSearchQueryFilter = query;
     }
 
-    public void removeFilter() {
+    public void setFilter(String filter) {
+        if(filter != null && filter.contains("status eq Pending")) {
+            mFilter = FILTER_ABANDONED;
+        }
+        if (filter != null && !filter.isEmpty()) {
+            mFilter = mFilter + " and " + filter;
+        }
+    }
+
+    public void removeQuery() {
         mSearchQueryFilter = "";
     }
 
-    private void toggleCurrentSortOrder(){
+    public void removeFilter() {
+        mFilter = FILTER_ABANDONED + " and " + FILTER_PENDING;
+    }
+
+    private void toggleCurrentSortOrder() {
         if (SORT_ORDER_DSC.equalsIgnoreCase(mCurrentSort)) {
             mCurrentSort = SORT_ORDER_ASC;
         } else {
-            mCurrentSort =  SORT_ORDER_DSC;
+            mCurrentSort = SORT_ORDER_DSC;
         }
     }
 
@@ -233,12 +240,6 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
             mCurrentSort = SORT_ORDER_DSC;
         }
     }
-
-//TODO: NOT CURRENTLY A WAY TO SORT BY EMAIL
-//    public void orderByEmail() {
-//
-//        mCurrentOrderBy = ORDER_ORDER_EMAIL;
-//    }
 
     public void orderByStatus() {
         mCurrentPage = 0;

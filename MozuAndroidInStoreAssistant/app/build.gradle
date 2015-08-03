@@ -49,7 +49,7 @@ android {
                 properties.put("apiKey", crashlyticsApiKey)
                 properties.store(new FileWriter(crashlyticsProperties), "")
             }
-            ext.betaDistributionEmails = "shadaab_kazi@volusion.com, adam_dutton@volusion.com, santhosh_mankala@volusion.com, chris_pound@volusion.com, rabin_joshi@volusion.com, james_buckley@volusion.com"
+            ext.betaDistributionEmails = "shadaab_kazi@volusion.com, adam_dutton@volusion.com, santhosh_mankala@volusion.com, chris_pound@volusion.com, rabin_joshi@volusion.com, james_buckley@volusion.com, android.volusion@gmail.com"
             ext.betaDistributionReleaseNotesFilePath = file('releasenotes.txt')
             ext.enableCrashlytics = enableCrashlytics.toBoolean()
         }
@@ -64,7 +64,7 @@ android {
                 properties.put("apiKey", crashlyticsApiKey)
                 properties.store(new FileWriter(crashlyticsProperties), "")
             }
-            ext.betaDistributionEmails = "shadaab_kazi@volusion.com, adam_dutton@volusion.com, santhosh_mankala@volusion.com, chris_pound@volusion.com, rabin_joshi@volusion.com, james_buckley@volusion.com"
+            ext.betaDistributionEmails = "shadaab_kazi@volusion.com, adam_dutton@volusion.com, santhosh_mankala@volusion.com, chris_pound@volusion.com, rabin_joshi@volusion.com, james_buckley@volusion.com, android.volusion@gmail.com"
             ext.betaDistributionReleaseNotesFilePath = file('releasenotes.txt')
             ext.enableCrashlytics = enableCrashlytics.toBoolean()
 
