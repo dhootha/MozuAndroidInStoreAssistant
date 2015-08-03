@@ -37,6 +37,16 @@ android {
             keyPassword releaseKeyPassword
         }
     }
+    productFlavors {
+        dev {
+            applicationId "com.mozu.mozuandroidinstoreassistant.dev"
+        }
+
+        app {
+            applicationId "com.mozu.mozuandroidinstoreassistant.app"
+        }
+
+    }
     buildTypes {
         release {
             minifyEnabled false
