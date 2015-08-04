@@ -44,7 +44,7 @@ android {
         }
 
         app {
-            applicationId "com.mozu.mozuandroidinstoreassistant"
+            applicationId "com.mozu.mozuandroidinstoreassistant.app"
             resValue "string", "app_name", "Mozu"
         }
 
