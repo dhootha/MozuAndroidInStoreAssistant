@@ -36,6 +36,17 @@
 
     </LinearLayout>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:text="@string/create_order"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:textColor="@color/divider_white"
+        android:id="@+id/create" />
+
     <LinearLayout
         android:baselineAligned="false"
         android:id="@+id/order_list_header"
