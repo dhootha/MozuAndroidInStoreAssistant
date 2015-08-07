@@ -433,7 +433,7 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         UserAuthenticationStateMachine userAuthenticationStateMachine = UserAuthenticationStateMachineProducer.getInstance(this);
         Intent intent = new Intent(this, OrderCreationActivity.class);
 
-        intent.putExtra(OrderDetailActivity.ORDER_NUMBER_EXTRA_KEY, order.getId());
+        intent.putExtra(OrderDetailActivity.ORDER_NUMBER_EXTRA_KEY, order.getOrderNumber());
         intent.putExtra(OrderDetailActivity.CURRENT_TENANT_ID, userAuthenticationStateMachine.getTenantId());
         intent.putExtra(OrderDetailActivity.CURRENT_SITE_ID, userAuthenticationStateMachine.getSiteId());
 

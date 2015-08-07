@@ -141,8 +141,7 @@ public class CustomersLoader extends InternetConnectedAsyncTaskLoader<List<Custo
         CustomerAccountResource customerResource = new CustomerAccountResource(new MozuApiContext(mTenantId, mSiteId));
 
         try {
-            if (!TextUtils.isEmpty(mSearchQueryFilter)) {
-                String filter = "firstName sw " + mSearchQueryFilter + " or lastName sw " + mSearchQueryFilter + " or emailAddress cont " + mSearchQueryFilter;
+            if (!TextUtils.isEmpty(mSearchQueryFilter)) {String filter = "firstName sw " + mSearchQueryFilter + " or lastName sw " + mSearchQueryFilter + " or emailAddress cont " + mSearchQueryFilter;
                 customerCollection = customerResource.getAccounts(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, null, filter, null, null, null, false, null);
             } else {
                 customerCollection = customerResource.getAccounts(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mCurrentOrderBy +" "+mCurrentSort, null, null, null, null, false, null);

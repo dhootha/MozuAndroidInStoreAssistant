@@ -28,22 +28,11 @@ public class OrderCreationActivity extends BaseActivity {
     public static final String CURRENT_TENANT_ID = "curTenantIdWhenActLoaded";
     public static final String CURRENT_SITE_ID = "curSiteIdWhenActLoaded";
 
-    private String mOrderNumber;
-
-    private Order mOrder;
+    private  int mOrderNumber;
 
     private int mTenantId;
 
     private int mSiteId;
-
-    private ViewPager mOrderViewPager;
-
-    private TabPageIndicator mTabIndicator;
-
-    private List<String> mTitles;
-
-    private NumberFormat mNumberFormat;
-    private OrderDetailSectionPagerAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,16 +46,16 @@ public class OrderCreationActivity extends BaseActivity {
         ButterKnife.inject(this);
 
         if (getIntent() != null) {
-            mOrderNumber = getIntent().getStringExtra(ORDER_NUMBER_EXTRA_KEY);
+            mOrderNumber = getIntent().getIntExtra(ORDER_NUMBER_EXTRA_KEY, -1);
             mTenantId = getIntent().getIntExtra(CURRENT_TENANT_ID, -1);
             mSiteId = getIntent().getIntExtra(CURRENT_SITE_ID, -1);
         } else if (savedInstanceState != null) {
-            mOrderNumber = savedInstanceState.getString(ORDER_NUMBER_EXTRA_KEY);
+            mOrderNumber = savedInstanceState.getInt(ORDER_NUMBER_EXTRA_KEY, -1);
             mTenantId = savedInstanceState.getInt(CURRENT_TENANT_ID, -1);
             mSiteId = savedInstanceState.getInt(CURRENT_SITE_ID, -1);
         }
 
-        getFragmentManager().beginTransaction().replace(R.id.content_fragment_holder,CustomerLookupFragment.getInstance(), "create").commit();
+        getFragmentManager().beginTransaction().replace(R.id.content_fragment_holder,CustomerLookupFragment.getInstance(mTenantId, mSiteId), "create").commit();
 
         if (getActionBar() != null) {
             getActionBar().setDisplayShowHomeEnabled(false);
@@ -75,14 +64,11 @@ public class OrderCreationActivity extends BaseActivity {
             getActionBar().setTitle("Order #"+ mOrderNumber);
         }
 
-        mOrderViewPager = (ViewPager) findViewById(R.id.order_detail_sections_viewpager);
-        mTabIndicator = (TabPageIndicator) findViewById(R.id.order_detail_sections);
-
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putString(ORDER_NUMBER_EXTRA_KEY, mOrderNumber);
+        outState.putInt(ORDER_NUMBER_EXTRA_KEY, mOrderNumber);
         outState.putInt(CURRENT_TENANT_ID, mTenantId);
         outState.putInt(CURRENT_SITE_ID, mSiteId);
         super.onSaveInstanceState(outState);
