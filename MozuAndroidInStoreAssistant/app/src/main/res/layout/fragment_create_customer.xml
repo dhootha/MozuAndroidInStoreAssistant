@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp">
+
+            <com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout
+                android:id="@+id/first_name_float_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                app:floatLabelTextAppearance="@style/TextAppearance.Mozu.FloatLabel">
+
+                <EditText
+                    android:id="@+id/first_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:hint="First Name"
+                    android:nextFocusDown="@+id/last_name" />
+            </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
+
+            <com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout
+                android:id="@+id/last_name_float_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                app:floatLabelTextAppearance="@style/TextAppearance.Mozu.FloatLabel">
+
+                <EditText
+                    android:id="@+id/last_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:hint="Last Name"
+                    android:nextFocusDown="@+id/phone_number" />
+            </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
+
+            <com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout
+                android:id="@+id/phonenumber_float_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                app:floatLabelTextAppearance="@style/TextAppearance.Mozu.FloatLabel">
+
+                <EditText
+                    android:id="@+id/phone_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:hint="Phone Number" />
+            </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
+
+            <com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout
+                android:id="@+id/type_float_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                app:floatLabelTextAppearance="@style/TextAppearance.Mozu.FloatLabel">
+
+                <EditText
+                    android:id="@+id/phone_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:hint="Select Type"
+                    android:nextFocusDown="@+id/email" />
+            </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
+
+            <com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout
+                android:id="@+id/email_float_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                app:floatLabelTextAppearance="@style/TextAppearance.Mozu.FloatLabel">
+
+                <EditText
+                    android:id="@+id/email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:hint="Email Address"
+                    android:nextFocusDown="@+id/address_1" />
+            </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
+
+            <com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout
+                android:id="@+id/address_1__float_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                app:floatLabelTextAppearance="@style/TextAppearance.Mozu.FloatLabel">
+
+                <EditText
+                    android:id="@+id/address_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:hint="Address 1"
+                    android:nextFocusDown="@+id/address_2" />
+            </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
+
+            <com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout
+                android:id="@+id/address_2_float_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                app:floatLabelTextAppearance="@style/TextAppearance.Mozu.FloatLabel">
+
+                <EditText
+                    android:id="@+id/address_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:hint="Address 2"
+                    android:nextFocusDown="@+id/city" />
+            </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
+
+            <com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout
+                android:id="@+id/city_float_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                app:floatLabelTextAppearance="@style/TextAppearance.Mozu.FloatLabel">
+
+                <EditText
+                    android:id="@+id/city"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:hint="City"
+                    android:nextFocusDown="@+id/state" />
+            </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
+
+            <com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout
+                android:id="@+id/state_float_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                app:floatLabelTextAppearance="@style/TextAppearance.Mozu.FloatLabel">
+
+                <EditText
+                    android:id="@+id/state"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:hint="State" />
+            </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
+
+            <com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout
+                android:id="@+id/zip_float_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                app:floatLabelTextAppearance="@style/TextAppearance.Mozu.FloatLabel">
+
+                <EditText
+                    android:id="@+id/zipcode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:hint="Zip"
+                    android:nextFocusDown="@+id/country" />
+            </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
+
+            <com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout
+                android:id="@+id/country_float_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                app:floatLabelTextAppearance="@style/TextAppearance.Mozu.FloatLabel">
+
+                <EditText
+                    android:id="@+id/country"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:hint="Country"
+                    android:nextFocusDown="@+id/country" />
+            </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/default_billing"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="DEFAULT BILLING" />
+
+                <CheckBox
+                    android:id="@+id/default_shipping"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginStart="16dp"
+                    android:checked="true"
+                    android:text="DEFAULT SHIPPING" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:gravity="right">
+
+            <Button
+                android:id="@+id/verify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="false"
+                android:layout_alignParentRight="false"
+                android:layout_alignTop="@+id/save"
+                android:layout_toLeftOf="@+id/save"
+                android:text="Verify"
+                android:textColor="@color/divider_white" />
+
+            <Button
+                android:id="@+id/save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="16dp"
+                android:layout_marginRight="16dp"
+                android:text="Save"
+                android:textColor="@color/divider_white" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

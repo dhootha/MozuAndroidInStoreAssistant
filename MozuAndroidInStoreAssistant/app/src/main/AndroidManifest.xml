@@ -67,6 +67,9 @@
         <activity
             android:name=".OrderCreationActivity"
             android:label="@string/title_activity_order_creation" />
+
+        <activity android:name=".CustomerCreationActivity"
+            android:theme="@style/DialogMozu"/>
     </application>
 
 

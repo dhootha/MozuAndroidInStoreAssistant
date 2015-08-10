@@ -193,6 +193,12 @@
         <item name="android:windowTitleStyle">@style/dialog_title_style</item>
     </style>
 
+    <style name="ActivityDialogMozu" parent="@android:style/Theme.Holo.Light.Dialog">
+        <item name="android:windowTitleStyle">@style/dialog_title_style</item>
+        <item name="android:windowActionBar">true</item>
+    </style>
+
+
     <style name="dialog_title_style" parent="android:Widget.TextView">
         <item name="android:textColor">@color/mozu_color</item>
         <item name="android:textSize">24sp</item>
