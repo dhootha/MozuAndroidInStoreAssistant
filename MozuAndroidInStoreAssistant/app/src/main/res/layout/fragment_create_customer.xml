@@ -1,13 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
-    <LinearLayout
+    <Button
+        android:id="@+id/verify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="@string/verify"
+        android:textColor="@color/divider_white"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="false"
+        android:layout_toLeftOf="@+id/save"/>
+
+    <Button
+        android:id="@+id/save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/save"
+        android:textColor="@color/divider_white"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"/>
+
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_above="@+id/verify">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -34,8 +57,9 @@
                     android:layout_marginRight="16dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:hint="First Name"
-                    android:nextFocusDown="@+id/last_name" />
+                    android:hint="@string/first_name"
+                    android:nextFocusDown="@+id/last_name"/>
+
             </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
 
             <com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout
@@ -57,8 +81,8 @@
                     android:layout_marginRight="16dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:hint="Last Name"
-                    android:nextFocusDown="@+id/phone_number" />
+                    android:hint="@string/last_name"
+                    android:nextFocusDown="@+id/phone_number"/>
             </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
 
             <com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout
@@ -82,30 +106,7 @@
                     android:layout_marginRight="16dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:hint="Phone Number" />
-            </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
-
-            <com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout
-                android:id="@+id/type_float_label"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="8dp"
-                app:floatLabelTextAppearance="@style/TextAppearance.Mozu.FloatLabel">
-
-                <EditText
-                    android:id="@+id/phone_type"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:hint="Select Type"
-                    android:nextFocusDown="@+id/email" />
+                    android:hint="@string/phone"/>
             </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
 
             <com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout
@@ -127,8 +128,25 @@
                     android:layout_marginRight="16dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:hint="Email Address"
-                    android:nextFocusDown="@+id/address_1" />
+                    android:hint="@string/email_address"
+                    android:nextFocusDown="@+id/address_1"/>
+            </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
+
+            <com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout
+                android:id="@+id/type_float_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                app:floatLabelTextAppearance="@style/TextAppearance.Mozu.FloatLabel">
+
+                <Spinner
+                    android:id="@+id/address_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="16dp"/>
             </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
 
             <com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout
@@ -152,8 +170,8 @@
                     android:layout_marginRight="16dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:hint="Address 1"
-                    android:nextFocusDown="@+id/address_2" />
+                    android:hint="@string/address_1"
+                    android:nextFocusDown="@+id/address_2"/>
             </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
 
             <com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout
@@ -177,8 +195,8 @@
                     android:layout_marginRight="16dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:hint="Address 2"
-                    android:nextFocusDown="@+id/city" />
+                    android:hint="@string/adddress_2"
+                    android:nextFocusDown="@+id/city"/>
             </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
 
             <com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout
@@ -202,8 +220,8 @@
                     android:layout_marginRight="16dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:hint="City"
-                    android:nextFocusDown="@+id/state" />
+                    android:hint="@string/city"
+                    android:nextFocusDown="@+id/state"/>
             </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
 
             <com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout
@@ -217,17 +235,12 @@
                 android:paddingRight="0dp"
                 app:floatLabelTextAppearance="@style/TextAppearance.Mozu.FloatLabel">
 
-                <EditText
+                <Spinner
                     android:id="@+id/state"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:hint="State" />
+                    android:layout_marginTop="16dp"/>
             </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
 
             <com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout
@@ -251,8 +264,8 @@
                     android:layout_marginRight="16dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:hint="Zip"
-                    android:nextFocusDown="@+id/country" />
+                    android:hint="@string/zip"
+                    android:nextFocusDown="@+id/country"/>
             </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
 
             <com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout
@@ -276,8 +289,8 @@
                     android:layout_marginRight="16dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:hint="Country"
-                    android:nextFocusDown="@+id/country" />
+                    android:hint="@string/country"
+                    android:nextFocusDown="@+id/country"/>
             </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
 
             <LinearLayout
@@ -292,7 +305,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    android:text="DEFAULT BILLING" />
+                    android:text="@string/default_billing"/>
 
                 <CheckBox
                     android:id="@+id/default_shipping"
@@ -301,37 +314,9 @@
                     android:layout_marginLeft="16dp"
                     android:layout_marginStart="16dp"
                     android:checked="true"
-                    android:text="DEFAULT SHIPPING" />
+                    android:text="@string/default_shipping"/>
             </LinearLayout>
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:gravity="right">
-
-            <Button
-                android:id="@+id/verify"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="false"
-                android:layout_alignParentRight="false"
-                android:layout_alignTop="@+id/save"
-                android:layout_toLeftOf="@+id/save"
-                android:text="Verify"
-                android:textColor="@color/divider_white" />
-
-            <Button
-                android:id="@+id/save"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginBottom="16dp"
-                android:layout_marginRight="16dp"
-                android:text="Save"
-                android:textColor="@color/divider_white" />
-        </LinearLayout>
-    </LinearLayout>
-</ScrollView>
+    </ScrollView>
+</RelativeLayout>
