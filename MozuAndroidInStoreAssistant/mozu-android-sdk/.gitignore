@@ -1,0 +1,10 @@
+/.project
+/build/
+/.gradle/
+/.settings/
+/libs/
+/.classpath
+/project.properties
+/gen/
+/bin/
+/lint.xml

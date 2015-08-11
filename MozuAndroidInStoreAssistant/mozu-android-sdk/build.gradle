@@ -1,0 +1,143 @@
+apply plugin: 'eclipse'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.0.0'
+    }
+}
+apply plugin: 'android-library'
+
+sourceCompatibility = 1.6
+archivesBaseName='mozu-api-android'
+if (hasProperty("teamcity")) {
+    version = teamcity["build.number"]
+    println "TeamCity build number passed into gradle is " + version
+} else {
+    // Manually insert the version numbers here when building outside of TeamCity
+    version = '1.17.0'
+}
+
+ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
+group='com.mozu'
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.2'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+android {
+    compileSdkVersion 22
+    buildToolsVersion "22.0.1"
+
+    defaultConfig {
+        minSdkVersion 9
+        targetSdkVersion 22
+    }
+    lintOptions {
+          abortOnError false
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFile getDefaultProguardFile('proguard-android.txt')
+        }
+    }
+}
+
+dependencies {
+    compile ("org.apache.httpcomponents:httpclient-android:4.3.5")
+    compile ("com.android.support:support-v4:19.0.0")
+    compile ("com.android.support:gridlayout-v7:19.0.0")
+    compile ("com.android.support:appcompat-v7:19.0.0")
+
+    compile ("com.mozu:mozu-api-core:"+version) {
+        exclude group: 'mysql'
+        exclude group: 'xerces'
+        exclude group: 'berkeleydb'
+        exclude group: 'hsqldb'
+        exclude group: 'tomcat'
+        exclude group: 'commons-logging'
+        
+        changing = true
+    }
+}
+
+publishing {
+    publications {
+         maven(MavenPublication){
+            artifactId project.archivesBaseName
+            artifact file("build/libs/${project.archivesBaseName}-${project.version}.aar")
+            pom.withXml {
+            }
+    }
+ }
+}
+
+signing {
+    required { isReleaseVersion && gradle.taskGraph.hasTask("uploadArchives") }
+    sign configurations.archives
+}
+
+if (hasProperty("sonatypeUsername")) {
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+     
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2") {
+                  authentication(userName: sonatypeUsername, password: sonatypePassword)
+                }
+                snapshotRepository (url: "https://oss.sonatype.org/content/repositories/snapshots") {
+                  authentication(userName: sonatypeUsername, password: sonatypePassword)
+                }
+                pom.project {
+                   name 'mozu-android-sdk'
+                   packaging 'aar'
+                   description 'Mozu Android is a SDK that enables you to create robust Android applications that integrate with the Mozu platform'
+                   url 'https://github.com/Mozu/mozu-java.git'
+     
+                   scm {
+                       url 'scm:git@github.com:Mozu/mozu-java.git'
+                       connection 'scm:git@github.com:Mozu/mozu-java.git'
+                       developerConnection 'scm:git@github.com:Mozu/mozu-java.git'
+                   }
+     
+                   licenses {
+                       license {
+                           name 'The MIT License (MIT)'
+                           url 'http://http://opensource.org/licenses/MIT'
+                           distribution 'repo'
+                       }
+                   }
+     
+                   developers {
+                       developer {
+                           id 'bob_hewett'
+                           name 'Bob Hewett'
+                       }
+                       developer {
+                           id 'john_gatti'
+                           name 'John Gatti'
+                       }
+                       developer {
+                           id 'sanjay_mandadi'
+                           name 'Sanjay Mandadi'
+                       }
+                       
+                   }
+               }
+            }
+        }
+    }
+}
