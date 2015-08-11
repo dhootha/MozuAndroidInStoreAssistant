@@ -48,7 +48,6 @@
             </intent-filter>
         </activity>
 
-
         <activity
             android:name=".ProductDetailActivity"
             android:label="@string/title_activity_product_detail" />
@@ -69,8 +68,7 @@
             android:label="@string/title_activity_order_creation" />
 
         <activity android:name=".CustomerCreationActivity"
-            android:theme="@style/DialogMozu"/>
+            android:theme="@style/AppTheme.ActivityDialog"/>
     </application>
-
 
 </manifest>
