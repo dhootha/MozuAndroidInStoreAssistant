@@ -30,6 +30,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:layout_above="@+id/verify">
 
         <LinearLayout
@@ -58,6 +59,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:hint="@string/first_name"
+                    android:text="Test"
                     android:nextFocusDown="@+id/last_name"/>
 
             </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
@@ -81,6 +83,7 @@
                     android:layout_marginRight="16dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
+                    android:text="mobile"
                     android:hint="@string/last_name"
                     android:nextFocusDown="@+id/phone_number"/>
             </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
@@ -106,6 +109,7 @@
                     android:layout_marginRight="16dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
+                    android:text="111-1111"
                     android:hint="@string/phone"/>
             </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
 
@@ -129,6 +133,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:hint="@string/email_address"
+                    android:text="volusion@volusion.com"
                     android:nextFocusDown="@+id/address_1"/>
             </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
 
@@ -171,6 +176,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:hint="@string/address_1"
+                    android:text="1835 KRAMER LN"
                     android:nextFocusDown="@+id/address_2"/>
             </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
 
@@ -196,6 +202,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:hint="@string/adddress_2"
+                    android:text="STE 100"
                     android:nextFocusDown="@+id/city"/>
             </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
 
@@ -221,6 +228,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:hint="@string/city"
+                    android:text="AUSTIN"
                     android:nextFocusDown="@+id/state"/>
             </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
 
@@ -265,6 +273,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:hint="@string/zip"
+                    android:text="78758-4233"
                     android:nextFocusDown="@+id/country"/>
             </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
 
@@ -290,6 +299,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:hint="@string/country"
+                    android:text="US"
                     android:nextFocusDown="@+id/country"/>
             </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
 
