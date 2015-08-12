@@ -45,6 +45,16 @@ public class CustomersLoader extends InternetConnectedAsyncTaskLoader<List<Custo
         init();
     }
 
+    public CustomersLoader(Context context, Integer tenantId, Integer siteId, String query) {
+        super(context);
+        mTenantId = tenantId;
+        mSiteId = siteId;
+        mSearchQueryFilter = query;
+        mCurrentSort = SORT_CUSTOMER_DSC;
+        mCurrentOrderBy = CUSTOMER_CUSTOMER_NUMBER;
+        init();
+    }
+
     public boolean isSortAsc() {
         return SORT_CUSTOMER_ASC.equals(mCurrentSort);
     }
@@ -57,7 +67,9 @@ public class CustomersLoader extends InternetConnectedAsyncTaskLoader<List<Custo
 
         mIsLoading = false;
 
-        mSearchQueryFilter = "";
+        if(mSearchQueryFilter == null) {
+            mSearchQueryFilter = "";
+        }
 
         mCustomersList = new ArrayList<CustomerAccount>();
 
@@ -141,8 +153,7 @@ public class CustomersLoader extends InternetConnectedAsyncTaskLoader<List<Custo
         CustomerAccountResource customerResource = new CustomerAccountResource(new MozuApiContext(mTenantId, mSiteId));
 
         try {
-            if (!TextUtils.isEmpty(mSearchQueryFilter)) {
-                String filter = "firstName sw " + mSearchQueryFilter + " or lastName sw " + mSearchQueryFilter + " or emailAddress cont " + mSearchQueryFilter;
+            if (!TextUtils.isEmpty(mSearchQueryFilter)) {String filter = "firstName sw " + mSearchQueryFilter + " or lastName sw " + mSearchQueryFilter + " or emailAddress cont " + mSearchQueryFilter;
                 customerCollection = customerResource.getAccounts(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, null, filter, null, null, null, false, null);
             } else {
                 customerCollection = customerResource.getAccounts(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mCurrentOrderBy +" "+mCurrentSort, null, null, null, null, false, null);
