@@ -38,6 +38,7 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
     @InjectView(R.id.create)
     Button mCreateCustomer;
     private CustomersAdapter mAdapter;
+    private String mQuery = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -81,11 +82,11 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String customer = customerLookup.getText().toString();
-                getCustomersLoader().reset();
-                getCustomersLoader().setFilter(customer);
-                getCustomersLoader().startLoading();
-                getCustomersLoader().forceLoad();
+                mQuery = customerLookup.getText().toString();
+                getLoaderManager().restartLoader(LOADER_CUSTOMER, null, CustomerLookupFragment.this);
+                Loader<List<CustomerAccount>> loader = getLoaderManager().getLoader(LOADER_CUSTOMER);
+                mCustomersLoader = (CustomersLoader) loader;
+                mCustomersLoader.forceLoad();
             }
 
             @Override
@@ -97,7 +98,7 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
 
     @Override
     public Loader<List<CustomerAccount>> onCreateLoader(int id, Bundle args) {
-        CustomersLoader loader = new CustomersLoader(getActivity(), mTenantId, mSiteId);
+        CustomersLoader loader = new CustomersLoader(getActivity(), mTenantId, mSiteId, mQuery);
         return loader;
     }
 
@@ -118,17 +119,6 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
     @Override
     public void onLoaderReset(Loader<List<CustomerAccount>> loader) {
 
-    }
-
-    private CustomersLoader getCustomersLoader() {
-        if (mCustomersLoader == null) {
-
-            Loader<List<CustomerAccount>> loader = getLoaderManager().getLoader(LOADER_CUSTOMER);
-
-            mCustomersLoader = (CustomersLoader) loader;
-        }
-
-        return mCustomersLoader;
     }
 
     @Override
