@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +15,13 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.mozu.api.contracts.core.Address;
+import com.mozu.api.contracts.core.Phone;
 import com.mozu.api.contracts.customer.AddressValidationResponse;
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.api.contracts.customer.CustomerContact;
+import com.mozu.mozuandroidinstoreassistant.app.CustomerCreationActivity;
 import com.mozu.mozuandroidinstoreassistant.app.OrderCreationActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
-import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.CustomerAccountCreationObserver;
 import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.CustomerAddressValidation;
 import com.mozu.mozuandroidinstoreassistant.app.dialog.ErrorMessageAlertDialog;
 
@@ -46,7 +46,7 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
     @InjectView(R.id.last_name)
     EditText mLastName;
     @InjectView(R.id.phone_number)
-    EditText mPhoneNumbeer;
+    EditText mPhoneNumber;
     @InjectView(R.id.address_type)
     Spinner mAddressType;
     @InjectView(R.id.email)
@@ -77,6 +77,7 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
     private String mStateSelected;
     private Address mAddress;
     private Observable<AddressValidationResponse> addressValidationResponseObservable;
+    private CustomerCreationActivity customerCreationListener;
 
     public static CustomerCreationFragment getInstance(int tenantId, int siteId) {
         Bundle bundle = new Bundle();
@@ -130,107 +131,96 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
         mSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(validateForm()) {
-                    createNewCustomerAccount();
+                if (validateForm()) {
+                    CustomerAccount customer = createCustomerFromForm();
+                    customerCreationListener.onNextClicked(customer);
                 }
             }
         });
         mVerify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mAddress = new Address();
-                mAddress.setAddress1(mAddress1.getText().toString());
-                mAddress.setAddress2(mAddress2.getText().toString());
-                mAddress.setStateOrProvince(mStateSelected);
-                mAddress.setCityOrTown(mCity.getText().toString());
-                mAddress.setPostalOrZipCode(mZip.getText().toString());
-                mAddress.setCountryCode(mCountry.getText().toString());
-                mAddress.setAddressType(mAddressTypeSelected);
+                mAddress = createAddressFromForm();
                 verifyAddressIsValid(mAddress);
             }
         });
     }
 
+    private CustomerAccount createCustomerFromForm() {
+        CustomerAccount customerAccount = new CustomerAccount();
+        CustomerContact customerContact = new CustomerContact();
+        if (mAddress == null) {
+            mAddress = createAddressFromForm();
+        }
+        customerContact.setAddress(mAddress);
+        List<CustomerContact> contacts = new ArrayList<CustomerContact>();
+        customerAccount.setFirstName(mFirstName.getText().toString());
+        customerAccount.setLastName(mLastName.getText().toString());
+        customerAccount.setEmailAddress(mEmail.getText().toString());
+        customerAccount.setContacts(contacts);
+        customerAccount.setUserName(mEmail.getText().toString());
+        customerContact.setFirstName(customerAccount.getFirstName());
+        customerContact.setLastNameOrSurname(customerAccount.getLastName());
+        customerContact.setEmail(customerAccount.getEmailAddress());
+        Phone phone = new Phone();
+        phone.setHome(mPhoneNumber.getText().toString());
+        customerContact.setPhoneNumbers(phone);
+        contacts.add(customerContact);
+        return customerAccount;
+    }
+
+    private Address createAddressFromForm() {
+        Address address = new Address();
+        address.setAddress1(mAddress1.getText().toString());
+        address.setAddress2(mAddress2.getText().toString());
+        address.setStateOrProvince(mStateSelected);
+        address.setCityOrTown(mCity.getText().toString());
+        address.setPostalOrZipCode(mZip.getText().toString());
+        address.setCountryCode(mCountry.getText().toString());
+        address.setAddressType(mAddressTypeSelected);
+        return address;
+
+    }
+
     private boolean validateForm() {
         boolean isValid = true;
-        if(mFirstName.getText().toString().isEmpty()) {
+        if (mFirstName.getText().toString().isEmpty()) {
             mFirstName.setError(getActivity().getResources().getString(R.string.required));
             isValid = false;
         }
-        if(mLastName.getText().toString().isEmpty()) {
+        if (mLastName.getText().toString().isEmpty()) {
             mLastName.setError(getActivity().getResources().getString(R.string.required));
             isValid = false;
         }
-        if(mPhoneNumbeer.getText().toString().isEmpty()) {
-            mPhoneNumbeer.setError(getActivity().getResources().getString(R.string.required));
+        if (mPhoneNumber.getText().toString().isEmpty()) {
+            mPhoneNumber.setError(getActivity().getResources().getString(R.string.required));
             isValid = false;
         }
-        if(mEmail.getText().toString().isEmpty()) {
+        if (mEmail.getText().toString().isEmpty()) {
             mEmail.setError(getActivity().getResources().getString(R.string.required));
             isValid = false;
         }
-        if(mAddress1.getText().toString().isEmpty()) {
+        if (mAddress1.getText().toString().isEmpty()) {
             mAddress1.setError(getActivity().getResources().getString(R.string.required));
             isValid = false;
         }
-        if(mCity.getText().toString().isEmpty()) {
+        if (mCity.getText().toString().isEmpty()) {
             mCity.setError(getActivity().getResources().getString(R.string.required));
             isValid = false;
         }
-        if(mZip.getText().toString().isEmpty()) {
+        if (mZip.getText().toString().isEmpty()) {
             mZip.setError(getActivity().getResources().getString(R.string.required));
             isValid = false;
         }
-        if(mCountry.getText().toString().isEmpty()) {
+        if (mCountry.getText().toString().isEmpty()) {
             mCountry.setError(getActivity().getResources().getString(R.string.required));
             isValid = false;
         }
         return isValid;
     }
 
-    private void createNewCustomerAccount() {
-        CustomerAccount customerAccount = new CustomerAccount();
-        CustomerContact customerContact = new CustomerContact();
-        if(mAddress != null) {
-            customerContact.setAddress(mAddress);
-        }
-        List<CustomerContact> contacts = new ArrayList<CustomerContact>();
-        contacts.add(customerContact);
-        customerAccount.setFirstName(mFirstName.getText().toString());
-        customerAccount.setLastName(mLastName.getText().toString());
-        customerAccount.setEmailAddress(mEmail.getText().toString());
-        customerAccount.setContacts(contacts);
-        customerAccount.setUserName(mEmail.getText().toString());
-        CustomerAccountCreationObserver.getCustomerAccountCreationObserverable(mTenantId, mSiteId, customerAccount)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(getCreateCustomerAccountSubscriber());
-
-    }
-
-    public Subscriber<CustomerAccount> getCreateCustomerAccountSubscriber() {
-        return new Subscriber<CustomerAccount>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                AlertDialog error  = ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), e.toString());
-                error.show();
-            }
-
-            @Override
-            public void onNext(CustomerAccount customerAccount) {
-                Log.e("Customer Created", customerAccount.toString());
-                Log.e("Customer Created", customerAccount.toString());
-            }
-        };
-    }
-
     public void verifyAddressIsValid(Address address) {
-        if(validateForm()) {
+        if (validateForm()) {
             addressValidationResponseObservable = new CustomerAddressValidation(mTenantId, mSiteId).getAddressValidationObservable(address);
             addressValidationResponseObservable
                     .subscribeOn(Schedulers.io())
@@ -249,7 +239,7 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
 
             @Override
             public void onError(Throwable e) {
-                AlertDialog error  = ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), e.toString());
+                AlertDialog error = ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), e.toString());
                 error.show();
             }
 
@@ -292,6 +282,7 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
                         mAddress1.setText(address.getAddress1());
                         mAddress2.setText(address.getAddress2());
                         mCity.setText(address.getCityOrTown());
+                        //todo
 //                        mState.setText(address.getStateOrProvince());
                         mZip.setText(address.getPostalOrZipCode());
                         mCountry.setText(address.getCountryCode());
@@ -307,4 +298,7 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
                 .create();
     }
 
+    public void setCustomerCreationListener(CustomerCreationActivity customerCreationListener) {
+        this.customerCreationListener = customerCreationListener;
+    }
 }

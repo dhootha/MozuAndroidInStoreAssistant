@@ -5,8 +5,9 @@ import android.os.Bundle;
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.mozuandroidinstoreassistant.app.customer.CustomerAddAddressFragment;
 import com.mozu.mozuandroidinstoreassistant.app.customer.CustomerCreationFragment;
+import com.mozu.mozuandroidinstoreassistant.app.customer.CustomerCreationListener;
 
-public class CustomerCreationActivity extends BaseActivity {
+public class CustomerCreationActivity extends BaseActivity implements CustomerCreationListener{
 
     private Integer mTenantId;
     private Integer mSiteId;
@@ -19,6 +20,7 @@ public class CustomerCreationActivity extends BaseActivity {
         mTenantId = getIntent().getExtras().getInt(OrderCreationActivity.CURRENT_TENANT_ID, -1);
         mSiteId = getIntent().getExtras().getInt(OrderCreationActivity.CURRENT_SITE_ID, -1);
         CustomerCreationFragment customerCreationFragment = CustomerCreationFragment.getInstance(mTenantId, mSiteId);
+        customerCreationFragment.setCustomerCreationListener(this);
         getFragmentManager().beginTransaction().replace(R.id.content_fragment_holder, customerCreationFragment).commit();
         if (getActionBar() != null) {
             getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -27,7 +29,13 @@ public class CustomerCreationActivity extends BaseActivity {
 
     //replace fragment
     public void onNextClicked(CustomerAccount account) {
-        CustomerAddAddressFragment customerCreationFragment = CustomerAddAddressFragment.getInstance(mTenantId, mSiteId);
+        CustomerAddAddressFragment customerCreationFragment = CustomerAddAddressFragment.getInstance(mTenantId, mSiteId, account);
         getFragmentManager().beginTransaction().replace(R.id.content_fragment_holder, customerCreationFragment).commit();
     }
+
+    public void onCustomerSaved() {
+
+    }
+
+
 }
