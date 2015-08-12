@@ -281,6 +281,7 @@
     <string name="default_billing">DEFAULT BILLING</string>
     <string name="default_shipping">DEFAULT SHIPPING</string>
     <string name="required">Required</string>
+    <string name="next">Next</string>
     <string-array name="register_email_address">
         <item>mozumobile@volusion.com</item>
     </string-array>
