@@ -69,7 +69,7 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
     CheckBox mDefaultShipping;
     @InjectView(R.id.verify)
     Button mVerify;
-    @InjectView(R.id.save)
+    @InjectView(R.id.next)
     Button mSave;
     private int mTenantId;
     private int mSiteId;
