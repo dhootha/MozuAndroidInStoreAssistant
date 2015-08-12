@@ -45,6 +45,16 @@ public class CustomersLoader extends InternetConnectedAsyncTaskLoader<List<Custo
         init();
     }
 
+    public CustomersLoader(Context context, Integer tenantId, Integer siteId, String query) {
+        super(context);
+        mTenantId = tenantId;
+        mSiteId = siteId;
+        mSearchQueryFilter = query;
+        mCurrentSort = SORT_CUSTOMER_DSC;
+        mCurrentOrderBy = CUSTOMER_CUSTOMER_NUMBER;
+        init();
+    }
+
     public boolean isSortAsc() {
         return SORT_CUSTOMER_ASC.equals(mCurrentSort);
     }
@@ -57,7 +67,9 @@ public class CustomersLoader extends InternetConnectedAsyncTaskLoader<List<Custo
 
         mIsLoading = false;
 
-        mSearchQueryFilter = "";
+        if(mSearchQueryFilter == null) {
+            mSearchQueryFilter = "";
+        }
 
         mCustomersList = new ArrayList<CustomerAccount>();
 
