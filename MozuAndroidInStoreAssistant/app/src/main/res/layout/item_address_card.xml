@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginRight="16dp"
                 android:background="@drawable/card_background"
-                android:minWidth="200dp"
                 android:orientation="vertical"
                 android:padding="8dp">
 
@@ -67,7 +68,8 @@
         style="@android:style/Widget.Holo.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/email"
+        android:layout_toLeftOf="@+id/delete"
         android:text="EDIT"
         android:textColor="@color/mozu_color"
         android:textSize="16sp"/>
@@ -77,8 +79,8 @@
         style="@android:style/Widget.Holo.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/edit"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/email"
         android:text="DELETE"
         android:textColor="@color/mozu_color"
         android:textSize="16sp"/>

@@ -14,11 +14,10 @@ import rx.Subscriber;
 
 public class SearchFetcher {
 
+    public static final String PRODUCT_SORT_BY = "productname asc";
     private static final String ORDER_ID_FILTER_BY = "orderNumber eq ";
     private static final int ITEMS_PER_PAGE = 3;
     private String mQueryString;
-
-    public static final String PRODUCT_SORT_BY = "productname asc";
 
     public void setQueryString(String queryString){
         mQueryString = queryString;
@@ -59,7 +58,7 @@ public class SearchFetcher {
                         try {
                             ProductSearchResult result = productSearchResultResource.search(mQueryString, null,
                                     null, null, null, null, null, null, null, null, null, null, null,
-                                    PRODUCT_SORT_BY, ITEMS_PER_PAGE, 0, null, null);
+                                    PRODUCT_SORT_BY, ITEMS_PER_PAGE, 0, null, null, null, null, null);
                             Thread.sleep(5000);
                             subscriber.onNext(result);
                             subscriber.onCompleted();

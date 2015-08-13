@@ -6,11 +6,13 @@ import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.mozuandroidinstoreassistant.app.customer.CustomerAddAddressFragment;
 import com.mozu.mozuandroidinstoreassistant.app.customer.CustomerCreationFragment;
 import com.mozu.mozuandroidinstoreassistant.app.customer.CustomerCreationListener;
+import com.mozu.mozuandroidinstoreassistant.app.customer.adapters.CustomerAddressesAdapter;
 
-public class CustomerCreationActivity extends BaseActivity implements CustomerCreationListener{
+public class CustomerCreationActivity extends BaseActivity implements CustomerCreationListener, CustomerAddressesAdapter.AddressEditListener {
 
     private Integer mTenantId;
     private Integer mSiteId;
+    private CustomerAccount mCustomerAccount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +31,8 @@ public class CustomerCreationActivity extends BaseActivity implements CustomerCr
 
     //replace fragment
     public void onNextClicked(CustomerAccount account) {
-        CustomerAddAddressFragment customerCreationFragment = CustomerAddAddressFragment.getInstance(mTenantId, mSiteId, account);
+        mCustomerAccount = account;
+        CustomerAddAddressFragment customerCreationFragment = CustomerAddAddressFragment.getInstance(mTenantId, mSiteId, mCustomerAccount);
         getFragmentManager().beginTransaction().replace(R.id.content_fragment_holder, customerCreationFragment).commit();
     }
 
@@ -37,5 +40,24 @@ public class CustomerCreationActivity extends BaseActivity implements CustomerCr
 
     }
 
+    @Override
+    public void addNewAddress(CustomerAccount customerAccount) {
+        mCustomerAccount = customerAccount;
+        CustomerCreationFragment customerCreationFragment = CustomerCreationFragment.getInstance(mTenantId, mSiteId, mCustomerAccount, -1);
+        customerCreationFragment.setCustomerCreationListener(this);
+        getFragmentManager().beginTransaction()
+                .addToBackStack(null)
+                .replace(R.id.content_fragment_holder, customerCreationFragment)
+                .commit();
+    }
 
+    @Override
+    public void onEditAddressClicked(int position) {
+        CustomerCreationFragment customerCreationFragment = CustomerCreationFragment.getInstance(mTenantId, mSiteId, mCustomerAccount, position);
+        customerCreationFragment.setCustomerCreationListener(this);
+        getFragmentManager().beginTransaction()
+                .addToBackStack(null)
+                .replace(R.id.content_fragment_holder, customerCreationFragment)
+                .commit();
+    }
 }

@@ -42,7 +42,7 @@ public class CustomerAddAddressFragment extends Fragment {
     Button mSave;
     private int mTenantId;
     private int mSiteId;
-    private CustomerAccount mCustomer;
+    private CustomerAccount mCustomerAccount;
     private CustomerAddressesAdapter mRecyclerViewAddressAdapter;
 
     public static CustomerAddAddressFragment getInstance(Integer tenantId, Integer siteId, CustomerAccount account) {
@@ -61,7 +61,7 @@ public class CustomerAddAddressFragment extends Fragment {
         ButterKnife.inject(this, view);
         mTenantId = getArguments().getInt(OrderCreationActivity.CURRENT_TENANT_ID);
         mSiteId = getArguments().getInt(OrderCreationActivity.CURRENT_SITE_ID);
-        mCustomer = (CustomerAccount) getArguments().getSerializable(CUSTOMER_ACCOUNT);
+        mCustomerAccount = (CustomerAccount) getArguments().getSerializable(CUSTOMER_ACCOUNT);
         return view;
     }
 
@@ -80,20 +80,26 @@ public class CustomerAddAddressFragment extends Fragment {
                 CustomerAddAddressFragment.this.getActivity().finish();
             }
         });
+        mAddAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onAddAddressClicked();
+            }
+        });
         mAddressesRecyclerView.setHasFixedSize(true);
-        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2, LinearLayoutManager.HORIZONTAL, false);
+        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2, LinearLayoutManager.VERTICAL, false);
         mAddressesRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerViewAddressAdapter = new CustomerAddressesAdapter(mCustomer.getContacts());
+        mRecyclerViewAddressAdapter = new CustomerAddressesAdapter(mCustomerAccount.getContacts(), (CustomerAddressesAdapter.AddressEditListener) getActivity());
         mAddressesRecyclerView.setAdapter(mRecyclerViewAddressAdapter);
     }
 
 
-    private void onAddAddressClicked() {
-        // TODO:
+    public void onAddAddressClicked() {
+        ((CustomerCreationListener) getActivity()).addNewAddress(mCustomerAccount);
     }
 
     private void onSaveClicked() {
-        CustomerAccountCreationObserver.getCustomerAccountCreationObserverable(mTenantId, mSiteId, mCustomer)
+        CustomerAccountCreationObserver.getCustomerAccountCreationObserverable(mTenantId, mSiteId, mCustomerAccount)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getCreateCustomerAccountSubscriber());
@@ -120,6 +126,4 @@ public class CustomerAddAddressFragment extends Fragment {
             }
         };
     }
-
-
 }

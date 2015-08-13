@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.mozu.api.contracts.core.Address;
@@ -22,9 +23,11 @@ import butterknife.InjectView;
 public class CustomerAddressesAdapter extends RecyclerView.Adapter<CustomerAddressesAdapter.ViewHolder> {
 
     private List<CustomerContact> data;
+    private AddressEditListener addressEditListener;
 
-    public CustomerAddressesAdapter(List<CustomerContact> data) {
+    public CustomerAddressesAdapter(List<CustomerContact> data, AddressEditListener addressEditListener) {
         this.data = data;
+        this.addressEditListener = addressEditListener;
     }
 
     public void setData(List<CustomerContact> data) {
@@ -40,7 +43,7 @@ public class CustomerAddressesAdapter extends RecyclerView.Adapter<CustomerAddre
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         CustomerContact customerContact = data.get(position);
         Address address = customerContact.getAddress();
         Phone phone = customerContact.getPhoneNumbers();
@@ -60,6 +63,19 @@ public class CustomerAddressesAdapter extends RecyclerView.Adapter<CustomerAddre
             holder.phoneNumber.setText("Phone: " + phone.getWork());
 
         }
+        holder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                data.remove(position);
+                notifyDataSetChanged();
+            }
+        });
+        holder.edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addressEditListener.onEditAddressClicked(position);
+            }
+        });
         holder.email.setText(customerContact.getEmail());
 
     }
@@ -67,6 +83,10 @@ public class CustomerAddressesAdapter extends RecyclerView.Adapter<CustomerAddre
     @Override
     public int getItemCount() {
         return data.size();
+    }
+
+    public interface AddressEditListener {
+        void onEditAddressClicked(int position);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -84,11 +104,14 @@ public class CustomerAddressesAdapter extends RecyclerView.Adapter<CustomerAddre
         TextView phoneNumber;
         @InjectView(R.id.email)
         TextView email;
+        @InjectView(R.id.delete)
+        Button delete;
+        @InjectView(R.id.edit)
+        Button edit;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.inject(this, itemView);
         }
     }
-
 }

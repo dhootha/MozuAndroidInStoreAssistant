@@ -1,6 +1,5 @@
 package com.mozu.mozuandroidinstoreassistant.app.customer;
 
-import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.Intent;
@@ -33,15 +32,24 @@ import butterknife.InjectView;
 public class CustomerLookupFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<CustomerAccount>>, AdapterView.OnItemSelectedListener, View.OnClickListener, CustomerCreationInterface {
 
     public static final int LOADER_CUSTOMER = 452;
-    private CustomersLoader mCustomersLoader;
-    private int mTenantId;
-    private int mSiteId;
     @InjectView(R.id.customer_lookup)
     AutoCompleteTextView customerLookup;
     @InjectView(R.id.create)
     Button mCreateCustomer;
+    private CustomersLoader mCustomersLoader;
+    private int mTenantId;
+    private int mSiteId;
     private CustomersAdapter mAdapter;
     private String mQuery = "";
+
+    public static CustomerLookupFragment getInstance(int tenantId, int siteId) {
+        CustomerLookupFragment fragment = new CustomerLookupFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(OrderCreationActivity.CURRENT_TENANT_ID, tenantId);
+        bundle.putInt(OrderCreationActivity.CURRENT_SITE_ID, siteId);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,15 +61,6 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
         }
         getLoaderManager().initLoader(LOADER_CUSTOMER, null, this);
 
-    }
-
-    public static CustomerLookupFragment getInstance(int tenantId, int siteId) {
-        CustomerLookupFragment fragment = new CustomerLookupFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt(OrderCreationActivity.CURRENT_TENANT_ID, tenantId);
-        bundle.putInt(OrderCreationActivity.CURRENT_SITE_ID, siteId);
-        fragment.setArguments(bundle);
-        return fragment;
     }
 
     @Override

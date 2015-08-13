@@ -9,4 +9,6 @@ public interface CustomerCreationListener {
     void onNextClicked(CustomerAccount customerAccount);
 
     void onCustomerSaved();
+
+    void addNewAddress(CustomerAccount customerAccount);
 }
