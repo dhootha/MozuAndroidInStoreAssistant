@@ -49,7 +49,6 @@ public class CustomerCreationActivity extends BaseActivity implements CustomerCr
         getFragmentManager().beginTransaction().replace(R.id.content_fragment_holder, customerCreationFragment, "add_address").commit();
     }
 
-
     public void onCustomerSaved() {
 
     }

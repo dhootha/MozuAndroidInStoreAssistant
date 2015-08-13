@@ -119,6 +119,7 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
         mSiteId = getArguments().getInt(OrderCreationActivity.CURRENT_SITE_ID, -1);
         mEditing = getArguments().getInt(IS_EDIT, -1);
         states = Arrays.asList(getResources().getStringArray(R.array.states));
+        mStateSelected = states.get(0);
         addressTypes = Arrays.asList(getResources().getStringArray(R.array.address_type));
         Object possibleCustomer = getArguments().getSerializable(CUSTOMER);
         if (possibleCustomer != null && possibleCustomer instanceof CustomerAccount) {
@@ -130,25 +131,6 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (mEditing > -1) {
-            CustomerContact customerEditing = mCustomerAccount.getContacts().get(mEditing);
-            mFirstName.setText(customerEditing.getFirstName());
-            mLastName.setText(customerEditing.getLastNameOrSurname());
-            mEmail.setText(customerEditing.getEmail());
-            mAddress1.setText(customerEditing.getAddress().getAddress1());
-            mAddress2.setText(customerEditing.getAddress().getAddress2());
-            mCity.setText(customerEditing.getAddress().getCityOrTown());
-            setSelectedState(customerEditing.getAddress().getStateOrProvince());
-            setSelectedAddressType(customerEditing.getAddress().getAddressType());
-            mCountry.setText(customerEditing.getAddress().getCountryCode());
-        } else if (mCustomerAccount != null) {
-            mFirstName.setText(mCustomerAccount.getFirstName());
-            mLastName.setText(mCustomerAccount.getLastName());
-            mEmail.setText(mCustomerAccount.getEmailAddress());
-            if (mCustomerAccount.getContacts() != null && mCustomerAccount.getContacts().get(0) != null) {
-                mPhoneNumber.setText(mCustomerAccount.getContacts().get(0).getPhoneNumbers().getHome());
-            }
-        }
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.address_type, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mAddressType.setAdapter(adapter);
@@ -193,6 +175,25 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
                 verifyAddressIsValid(mAddress);
             }
         });
+        if (mEditing > -1) {
+            CustomerContact customerEditing = mCustomerAccount.getContacts().get(mEditing);
+            mFirstName.setText(customerEditing.getFirstName());
+            mLastName.setText(customerEditing.getLastNameOrSurname());
+            mEmail.setText(customerEditing.getEmail());
+            mAddress1.setText(customerEditing.getAddress().getAddress1());
+            mAddress2.setText(customerEditing.getAddress().getAddress2());
+            mCity.setText(customerEditing.getAddress().getCityOrTown());
+            setSelectedState(customerEditing.getAddress().getStateOrProvince());
+            setSelectedAddressType(customerEditing.getAddress().getAddressType());
+            mCountry.setText(customerEditing.getAddress().getCountryCode());
+        } else if (mCustomerAccount != null) {
+            mFirstName.setText(mCustomerAccount.getFirstName());
+            mLastName.setText(mCustomerAccount.getLastName());
+            mEmail.setText(mCustomerAccount.getEmailAddress());
+            if (mCustomerAccount.getContacts() != null && mCustomerAccount.getContacts().get(0) != null) {
+                mPhoneNumber.setText(mCustomerAccount.getContacts().get(0).getPhoneNumbers().getHome());
+            }
+        }
     }
 
     private CustomerAccount createCustomerAccountFromForm() {
