@@ -26,6 +26,7 @@ import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.CustomerAddress
 import com.mozu.mozuandroidinstoreassistant.app.dialog.ErrorMessageAlertDialog;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -81,6 +82,8 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
     private Observable<AddressValidationResponse> addressValidationResponseObservable;
     private CustomerCreationActivity customerCreationListener;
     private int mEditing;
+    private List<String> states;
+    private List<String> addressTypes;
 
     public static CustomerCreationFragment getInstance(int tenantId, int siteId, CustomerAccount customerAccount, int editing) {
         Bundle bundle = new Bundle();
@@ -103,12 +106,20 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_create_customer, container, false);
         ButterKnife.inject(this, view);
         mTenantId = getArguments().getInt(OrderCreationActivity.CURRENT_TENANT_ID, -1);
         mSiteId = getArguments().getInt(OrderCreationActivity.CURRENT_SITE_ID, -1);
         mEditing = getArguments().getInt(IS_EDIT, -1);
+        states = Arrays.asList(getResources().getStringArray(R.array.states));
+        addressTypes = Arrays.asList(getResources().getStringArray(R.array.address_type));
         Object possibleCustomer = getArguments().getSerializable(CUSTOMER);
         if (possibleCustomer != null && possibleCustomer instanceof CustomerAccount) {
             mCustomerAccount = (CustomerAccount) possibleCustomer;
@@ -127,8 +138,16 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
             mAddress1.setText(customerEditing.getAddress().getAddress1());
             mAddress2.setText(customerEditing.getAddress().getAddress2());
             mCity.setText(customerEditing.getAddress().getCityOrTown());
-            //todo set state
+            setSelectedState(customerEditing.getAddress().getStateOrProvince());
+            setSelectedAddressType(customerEditing.getAddress().getAddressType());
             mCountry.setText(customerEditing.getAddress().getCountryCode());
+        } else if (mCustomerAccount != null) {
+            mFirstName.setText(mCustomerAccount.getFirstName());
+            mLastName.setText(mCustomerAccount.getLastName());
+            mEmail.setText(mCustomerAccount.getEmailAddress());
+            if (mCustomerAccount.getContacts() != null && mCustomerAccount.getContacts().get(0) != null) {
+                mPhoneNumber.setText(mCustomerAccount.getContacts().get(0).getPhoneNumbers().getHome());
+            }
         }
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.address_type, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -144,6 +163,9 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
 
             }
         });
+        ArrayAdapter<CharSequence> stateAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.states, android.R.layout.simple_spinner_item);
+        stateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mState.setAdapter(stateAdapter);
         mState.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -155,15 +177,12 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
 
             }
         });
-        ArrayAdapter<CharSequence> stateAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.states, android.R.layout.simple_spinner_item);
-        stateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mState.setAdapter(stateAdapter);
         mSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (validateForm()) {
                     CustomerAccount customer = createCustomerAccountFromForm();
-                    customerCreationListener.onNextClicked(customer);
+                    ((CustomerCreationListener) getActivity()).onNextClicked(customer);
                 }
             }
         });
@@ -189,10 +208,7 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
             contacts = mCustomerAccount.getContacts();
         }
         CustomerContact customerContact = new CustomerContact();
-        //null if it is unverified
-        if (mAddress == null) {
-            mAddress = createAddressFromForm();
-        }
+        mAddress = createAddressFromForm();
         customerContact.setFirstName(mFirstName.getText().toString());
         customerContact.setLastNameOrSurname(mLastName.getText().toString());
         customerContact.setAddress(mAddress);
@@ -297,6 +313,21 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
         };
     }
 
+    private void setSelectedState(String state) {
+        int position = states.indexOf(state);
+        mStateSelected = state;
+        mState.setSelection(position);
+
+    }
+
+    private void setSelectedAddressType(String type) {
+        if (mAddressType != null) {
+            int position = addressTypes.indexOf(type);
+            mAddressTypeSelected = type;
+            mAddressType.setSelection(position);
+        }
+    }
+
     private AlertDialog createValidatedAddressDialog() {
         return new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.verify_title)
@@ -324,8 +355,7 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
                         mAddress1.setText(address.getAddress1());
                         mAddress2.setText(address.getAddress2());
                         mCity.setText(address.getCityOrTown());
-                        //todo
-//                        mState.setText(address.getStateOrProvince());
+                        setSelectedState(address.getStateOrProvince());
                         mZip.setText(address.getPostalOrZipCode());
                         mCountry.setText(address.getCountryCode());
                     }

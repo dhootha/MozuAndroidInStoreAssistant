@@ -19,11 +19,24 @@ public class CustomerCreationActivity extends BaseActivity implements CustomerCr
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_customer);
         setTitle("Create Customer");
-        mTenantId = getIntent().getExtras().getInt(OrderCreationActivity.CURRENT_TENANT_ID, -1);
-        mSiteId = getIntent().getExtras().getInt(OrderCreationActivity.CURRENT_SITE_ID, -1);
-        CustomerCreationFragment customerCreationFragment = CustomerCreationFragment.getInstance(mTenantId, mSiteId);
-        customerCreationFragment.setCustomerCreationListener(this);
-        getFragmentManager().beginTransaction().replace(R.id.content_fragment_holder, customerCreationFragment).commit();
+        if (savedInstanceState != null) {
+            mTenantId = savedInstanceState.getInt(OrderCreationActivity.CURRENT_TENANT_ID, -1);
+            mSiteId = savedInstanceState.getInt(OrderCreationActivity.CURRENT_SITE_ID, -1);
+            Object temp = savedInstanceState.getSerializable("customer");
+            if (temp != null && temp instanceof CustomerAccount) {
+                mCustomerAccount = (CustomerAccount) savedInstanceState.getSerializable("customer");
+            }
+            if (getFragmentManager().findFragmentByTag("create_customer") != null) {
+                ((CustomerCreationFragment) getFragmentManager().findFragmentByTag("create_customer")).setCustomerCreationListener(this);
+            }
+        } else {
+            mTenantId = getIntent().getExtras().getInt(OrderCreationActivity.CURRENT_TENANT_ID, -1);
+            mSiteId = getIntent().getExtras().getInt(OrderCreationActivity.CURRENT_SITE_ID, -1);
+            CustomerCreationFragment customerCreationFragment = CustomerCreationFragment.getInstance(mTenantId, mSiteId);
+            customerCreationFragment.setCustomerCreationListener(this);
+            getFragmentManager().beginTransaction().replace(R.id.content_fragment_holder, customerCreationFragment, "create_customer").commit();
+        }
+
         if (getActionBar() != null) {
             getActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -33,11 +46,20 @@ public class CustomerCreationActivity extends BaseActivity implements CustomerCr
     public void onNextClicked(CustomerAccount account) {
         mCustomerAccount = account;
         CustomerAddAddressFragment customerCreationFragment = CustomerAddAddressFragment.getInstance(mTenantId, mSiteId, mCustomerAccount);
-        getFragmentManager().beginTransaction().replace(R.id.content_fragment_holder, customerCreationFragment).commit();
+        getFragmentManager().beginTransaction().replace(R.id.content_fragment_holder, customerCreationFragment, "add_address").commit();
     }
+
 
     public void onCustomerSaved() {
 
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(OrderCreationActivity.CURRENT_TENANT_ID, mTenantId);
+        outState.putInt(OrderCreationActivity.CURRENT_SITE_ID, mSiteId);
+        outState.putSerializable("customer", mCustomerAccount);
+        super.onSaveInstanceState(outState);
     }
 
     @Override

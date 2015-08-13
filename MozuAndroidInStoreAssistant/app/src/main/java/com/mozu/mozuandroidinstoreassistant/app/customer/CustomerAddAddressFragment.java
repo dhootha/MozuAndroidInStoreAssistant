@@ -1,5 +1,6 @@
 package com.mozu.mozuandroidinstoreassistant.app.customer;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.os.Bundle;
@@ -56,6 +57,17 @@ public class CustomerAddAddressFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_customer_add_address, container, false);
         ButterKnife.inject(this, view);
@@ -88,8 +100,8 @@ public class CustomerAddAddressFragment extends Fragment {
         });
         mAddressesRecyclerView.setHasFixedSize(true);
         GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2, LinearLayoutManager.VERTICAL, false);
-        mAddressesRecyclerView.setLayoutManager(layoutManager);
         mRecyclerViewAddressAdapter = new CustomerAddressesAdapter(mCustomerAccount.getContacts(), (CustomerAddressesAdapter.AddressEditListener) getActivity());
+        mAddressesRecyclerView.setLayoutManager(layoutManager);
         mAddressesRecyclerView.setAdapter(mRecyclerViewAddressAdapter);
     }
 
