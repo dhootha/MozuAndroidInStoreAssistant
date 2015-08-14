@@ -263,6 +263,31 @@
     <string name="order_filter_range_label">Range</string>
     <string name="create_order">Create New Order</string>
     <string name="title_activity_order_creation">OrderCreationActivity</string>
+    <string name="verify_use_this">Use This</string>
+    <string name="verify_title">Validated Address</string>
+    <string name="valid_address">Address is Valid.</string>
+    <string name="verify_keep">Keep Original</string>
+    <string name="save">Save</string>
+    <string name="verify">Verify</string>
+    <string name="country">Country</string>
+    <string name="zip">Zip</string>
+    <string name="city">City</string>
+    <string name="adddress_2">Address 2</string>
+    <string name="address_1">Address 1</string>
+    <string name="email_address">Email Address</string>
+    <string name="phone">Phone Number</string>
+    <string name="last_name">Last Name</string>
+    <string name="first_name">First Name</string>
+    <string name="default_billing">DEFAULT BILLING</string>
+    <string name="default_shipping">DEFAULT SHIPPING</string>
+    <string name="required">Required</string>
+    <string name="next">Next</string>
+    <string name="add_new_address">Add New Address</string>
+    <string name="state">State</string>
+    <string name="type">Type</string>
+    <string name="invalid_phone">Invalid Phone Number</string>
+    <string name="edit">EDIT</string>
+    <string name="delete">DELETE</string>
     <string-array name="register_email_address">
         <item>mozumobile@volusion.com</item>
     </string-array>
@@ -284,5 +309,61 @@
         <item>Paid</item>
         <item>Pending</item>
         <item>Unpaid</item>
+    </string-array>
+    <string-array name="states">
+        <item>AL</item>
+        <item>AR</item>
+        <item>AZ</item>
+        <item>CA</item>
+        <item>CO</item>
+        <item>CT</item>
+        <item>DE</item>
+        <item>DC</item>
+        <item>FL</item>
+        <item>GA</item>
+        <item>HI</item>
+        <item>ID</item>
+        <item>IL</item>
+        <item>IN</item>
+        <item>IA</item>
+        <item>KS</item>
+        <item>KY</item>
+        <item>LA</item>
+        <item>ME</item>
+        <item>MD</item>
+        <item>MA</item>
+        <item>MI</item>
+        <item>MN</item>
+        <item>MS</item>
+        <item>MO</item>
+        <item>MT</item>
+        <item>NE</item>
+        <item>NV</item>
+        <item>NH</item>
+        <item>NJ</item>
+        <item>NM</item>
+        <item>NY</item>
+        <item>NC</item>
+        <item>ND</item>
+        <item>OH</item>
+        <item>OK</item>
+        <item>OR</item>
+        <item>PA</item>
+        <item>RI</item>
+        <item>SC</item>
+        <item>SD</item>
+        <item>TN</item>
+        <item>TX</item>
+        <item>UT</item>
+        <item>VT</item>
+        <item>VA</item>
+        <item>WA</item>
+        <item>WV</item>
+        <item>WI</item>
+        <item>WY</item>
+    </string-array>
+    <string-array name="address_type">
+        <item>Residential</item>
+        <item>Business</item>
     </string-array>
 </resources>

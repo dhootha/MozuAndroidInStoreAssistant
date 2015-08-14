@@ -11,6 +11,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 
 repositories {
+    maven { url 'https://oss.sonatype.org/content/groups/staging/' }
     mavenCentral()
     mavenLocal()
     maven { url 'https://maven.fabric.io/public' }
@@ -109,7 +110,8 @@ dependencies {
         transitive = true;
     }
     compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.android.support:support-v13:19.+'
+    compile 'com.android.support:recyclerview-v7:22.2.1'
+    compile 'com.android.support:support-v13:22.2.1'
 
     compile 'org.joda:joda-convert:1.6'
     compile 'com.jakewharton:butterknife:5.1.2'

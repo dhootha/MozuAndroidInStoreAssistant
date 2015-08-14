@@ -14,10 +14,9 @@ import java.util.List;
 
 public class ProductSearchLoader extends InternetConnectedAsyncTaskLoader<List<Product>> {
 
-    private static final int ITEMS_PER_PAGE = 200;
     public static final String SORT_BY = "productname asc";
     public static final String CATEGORY_FILTER = "categoryId eq ";
-
+    private static final int ITEMS_PER_PAGE = 200;
     private List<Product> mProductList;
     private Integer mTenantId;
     private Integer mSiteId;

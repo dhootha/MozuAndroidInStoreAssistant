@@ -2,6 +2,7 @@ package com.mozu.mozuandroidinstoreassistant.app.customer;
 
 import android.app.Fragment;
 import android.app.LoaderManager;
+import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
 import android.text.Editable;
@@ -14,9 +15,10 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 
 import com.mozu.api.contracts.customer.CustomerAccount;
+import com.mozu.mozuandroidinstoreassistant.app.CustomerCreationActivity;
 import com.mozu.mozuandroidinstoreassistant.app.OrderCreationActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
-import com.mozu.mozuandroidinstoreassistant.app.customer.adapters.CustomersAdapter;
+import com.mozu.mozuandroidinstoreassistant.app.customer.adapters.CustomerLookupAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.CustomersLoader;
 
 import java.util.List;
@@ -27,18 +29,27 @@ import butterknife.InjectView;
 /**
  * Created by chris_pound on 8/5/15.
  */
-public class CustomerLookupFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<CustomerAccount>>, AdapterView.OnItemSelectedListener, View.OnClickListener {
+public class CustomerLookupFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<CustomerAccount>>, AdapterView.OnItemSelectedListener, View.OnClickListener, CustomerCreationInterface {
 
     public static final int LOADER_CUSTOMER = 452;
-    private CustomersLoader mCustomersLoader;
-    private int mTenantId;
-    private int mSiteId;
     @InjectView(R.id.customer_lookup)
     AutoCompleteTextView customerLookup;
     @InjectView(R.id.create)
     Button mCreateCustomer;
-    private CustomersAdapter mAdapter;
+    private CustomersLoader mCustomersLoader;
+    private int mTenantId;
+    private int mSiteId;
+    private CustomerLookupAdapter mAdapter;
     private String mQuery = "";
+
+    public static CustomerLookupFragment getInstance(int tenantId, int siteId) {
+        CustomerLookupFragment fragment = new CustomerLookupFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(OrderCreationActivity.CURRENT_TENANT_ID, tenantId);
+        bundle.putInt(OrderCreationActivity.CURRENT_SITE_ID, siteId);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,15 +61,6 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
         }
         getLoaderManager().initLoader(LOADER_CUSTOMER, null, this);
 
-    }
-
-    public static CustomerLookupFragment getInstance(int tenantId, int siteId) {
-        CustomerLookupFragment fragment = new CustomerLookupFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt(OrderCreationActivity.CURRENT_TENANT_ID, tenantId);
-        bundle.putInt(OrderCreationActivity.CURRENT_SITE_ID, siteId);
-        fragment.setArguments(bundle);
-        return fragment;
     }
 
     @Override
@@ -105,15 +107,13 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
     @Override
     public void onLoadFinished(Loader<List<CustomerAccount>> loader, List<CustomerAccount> data) {
         if (mAdapter == null) {
-            mAdapter = new CustomersAdapter(getActivity());
+            mAdapter = new CustomerLookupAdapter(getActivity());
             customerLookup.setAdapter(mAdapter);
         }
 
         mAdapter.clear();
         mAdapter.addAll(data);
         mAdapter.notifyDataSetChanged();
-        customerLookup.showDropDown();
-
     }
 
     @Override
@@ -128,7 +128,6 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-        //DO NOTHING
     }
 
     @Override
@@ -137,6 +136,16 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
     }
 
     private void launchCreateCustomerDialog() {
+        Bundle bundle = new Bundle();
+        bundle.putInt(OrderCreationActivity.CURRENT_TENANT_ID, mTenantId);
+        bundle.putInt(OrderCreationActivity.CURRENT_SITE_ID, mSiteId);
+        Intent intent = new Intent(getActivity(), CustomerCreationActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
 
+    }
+
+    @Override
+    public void createCustomer() {
     }
 }

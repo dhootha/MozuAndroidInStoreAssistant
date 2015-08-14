@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Filter;
 
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.mozuandroidinstoreassistant.app.R;
@@ -49,26 +48,4 @@ public class CustomersAdapter extends ArrayAdapter<CustomerAccount> {
         return convertView;
     }
 
-    @Override
-    public Filter getFilter() {
-        return new Filter() {
-            @Override
-            protected FilterResults performFiltering(CharSequence constraint) {
-                return null;
-            }
-
-            @Override
-            protected void publishResults(CharSequence constraint, FilterResults results) {
-
-            }
-
-            @Override
-            public CharSequence convertResultToString(Object resultValue) {
-                CustomerAccount customerAccount = (CustomerAccount) resultValue;
-                return customerAccount.getFirstName() + " " + customerAccount.getLastName() + "-" + customerAccount.getEmailAddress();
-            }
-        };
-
-
-    }
 }

@@ -655,7 +655,7 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
         textView.setBackgroundResource(android.R.color.transparent);
     }
 
-    public void onCreateOrderClick(){
+    public void onCreateOrderClick() {
         getOrderCreateLoader().forceLoad();
     }
 
