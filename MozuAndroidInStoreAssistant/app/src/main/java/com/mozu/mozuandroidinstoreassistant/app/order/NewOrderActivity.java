@@ -60,7 +60,7 @@ public class NewOrderActivity extends BaseActivity {
         setUpViews();
     }
 
-    public void setUpViews() {
+    private void setUpViews() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
         Calendar cal = Calendar.getInstance();
         mOrderId.setText(String.valueOf(mOrder.getOrderNumber()));
