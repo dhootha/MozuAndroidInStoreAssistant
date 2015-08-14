@@ -288,6 +288,14 @@
     <string name="invalid_phone">Invalid Phone Number</string>
     <string name="edit">EDIT</string>
     <string name="delete">DELETE</string>
+    <string name="order_label">Order</string>
+    <string name="status">Status</string>
+    <string name="name_label">Name</string>
+    <string name="email_label">Email</string>
+    <string name="title_new_order">New Order</string>
+    <string name="lookup_customer_hint">Lookup exisiting customer</string>
+    <string name="customer_lookup">Customer Lookup</string>
+    <string name="create_new_customer">Create New Customer</string>
     <string-array name="register_email_address">
         <item>mozumobile@volusion.com</item>
     </string-array>

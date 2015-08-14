@@ -22,6 +22,8 @@ import com.mozu.mozuandroidinstoreassistant.app.category.CategoryFragmentListene
 import com.mozu.mozuandroidinstoreassistant.app.category.CategoryProductFragment;
 import com.mozu.mozuandroidinstoreassistant.app.customer.CustomerListener;
 import com.mozu.mozuandroidinstoreassistant.app.customer.CustomersFragment;
+import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
+import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.order.CreateOrderListener;
 import com.mozu.mozuandroidinstoreassistant.app.order.OrderFragment;
 import com.mozu.mozuandroidinstoreassistant.app.order.OrderListener;
@@ -30,8 +32,6 @@ import com.mozu.mozuandroidinstoreassistant.app.product.ProductFragmentListener;
 import com.mozu.mozuandroidinstoreassistant.app.product.ProductListListener;
 import com.mozu.mozuandroidinstoreassistant.app.product.ProductSearchFragment;
 import com.mozu.mozuandroidinstoreassistant.app.search.SearchFragment;
-import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
-import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.settings.SettingsFragment;
 
 public class MainActivity extends AuthActivity implements View.OnClickListener, CategoryFragmentListener, ProductFragmentListener, ProductListListener, OrderListener, CustomerListener, CreateOrderListener, SearchFragment.GlobalSearchListener {
@@ -410,9 +410,7 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-
         outState.putInt(CURRENTLY_SELECTED_NAV_VIEW_ID, mCurrentlySelectedNavItem);
-
         super.onSaveInstanceState(outState);
     }
 
@@ -433,9 +431,9 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         UserAuthenticationStateMachine userAuthenticationStateMachine = UserAuthenticationStateMachineProducer.getInstance(this);
         Intent intent = new Intent(this, OrderCreationActivity.class);
 
-        intent.putExtra(OrderDetailActivity.ORDER_NUMBER_EXTRA_KEY, order.getOrderNumber());
-        intent.putExtra(OrderDetailActivity.CURRENT_TENANT_ID, userAuthenticationStateMachine.getTenantId());
-        intent.putExtra(OrderDetailActivity.CURRENT_SITE_ID, userAuthenticationStateMachine.getSiteId());
+        intent.putExtra(OrderCreationActivity.ORDER_EXTRA_KEY, order);
+        intent.putExtra(OrderCreationActivity.CURRENT_TENANT_ID, userAuthenticationStateMachine.getTenantId());
+        intent.putExtra(OrderCreationActivity.CURRENT_SITE_ID, userAuthenticationStateMachine.getSiteId());
 
         startActivity(intent);
     }

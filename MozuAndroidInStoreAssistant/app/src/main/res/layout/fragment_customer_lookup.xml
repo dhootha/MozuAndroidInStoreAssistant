@@ -12,7 +12,7 @@
         android:layout_marginLeft="28dp"
         android:layout_marginStart="28dp"
         android:layout_marginTop="16dp"
-        android:text="Customer Lookup"
+        android:text="@string/customer_lookup"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <AutoCompleteTextView
@@ -27,12 +27,12 @@
         android:background="@drawable/card_background"
         android:drawableLeft="@drawable/search"
         android:drawableStart="@drawable/search"
-        android:hint="Enter a name or add a new customer"
+        android:hint="@string/lookup_customer_hint"
         android:padding="8dp" />
 
     <Button
         android:id="@+id/create"
-        android:text="Create New Customer"
+        android:text="@string/create_new_customer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"

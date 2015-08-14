@@ -1,5 +1,6 @@
 package com.mozu.mozuandroidinstoreassistant.app.customer;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.Intent;
@@ -29,26 +30,26 @@ import butterknife.InjectView;
 /**
  * Created by chris_pound on 8/5/15.
  */
-public class CustomerLookupFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<CustomerAccount>>, AdapterView.OnItemSelectedListener, View.OnClickListener, CustomerCreationInterface {
+public class CustomerLookupFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<CustomerAccount>>, AdapterView.OnItemClickListener, View.OnClickListener, CustomerCreationInterface {
 
     public static final int LOADER_CUSTOMER = 452;
+    private CustomersLoader mCustomersLoader;
+    private int mTenantId;
+    private int mSiteId;
     @InjectView(R.id.customer_lookup)
     AutoCompleteTextView customerLookup;
     @InjectView(R.id.create)
     Button mCreateCustomer;
-    private CustomersLoader mCustomersLoader;
-    private int mTenantId;
-    private int mSiteId;
     private CustomerLookupAdapter mAdapter;
     private String mQuery = "";
+    private CustomerSelectionListener mCustomerSelectionListener;
 
-    public static CustomerLookupFragment getInstance(int tenantId, int siteId) {
-        CustomerLookupFragment fragment = new CustomerLookupFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt(OrderCreationActivity.CURRENT_TENANT_ID, tenantId);
-        bundle.putInt(OrderCreationActivity.CURRENT_SITE_ID, siteId);
-        fragment.setArguments(bundle);
-        return fragment;
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof CustomerSelectionListener) {
+            mCustomerSelectionListener = (CustomerSelectionListener) activity;
+        }
     }
 
     @Override
@@ -63,6 +64,15 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
 
     }
 
+    public static CustomerLookupFragment getInstance(int tenantId, int siteId) {
+        CustomerLookupFragment fragment = new CustomerLookupFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(OrderCreationActivity.CURRENT_TENANT_ID, tenantId);
+        bundle.putInt(OrderCreationActivity.CURRENT_SITE_ID, siteId);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_customer_lookup, container, false);
@@ -74,7 +84,7 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         customerLookup.setThreshold(1);
-        customerLookup.setOnItemSelectedListener(this);
+        customerLookup.setOnItemClickListener(this);
         mCreateCustomer.setOnClickListener(this);
         customerLookup.addTextChangedListener(new TextWatcher() {
             @Override
@@ -122,17 +132,16 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
     }
 
     @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-    }
-
-    @Override
     public void onClick(View v) {
         launchCreateCustomerDialog();
+    }
+
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+        if (adapterView.getItemAtPosition(position) instanceof CustomerAccount && mCustomerSelectionListener != null) {
+            mCustomerSelectionListener.onCustomerSelected((CustomerAccount) adapterView.getItemAtPosition(position));
+        }
     }
 
     private void launchCreateCustomerDialog() {
@@ -142,7 +151,10 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
         Intent intent = new Intent(getActivity(), CustomerCreationActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
+    }
 
+    public interface CustomerSelectionListener {
+        public void onCustomerSelected(CustomerAccount customerAccount);
     }
 
     @Override

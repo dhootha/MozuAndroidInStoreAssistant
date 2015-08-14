@@ -54,6 +54,9 @@
         <activity
             android:name=".CustomerDetailActivity"
             android:label="@string/title_activity_customer_detail" />
+        <activity
+            android:name=".order.NewOrderActivity"
+            android:label="@string/title_new_order" />
 
         <activity
             android:name=".ImagePagerActivity"
