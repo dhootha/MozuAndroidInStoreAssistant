@@ -12,6 +12,10 @@ import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.order.adapters.NewOrderFragmentAdapter;
 import com.viewpagerindicator.TabPageIndicator;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
@@ -57,9 +61,11 @@ public class NewOrderActivity extends BaseActivity {
     }
 
     public void setUpViews() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        Calendar cal = Calendar.getInstance();
         mOrderId.setText(String.valueOf(mOrder.getOrderNumber()));
         mOrderStatus.setText(mOrder.getStatus());
-        mOrderDate.setText(String.valueOf(mOrder.getAcceptedDate()));
+        mOrderDate.setText(dateFormat.format(cal.getTime()));
         mOrderName.setText(mCustomerAccount.getLastName() + " " + mCustomerAccount.getFirstName());
         mOrderEmail.setText(mCustomerAccount.getEmailAddress());
         if (mOrderFragmentAdapter == null) {
