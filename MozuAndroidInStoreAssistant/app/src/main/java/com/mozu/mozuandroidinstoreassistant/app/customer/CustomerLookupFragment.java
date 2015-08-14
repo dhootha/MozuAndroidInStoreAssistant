@@ -18,7 +18,7 @@ import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.mozuandroidinstoreassistant.app.CustomerCreationActivity;
 import com.mozu.mozuandroidinstoreassistant.app.OrderCreationActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
-import com.mozu.mozuandroidinstoreassistant.app.customer.adapters.CustomersAdapter;
+import com.mozu.mozuandroidinstoreassistant.app.customer.adapters.CustomerLookupAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.CustomersLoader;
 
 import java.util.List;
@@ -39,7 +39,7 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
     private CustomersLoader mCustomersLoader;
     private int mTenantId;
     private int mSiteId;
-    private CustomersAdapter mAdapter;
+    private CustomerLookupAdapter mAdapter;
     private String mQuery = "";
 
     public static CustomerLookupFragment getInstance(int tenantId, int siteId) {
@@ -107,7 +107,7 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
     @Override
     public void onLoadFinished(Loader<List<CustomerAccount>> loader, List<CustomerAccount> data) {
         if (mAdapter == null) {
-            mAdapter = new CustomersAdapter(getActivity());
+            mAdapter = new CustomerLookupAdapter(getActivity());
             customerLookup.setAdapter(mAdapter);
         }
 

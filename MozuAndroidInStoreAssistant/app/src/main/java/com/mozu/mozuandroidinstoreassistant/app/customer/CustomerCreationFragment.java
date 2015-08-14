@@ -21,7 +21,6 @@ import com.mozu.api.contracts.customer.AddressValidationResponse;
 import com.mozu.api.contracts.customer.ContactType;
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.api.contracts.customer.CustomerContact;
-import com.mozu.mozuandroidinstoreassistant.app.CustomerCreationActivity;
 import com.mozu.mozuandroidinstoreassistant.app.OrderCreationActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.CustomerAddressValidation;
@@ -77,14 +76,15 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
     @InjectView(R.id.verify)
     Button mVerify;
     @InjectView(R.id.next)
-    Button mSave;
+    Button mNext;
+    @InjectView(R.id.cancel)
+    Button mCancel;
     private int mTenantId;
     private int mSiteId;
     private CustomerAccount mCustomerAccount;
     private String mAddressTypeSelected;
     private String mStateSelected;
     private Observable<AddressValidationResponse> addressValidationResponseObservable;
-    private CustomerCreationActivity customerCreationListener;
     private int mEditing;
     private List<String> states;
     private List<String> addressTypes;
@@ -163,7 +163,7 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
 
             }
         });
-        mSave.setOnClickListener(new View.OnClickListener() {
+        mNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (validateForm()) {
@@ -179,14 +179,22 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
                 verifyAddressIsValid(address);
             }
         });
+        mCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().finish();
+            }
+        });
         if (mEditing > -1) {
             CustomerContact customerEditing = mCustomerAccount.getContacts().get(mEditing);
             mFirstName.setText(customerEditing.getFirstName());
             mLastName.setText(customerEditing.getLastNameOrSurname());
             mEmail.setText(customerEditing.getEmail());
+            mPhoneNumber.setText(customerEditing.getPhoneNumbers().getHome());
             mAddress1.setText(customerEditing.getAddress().getAddress1());
             mAddress2.setText(customerEditing.getAddress().getAddress2());
             mCity.setText(customerEditing.getAddress().getCityOrTown());
+            mZip.setText(customerEditing.getAddress().getPostalOrZipCode());
             setSelectedState(customerEditing.getAddress().getStateOrProvince());
             setSelectedAddressType(customerEditing.getAddress().getAddressType());
             mCountry.setText(customerEditing.getAddress().getCountryCode());
@@ -402,9 +410,5 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
                     }
                 })
                 .create();
-    }
-
-    public void setCustomerCreationListener(CustomerCreationActivity customerCreationListener) {
-        this.customerCreationListener = customerCreationListener;
     }
 }

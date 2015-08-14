@@ -21,6 +21,7 @@ import com.mozu.mozuandroidinstoreassistant.app.customer.adapters.CustomerAddres
 import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.AddCustomerContactObserverable;
 import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.CustomerAccountCreationObserver;
 import com.mozu.mozuandroidinstoreassistant.app.dialog.ErrorMessageAlertDialog;
+import com.mozu.mozuandroidinstoreassistant.app.views.LoadingView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -28,9 +29,6 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by chris_pound on 8/12/15.
- */
 public class CustomerAddAddressFragment extends Fragment {
 
 
@@ -43,6 +41,8 @@ public class CustomerAddAddressFragment extends Fragment {
     Button mCancel;
     @InjectView(R.id.save)
     Button mSave;
+    @InjectView(R.id.create_customer_loading)
+    LoadingView loadingView;
     private int mTenantId;
     private int mSiteId;
     private CustomerAccount mCustomerAccount;
@@ -84,6 +84,7 @@ public class CustomerAddAddressFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        loadingView.success();
         mSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,6 +116,7 @@ public class CustomerAddAddressFragment extends Fragment {
     }
 
     private void onSaveClicked() {
+        loadingView.setLoading();
         CustomerAccountCreationObserver.getCustomerAccountCreationObserverable(mTenantId, mSiteId, mCustomerAccount)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -131,6 +133,7 @@ public class CustomerAddAddressFragment extends Fragment {
             @Override
             public void onError(Throwable e) {
                 AlertDialog error = ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), e.toString());
+                loadingView.success();
                 error.show();
             }
 
@@ -160,6 +163,7 @@ public class CustomerAddAddressFragment extends Fragment {
             @Override
             public void onError(Throwable e) {
                 AlertDialog error = ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), e.toString());
+                loadingView.success();
                 error.show();
             }
 
@@ -167,6 +171,7 @@ public class CustomerAddAddressFragment extends Fragment {
             public void onNext(CustomerContact customerContact) {
                 countdown--;
                 if (countdown == 0) {
+                    loadingView.success();
                     getActivity().finish();
                     //goto orders
                 }

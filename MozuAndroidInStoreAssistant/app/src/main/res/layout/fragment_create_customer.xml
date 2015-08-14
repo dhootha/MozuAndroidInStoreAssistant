@@ -7,24 +7,33 @@
     android:layout_height="wrap_content">
 
     <Button
+        android:id="@+id/cancel"
+        style="@style/ButtonMozu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="8dp"
+        android:text="@string/cancel"/>
+    <Button
         android:id="@+id/verify"
+        style="@style/ButtonMozu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="false"
         android:layout_marginBottom="16dp"
         android:layout_toLeftOf="@+id/next"
-        android:text="@string/verify"
-        android:textColor="@color/divider_white"/>
+        android:text="@string/verify"/>
 
     <Button
         android:id="@+id/next"
+        style="@style/ButtonMozu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:text="@string/next"
-        android:textColor="@color/divider_white"/>
+        android:text="@string/next"/>
 
 
     <ScrollView
@@ -59,8 +68,10 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:hint="@string/first_name"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
                     android:nextFocusDown="@+id/last_name"
-                    android:text="Test"/>
+                    android:singleLine="true"/>
 
             </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
 
@@ -84,9 +95,10 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:hint="@string/last_name"
-                    android:inputType="phone"
+                    android:imeOptions="actionNext"
                     android:nextFocusDown="@+id/phone_number"
-                    android:text="mobile"/>
+                    android:singleLine="true"
+                    />
             </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
 
             <com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout
@@ -111,7 +123,9 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:hint="@string/phone"
-                    android:text="111-1111"/>
+                    android:imeOptions="actionNext"
+                    android:inputType="phone"
+                    android:singleLine="true"/>
             </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
 
             <com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout
@@ -134,9 +148,10 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:hint="@string/email_address"
+                    android:imeOptions="actionNext"
                     android:inputType="textEmailAddress"
                     android:nextFocusDown="@+id/address_1"
-                    android:text="volusion@volusion.com"/>
+                    android:singleLine="true"/>
             </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
 
             <TextView
@@ -182,8 +197,9 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:hint="@string/address_1"
+                    android:imeOptions="actionNext"
                     android:nextFocusDown="@+id/address_2"
-                    android:text="1835 KRAMER LN"/>
+                    android:singleLine="true"/>
             </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
 
             <com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout
@@ -208,8 +224,9 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:hint="@string/adddress_2"
+                    android:imeOptions="actionNext"
                     android:nextFocusDown="@+id/city"
-                    android:text="STE 100"/>
+                    android:singleLine="true"/>
             </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
 
             <com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout
@@ -234,8 +251,10 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:hint="@string/city"
+                    android:imeOptions="actionNext"
                     android:nextFocusDown="@+id/state"
-                    android:text="AUSTIN"/>
+                    android:singleLine="true"
+                    />
             </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
 
             <TextView
@@ -280,8 +299,10 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:hint="@string/zip"
-                    android:nextFocusDown="@+id/country"
-                    android:text="78758-4233"/>
+                    android:imeOptions="actionNext"
+                    android:inputType="number"
+                    android:nextFocusDown="@+id/verify"
+                    android:singleLine="true"/>
             </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
 
             <com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout
@@ -305,8 +326,11 @@
                     android:layout_marginRight="16dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
+                    android:editable="false"
                     android:hint="@string/country"
+                    android:imeOptions="actionNext"
                     android:nextFocusDown="@+id/country"
+                    android:singleLine="true"
                     android:text="US"/>
             </com.mozu.mozuandroidinstoreassistant.app.views.FloatLabelLayout>
 

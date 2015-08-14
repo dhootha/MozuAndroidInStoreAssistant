@@ -286,6 +286,8 @@
     <string name="state">State</string>
     <string name="type">Type</string>
     <string name="invalid_phone">Invalid Phone Number</string>
+    <string name="edit">EDIT</string>
+    <string name="delete">DELETE</string>
     <string-array name="register_email_address">
         <item>mozumobile@volusion.com</item>
     </string-array>

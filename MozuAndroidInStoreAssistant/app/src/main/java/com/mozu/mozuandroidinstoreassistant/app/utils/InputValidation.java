@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 public class InputValidation {
 
     private static final Pattern GLOBAL_PHONE_NUMBER_PATTERN =
-            Pattern.compile("[\\+]?[0-9.-]{8,15}");
+            Pattern.compile("[\\+]?[0-9().-]{8,15}");
 
     public static boolean isEmailValid(String email) {
         Log.d("email", email);

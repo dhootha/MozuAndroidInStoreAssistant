@@ -49,7 +49,10 @@ public class CustomerAddressesAdapter extends RecyclerView.Adapter<CustomerAddre
         Phone phone = customerContact.getPhoneNumbers();
         holder.name.setText(customerContact.getFirstName() + " " + customerContact.getLastNameOrSurname());
         holder.address1.setText(address.getAddress1());
-        holder.address2.setText(address.getAddress2());
+        if (address.getAddress2() != null && !address.getAddress2().isEmpty()) {
+            holder.address2.setText(address.getAddress2());
+            holder.address2.setVisibility(View.VISIBLE);
+        }
         holder.citystatezip.setText(address.getCityOrTown() + ",  " + address.getStateOrProvince() + " " + address.getPostalOrZipCode());
         holder.country.setText(address.getCountryCode());
         if (phone.getHome() != null && !phone.getHome().isEmpty()) {

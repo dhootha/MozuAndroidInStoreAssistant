@@ -26,14 +26,10 @@ public class CustomerCreationActivity extends BaseActivity implements CustomerCr
             if (temp != null && temp instanceof CustomerAccount) {
                 mCustomerAccount = (CustomerAccount) savedInstanceState.getSerializable("customer");
             }
-            if (getFragmentManager().findFragmentByTag("create_customer") != null) {
-                ((CustomerCreationFragment) getFragmentManager().findFragmentByTag("create_customer")).setCustomerCreationListener(this);
-            }
         } else {
             mTenantId = getIntent().getExtras().getInt(OrderCreationActivity.CURRENT_TENANT_ID, -1);
             mSiteId = getIntent().getExtras().getInt(OrderCreationActivity.CURRENT_SITE_ID, -1);
             CustomerCreationFragment customerCreationFragment = CustomerCreationFragment.getInstance(mTenantId, mSiteId);
-            customerCreationFragment.setCustomerCreationListener(this);
             getFragmentManager().beginTransaction().replace(R.id.content_fragment_holder, customerCreationFragment, "create_customer").commit();
         }
 
@@ -65,7 +61,6 @@ public class CustomerCreationActivity extends BaseActivity implements CustomerCr
     public void addNewAddress(CustomerAccount customerAccount) {
         mCustomerAccount = customerAccount;
         CustomerCreationFragment customerCreationFragment = CustomerCreationFragment.getInstance(mTenantId, mSiteId, mCustomerAccount, -1);
-        customerCreationFragment.setCustomerCreationListener(this);
         getFragmentManager().beginTransaction()
                 .addToBackStack(null)
                 .replace(R.id.content_fragment_holder, customerCreationFragment)
@@ -75,7 +70,6 @@ public class CustomerCreationActivity extends BaseActivity implements CustomerCr
     @Override
     public void onEditAddressClicked(int position) {
         CustomerCreationFragment customerCreationFragment = CustomerCreationFragment.getInstance(mTenantId, mSiteId, mCustomerAccount, position);
-        customerCreationFragment.setCustomerCreationListener(this);
         getFragmentManager().beginTransaction()
                 .addToBackStack(null)
                 .replace(R.id.content_fragment_holder, customerCreationFragment)
