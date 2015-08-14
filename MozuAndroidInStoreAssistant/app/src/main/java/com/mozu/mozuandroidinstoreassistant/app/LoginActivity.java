@@ -29,6 +29,7 @@ import com.mozu.api.contracts.core.UserAuthInfo;
 import com.mozu.mozuandroidinstoreassistant.app.loaders.ProfileQuery;
 import com.mozu.mozuandroidinstoreassistant.app.models.UserPreferences;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationFailedSessionExpired;
+import com.mozu.mozuandroidinstoreassistant.app.utils.InputValidation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,7 +129,7 @@ public class LoginActivity extends AuthActivity implements LoaderCallbacks<Curso
             mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
             cancel = true;
-        } else if (!isEmailValid(email)) {
+        } else if (!InputValidation.isEmailValid(email)) {
             mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
             cancel = true;
@@ -148,10 +149,6 @@ public class LoginActivity extends AuthActivity implements LoaderCallbacks<Curso
             super.setUserAuthInfo(authInfo);
             super.authenticateUser();
         }
-    }
-
-    private boolean isEmailValid(String email) {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
     public void showProgress(final boolean show) {

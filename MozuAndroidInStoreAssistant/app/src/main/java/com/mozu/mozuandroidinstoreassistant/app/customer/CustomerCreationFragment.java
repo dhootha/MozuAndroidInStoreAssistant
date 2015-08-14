@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import com.mozu.mozuandroidinstoreassistant.app.OrderCreationActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.CustomerAddressValidation;
 import com.mozu.mozuandroidinstoreassistant.app.dialog.ErrorMessageAlertDialog;
+import com.mozu.mozuandroidinstoreassistant.app.utils.InputValidation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -133,6 +135,7 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
         super.onViewCreated(view, savedInstanceState);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.address_type, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mPhoneNumber.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
         mAddressType.setAdapter(adapter);
         mAddressType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -163,7 +166,7 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
             @Override
             public void onClick(View v) {
                 if (validateForm()) {
-                    CustomerAccount customer = createCustomerAccountFromForm();
+                    CustomerAccount customer = createCustomerAccountAndContactFromForm();
                     ((CustomerCreationListener) getActivity()).onNextClicked(customer);
                 }
             }
@@ -196,25 +199,25 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
         }
     }
 
-    private CustomerAccount createCustomerAccountFromForm() {
+    private CustomerAccount createCustomerAccountAndContactFromForm() {
         List<CustomerContact> contacts;
-        if (mCustomerAccount == null) {
+        CustomerContact customerContact = new CustomerContact();
+        mAddress = createAddressFromForm();
+        if (mEditing > -1 && mCustomerAccount != null) {
+            contacts = mCustomerAccount.getContacts();
+        } else {
             mCustomerAccount = new CustomerAccount();
             mCustomerAccount.setFirstName(mFirstName.getText().toString());
             mCustomerAccount.setLastName(mLastName.getText().toString());
             mCustomerAccount.setEmailAddress(mEmail.getText().toString());
             mCustomerAccount.setUserName(mEmail.getText().toString());
             contacts = new ArrayList<CustomerContact>();
-        } else {
-            contacts = mCustomerAccount.getContacts();
         }
-        CustomerContact customerContact = new CustomerContact();
-        mAddress = createAddressFromForm();
+
         customerContact.setFirstName(mFirstName.getText().toString());
         customerContact.setLastNameOrSurname(mLastName.getText().toString());
         customerContact.setAddress(mAddress);
         customerContact.setEmail(mEmail.getText().toString());
-
         Phone phone = new Phone();
         phone.setHome(mPhoneNumber.getText().toString());
         customerContact.setPhoneNumbers(phone);
@@ -238,7 +241,6 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
         address.setCountryCode(mCountry.getText().toString());
         address.setAddressType(mAddressTypeSelected);
         return address;
-
     }
 
     private boolean validateForm() {
@@ -253,6 +255,14 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
         }
         if (mPhoneNumber.getText().toString().isEmpty()) {
             mPhoneNumber.setError(getActivity().getResources().getString(R.string.required));
+            isValid = false;
+        }
+        if (!InputValidation.isPhoneNumberValid(mPhoneNumber.getText().toString())) {
+            mPhoneNumber.setError(getActivity().getResources().getString(R.string.invalid_phone));
+            isValid = false;
+        }
+        if (!InputValidation.isEmailValid(mEmail.getText().toString())) {
+            mEmail.setError(getResources().getString(R.string.error_invalid_email));
             isValid = false;
         }
         if (mEmail.getText().toString().isEmpty()) {

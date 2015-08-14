@@ -283,6 +283,9 @@
     <string name="required">Required</string>
     <string name="next">Next</string>
     <string name="add_new_address">Add New Address</string>
+    <string name="state">State</string>
+    <string name="type">Type</string>
+    <string name="invalid_phone">Invalid Phone Number</string>
     <string-array name="register_email_address">
         <item>mozumobile@volusion.com</item>
     </string-array>
