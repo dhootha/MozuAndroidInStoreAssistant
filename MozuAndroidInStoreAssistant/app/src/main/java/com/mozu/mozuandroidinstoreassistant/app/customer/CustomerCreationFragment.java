@@ -18,6 +18,7 @@ import android.widget.Spinner;
 import com.mozu.api.contracts.core.Address;
 import com.mozu.api.contracts.core.Phone;
 import com.mozu.api.contracts.customer.AddressValidationResponse;
+import com.mozu.api.contracts.customer.ContactType;
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.api.contracts.customer.CustomerContact;
 import com.mozu.mozuandroidinstoreassistant.app.CustomerCreationActivity;
@@ -45,6 +46,8 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
 
     private static final String CUSTOMER = "customer";
     private static final String IS_EDIT = "edit";
+    private static String BILLING = "billing";
+    private static String SHIPPING = "shipping";
     @InjectView(R.id.first_name)
     EditText mFirstName;
     @InjectView(R.id.last_name)
@@ -80,7 +83,6 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
     private CustomerAccount mCustomerAccount;
     private String mAddressTypeSelected;
     private String mStateSelected;
-    private Address mAddress;
     private Observable<AddressValidationResponse> addressValidationResponseObservable;
     private CustomerCreationActivity customerCreationListener;
     private int mEditing;
@@ -111,22 +113,21 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        mTenantId = getArguments().getInt(OrderCreationActivity.CURRENT_TENANT_ID, -1);
+        mSiteId = getArguments().getInt(OrderCreationActivity.CURRENT_SITE_ID, -1);
+        mEditing = getArguments().getInt(IS_EDIT, -1);
+        states = Arrays.asList(getResources().getStringArray(R.array.states));
+        addressTypes = Arrays.asList(getResources().getStringArray(R.array.address_type));
+        Object possibleCustomer = getArguments().getSerializable(CUSTOMER);
+        if (possibleCustomer != null && possibleCustomer instanceof CustomerAccount) {
+            mCustomerAccount = (CustomerAccount) possibleCustomer;
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_create_customer, container, false);
         ButterKnife.inject(this, view);
-        mTenantId = getArguments().getInt(OrderCreationActivity.CURRENT_TENANT_ID, -1);
-        mSiteId = getArguments().getInt(OrderCreationActivity.CURRENT_SITE_ID, -1);
-        mEditing = getArguments().getInt(IS_EDIT, -1);
-        states = Arrays.asList(getResources().getStringArray(R.array.states));
-        mStateSelected = states.get(0);
-        addressTypes = Arrays.asList(getResources().getStringArray(R.array.address_type));
-        Object possibleCustomer = getArguments().getSerializable(CUSTOMER);
-        if (possibleCustomer != null && possibleCustomer instanceof CustomerAccount) {
-            mCustomerAccount = (CustomerAccount) possibleCustomer;
-        }
         return view;
     }
 
@@ -166,16 +167,16 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
             @Override
             public void onClick(View v) {
                 if (validateForm()) {
-                    CustomerAccount customer = createCustomerAccountAndContactFromForm();
-                    ((CustomerCreationListener) getActivity()).onNextClicked(customer);
+                    createOrUpdateCustomerAccount();
+                    ((CustomerCreationListener) getActivity()).onNextClicked(mCustomerAccount);
                 }
             }
         });
         mVerify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mAddress = createAddressFromForm();
-                verifyAddressIsValid(mAddress);
+                Address address = createAddressFromForm();
+                verifyAddressIsValid(address);
             }
         });
         if (mEditing > -1) {
@@ -190,6 +191,7 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
             setSelectedAddressType(customerEditing.getAddress().getAddressType());
             mCountry.setText(customerEditing.getAddress().getCountryCode());
         } else if (mCustomerAccount != null) {
+            //adding new account
             mFirstName.setText(mCustomerAccount.getFirstName());
             mLastName.setText(mCustomerAccount.getLastName());
             mEmail.setText(mCustomerAccount.getEmailAddress());
@@ -199,39 +201,60 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
         }
     }
 
-    private CustomerAccount createCustomerAccountAndContactFromForm() {
-        List<CustomerContact> contacts;
-        CustomerContact customerContact = new CustomerContact();
-        mAddress = createAddressFromForm();
-        if (mEditing > -1 && mCustomerAccount != null) {
-            contacts = mCustomerAccount.getContacts();
+    private void createOrUpdateCustomerAccount() {
+        CustomerContact customerContact = createCustomerContactFromForm();
+        if (mEditing > -1) {
+            mCustomerAccount.getContacts().set(mEditing, customerContact);
         } else {
-            mCustomerAccount = new CustomerAccount();
-            mCustomerAccount.setFirstName(mFirstName.getText().toString());
-            mCustomerAccount.setLastName(mLastName.getText().toString());
-            mCustomerAccount.setEmailAddress(mEmail.getText().toString());
-            mCustomerAccount.setUserName(mEmail.getText().toString());
-            contacts = new ArrayList<CustomerContact>();
+            mCustomerAccount = mCustomerAccount == null ? createCustomerAccountFromForm() : mCustomerAccount;
+            List<CustomerContact> contacts = mCustomerAccount.getContacts() == null ? new ArrayList<CustomerContact>() : mCustomerAccount.getContacts();
+            contacts.add(customerContact);
+            mCustomerAccount.setContacts(contacts);
         }
+    }
 
+    private CustomerContact createCustomerContactFromForm() {
+        CustomerContact customerContact = new CustomerContact();
         customerContact.setFirstName(mFirstName.getText().toString());
         customerContact.setLastNameOrSurname(mLastName.getText().toString());
-        customerContact.setAddress(mAddress);
+        customerContact.setAddress(createAddressFromForm());
         customerContact.setEmail(mEmail.getText().toString());
         Phone phone = new Phone();
         phone.setHome(mPhoneNumber.getText().toString());
         customerContact.setPhoneNumbers(phone);
-
-        if (mEditing > -1) {
-            contacts.set(mEditing, customerContact);
-        } else {
-            contacts.add(customerContact);
+        List<ContactType> contactTypes = new ArrayList<ContactType>();
+        if (mDefaultShipping.isChecked()) {
+            ContactType contactType = new ContactType();
+            contactType.setName(SHIPPING);
+            contactType.setIsPrimary(true);
+            contactTypes.add(contactType);
         }
-        mCustomerAccount.setContacts(contacts);
+        if (mDefaultBilling.isChecked()) {
+            ContactType contactType = new ContactType();
+            contactType.setName(BILLING);
+            contactType.setIsPrimary(true);
+            contactTypes.add(contactType);
+        }
+        customerContact.setTypes(contactTypes);
+        return customerContact;
+    }
+
+    private CustomerAccount createCustomerAccountFromForm() {
+        mCustomerAccount = new CustomerAccount();
+        mCustomerAccount.setFirstName(mFirstName.getText().toString());
+        mCustomerAccount.setLastName(mLastName.getText().toString());
+        mCustomerAccount.setEmailAddress(mEmail.getText().toString());
+        mCustomerAccount.setUserName(mEmail.getText().toString());
         return mCustomerAccount;
     }
 
     private Address createAddressFromForm() {
+        if (mStateSelected == null) {
+            mStateSelected = states.get(0);
+        }
+        if (mAddressTypeSelected == null) {
+            mAddressTypeSelected = addressTypes.get(0);
+        }
         Address address = new Address();
         address.setAddress1(mAddress1.getText().toString());
         address.setAddress2(mAddress2.getText().toString());

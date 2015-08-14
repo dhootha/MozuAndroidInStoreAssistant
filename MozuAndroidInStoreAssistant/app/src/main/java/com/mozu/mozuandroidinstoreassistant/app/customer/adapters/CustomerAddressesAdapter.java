@@ -47,7 +47,6 @@ public class CustomerAddressesAdapter extends RecyclerView.Adapter<CustomerAddre
         CustomerContact customerContact = data.get(position);
         Address address = customerContact.getAddress();
         Phone phone = customerContact.getPhoneNumbers();
-        //todo string builder
         holder.name.setText(customerContact.getFirstName() + " " + customerContact.getLastNameOrSurname());
         holder.address1.setText(address.getAddress1());
         holder.address2.setText(address.getAddress2());

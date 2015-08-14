@@ -14,9 +14,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.mozu.api.contracts.customer.CustomerAccount;
+import com.mozu.api.contracts.customer.CustomerContact;
 import com.mozu.mozuandroidinstoreassistant.app.OrderCreationActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.customer.adapters.CustomerAddressesAdapter;
+import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.AddCustomerContactObserverable;
 import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.CustomerAccountCreationObserver;
 import com.mozu.mozuandroidinstoreassistant.app.dialog.ErrorMessageAlertDialog;
 
@@ -45,6 +47,8 @@ public class CustomerAddAddressFragment extends Fragment {
     private int mSiteId;
     private CustomerAccount mCustomerAccount;
     private CustomerAddressesAdapter mRecyclerViewAddressAdapter;
+    private int countdown;
+
 
     public static CustomerAddAddressFragment getInstance(Integer tenantId, Integer siteId, CustomerAccount account) {
         Bundle bundle = new Bundle();
@@ -134,7 +138,38 @@ public class CustomerAddAddressFragment extends Fragment {
             public void onNext(CustomerAccount customerAccount) {
                 //customer saved goto orders.
                 Log.d("Customer created", "created customer");
-                getActivity().finish();
+                countdown = mCustomerAccount.getContacts().size();
+                for (int i = countdown; i > 0; i--) {
+                    AddCustomerContactObserverable
+                            .getCustomerContactCreationObserverable(mTenantId, mSiteId, customerAccount.getId(), mCustomerAccount.getContacts().get(i - 1))
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(getAddCustomerContactSubscriber());
+                }
+            }
+        };
+    }
+
+    public Subscriber<CustomerContact> getAddCustomerContactSubscriber() {
+        return new Subscriber<CustomerContact>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                AlertDialog error = ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), e.toString());
+                error.show();
+            }
+
+            @Override
+            public void onNext(CustomerContact customerContact) {
+                countdown--;
+                if (countdown == 0) {
+                    getActivity().finish();
+                    //goto orders
+                }
             }
         };
     }
