@@ -296,6 +296,7 @@
     <string name="lookup_customer_hint">Lookup exisiting customer</string>
     <string name="customer_lookup">Customer Lookup</string>
     <string name="create_new_customer">Create New Customer</string>
+    <string name="add_note">Add Note</string>
     <string-array name="register_email_address">
         <item>mozumobile@volusion.com</item>
     </string-array>

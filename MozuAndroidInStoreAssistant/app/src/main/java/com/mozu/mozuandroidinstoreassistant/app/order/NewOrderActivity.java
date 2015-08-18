@@ -75,4 +75,9 @@ public class NewOrderActivity extends BaseActivity {
         }
     }
 
+    public void updateOrder(Order order) {
+        this.mOrder = order;
+        //todo update fragments
+    }
+
 }

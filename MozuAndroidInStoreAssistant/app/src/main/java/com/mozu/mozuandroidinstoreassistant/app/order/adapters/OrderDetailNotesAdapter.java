@@ -17,19 +17,15 @@ import java.util.Date;
 public class OrderDetailNotesAdapter extends BaseAdapter {
 
     private Order mOrder;
-    private NotesType mNotesType;
+    private boolean mIsInternalNotes;
     public OrderDetailNotesAdapter(Order order,boolean isInternalNotes) {
+        mIsInternalNotes = isInternalNotes;
         mOrder = order;
-        if (isInternalNotes) {
-            mNotesType = NotesType.INTERNAL_NOTE;
-        } else {
-            mNotesType = NotesType.CUSTOMER_NOTE;
-        }
     }
 
     @Override
     public int getCount() {
-        if (mOrder.getNotes() != null && mNotesType == NotesType.INTERNAL_NOTE) {
+        if (mOrder.getNotes() != null && mIsInternalNotes) {
             return mOrder.getNotes().size();
         } else {
             return 1;
@@ -38,7 +34,7 @@ public class OrderDetailNotesAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int i) {
-        if (mOrder.getNotes() != null && mNotesType == NotesType.INTERNAL_NOTE) {
+        if (mOrder.getNotes() != null && mIsInternalNotes) {
             return mOrder.getNotes().get(i);
         }else{
             return mOrder.getShopperNotes();
@@ -52,7 +48,7 @@ public class OrderDetailNotesAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if(mNotesType == NotesType.INTERNAL_NOTE){
+        if (mIsInternalNotes) {
             if (convertView == null) {
                 convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.notes_list_item, parent, false);
             }
@@ -93,9 +89,8 @@ public class OrderDetailNotesAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public enum NotesType {
-        INTERNAL_NOTE,
-        CUSTOMER_NOTE
+    public void setOrder(Order order) {
+        this.mOrder = order;
     }
 
 }

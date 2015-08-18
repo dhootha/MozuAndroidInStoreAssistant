@@ -1,19 +1,32 @@
 package com.mozu.mozuandroidinstoreassistant.app.order;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
+import com.mozu.api.contracts.commerceruntime.orders.OrderNote;
+import com.mozu.api.contracts.commerceruntime.orders.ShopperNotes;
+import com.mozu.api.contracts.core.AuditInfo;
 import com.mozu.mozuandroidinstoreassistant.app.R;
+import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.order.adapters.OrderDetailNotesAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.views.LoadingView;
+
+import org.joda.time.DateTime;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -38,7 +51,9 @@ public class OrderDetailNotesFragment extends Fragment {
     private LoadingView mCustomerLoadingView;
     private boolean isCurrentInternalNotes = false;
     private String CURRENT_IS_INTERNAL = "currentInternal";
+    private OrderDetailNotesAdapter internalNotesAdapter;
     private boolean mIsNewOrder;
+    private ListView mNoteList;
 
     public static OrderDetailNotesFragment getInstance(boolean isNewOrder) {
         OrderDetailNotesFragment fragment = new OrderDetailNotesFragment();
@@ -85,10 +100,11 @@ public class OrderDetailNotesFragment extends Fragment {
 
     private void setOrderToViews(View view) {
 
-        ListView noteList = (ListView) view.findViewById(R.id.notes_list);
-        noteList.setAdapter(new OrderDetailNotesAdapter(mOrder, true));
+        mNoteList = (ListView) view.findViewById(R.id.notes_list);
+        mNoteList.setAdapter(new OrderDetailNotesAdapter(mOrder, true));
         ListView customerNotesList = (ListView) view.findViewById(R.id.customer_list);
-        customerNotesList.setAdapter(new OrderDetailNotesAdapter(mOrder, false));
+        internalNotesAdapter = new OrderDetailNotesAdapter(mOrder, false);
+        customerNotesList.setAdapter(internalNotesAdapter);
         if (mOrder == null || mOrder.getNotes() == null || mOrder.getNotes().size() < 1) {
             mNotesLoadingView.setError(getActivity().getResources().getString(R.string.not_internal_notes_available));
         } else {
@@ -123,8 +139,21 @@ public class OrderDetailNotesFragment extends Fragment {
             }
         });
 
-    }
+        mAddInternalNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddNewNoteDialog();
+            }
+        });
 
+        mAddCustomerNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddNewNoteDialog();
+            }
+        });
+
+    }
 
     public void setOrder(Order order) {
         mOrder = order;
@@ -140,11 +169,72 @@ public class OrderDetailNotesFragment extends Fragment {
         mNoteListLayout.setVisibility(View.VISIBLE);
     }
 
-    private void addCustomerNote() {
-
+    private void showAddNewNoteDialog() {
+        final EditText noteLayout = new EditText(getActivity());
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        noteLayout.setLayoutParams(layoutParams);
+        AlertDialog noteDialog = new AlertDialog.Builder(getActivity())
+                .setView(noteLayout)
+                .setTitle("Add Note")
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setPositiveButton(R.string.add_note, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String note = noteLayout.getText().toString();
+                        if (note.isEmpty()) {
+                            noteLayout.setError(getActivity().getString(R.string.required));
+                            return;
+                        }
+                        if (isCurrentInternalNotes) {
+                            addNewInternalNote(note);
+                        } else {
+                            addNewCustomerNote(note);
+                        }
+                        setOrderToViews(OrderDetailNotesFragment.this.getView());
+                        dialog.dismiss();
+                    }
+                })
+                .create();
+        noteDialog.show();
     }
 
-    private void addInternalNote() {
+    private void addNewCustomerNote(String note) {
+        ShopperNotes notes = mOrder.getShopperNotes();
+        if (notes == null) {
+            notes = new ShopperNotes();
+        }
+        notes.setComments(note);
+        mOrder.setShopperNotes(notes);
+    }
 
+    private void addNewInternalNote(String note) {
+        List<OrderNote> notes = mOrder.getNotes();
+        if (notes == null) {
+            notes = new ArrayList<OrderNote>();
+        }
+
+        OrderNote orderNote = new OrderNote();
+        AuditInfo auditInfo = new AuditInfo();
+        String user = UserAuthenticationStateMachineProducer
+                .getInstance(getActivity())
+                .getAuthProfile().getUserProfile()
+                .getUserId();
+        auditInfo.setCreateDate(new DateTime());
+        auditInfo.setCreateBy(user);
+        orderNote.setAuditInfo(auditInfo);
+        orderNote.setText(note);
+        notes.add(orderNote);
+        mOrder.setNotes(notes);
+        internalNotesAdapter.setOrder(mOrder);
+        internalNotesAdapter.notifyDataSetChanged();
+        FrameLayout.LayoutParams mParam = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        mNoteList.setLayoutParams(mParam);
+
+        ((NewOrderActivity) getActivity()).updateOrder(mOrder);
     }
 }
