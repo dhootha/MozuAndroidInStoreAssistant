@@ -6,6 +6,7 @@ import android.support.v13.app.FragmentStatePagerAdapter;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.customer.CustomerAccount;
+import com.mozu.mozuandroidinstoreassistant.app.order.OrderDetailNotesFragment;
 import com.mozu.mozuandroidinstoreassistant.app.order.OrderDetailOverviewFragment;
 
 /**
@@ -13,22 +14,8 @@ import com.mozu.mozuandroidinstoreassistant.app.order.OrderDetailOverviewFragmen
  */
 public class NewOrderFragmentAdapter extends FragmentStatePagerAdapter {
 
-    private enum TabTypes {
-        DETAILS("DETAILS"),
-        FULFILLMENT("FULFILLMENT"),
-        PAYMENT("PAYMENT"),
-        RETURNS("RETURNS"),
-        NOTES("NOTES");
-        String mDisplayTitle;
-
-        TabTypes(String displayTitle) {
-            mDisplayTitle = displayTitle;
-        }
-    }
-
     private CustomerAccount mCustomer;
     private Order mOrder;
-
     public NewOrderFragmentAdapter(FragmentManager manager, CustomerAccount customer,Order order) {
         super(manager);
         mCustomer = customer;
@@ -56,6 +43,26 @@ public class NewOrderFragmentAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return new OrderDetailOverviewFragment();
+        switch (TabTypes.values()[position]) {
+            case NOTES:
+                OrderDetailNotesFragment fragment = OrderDetailNotesFragment.getInstance(true);
+                fragment.setOrder(mOrder);
+                return fragment;
+            default:
+                return new OrderDetailOverviewFragment();
+        }
+    }
+
+    private enum TabTypes {
+        DETAILS("DETAILS"),
+        FULFILLMENT("FULFILLMENT"),
+        PAYMENT("PAYMENT"),
+        RETURNS("RETURNS"),
+        NOTES("NOTES");
+        String mDisplayTitle;
+
+        TabTypes(String displayTitle) {
+            mDisplayTitle = displayTitle;
+        }
     }
 }
