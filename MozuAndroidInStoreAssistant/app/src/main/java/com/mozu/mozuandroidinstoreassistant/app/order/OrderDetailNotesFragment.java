@@ -51,6 +51,7 @@ public class OrderDetailNotesFragment extends Fragment {
     private LoadingView mCustomerLoadingView;
     private boolean isCurrentInternalNotes = false;
     private String CURRENT_IS_INTERNAL = "currentInternal";
+    private OrderDetailNotesAdapter customerNotesAdapter;
     private OrderDetailNotesAdapter internalNotesAdapter;
     private boolean mIsNewOrder;
     private ListView mNoteList;
@@ -67,7 +68,6 @@ public class OrderDetailNotesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-
     }
 
     @Override
@@ -101,10 +101,13 @@ public class OrderDetailNotesFragment extends Fragment {
     private void setOrderToViews(View view) {
 
         mNoteList = (ListView) view.findViewById(R.id.notes_list);
-        mNoteList.setAdapter(new OrderDetailNotesAdapter(mOrder, true));
+        internalNotesAdapter = new OrderDetailNotesAdapter(getActivity(), mOrder, true);
+        mNoteList.setAdapter(internalNotesAdapter);
+        mNoteList.setOnItemClickListener(internalNotesAdapter);
         ListView customerNotesList = (ListView) view.findViewById(R.id.customer_list);
-        internalNotesAdapter = new OrderDetailNotesAdapter(mOrder, false);
-        customerNotesList.setAdapter(internalNotesAdapter);
+        customerNotesAdapter = new OrderDetailNotesAdapter(getActivity(), mOrder, false);
+        customerNotesList.setOnItemClickListener(customerNotesAdapter);
+        customerNotesList.setAdapter(customerNotesAdapter);
         if (mOrder == null || mOrder.getNotes() == null || mOrder.getNotes().size() < 1) {
             mNotesLoadingView.setError(getActivity().getResources().getString(R.string.not_internal_notes_available));
         } else {
@@ -230,8 +233,8 @@ public class OrderDetailNotesFragment extends Fragment {
         orderNote.setText(note);
         notes.add(orderNote);
         mOrder.setNotes(notes);
-        internalNotesAdapter.setOrder(mOrder);
-        internalNotesAdapter.notifyDataSetChanged();
+        customerNotesAdapter.setOrder(mOrder);
+        customerNotesAdapter.notifyDataSetChanged();
         FrameLayout.LayoutParams mParam = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         mNoteList.setLayoutParams(mParam);
 
