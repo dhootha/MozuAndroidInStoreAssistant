@@ -28,7 +28,6 @@ public class OrderDetailSectionPagerAdapter extends FragmentStatePagerAdapter {
     private int mTenantId;
     private int mSiteId;
     private boolean mIsEditMode = false;
-//    private Action1<Object> eventSubscriber;
 
     public OrderDetailSectionPagerAdapter(FragmentManager manager, Order order, List<String> pageTitles, int tenantId, int siteId) {
         super(manager);
@@ -83,7 +82,6 @@ public class OrderDetailSectionPagerAdapter extends FragmentStatePagerAdapter {
             case NOTES_TAB_POSITION:
                 OrderDetailNotesFragment notesFragment = OrderDetailNotesFragment.getInstance(mIsEditMode);
                 notesFragment.setOrder(mOrder);
-
                 return notesFragment;
 
         }
@@ -95,7 +93,7 @@ public class OrderDetailSectionPagerAdapter extends FragmentStatePagerAdapter {
         mOrder = order;
     }
 
-    public void setmIsEditMode(boolean mode) {
+    public void setIsEditMode(boolean mode) {
         mIsEditMode = mode;
     }
 }

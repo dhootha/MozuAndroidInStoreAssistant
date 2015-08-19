@@ -109,13 +109,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="right">
-
-                <Button
-                    android:id="@+id/edit_mode"
-                    style="@style/ButtonMozu"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/edit_order"/>
             </LinearLayout>
 
         </LinearLayout>
@@ -131,6 +124,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:layout_alignParentLeft="true"/>
+
+            <Button
+                android:id="@+id/edit_mode"
+                style="@style/ButtonMozu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:text="@string/edit_order"/>
 
             <TextView
                 android:id="@+id/order_fulfillment_status"

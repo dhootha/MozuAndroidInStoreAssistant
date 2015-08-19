@@ -9,19 +9,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.commerceruntime.orders.OrderNote;
-import com.mozu.api.contracts.commerceruntime.orders.ShopperNotes;
 import com.mozu.api.contracts.core.AuditInfo;
 import com.mozu.mozuandroidinstoreassistant.app.OrderDetailActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
+import com.mozu.mozuandroidinstoreassistant.app.dialog.ErrorMessageAlertDialog;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.order.adapters.OrderDetailNotesAdapter;
+import com.mozu.mozuandroidinstoreassistant.app.order.loaders.OrderNoteObserverable;
 import com.mozu.mozuandroidinstoreassistant.app.views.LoadingView;
 
 import org.joda.time.DateTime;
@@ -48,8 +48,6 @@ public class OrderDetailNotesFragment extends Fragment implements OrderNotesUpda
     TextView mShowInternalNotes;
     @InjectView(R.id.add_internal_note)
     Button mAddInternalNote;
-    @InjectView(R.id.add_customer_note)
-    Button mAddCustomerNote;
     private Order mOrder;
     private LoadingView mNotesLoadingView;
     private LoadingView mCustomerLoadingView;
@@ -108,7 +106,6 @@ public class OrderDetailNotesFragment extends Fragment implements OrderNotesUpda
         setOrderToViews(view);
 
         if (mIsEditable) {
-            mAddCustomerNote.setVisibility(View.VISIBLE);
             mAddInternalNote.setVisibility(View.VISIBLE);
         }
         return view;
@@ -171,13 +168,6 @@ public class OrderDetailNotesFragment extends Fragment implements OrderNotesUpda
             }
         });
 
-        mAddCustomerNote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showAddNewNoteDialog();
-            }
-        });
-
     }
 
     public void setOrder(Order order) {
@@ -200,7 +190,7 @@ public class OrderDetailNotesFragment extends Fragment implements OrderNotesUpda
         noteLayout.setLayoutParams(layoutParams);
         AlertDialog noteDialog = new AlertDialog.Builder(getActivity())
                 .setView(noteLayout)
-                .setTitle("Add Note")
+                .setTitle(R.string.add_internal_note_title)
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -215,11 +205,7 @@ public class OrderDetailNotesFragment extends Fragment implements OrderNotesUpda
                             noteLayout.setError(getActivity().getString(R.string.required));
                             return;
                         }
-                        if (isCurrentInternalNotes) {
-                            addNewInternalNote(note);
-                        } else {
-                            addNewCustomerNote(note);
-                        }
+                        addNewInternalNote(note);
                         setOrderToViews(OrderDetailNotesFragment.this.getView());
                         dialog.dismiss();
                     }
@@ -228,21 +214,10 @@ public class OrderDetailNotesFragment extends Fragment implements OrderNotesUpda
         noteDialog.show();
     }
 
-    private void addNewCustomerNote(String note) {
-        ShopperNotes notes = mOrder.getShopperNotes();
-        if (notes == null) {
-            notes = new ShopperNotes();
-        }
-        notes.setComments(note);
-        mOrder.setShopperNotes(notes);
-    }
-
     private void onEditModeUpdateEvent() {
         if (mIsEditable) {
-            mAddCustomerNote.setVisibility(View.VISIBLE);
             mAddInternalNote.setVisibility(View.VISIBLE);
         } else {
-            mAddCustomerNote.setVisibility(View.GONE);
             mAddInternalNote.setVisibility(View.GONE);
         }
         customerNotesAdapter.isEditableMode(mIsEditable);
@@ -259,36 +234,84 @@ public class OrderDetailNotesFragment extends Fragment implements OrderNotesUpda
         AuditInfo auditInfo = new AuditInfo();
         String user = UserAuthenticationStateMachineProducer
                 .getInstance(getActivity())
-                .getAuthProfile().getUserProfile()
-                .getUserId();
+                .getAuthProfile()
+                .getUserProfile()
+                .getUserName();
         auditInfo.setCreateDate(new DateTime());
         auditInfo.setCreateBy(user);
         orderNote.setAuditInfo(auditInfo);
         orderNote.setText(note);
         notes.add(orderNote);
+        createAndSubscribeToOrderNoteCreation(orderNote);
         mOrder.setNotes(notes);
-        customerNotesAdapter.setOrder(mOrder);
-        customerNotesAdapter.notifyDataSetChanged();
-        FrameLayout.LayoutParams mParam = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        mNoteList.setLayoutParams(mParam);
-
-        ((NewOrderActivity) getActivity()).updateOrder(mOrder);
+        internalNotesAdapter.setOrder(mOrder);
+        internalNotesAdapter.notifyDataSetChanged();
+//todo update order
+//        ((NewOrderActivity) getActivity()).updateOrder(mOrder);
     }
 
     @Override
-    public void onShopperNotesUpdated(ShopperNotes notes) {
-        if (notes == null) {
-            mCustomerLoadingView.setError(getActivity().getResources().getString(R.string.not_customer_notes_available));
-        }
-        this.mOrder.setShopperNotes(notes);
+    public void onInternalNotesUpdated(List<OrderNote> notes, OrderNote updatedNote) {
+        createAndSubscribeToOrderNoteUpdate(updatedNote);
+        this.mOrder.setNotes(notes);
     }
 
     @Override
-    public void onInternalNotesUpdated(List<OrderNote> notes) {
+    public void onInternalNoteDeleted(List<OrderNote> notes, OrderNote note) {
+        createAndSubscribeToOrderNoteDelete(note);
         if (notes == null || notes.isEmpty()) {
             mNotesLoadingView.setError(getActivity().getResources().getString(R.string.not_customer_notes_available));
         }
-        this.mOrder.setNotes(notes);
+    }
 
+    private void createAndSubscribeToOrderNoteUpdate(OrderNote updatedNote) {
+        OrderNoteObserverable.getOrderNoteObserverable(mOrder.getTenantId(), mOrder.getSiteId(), mOrder.getId(), updatedNote, OrderNoteObserverable.OrderCallType.UPDATE)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<OrderNote>() {
+                    @Override
+                    public void call(OrderNote orderNote) {
+                        internalNotesAdapter.notifyDataSetChanged();
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), "Error Updating Note");
+                    }
+                });
+    }
+
+    private void createAndSubscribeToOrderNoteDelete(OrderNote orderNote) {
+        OrderNoteObserverable.getOrderNoteObserverable(mOrder.getTenantId(), mOrder.getSiteId(), mOrder.getId(), orderNote, OrderNoteObserverable.OrderCallType.DELETION)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<OrderNote>() {
+                    @Override
+                    public void call(OrderNote orderNote) {
+                        internalNotesAdapter.notifyDataSetChanged();
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), "Error Deleting Note");
+                    }
+                });
+    }
+
+    private void createAndSubscribeToOrderNoteCreation(OrderNote orderNote) {
+        OrderNoteObserverable.getOrderNoteObserverable(mOrder.getTenantId(), mOrder.getSiteId(), mOrder.getId(), orderNote, OrderNoteObserverable.OrderCallType.CREATION)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<OrderNote>() {
+                    @Override
+                    public void call(OrderNote orderNote) {
+                        internalNotesAdapter.notifyDataSetChanged();
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), "Error Deleting Note");
+                    }
+                });
     }
 }

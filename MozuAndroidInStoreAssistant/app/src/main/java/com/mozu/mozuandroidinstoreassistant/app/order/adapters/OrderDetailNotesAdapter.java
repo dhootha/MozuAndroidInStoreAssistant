@@ -122,9 +122,10 @@ public class OrderDetailNotesAdapter extends BaseAdapter implements ListView.OnI
         } else {
             note = ((OrderNote) item).getText();
         }
-        if (mIsEditable) {
+        if (mIsEditable && mIsInternalNotes) {
             showEditNoteDialog(note, position);
         } else {
+            //shopper notes are read only
             showNoteDialog(note);
         }
     }
@@ -192,22 +193,14 @@ public class OrderDetailNotesAdapter extends BaseAdapter implements ListView.OnI
     private void updateItem(String note, int position) {
         if (mOrder.getNotes() != null && mIsInternalNotes) {
             mOrder.getNotes().get(position).setText(note);
-            mListener.onInternalNotesUpdated(mOrder.getNotes());
-        } else {
-            mOrder.getShopperNotes().setComments(note);
-            mListener.onShopperNotesUpdated(mOrder.getShopperNotes());
+            mListener.onInternalNotesUpdated(mOrder.getNotes(), mOrder.getNotes().get(position));
         }
-        notifyDataSetChanged();
     }
 
     private void deleteItem(int position) {
         if (mOrder.getNotes() != null && mIsInternalNotes) {
-            mOrder.getNotes().remove(position);
-            mListener.onInternalNotesUpdated(mOrder.getNotes());
-        } else {
-            mOrder.setShopperNotes(null);
-            mListener.onShopperNotesUpdated(mOrder.getShopperNotes());
+            OrderNote deletedNote = mOrder.getNotes().remove(position);
+            mListener.onInternalNoteDeleted(mOrder.getNotes(), deletedNote);
         }
-        notifyDataSetChanged();
     }
 }
