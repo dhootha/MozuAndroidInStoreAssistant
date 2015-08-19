@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -185,24 +186,28 @@ public class OrderDetailNotesFragment extends Fragment implements OrderNotesUpda
     }
 
     private void showAddNewNoteDialog() {
-        final EditText noteLayout = new EditText(getActivity());
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        noteLayout.setLayoutParams(layoutParams);
+        View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_edit_order_notes, null);
+        final EditText noteInput = (EditText) view.findViewById(R.id.note);
+        final TextView noteTile = (TextView) view.findViewById(R.id.title);
+        noteTile.setText(R.string.add_note);
+        noteInput.setFocusable(true);
+        noteInput.setEnabled(true);
+        noteInput.requestFocus();
+        noteInput.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
         AlertDialog noteDialog = new AlertDialog.Builder(getActivity())
-                .setView(noteLayout)
-                .setTitle(R.string.add_internal_note_title)
+                .setView(view)
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
                 })
-                .setPositiveButton(R.string.add_note, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.new_note, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String note = noteLayout.getText().toString();
+                        String note = noteInput.getText().toString();
                         if (note.isEmpty()) {
-                            noteLayout.setError(getActivity().getString(R.string.required));
+                            noteInput.setError(getActivity().getString(R.string.required));
                             return;
                         }
                         addNewInternalNote(note);

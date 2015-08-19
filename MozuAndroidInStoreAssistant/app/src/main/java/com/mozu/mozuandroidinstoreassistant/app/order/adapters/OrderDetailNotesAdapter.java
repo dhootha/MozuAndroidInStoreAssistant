@@ -155,12 +155,14 @@ public class OrderDetailNotesAdapter extends BaseAdapter implements ListView.OnI
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.dialog_edit_order_notes, null);
         final EditText editText = (EditText) view.findViewById(R.id.note);
+        final TextView title = (TextView) view.findViewById(R.id.title);
+        title.setText(R.string.edit_note);
         editText.setText(note);
         final AlertDialog editNoteDialog = new AlertDialog.Builder(mContext)
                 .setView(view)
-                .setNegativeButton("Delete", null)
-                .setNeutralButton("Edit", null)
-                .setPositiveButton("Done", null)
+                .setNegativeButton(R.string.delete, null)
+                .setNeutralButton(R.string.edit, null)
+                .setPositiveButton(R.string.done, null)
                 .create();
         editNoteDialog.show();
         Button positive = editNoteDialog.getButton(DialogInterface.BUTTON_POSITIVE);
