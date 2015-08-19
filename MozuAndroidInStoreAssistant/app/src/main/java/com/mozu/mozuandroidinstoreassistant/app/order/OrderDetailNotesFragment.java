@@ -18,6 +18,7 @@ import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.commerceruntime.orders.OrderNote;
 import com.mozu.api.contracts.commerceruntime.orders.ShopperNotes;
 import com.mozu.api.contracts.core.AuditInfo;
+import com.mozu.mozuandroidinstoreassistant.app.OrderDetailActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.order.adapters.OrderDetailNotesAdapter;
@@ -30,9 +31,12 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 
-public class OrderDetailNotesFragment extends Fragment {
+public class OrderDetailNotesFragment extends Fragment implements OrderNotesUpdateListener {
 
     @InjectView(R.id.internal_notes_layout)
     LinearLayout mNoteListLayout;
@@ -53,13 +57,13 @@ public class OrderDetailNotesFragment extends Fragment {
     private String CURRENT_IS_INTERNAL = "currentInternal";
     private OrderDetailNotesAdapter customerNotesAdapter;
     private OrderDetailNotesAdapter internalNotesAdapter;
-    private boolean mIsNewOrder;
+    private Boolean mIsEditable = false;
     private ListView mNoteList;
 
-    public static OrderDetailNotesFragment getInstance(boolean isNewOrder) {
+    public static OrderDetailNotesFragment getInstance(boolean isEditable) {
         OrderDetailNotesFragment fragment = new OrderDetailNotesFragment();
         Bundle bundle = new Bundle();
-        bundle.putBoolean(NewOrderActivity.IS_NEW_ORDER, isNewOrder);
+        bundle.putBoolean(NewOrderActivity.IS_EDITABLE, isEditable);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -68,12 +72,30 @@ public class OrderDetailNotesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        ((OrderDetailActivity) getActivity()).getEventBusObserverable()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(getEventSubscriber());
+
+    }
+
+    private Action1<Object> getEventSubscriber() {
+        return new Action1<Object>() {
+
+            @Override
+            public void call(Object o) {
+                if (o instanceof Boolean) {
+                    mIsEditable = (Boolean) o;
+                    onEditModeUpdateEvent();
+                }
+            }
+        };
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        mIsNewOrder = getArguments().getBoolean(NewOrderActivity.IS_NEW_ORDER, false);
+        mIsEditable = getArguments().getBoolean(NewOrderActivity.IS_EDITABLE, false);
         if (savedInstanceState != null) {
             isCurrentInternalNotes = savedInstanceState.getBoolean(CURRENT_IS_INTERNAL);
         }
@@ -85,7 +107,7 @@ public class OrderDetailNotesFragment extends Fragment {
 
         setOrderToViews(view);
 
-        if (mIsNewOrder) {
+        if (mIsEditable) {
             mAddCustomerNote.setVisibility(View.VISIBLE);
             mAddInternalNote.setVisibility(View.VISIBLE);
         }
@@ -101,11 +123,11 @@ public class OrderDetailNotesFragment extends Fragment {
     private void setOrderToViews(View view) {
 
         mNoteList = (ListView) view.findViewById(R.id.notes_list);
-        internalNotesAdapter = new OrderDetailNotesAdapter(getActivity(), mOrder, true);
+        internalNotesAdapter = new OrderDetailNotesAdapter(getActivity(), mOrder, true, this);
         mNoteList.setAdapter(internalNotesAdapter);
         mNoteList.setOnItemClickListener(internalNotesAdapter);
         ListView customerNotesList = (ListView) view.findViewById(R.id.customer_list);
-        customerNotesAdapter = new OrderDetailNotesAdapter(getActivity(), mOrder, false);
+        customerNotesAdapter = new OrderDetailNotesAdapter(getActivity(), mOrder, false, this);
         customerNotesList.setOnItemClickListener(customerNotesAdapter);
         customerNotesList.setAdapter(customerNotesAdapter);
         if (mOrder == null || mOrder.getNotes() == null || mOrder.getNotes().size() < 1) {
@@ -215,10 +237,20 @@ public class OrderDetailNotesFragment extends Fragment {
         mOrder.setShopperNotes(notes);
     }
 
+    private void onEditModeUpdateEvent() {
+        if (mIsEditable) {
+            mAddCustomerNote.setVisibility(View.VISIBLE);
+            mAddInternalNote.setVisibility(View.VISIBLE);
+        } else {
+            mAddCustomerNote.setVisibility(View.GONE);
+            mAddInternalNote.setVisibility(View.GONE);
+        }
+    }
+
     private void addNewInternalNote(String note) {
         List<OrderNote> notes = mOrder.getNotes();
         if (notes == null) {
-            notes = new ArrayList<OrderNote>();
+            notes = new ArrayList<>();
         }
 
         OrderNote orderNote = new OrderNote();
@@ -239,5 +271,22 @@ public class OrderDetailNotesFragment extends Fragment {
         mNoteList.setLayoutParams(mParam);
 
         ((NewOrderActivity) getActivity()).updateOrder(mOrder);
+    }
+
+    @Override
+    public void onShopperNotesUpdated(ShopperNotes notes) {
+        if (notes == null) {
+            mCustomerLoadingView.setError(getActivity().getResources().getString(R.string.not_customer_notes_available));
+        }
+        this.mOrder.setShopperNotes(notes);
+    }
+
+    @Override
+    public void onInternalNotesUpdated(List<OrderNote> notes) {
+        if (notes == null || notes.isEmpty()) {
+            mNotesLoadingView.setError(getActivity().getResources().getString(R.string.not_customer_notes_available));
+        }
+        this.mOrder.setNotes(notes);
+
     }
 }

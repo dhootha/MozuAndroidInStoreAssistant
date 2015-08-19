@@ -21,7 +21,7 @@ import butterknife.InjectView;
 
 public class NewOrderActivity extends BaseActivity {
 
-    public static final String IS_NEW_ORDER = "new_order";
+    public static final String IS_EDITABLE = "editable";
     @InjectView(R.id.order_id)
     public TextView mOrderId;
     @InjectView(R.id.order_status)

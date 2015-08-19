@@ -297,6 +297,9 @@
     <string name="customer_lookup">Customer Lookup</string>
     <string name="create_new_customer">Create New Customer</string>
     <string name="add_note">Add Note</string>
+    <string name="edit_note">Edit Note</string>
+    <string name="edit_order">Edit Order</string>
+    <string name="exit_edit_mode">Finish Editing</string>
     <string-array name="register_email_address">
         <item>mozumobile@volusion.com</item>
     </string-array>

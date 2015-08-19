@@ -18,19 +18,22 @@ import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.commerceruntime.orders.OrderNote;
 import com.mozu.api.contracts.commerceruntime.orders.ShopperNotes;
 import com.mozu.mozuandroidinstoreassistant.app.R;
+import com.mozu.mozuandroidinstoreassistant.app.order.OrderNotesUpdateListener;
 
 import java.util.Date;
 
 public class OrderDetailNotesAdapter extends BaseAdapter implements ListView.OnItemClickListener {
 
     private final Context mContext;
+    private final OrderNotesUpdateListener mListener;
     private Order mOrder;
     private boolean mIsInternalNotes;
 
-    public OrderDetailNotesAdapter(Context context, Order order, boolean isInternalNotes) {
+    public OrderDetailNotesAdapter(Context context, Order order, boolean isInternalNotes, OrderNotesUpdateListener listener) {
         mContext = context;
         mIsInternalNotes = isInternalNotes;
         mOrder = order;
+        mListener = listener;
     }
 
     @Override
@@ -117,12 +120,14 @@ public class OrderDetailNotesAdapter extends BaseAdapter implements ListView.OnI
     }
 
     private void showEditNoteDialog(final String note, final int position) {
-        final EditText editText = new EditText(mContext);
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+        View view = inflater.inflate(R.layout.dialog_edit_order_notes, null);
+        final EditText editText = (EditText) view.findViewById(R.id.note);
         editText.setEnabled(false);
         editText.setFocusable(false);
         editText.setText(note);
         final AlertDialog editNoteDialog = new AlertDialog.Builder(mContext)
-                .setView(editText)
+                .setView(view)
                 .setNegativeButton("Delete", null)
                 .setNeutralButton("Edit", null)
                 .setPositiveButton("Done", null)
@@ -158,8 +163,10 @@ public class OrderDetailNotesAdapter extends BaseAdapter implements ListView.OnI
     private void updateItem(String note, int position) {
         if (mOrder.getNotes() != null && mIsInternalNotes) {
             mOrder.getNotes().get(position).setText(note);
+            mListener.onInternalNotesUpdated(mOrder.getNotes());
         } else {
             mOrder.getShopperNotes().setComments(note);
+            mListener.onShopperNotesUpdated(mOrder.getShopperNotes());
         }
         notifyDataSetChanged();
     }
@@ -167,8 +174,10 @@ public class OrderDetailNotesAdapter extends BaseAdapter implements ListView.OnI
     private void deleteItem(int position) {
         if (mOrder.getNotes() != null && mIsInternalNotes) {
             mOrder.getNotes().remove(position);
+            mListener.onInternalNotesUpdated(mOrder.getNotes());
         } else {
             mOrder.setShopperNotes(null);
+            mListener.onShopperNotesUpdated(mOrder.getShopperNotes());
         }
         notifyDataSetChanged();
     }

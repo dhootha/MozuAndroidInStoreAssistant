@@ -14,10 +14,12 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.customer.CustomerAccount;
+import com.mozu.mozuandroidinstoreassistant.app.bus.RxBus;
 import com.mozu.mozuandroidinstoreassistant.app.order.adapters.OrderDetailSectionPagerAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.order.loaders.OrderDetailLoader;
 import com.mozu.mozuandroidinstoreassistant.app.settings.SettingsFragment;
@@ -32,6 +34,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import rx.Observable;
 
 public class OrderDetailActivity extends BaseActivity implements LoaderManager.LoaderCallbacks<Order>, CustomerAsyncListener, SwipeRefreshLayout.OnRefreshListener {
 
@@ -39,33 +42,27 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
     public static final String CURRENT_TENANT_ID = "curTenantIdWhenActLoaded";
     public static final String CURRENT_SITE_ID = "curSiteIdWhenActLoaded";
     public static final int LOADER_ORDER_DETAIL = 45;
-
+    private final String ORDER_SETTINGS_FRAGMENT = "Order_Settings_Fragment";
+    public RxBus mRxBus;
+    @InjectView(R.id.order_detail_container)
+    SwipeRefreshLayout mOrderSwipeRefresh;
+    @InjectView(R.id.edit_mode)
+    Button enterEditMode;
     private String mOrderNumber;
-
     private TextView mOrderStatus;
     private TextView mOrderDate;
     private TextView mCustomerName;
     private TextView mOrderTotal;
-
     private Order mOrder;
-
     private int mTenantId;
-
     private int mSiteId;
-
     private ViewPager mOrderViewPager;
-
     private TabPageIndicator mTabIndicator;
-
     private List<String> mTitles;
-
     private NumberFormat mNumberFormat;
     private OrderDetailSectionPagerAdapter mAdapter;
-
-    @InjectView(R.id.order_detail_container)
-    SwipeRefreshLayout mOrderSwipeRefresh;
-    private final String ORDER_SETTINGS_FRAGMENT = "Order_Settings_Fragment";
     private TextView mOrderFulfillmentStatus;
+    private Boolean mIsEditMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +72,7 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
         }
 
         setContentView(R.layout.activity_order_detail);
+        mRxBus = new RxBus();
 
         ButterKnife.inject(this);
 
@@ -95,6 +93,12 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
             getActionBar().setTitle(" ");
         }
 
+        enterEditMode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onSwapEditMode();
+            }
+        });
         mOrderStatus = (TextView) findViewById(R.id.order_status_value);
         mOrderDate = (TextView) findViewById(R.id.order_date_value);
         mCustomerName = (TextView) findViewById(R.id.customer_value);
@@ -245,7 +249,7 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
 
 
     @Override
-    public void customerRetreived(CustomerAccount customer) {
+    public void customerRetrieved(CustomerAccount customer) {
         if (mCustomerName != null && customer != null) {
             mCustomerName.setText(customer.getFirstName() + " " + customer.getLastName());
         }
@@ -255,4 +259,21 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
     public void onError(String errorMessage) {
         mCustomerName.setText(getString(R.string.error_message_for_order_customer_name));
     }
+
+    public Observable<Object> getEventBusObserverable() {
+        return mRxBus.toObserverable();
+    }
+
+    public void onSwapEditMode() {
+
+        mIsEditMode = !mIsEditMode;
+        mRxBus.send(mIsEditMode);
+        mAdapter.setmIsEditMode(mIsEditMode);
+        if (mIsEditMode) {
+            enterEditMode.setText(getString(R.string.exit_edit_mode));
+        } else {
+            enterEditMode.setText(getString(R.string.edit_order));
+        }
+    }
+
 }
