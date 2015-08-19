@@ -7,11 +7,12 @@
               android:padding="16dp">
 
     <TextView
+        android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="32dp"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
-        android:text="@string/edit_note"
+        android:text="@string/notes_tab_name"
         android:textColor="@color/dark_gray_text"
         android:textSize="24sp"/>
 
@@ -19,6 +20,7 @@
         android:id="@+id/note"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textMultiLine"/>
+        android:focusable="false"
+        android:inputType="none"/>
 
 </LinearLayout>

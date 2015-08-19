@@ -28,10 +28,12 @@ public class OrderDetailNotesAdapter extends BaseAdapter implements ListView.OnI
     private final OrderNotesUpdateListener mListener;
     private Order mOrder;
     private boolean mIsInternalNotes;
+    private boolean mIsEditable;
 
-    public OrderDetailNotesAdapter(Context context, Order order, boolean isInternalNotes, OrderNotesUpdateListener listener) {
+    public OrderDetailNotesAdapter(Context context, Order order, boolean isInternalNotes, boolean isEditable, OrderNotesUpdateListener listener) {
         mContext = context;
         mIsInternalNotes = isInternalNotes;
+        mIsEditable = isEditable;
         mOrder = order;
         mListener = listener;
     }
@@ -106,6 +108,10 @@ public class OrderDetailNotesAdapter extends BaseAdapter implements ListView.OnI
         this.mOrder = order;
     }
 
+    public void isEditableMode(boolean isEditable) {
+        this.mIsEditable = isEditable;
+    }
+
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
@@ -116,15 +122,38 @@ public class OrderDetailNotesAdapter extends BaseAdapter implements ListView.OnI
         } else {
             note = ((OrderNote) item).getText();
         }
-        showEditNoteDialog(note, position);
+        if (mIsEditable) {
+            showEditNoteDialog(note, position);
+        } else {
+            showNoteDialog(note);
+        }
+    }
+
+    private void showNoteDialog(final String note) {
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+        View view = inflater.inflate(R.layout.dialog_edit_order_notes, null);
+        final EditText editText = (EditText) view.findViewById(R.id.note);
+        final TextView title = (TextView) view.findViewById(R.id.title);
+        if (mIsEditable) {
+            title.setText(R.string.edit_note);
+        }
+        editText.setText(note);
+        final AlertDialog noteDialog = new AlertDialog.Builder(mContext)
+                .setView(view)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .create();
+        noteDialog.show();
     }
 
     private void showEditNoteDialog(final String note, final int position) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.dialog_edit_order_notes, null);
         final EditText editText = (EditText) view.findViewById(R.id.note);
-        editText.setEnabled(false);
-        editText.setFocusable(false);
         editText.setText(note);
         final AlertDialog editNoteDialog = new AlertDialog.Builder(mContext)
                 .setView(view)

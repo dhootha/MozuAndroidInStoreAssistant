@@ -123,11 +123,11 @@ public class OrderDetailNotesFragment extends Fragment implements OrderNotesUpda
     private void setOrderToViews(View view) {
 
         mNoteList = (ListView) view.findViewById(R.id.notes_list);
-        internalNotesAdapter = new OrderDetailNotesAdapter(getActivity(), mOrder, true, this);
+        internalNotesAdapter = new OrderDetailNotesAdapter(getActivity(), mOrder, true, mIsEditable, this);
         mNoteList.setAdapter(internalNotesAdapter);
         mNoteList.setOnItemClickListener(internalNotesAdapter);
         ListView customerNotesList = (ListView) view.findViewById(R.id.customer_list);
-        customerNotesAdapter = new OrderDetailNotesAdapter(getActivity(), mOrder, false, this);
+        customerNotesAdapter = new OrderDetailNotesAdapter(getActivity(), mOrder, false, mIsEditable, this);
         customerNotesList.setOnItemClickListener(customerNotesAdapter);
         customerNotesList.setAdapter(customerNotesAdapter);
         if (mOrder == null || mOrder.getNotes() == null || mOrder.getNotes().size() < 1) {
@@ -245,6 +245,8 @@ public class OrderDetailNotesFragment extends Fragment implements OrderNotesUpda
             mAddCustomerNote.setVisibility(View.GONE);
             mAddInternalNote.setVisibility(View.GONE);
         }
+        customerNotesAdapter.isEditableMode(mIsEditable);
+        internalNotesAdapter.isEditableMode(mIsEditable);
     }
 
     private void addNewInternalNote(String note) {
