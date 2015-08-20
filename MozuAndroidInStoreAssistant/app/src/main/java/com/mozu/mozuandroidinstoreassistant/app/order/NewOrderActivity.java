@@ -44,6 +44,7 @@ public class NewOrderActivity extends BaseActivity {
 
     @InjectView(R.id.order_viewpager)
     public ViewPager mOrderViewPager;
+
     private NewOrderFragmentAdapter mOrderFragmentAdapter;
 
     private Integer mViewPagerPos;
@@ -69,11 +70,10 @@ public class NewOrderActivity extends BaseActivity {
         mOrderName.setText(mCustomerAccount.getLastName() + " " + mCustomerAccount.getFirstName());
         mOrderEmail.setText(mCustomerAccount.getEmailAddress());
         if (mOrderFragmentAdapter == null) {
-            mOrderFragmentAdapter = new NewOrderFragmentAdapter(getFragmentManager(), null, null);
+            mOrderFragmentAdapter = new NewOrderFragmentAdapter(getFragmentManager(), mOrder);
             mOrderViewPager.setAdapter(mOrderFragmentAdapter);
             mOrderTabs.setViewPager(mOrderViewPager);
         } else {
-            mOrderFragmentAdapter.setData(null);
             mOrderFragmentAdapter.notifyDataSetChanged();
         }
         if (mViewPagerPos != null) {

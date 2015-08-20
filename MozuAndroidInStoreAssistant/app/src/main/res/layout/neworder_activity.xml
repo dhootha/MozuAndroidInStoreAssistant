@@ -140,6 +140,8 @@
         android:background="@color/divider_white"/>
 
     <android.support.v4.view.ViewPager
+        android:layout_marginRight="@dimen/customer_margin_right_total"
+        android:layout_marginLeft="@dimen/customer_tab_margin_left"
         android:id="@+id/order_viewpager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
