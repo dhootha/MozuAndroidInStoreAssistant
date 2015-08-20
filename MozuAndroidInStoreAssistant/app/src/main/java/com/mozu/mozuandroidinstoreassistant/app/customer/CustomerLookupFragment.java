@@ -17,7 +17,7 @@ import android.widget.Button;
 
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.mozuandroidinstoreassistant.app.CustomerCreationActivity;
-import com.mozu.mozuandroidinstoreassistant.app.OrderCreationActivity;
+import com.mozu.mozuandroidinstoreassistant.app.CustomerLookUpActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.customer.adapters.CustomerLookupAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.CustomersLoader;
@@ -56,8 +56,8 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mTenantId = getArguments().getInt(OrderCreationActivity.CURRENT_TENANT_ID);
-            mSiteId = getArguments().getInt(OrderCreationActivity.CURRENT_SITE_ID);
+            mTenantId = getArguments().getInt(CustomerLookUpActivity.CURRENT_TENANT_ID);
+            mSiteId = getArguments().getInt(CustomerLookUpActivity.CURRENT_SITE_ID);
 
         }
         getLoaderManager().initLoader(LOADER_CUSTOMER, null, this);
@@ -67,8 +67,8 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
     public static CustomerLookupFragment getInstance(int tenantId, int siteId) {
         CustomerLookupFragment fragment = new CustomerLookupFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(OrderCreationActivity.CURRENT_TENANT_ID, tenantId);
-        bundle.putInt(OrderCreationActivity.CURRENT_SITE_ID, siteId);
+        bundle.putInt(CustomerLookUpActivity.CURRENT_TENANT_ID, tenantId);
+        bundle.putInt(CustomerLookUpActivity.CURRENT_SITE_ID, siteId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -146,15 +146,15 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
 
     private void launchCreateCustomerDialog() {
         Bundle bundle = new Bundle();
-        bundle.putInt(OrderCreationActivity.CURRENT_TENANT_ID, mTenantId);
-        bundle.putInt(OrderCreationActivity.CURRENT_SITE_ID, mSiteId);
+        bundle.putInt(CustomerLookUpActivity.CURRENT_TENANT_ID, mTenantId);
+        bundle.putInt(CustomerLookUpActivity.CURRENT_SITE_ID, mSiteId);
         Intent intent = new Intent(getActivity(), CustomerCreationActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
     }
 
     public interface CustomerSelectionListener {
-        public void onCustomerSelected(CustomerAccount customerAccount);
+        void onCustomerSelected(CustomerAccount customerAccount);
     }
 
     @Override

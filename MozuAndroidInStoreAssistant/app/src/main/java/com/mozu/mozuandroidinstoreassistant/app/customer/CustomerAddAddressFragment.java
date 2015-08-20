@@ -15,7 +15,7 @@ import android.widget.Button;
 
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.api.contracts.customer.CustomerContact;
-import com.mozu.mozuandroidinstoreassistant.app.OrderCreationActivity;
+import com.mozu.mozuandroidinstoreassistant.app.CustomerLookUpActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.customer.adapters.CustomerAddressesAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.AddCustomerContactObserverable;
@@ -53,8 +53,8 @@ public class CustomerAddAddressFragment extends Fragment {
     public static CustomerAddAddressFragment getInstance(Integer tenantId, Integer siteId, CustomerAccount account) {
         Bundle bundle = new Bundle();
         CustomerAddAddressFragment fragment = new CustomerAddAddressFragment();
-        bundle.putInt(OrderCreationActivity.CURRENT_TENANT_ID, tenantId);
-        bundle.putInt(OrderCreationActivity.CURRENT_SITE_ID, siteId);
+        bundle.putInt(CustomerLookUpActivity.CURRENT_TENANT_ID, tenantId);
+        bundle.putInt(CustomerLookUpActivity.CURRENT_SITE_ID, siteId);
         bundle.putSerializable(CUSTOMER_ACCOUNT, account);
         fragment.setArguments(bundle);
         return fragment;
@@ -75,8 +75,8 @@ public class CustomerAddAddressFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_customer_add_address, container, false);
         ButterKnife.inject(this, view);
-        mTenantId = getArguments().getInt(OrderCreationActivity.CURRENT_TENANT_ID);
-        mSiteId = getArguments().getInt(OrderCreationActivity.CURRENT_SITE_ID);
+        mTenantId = getArguments().getInt(CustomerLookUpActivity.CURRENT_TENANT_ID);
+        mSiteId = getArguments().getInt(CustomerLookUpActivity.CURRENT_SITE_ID);
         mCustomerAccount = (CustomerAccount) getArguments().getSerializable(CUSTOMER_ACCOUNT);
         return view;
     }

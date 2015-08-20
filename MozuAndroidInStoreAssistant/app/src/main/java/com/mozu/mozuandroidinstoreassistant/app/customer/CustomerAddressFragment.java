@@ -43,8 +43,8 @@ public class CustomerAddressFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCustomerAccount = (CustomerAccount) getArguments().getSerializable(CUSTOMER_ACCOUNT);
-        mBillingContacts = new ArrayList<CustomerContactDataItem>();
-        mShippingContacts = new ArrayList<CustomerContactDataItem>();
+        mBillingContacts = new ArrayList<>();
+        mShippingContacts = new ArrayList<>();
     }
 
     @Override

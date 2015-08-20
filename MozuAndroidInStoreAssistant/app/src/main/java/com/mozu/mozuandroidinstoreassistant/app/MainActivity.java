@@ -427,13 +427,12 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
     }
 
     @Override
-    public void createNewOrder(Order order) {
+    public void createNewOrder() {
         UserAuthenticationStateMachine userAuthenticationStateMachine = UserAuthenticationStateMachineProducer.getInstance(this);
-        Intent intent = new Intent(this, OrderCreationActivity.class);
+        Intent intent = new Intent(this, CustomerLookUpActivity.class);
 
-        intent.putExtra(OrderCreationActivity.ORDER_EXTRA_KEY, order);
-        intent.putExtra(OrderCreationActivity.CURRENT_TENANT_ID, userAuthenticationStateMachine.getTenantId());
-        intent.putExtra(OrderCreationActivity.CURRENT_SITE_ID, userAuthenticationStateMachine.getSiteId());
+        intent.putExtra(CustomerLookUpActivity.CURRENT_TENANT_ID, userAuthenticationStateMachine.getTenantId());
+        intent.putExtra(CustomerLookUpActivity.CURRENT_SITE_ID, userAuthenticationStateMachine.getSiteId());
 
         startActivity(intent);
     }

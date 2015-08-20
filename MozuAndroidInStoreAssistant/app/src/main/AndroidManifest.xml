@@ -67,7 +67,7 @@
             android:name=".OrderDetailActivity"
             android:label="@string/title_activity_order_detail" />
         <activity
-            android:name=".OrderCreationActivity"
+            android:name=".CustomerLookUpActivity"
             android:label="@string/title_activity_order_creation" />
 
         <activity android:name=".CustomerCreationActivity"
