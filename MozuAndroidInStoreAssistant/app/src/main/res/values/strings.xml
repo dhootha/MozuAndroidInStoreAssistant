@@ -307,12 +307,6 @@
     <string name="exit_edit_mode">Finish Editing</string>
     <string name="add_internal_note_title">Add New Internal Note</string>
     <string name="done">Done</string>
-    <string name="add_note">Add Note</string>
-    <string name="new_note">New Note</string>
-    <string name="edit_note">Edit Note</string>
-    <string name="exit_edit_mode">Finish Editing</string>
-    <string name="add_internal_note_title">Add New Internal Note</string>
-    <string name="done">Done</string>
     <string-array name="register_email_address">
         <item>mozumobile@volusion.com</item>
     </string-array>
