@@ -38,7 +38,6 @@ public class NewOrderActivity extends BaseActivity {
     public ViewPager mOrderViewPager;
     private Order mOrder;
     private CustomerAccount mCustomerAccount;
-
     private NewOrderFragmentAdapter mOrderFragmentAdapter;
 
     private Integer mViewPagerPos;

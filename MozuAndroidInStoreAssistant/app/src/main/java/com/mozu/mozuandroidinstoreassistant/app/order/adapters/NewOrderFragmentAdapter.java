@@ -7,13 +7,18 @@ import android.support.v13.app.FragmentStatePagerAdapter;
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.mozuandroidinstoreassistant.app.order.NewOrderCreateFragment;
 import com.mozu.mozuandroidinstoreassistant.app.order.OrderDetailNotesFragment;
+import com.mozu.api.contracts.customer.CustomerAccount;
+import com.mozu.mozuandroidinstoreassistant.app.order.OrderDetailNotesFragment;
+import com.mozu.mozuandroidinstoreassistant.app.order.OrderDetailOverviewFragment;
 
 /**
  * Created by santhosh_mankala on 8/14/15.
  */
 public class NewOrderFragmentAdapter extends FragmentStatePagerAdapter {
 
+    private CustomerAccount mCustomer;
     private Order mOrder;
+    public NewOrderFragmentAdapter(FragmentManager manager, CustomerAccount customer,Order order) {
 
     public NewOrderFragmentAdapter(FragmentManager manager,Order order) {
         super(manager);
@@ -44,7 +49,7 @@ public class NewOrderFragmentAdapter extends FragmentStatePagerAdapter {
                 fragment.setOrder(mOrder);
                 return fragment;
             default:
-                return NewOrderCreateFragment.getInstance(mOrder);
+                  return NewOrderCreateFragment.getInstance(mOrder);
         }
     }
 
@@ -59,6 +64,5 @@ public class NewOrderFragmentAdapter extends FragmentStatePagerAdapter {
         TabTypes(String displayTitle) {
             mDisplayTitle = displayTitle;
         }
-
     }
 }

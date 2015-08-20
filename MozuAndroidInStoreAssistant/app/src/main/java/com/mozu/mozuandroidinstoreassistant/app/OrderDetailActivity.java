@@ -298,7 +298,7 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
         if (mIsEditMode) {
             enterEditMode.setText(getString(R.string.exit_edit_mode));
         } else {
-            enterEditMode.setText(getString(R.string.edit));
+            enterEditMode.setText(getString(R.string.edit_order));
         }
     }
 }
