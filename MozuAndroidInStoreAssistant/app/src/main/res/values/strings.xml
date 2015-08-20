@@ -296,6 +296,11 @@
     <string name="lookup_customer_hint">Lookup exisiting customer</string>
     <string name="customer_lookup">Customer Lookup</string>
     <string name="create_new_customer">Create New Customer</string>
+    <string name="product_lookuphint">Lookup Product</string>
+    <string name="code">Code</string>
+    <string name="product_fullfilment_header">Fulfillment</string>
+    <string name="product_quantity_header">Quantity</string>
+    <string name="product_total_header">Item Total</string>
     <string name="add_note">Add Note</string>
     <string name="new_note">New Note</string>
     <string name="edit_note">Edit Note</string>
