@@ -3,35 +3,9 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/create_order_buttons"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="28dp"
-        android:layout_marginRight="28dp"
-        android:layout_marginEnd="28dp"
-        android:orientation="horizontal">
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/divider_white"
-            android:text="Cancel"/>
-        <Button
-            android:id="@+id/submitOrder"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/divider_white"
-            android:text="Submit Order"/>
-    </LinearLayout>
-
     <FrameLayout
         android:id="@+id/content_fragment_holder"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/create_order_buttons"/>
+        android:layout_height="match_parent"/>
 
 </RelativeLayout>

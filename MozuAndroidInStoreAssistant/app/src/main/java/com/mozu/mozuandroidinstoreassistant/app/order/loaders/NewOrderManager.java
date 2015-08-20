@@ -71,6 +71,28 @@ public class NewOrderManager {
                 });
     }
 
+    public Observable<Order> createOrder(final Integer tenantId, final Integer siteId, final Order order) {
+        return Observable.create(new Observable.OnSubscribe<Order>() {
+            @Override
+            public void call(Subscriber<? super Order> subscriber) {
+                final OrderResource orderResource = new OrderResource(new MozuApiContext(tenantId, siteId));
+                try {
+                    Order createdOrder;
+                    createdOrder = orderResource.createOrder(order);
+                    if(!subscriber.isUnsubscribed()) {
+                        subscriber.onNext(createdOrder);
+                        subscriber.onCompleted();
+                    }
+
+                } catch (Exception e) {
+                    if (!subscriber.isUnsubscribed()) {
+                        subscriber.onError(e);
+                    }
+                }
+            }
+        });
+    }
+
     public Observable<Order> getOrderUpdate(final Integer tenantId, final Integer siteId, final OrderItem orderItem, final String orderId) {
 
 

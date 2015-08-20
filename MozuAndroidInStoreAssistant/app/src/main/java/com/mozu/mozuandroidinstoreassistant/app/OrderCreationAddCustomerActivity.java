@@ -3,8 +3,6 @@ package com.mozu.mozuandroidinstoreassistant.app;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 
 import com.mozu.api.contracts.commerceruntime.fulfillment.FulfillmentInfo;
 import com.mozu.api.contracts.commerceruntime.orders.Order;
@@ -13,12 +11,12 @@ import com.mozu.api.contracts.core.Contact;
 import com.mozu.api.contracts.customer.ContactType;
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.api.contracts.customer.CustomerContact;
+import com.mozu.mozuandroidinstoreassistant.app.customer.CustomerAddressOrderVerification;
 import com.mozu.mozuandroidinstoreassistant.app.customer.CustomerLookupFragment;
 import com.mozu.mozuandroidinstoreassistant.app.order.NewOrderActivity;
 import com.mozu.mozuandroidinstoreassistant.app.order.loaders.NewOrderManager;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import rx.Subscriber;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -27,15 +25,15 @@ import rx.schedulers.Schedulers;
 /**
  * Created by chris_pound on 8/5/15.
  */
-public class OrderCreationActivity extends BaseActivity implements CustomerLookupFragment.CustomerSelectionListener {
+public class OrderCreationAddCustomerActivity extends BaseActivity implements CustomerLookupFragment.CustomerSelectionListener, CustomerAddressOrderVerification.VerifyCreateOrderListener {
 
     public static final String ORDER_EXTRA_KEY = "ORDER";
     public static final String CURRENT_TENANT_ID = "curTenantIdWhenActLoaded";
     public static final String CURRENT_SITE_ID = "curSiteIdWhenActLoaded";
     public static final String ORDER_CUSTOMER_EXTRA_KEY = "order_customer";
+    public static final int CREATE_CUSTOMER = 1;
     private static String BILLING = "billing";
     private static String SHIPPING = "shipping";
-
     private Order mOrder;
 
     private int mTenantId;
@@ -43,15 +41,12 @@ public class OrderCreationActivity extends BaseActivity implements CustomerLooku
     private int mSiteId;
     private CustomerAccount mCustomerAccount;
 
-    @InjectView(R.id.submitOrder)
-    public Button mOrderSubmit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_create);
         ButterKnife.inject(this);
-
         if (getIntent() != null) {
             mOrder = (Order) getIntent().getSerializableExtra(ORDER_EXTRA_KEY);
             mTenantId = getIntent().getIntExtra(CURRENT_TENANT_ID, -1);
@@ -68,46 +63,49 @@ public class OrderCreationActivity extends BaseActivity implements CustomerLooku
             getActionBar().setDisplayShowHomeEnabled(false);
             getActionBar().setDisplayHomeAsUpEnabled(true);
             getActionBar().setDisplayShowCustomEnabled(true);
-            getActionBar().setTitle("Order #" + mOrder.getOrderNumber());
+            getActionBar().setTitle(R.string.create_order);
         }
-        mOrderSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-                mOrder.setCustomerAccountId(mCustomerAccount.getId());
-                BillingInfo billingInfo = new BillingInfo();
-                billingInfo.setBillingContact(getDefaultContact(mCustomerAccount, BILLING));
-                mOrder.setBillingInfo(billingInfo);
-                FulfillmentInfo fulfillmentInfo = new FulfillmentInfo();
-                fulfillmentInfo.setFulfillmentContact(getDefaultContact(mCustomerAccount, SHIPPING));
-                mOrder.setFulfillmentInfo(fulfillmentInfo);
-                AndroidObservable.bindActivity(OrderCreationActivity.this, NewOrderManager.getInstance().getOrderCustomerUpdate(mTenantId, mSiteId, mOrder, mOrder.getId()))
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<Order>() {
-                            @Override
-                            public void onCompleted() {
-                                Intent intent = new Intent(OrderCreationActivity.this, NewOrderActivity.class);
-                                intent.putExtra(ORDER_CUSTOMER_EXTRA_KEY, mCustomerAccount);
-                                intent.putExtra(ORDER_EXTRA_KEY, mOrder);
-                                startActivity(intent);
-                            }
+    }
 
-                            @Override
-                            public void onError(Throwable e) {
+    @Override
+    public void onCancelClicked() {
+        finish();
+    }
 
-                            }
+    @Override
+    public void onSubmitClicked() {
+        mOrder = new Order();
+        mOrder.setCustomerAccountId(mCustomerAccount.getId());
+        BillingInfo billingInfo = new BillingInfo();
+        billingInfo.setBillingContact(getDefaultContact(mCustomerAccount, BILLING));
+        mOrder.setBillingInfo(billingInfo);
+        FulfillmentInfo fulfillmentInfo = new FulfillmentInfo();
+        fulfillmentInfo.setFulfillmentContact(getDefaultContact(mCustomerAccount, SHIPPING));
+        mOrder.setFulfillmentInfo(fulfillmentInfo);
+        AndroidObservable.bindActivity(OrderCreationAddCustomerActivity.this, NewOrderManager.getInstance().createOrder(mTenantId, mSiteId, mOrder))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Order>() {
+                    @Override
+                    public void onCompleted() {
+                        Intent intent = new Intent(OrderCreationAddCustomerActivity.this, NewOrderActivity.class);
+                        intent.putExtra(ORDER_CUSTOMER_EXTRA_KEY, mCustomerAccount);
+                        intent.putExtra(ORDER_EXTRA_KEY, mOrder);
+                        startActivity(intent);
+                        finish();
+                    }
 
-                            @Override
-                            public void onNext(Order order) {
+                    @Override
+                    public void onError(Throwable e) {
 
-                            }
-                        });
+                    }
 
-
-            }
-        });
-
+                    @Override
+                    public void onNext(Order order) {
+                        mOrder = order;
+                    }
+                });
     }
 
     public Contact getContact(CustomerContact customerContact) {
@@ -138,7 +136,6 @@ public class OrderCreationActivity extends BaseActivity implements CustomerLooku
         return defaultContact;
     }
 
-
     @Override
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -158,5 +155,17 @@ public class OrderCreationActivity extends BaseActivity implements CustomerLooku
     @Override
     public void onCustomerSelected(CustomerAccount customerAccount) {
         mCustomerAccount = customerAccount;
+        CustomerAddressOrderVerification fragment = CustomerAddressOrderVerification.getInstance(mCustomerAccount);
+        fragment.setListener(this);
+        fragment.show(getFragmentManager(), "verify");
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CREATE_CUSTOMER && resultCode == RESULT_OK) {
+            mCustomerAccount = (CustomerAccount) data.getSerializableExtra(CustomerCreationActivity.CUSTOMER);
+            onSubmitClicked();
+        }
     }
 }

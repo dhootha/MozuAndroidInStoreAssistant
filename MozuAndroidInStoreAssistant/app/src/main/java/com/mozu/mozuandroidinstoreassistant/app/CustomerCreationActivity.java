@@ -1,6 +1,8 @@
 package com.mozu.mozuandroidinstoreassistant.app;
 
 import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.Window;
 
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.mozuandroidinstoreassistant.app.customer.CustomerAddAddressFragment;
@@ -10,6 +12,7 @@ import com.mozu.mozuandroidinstoreassistant.app.customer.adapters.CustomerAddres
 
 public class CustomerCreationActivity extends BaseActivity implements CustomerCreationListener, CustomerAddressesAdapter.AddressEditListener {
 
+    public static final String CUSTOMER = "customer";
     private Integer mTenantId;
     private Integer mSiteId;
     private CustomerAccount mCustomerAccount;
@@ -17,18 +20,19 @@ public class CustomerCreationActivity extends BaseActivity implements CustomerCr
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_create_customer);
-        setTitle("Create Customer");
+
         if (savedInstanceState != null) {
-            mTenantId = savedInstanceState.getInt(OrderCreationActivity.CURRENT_TENANT_ID, -1);
-            mSiteId = savedInstanceState.getInt(OrderCreationActivity.CURRENT_SITE_ID, -1);
-            Object temp = savedInstanceState.getSerializable("customer");
+            mTenantId = savedInstanceState.getInt(OrderCreationAddCustomerActivity.CURRENT_TENANT_ID, -1);
+            mSiteId = savedInstanceState.getInt(OrderCreationAddCustomerActivity.CURRENT_SITE_ID, -1);
+            Object temp = savedInstanceState.getSerializable(CUSTOMER);
             if (temp != null && temp instanceof CustomerAccount) {
-                mCustomerAccount = (CustomerAccount) savedInstanceState.getSerializable("customer");
+                mCustomerAccount = (CustomerAccount) savedInstanceState.getSerializable(CUSTOMER);
             }
         } else {
-            mTenantId = getIntent().getExtras().getInt(OrderCreationActivity.CURRENT_TENANT_ID, -1);
-            mSiteId = getIntent().getExtras().getInt(OrderCreationActivity.CURRENT_SITE_ID, -1);
+            mTenantId = getIntent().getExtras().getInt(OrderCreationAddCustomerActivity.CURRENT_TENANT_ID, -1);
+            mSiteId = getIntent().getExtras().getInt(OrderCreationAddCustomerActivity.CURRENT_SITE_ID, -1);
             CustomerCreationFragment customerCreationFragment = CustomerCreationFragment.getInstance(mTenantId, mSiteId);
             getFragmentManager().beginTransaction().replace(R.id.content_fragment_holder, customerCreationFragment, "create_customer").commit();
         }
@@ -38,22 +42,26 @@ public class CustomerCreationActivity extends BaseActivity implements CustomerCr
         }
     }
 
-    //replace fragment
     public void onNextClicked(CustomerAccount account) {
         mCustomerAccount = account;
         CustomerAddAddressFragment customerCreationFragment = CustomerAddAddressFragment.getInstance(mTenantId, mSiteId, mCustomerAccount);
         getFragmentManager().beginTransaction().replace(R.id.content_fragment_holder, customerCreationFragment, "add_address").commit();
     }
 
-    public void onCustomerSaved() {
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return false;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt(OrderCreationActivity.CURRENT_TENANT_ID, mTenantId);
-        outState.putInt(OrderCreationActivity.CURRENT_SITE_ID, mSiteId);
-        outState.putSerializable("customer", mCustomerAccount);
+        outState.putInt(OrderCreationAddCustomerActivity.CURRENT_TENANT_ID, mTenantId);
+        outState.putInt(OrderCreationAddCustomerActivity.CURRENT_SITE_ID, mSiteId);
+        outState.putSerializable(CUSTOMER, mCustomerAccount);
         super.onSaveInstanceState(outState);
     }
 
@@ -75,4 +83,5 @@ public class CustomerCreationActivity extends BaseActivity implements CustomerCr
                 .replace(R.id.content_fragment_holder, customerCreationFragment)
                 .commit();
     }
+
 }
