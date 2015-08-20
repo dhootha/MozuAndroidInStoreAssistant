@@ -21,29 +21,23 @@ import butterknife.InjectView;
 
 public class NewOrderActivity extends BaseActivity {
 
-    private Order mOrder;
-    private CustomerAccount mCustomerAccount;
-
+    public static final String IS_EDITABLE = "editable";
     @InjectView(R.id.order_id)
     public TextView mOrderId;
-
     @InjectView(R.id.order_status)
     public TextView mOrderStatus;
-
     @InjectView(R.id.order_date)
     public TextView mOrderDate;
-
     @InjectView(R.id.order_name)
     public TextView mOrderName;
-
     @InjectView(R.id.order_email)
     public TextView mOrderEmail;
-
     @InjectView(R.id.order_tabs)
     public TabPageIndicator mOrderTabs;
-
     @InjectView(R.id.order_viewpager)
     public ViewPager mOrderViewPager;
+    private Order mOrder;
+    private CustomerAccount mCustomerAccount;
     private NewOrderFragmentAdapter mOrderFragmentAdapter;
 
     private Integer mViewPagerPos;
@@ -69,7 +63,7 @@ public class NewOrderActivity extends BaseActivity {
         mOrderName.setText(mCustomerAccount.getLastName() + " " + mCustomerAccount.getFirstName());
         mOrderEmail.setText(mCustomerAccount.getEmailAddress());
         if (mOrderFragmentAdapter == null) {
-            mOrderFragmentAdapter = new NewOrderFragmentAdapter(getFragmentManager(), null, null);
+            mOrderFragmentAdapter = new NewOrderFragmentAdapter(getFragmentManager(), null, mOrder);
             mOrderViewPager.setAdapter(mOrderFragmentAdapter);
             mOrderTabs.setViewPager(mOrderViewPager);
         } else {
@@ -79,6 +73,11 @@ public class NewOrderActivity extends BaseActivity {
         if (mViewPagerPos != null) {
             mOrderViewPager.setCurrentItem(mViewPagerPos);
         }
+    }
+
+    public void updateOrder(Order order) {
+        this.mOrder = order;
+        //todo update fragments
     }
 
 }
