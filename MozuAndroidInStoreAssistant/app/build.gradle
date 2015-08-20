@@ -105,7 +105,7 @@ android {
 
 dependencies {
     compile(name: 'viewpager', ext: 'aar')
-    compile project(':mozu-java:mozu-android-sdk')
+    compile 'com.mozu:mozu-api-android:1.18.0-RC1'
     compile('com.crashlytics.sdk.android:crashlytics:2.4.0@aar') {
         transitive = true;
     }
