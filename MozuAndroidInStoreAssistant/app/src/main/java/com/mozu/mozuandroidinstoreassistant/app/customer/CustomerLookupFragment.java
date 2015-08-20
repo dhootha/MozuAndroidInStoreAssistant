@@ -33,6 +33,7 @@ import butterknife.InjectView;
 public class CustomerLookupFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<CustomerAccount>>, AdapterView.OnItemClickListener, View.OnClickListener, CustomerCreationInterface {
 
     public static final int LOADER_CUSTOMER = 452;
+    public static final int CREATE_CUSTOMER = 1;
     private CustomersLoader mCustomersLoader;
     private int mTenantId;
     private int mSiteId;
@@ -61,7 +62,6 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
 
         }
         getLoaderManager().initLoader(LOADER_CUSTOMER, null, this);
-
     }
 
     public static CustomerLookupFragment getInstance(int tenantId, int siteId) {
@@ -150,7 +150,7 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
         bundle.putInt(CustomerLookUpActivity.CURRENT_SITE_ID, mSiteId);
         Intent intent = new Intent(getActivity(), CustomerCreationActivity.class);
         intent.putExtras(bundle);
-        startActivity(intent);
+        getActivity().startActivityForResult(intent, CREATE_CUSTOMER);
     }
 
     public interface CustomerSelectionListener {

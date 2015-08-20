@@ -3,6 +3,7 @@ package com.mozu.mozuandroidinstoreassistant.app.customer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -172,8 +173,10 @@ public class CustomerAddAddressFragment extends Fragment {
                 countdown--;
                 if (countdown == 0) {
                     loadingView.success();
+                    Intent intent = new Intent();
+                    intent.putExtra("customer", mCustomerAccount);
+                    getActivity().setResult(Activity.RESULT_OK, intent);
                     getActivity().finish();
-                    //goto orders
                 }
             }
         };

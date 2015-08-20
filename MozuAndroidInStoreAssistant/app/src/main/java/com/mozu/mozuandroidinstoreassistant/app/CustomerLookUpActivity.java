@@ -33,6 +33,7 @@ public class CustomerLookUpActivity extends BaseActivity implements CustomerLook
     public static final String ORDER_CUSTOMER_EXTRA_KEY = "order_customer";
     private static String BILLING = "billing";
     private static String SHIPPING = "shipping";
+    public static final int CREATE_CUSTOMER = 1;
 
     private Order mOrder;
 
@@ -160,5 +161,14 @@ public class CustomerLookUpActivity extends BaseActivity implements CustomerLook
         CustomerAddressOrderVerification fragment = CustomerAddressOrderVerification.getInstance(mCustomerAccount);
         fragment.setListener(this);
         fragment.show(getFragmentManager(), "verify");
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == CREATE_CUSTOMER) {
+            mCustomerAccount = (CustomerAccount) data.getSerializableExtra("customer");
+            onSubmitClicked();
+        }
     }
 }

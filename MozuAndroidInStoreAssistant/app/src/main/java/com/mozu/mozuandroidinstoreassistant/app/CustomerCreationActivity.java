@@ -1,5 +1,6 @@
 package com.mozu.mozuandroidinstoreassistant.app;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.mozu.api.contracts.customer.CustomerAccount;
@@ -18,7 +19,6 @@ public class CustomerCreationActivity extends BaseActivity implements CustomerCr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_customer);
-        setTitle("Create Customer");
         if (savedInstanceState != null) {
             mTenantId = savedInstanceState.getInt(CustomerLookUpActivity.CURRENT_TENANT_ID, -1);
             mSiteId = savedInstanceState.getInt(CustomerLookUpActivity.CURRENT_SITE_ID, -1);
@@ -75,4 +75,5 @@ public class CustomerCreationActivity extends BaseActivity implements CustomerCr
                 .replace(R.id.content_fragment_holder, customerCreationFragment)
                 .commit();
     }
+
 }
