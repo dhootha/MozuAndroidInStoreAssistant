@@ -76,36 +76,37 @@ public class CustomerLookUpActivity extends BaseActivity implements CustomerLook
 
     @Override
     public void onSubmitClicked() {
-        //todo create order
-//        mOrder.setCustomerAccountId(mCustomerAccount.getId());
-//        BillingInfo billingInfo = new BillingInfo();
-//        billingInfo.setBillingContact(getDefaultContact(mCustomerAccount, BILLING));
-//        mOrder.setBillingInfo(billingInfo);
-//        FulfillmentInfo fulfillmentInfo = new FulfillmentInfo();
-//        fulfillmentInfo.setFulfillmentContact(getDefaultContact(mCustomerAccount, SHIPPING));
-//        mOrder.setFulfillmentInfo(fulfillmentInfo);
-//        AndroidObservable.bindActivity(CustomerLookUpActivity.this, NewOrderManager.getInstance().getOrderCustomerUpdate(mTenantId, mSiteId, mOrder, mOrder.getId()))
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Subscriber<Order>() {
-//                    @Override
-//                    public void onCompleted() {
-//                        Intent intent = new Intent(CustomerLookUpActivity.this, NewOrderActivity.class);
-//                        intent.putExtra(ORDER_CUSTOMER_EXTRA_KEY, mCustomerAccount);
-//                        intent.putExtra(ORDER_EXTRA_KEY, mOrder);
-//                        startActivity(intent);
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onNext(Order order) {
-//
-//                    }
-//                });
+        mOrder = new Order();
+        mOrder.setCustomerAccountId(mCustomerAccount.getId());
+        BillingInfo billingInfo = new BillingInfo();
+        billingInfo.setBillingContact(getDefaultContact(mCustomerAccount, BILLING));
+        mOrder.setBillingInfo(billingInfo);
+        FulfillmentInfo fulfillmentInfo = new FulfillmentInfo();
+        fulfillmentInfo.setFulfillmentContact(getDefaultContact(mCustomerAccount, SHIPPING));
+        mOrder.setFulfillmentInfo(fulfillmentInfo);
+        AndroidObservable.bindActivity(CustomerLookUpActivity.this, NewOrderManager.getInstance().createOrder(mTenantId, mSiteId, mOrder))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Order>() {
+                    @Override
+                    public void onCompleted() {
+                        Intent intent = new Intent(CustomerLookUpActivity.this, NewOrderActivity.class);
+                        intent.putExtra(ORDER_CUSTOMER_EXTRA_KEY, mCustomerAccount);
+                        intent.putExtra(ORDER_EXTRA_KEY, mOrder);
+                        startActivity(intent);
+                        finish();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Order order) {
+                        mOrder = order;
+                    }
+                });
     }
 
     public Contact getContact(CustomerContact customerContact) {

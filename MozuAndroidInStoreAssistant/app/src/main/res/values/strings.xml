@@ -293,7 +293,7 @@
     <string name="name_label">Name</string>
     <string name="email_label">Email</string>
     <string name="title_new_order">New Order</string>
-    <string name="lookup_customer_hint">Lookup exisiting customer</string>
+    <string name="lookup_customer_hint">Lookup existing customer </string>
     <string name="customer_lookup">Customer Lookup</string>
     <string name="create_new_customer">Create New Customer</string>
     <string name="product_lookuphint">Lookup Product</string>
@@ -307,6 +307,7 @@
     <string name="exit_edit_mode">Finish Editing</string>
     <string name="add_internal_note_title">Add New Internal Note</string>
     <string name="done">Done</string>
+    <string name="customer_lookup_instructions">Lookup or create a customer to continue</string>
     <string-array name="register_email_address">
         <item>mozumobile@volusion.com</item>
     </string-array>

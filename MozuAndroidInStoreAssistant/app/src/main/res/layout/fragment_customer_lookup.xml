@@ -12,7 +12,7 @@
         android:layout_marginLeft="28dp"
         android:layout_marginStart="28dp"
         android:layout_marginTop="16dp"
-        android:text="@string/customer_lookup"
+        android:text="@string/customer_lookup_instructions"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <AutoCompleteTextView
