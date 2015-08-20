@@ -54,7 +54,14 @@ public class CustomerAddressAdapter extends BaseAdapter {
         TextView company = (TextView) view.findViewById(R.id.customer_address_company_name);
         TextView address1 = (TextView) view.findViewById(R.id.customer_address_line1);
         TextView email = (TextView) view.findViewById(R.id.customer_email);
-        TextView contact_num = (TextView) view.findViewById(R.id.customer_contact_num);
+        TextView home_num = (TextView) view.findViewById(R.id.customer_home_num);
+        View home_num_row = view.findViewById(R.id.customer_home_num_row);
+
+        TextView mobile_num = (TextView) view.findViewById(R.id.customer_mobile_num);
+        View mobile_num_row = view.findViewById(R.id.customer_mobile_num_row);
+
+        TextView work_num = (TextView) view.findViewById(R.id.customer_work_num);
+        View work_num_row = view.findViewById(R.id.customer_work_num_row);
 
 
         TextView isPrimary = (TextView) view.findViewById(R.id.customer_primary_address);
@@ -65,7 +72,6 @@ public class CustomerAddressAdapter extends BaseAdapter {
             isPrimary.setVisibility(View.GONE);
         }
 
-
         name.setText(customerContact.getFirstName() + " " + customerContact.getLastNameOrSurname());
         address1.setText(constructAddress(customerContact.getAddress()));
         company.setText(customerContact.getCompanyOrOrganization());
@@ -73,12 +79,17 @@ public class CustomerAddressAdapter extends BaseAdapter {
 
 
         String phone;
-        if ((phone = customerContact.getPhoneNumbers().getWork()) != null) {
-            contact_num.setText(phone);
-        } else if ((phone = customerContact.getPhoneNumbers().getMobile()) != null) {
-            contact_num.setText(phone);
-        } else if ((phone = customerContact.getPhoneNumbers().getHome()) != null) {
-            contact_num.setText(phone);
+        if ((phone = customerContact.getPhoneNumbers().getHome()) != null && !phone.isEmpty()) {
+            home_num.setText(phone);
+            home_num_row.setVisibility(View.VISIBLE);
+        }
+        if ((phone = customerContact.getPhoneNumbers().getMobile()) != null && !phone.isEmpty()) {
+            mobile_num.setText(phone);
+            mobile_num_row.setVisibility(View.VISIBLE);
+        }
+        if ((phone = customerContact.getPhoneNumbers().getWork()) != null && !phone.isEmpty()) {
+            work_num.setText(phone);
+            work_num_row.setVisibility(View.VISIBLE);
         }
         return view;
     }

@@ -19,17 +19,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CustomerAddressFragment extends Fragment {
-    private GridView mBillingGridView;
-    private CustomerAddressAdapter mBillingAdapter;
     private static String CUSTOMER_ACCOUNT = "customerAccount";
     private static String BILLING = "billing";
     private static String SHIPPING = "shipping";
+    private final String SHIPPING_DEFAULT_TYPE = "Default Shipping";
+    private final String BILLING_DEFAULT_TYPE = "Default Billing";
+    private GridView mBillingGridView;
+    private CustomerAddressAdapter mBillingAdapter;
     private List<CustomerContactDataItem> mBillingContacts;
     private List<CustomerContactDataItem> mShippingContacts;
     private CustomerAccount mCustomerAccount;
     private LoadingView mAddressLoading ;
-    private final String SHIPPING_DEFAULT_TYPE = "Default Shipping";
-    private final String BILLING_DEFAULT_TYPE = "Default Billing";
 
     public static CustomerAddressFragment getInstance(CustomerAccount customerAccount){
         CustomerAddressFragment customerAddressFragment = new CustomerAddressFragment();
@@ -43,8 +43,8 @@ public class CustomerAddressFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCustomerAccount = (CustomerAccount) getArguments().getSerializable(CUSTOMER_ACCOUNT);
-        mBillingContacts = new ArrayList<CustomerContactDataItem>();
-        mShippingContacts = new ArrayList<CustomerContactDataItem>();
+        mBillingContacts = new ArrayList<>();
+        mShippingContacts = new ArrayList<>();
     }
 
     @Override

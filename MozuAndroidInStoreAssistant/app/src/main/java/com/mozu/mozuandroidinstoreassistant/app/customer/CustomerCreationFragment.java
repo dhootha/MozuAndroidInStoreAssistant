@@ -190,7 +190,7 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
             mFirstName.setText(customerEditing.getFirstName());
             mLastName.setText(customerEditing.getLastNameOrSurname());
             mEmail.setText(customerEditing.getEmail());
-            mPhoneNumber.setText(customerEditing.getPhoneNumbers().getHome());
+            mPhoneNumber.setText(customerEditing.getPhoneNumbers().getMobile());
             mAddress1.setText(customerEditing.getAddress().getAddress1());
             mAddress2.setText(customerEditing.getAddress().getAddress2());
             mCity.setText(customerEditing.getAddress().getCityOrTown());
@@ -204,7 +204,7 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
             mLastName.setText(mCustomerAccount.getLastName());
             mEmail.setText(mCustomerAccount.getEmailAddress());
             if (mCustomerAccount.getContacts() != null && mCustomerAccount.getContacts().get(0) != null) {
-                mPhoneNumber.setText(mCustomerAccount.getContacts().get(0).getPhoneNumbers().getHome());
+                mPhoneNumber.setText(mCustomerAccount.getContacts().get(0).getPhoneNumbers().getMobile());
             }
         }
     }
@@ -228,7 +228,7 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
         customerContact.setAddress(createAddressFromForm());
         customerContact.setEmail(mEmail.getText().toString());
         Phone phone = new Phone();
-        phone.setHome(mPhoneNumber.getText().toString());
+        phone.setMobile(mPhoneNumber.getText().toString());
         customerContact.setPhoneNumbers(phone);
         List<ContactType> contactTypes = new ArrayList<ContactType>();
         if (mDefaultShipping.isChecked()) {

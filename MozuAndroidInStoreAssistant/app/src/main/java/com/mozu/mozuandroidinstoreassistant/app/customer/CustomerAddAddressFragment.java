@@ -26,6 +26,7 @@ import com.mozu.mozuandroidinstoreassistant.app.views.LoadingView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import rx.Subscriber;
+import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -143,8 +144,8 @@ public class CustomerAddAddressFragment extends Fragment {
                 Log.d("Customer created", "created customer");
                 countdown = mCustomerAccount.getContacts().size();
                 for (int i = countdown; i > 0; i--) {
-                    AddCustomerContactObserverable
-                            .getCustomerContactCreationObserverable(mTenantId, mSiteId, customerAccount.getId(), mCustomerAccount.getContacts().get(i - 1))
+                    AndroidObservable.bindFragment(this, AddCustomerContactObserverable
+                            .getCustomerContactCreationObserverable(mTenantId, mSiteId, customerAccount.getId(), mCustomerAccount.getContacts().get(i - 1)))
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(getAddCustomerContactSubscriber());
