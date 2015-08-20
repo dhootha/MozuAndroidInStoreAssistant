@@ -63,11 +63,10 @@ public class NewOrderActivity extends BaseActivity {
         mOrderName.setText(mCustomerAccount.getLastName() + " " + mCustomerAccount.getFirstName());
         mOrderEmail.setText(mCustomerAccount.getEmailAddress());
         if (mOrderFragmentAdapter == null) {
-            mOrderFragmentAdapter = new NewOrderFragmentAdapter(getFragmentManager(), null, mOrder);
+            mOrderFragmentAdapter = new NewOrderFragmentAdapter(getFragmentManager(), mOrder);
             mOrderViewPager.setAdapter(mOrderFragmentAdapter);
             mOrderTabs.setViewPager(mOrderViewPager);
         } else {
-            mOrderFragmentAdapter.setData(null);
             mOrderFragmentAdapter.notifyDataSetChanged();
         }
         if (mViewPagerPos != null) {
