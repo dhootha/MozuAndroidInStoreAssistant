@@ -7,7 +7,7 @@ import android.widget.TextView;
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.mozuandroidinstoreassistant.app.BaseActivity;
-import com.mozu.mozuandroidinstoreassistant.app.CustomerLookUpActivity;
+import com.mozu.mozuandroidinstoreassistant.app.OrderCreationAddCustomerActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.order.adapters.NewOrderFragmentAdapter;
 import com.viewpagerindicator.TabPageIndicator;
@@ -48,8 +48,8 @@ public class NewOrderActivity extends BaseActivity {
         setContentView(R.layout.neworder_activity);
         ButterKnife.inject(this);
         if (getIntent() != null) {
-            mOrder = (Order) getIntent().getSerializableExtra(CustomerLookUpActivity.ORDER_EXTRA_KEY);
-            mCustomerAccount = (CustomerAccount) getIntent().getSerializableExtra(CustomerLookUpActivity.ORDER_CUSTOMER_EXTRA_KEY);
+            mOrder = (Order) getIntent().getSerializableExtra(OrderCreationAddCustomerActivity.ORDER_EXTRA_KEY);
+            mCustomerAccount = (CustomerAccount) getIntent().getSerializableExtra(OrderCreationAddCustomerActivity.ORDER_CUSTOMER_EXTRA_KEY);
         }
         setUpViews();
     }

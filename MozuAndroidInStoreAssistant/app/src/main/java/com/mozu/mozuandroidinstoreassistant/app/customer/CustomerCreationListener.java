@@ -8,7 +8,5 @@ import com.mozu.api.contracts.customer.CustomerAccount;
 public interface CustomerCreationListener {
     void onNextClicked(CustomerAccount customerAccount);
 
-    void onCustomerSaved();
-
     void addNewAddress(CustomerAccount customerAccount);
 }

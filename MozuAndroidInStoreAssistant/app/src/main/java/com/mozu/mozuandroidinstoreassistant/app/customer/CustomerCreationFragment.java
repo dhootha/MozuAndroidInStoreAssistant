@@ -21,7 +21,7 @@ import com.mozu.api.contracts.customer.AddressValidationResponse;
 import com.mozu.api.contracts.customer.ContactType;
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.api.contracts.customer.CustomerContact;
-import com.mozu.mozuandroidinstoreassistant.app.CustomerLookUpActivity;
+import com.mozu.mozuandroidinstoreassistant.app.OrderCreationAddCustomerActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.CustomerAddressValidation;
 import com.mozu.mozuandroidinstoreassistant.app.dialog.ErrorMessageAlertDialog;
@@ -92,8 +92,8 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
     public static CustomerCreationFragment getInstance(int tenantId, int siteId, CustomerAccount customerAccount, int editing) {
         Bundle bundle = new Bundle();
         CustomerCreationFragment fragment = new CustomerCreationFragment();
-        bundle.putInt(CustomerLookUpActivity.CURRENT_TENANT_ID, tenantId);
-        bundle.putInt(CustomerLookUpActivity.CURRENT_SITE_ID, siteId);
+        bundle.putInt(OrderCreationAddCustomerActivity.CURRENT_TENANT_ID, tenantId);
+        bundle.putInt(OrderCreationAddCustomerActivity.CURRENT_SITE_ID, siteId);
         bundle.putInt(IS_EDIT, editing);
         bundle.putSerializable(CUSTOMER, customerAccount);
         fragment.setArguments(bundle);
@@ -103,8 +103,8 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
     public static CustomerCreationFragment getInstance(int tenantId, int siteId) {
         Bundle bundle = new Bundle();
         CustomerCreationFragment fragment = new CustomerCreationFragment();
-        bundle.putInt(CustomerLookUpActivity.CURRENT_TENANT_ID, tenantId);
-        bundle.putInt(CustomerLookUpActivity.CURRENT_SITE_ID, siteId);
+        bundle.putInt(OrderCreationAddCustomerActivity.CURRENT_TENANT_ID, tenantId);
+        bundle.putInt(OrderCreationAddCustomerActivity.CURRENT_SITE_ID, siteId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -113,8 +113,8 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        mTenantId = getArguments().getInt(CustomerLookUpActivity.CURRENT_TENANT_ID, -1);
-        mSiteId = getArguments().getInt(CustomerLookUpActivity.CURRENT_SITE_ID, -1);
+        mTenantId = getArguments().getInt(OrderCreationAddCustomerActivity.CURRENT_TENANT_ID, -1);
+        mSiteId = getArguments().getInt(OrderCreationAddCustomerActivity.CURRENT_SITE_ID, -1);
         mEditing = getArguments().getInt(IS_EDIT, -1);
         states = Arrays.asList(getResources().getStringArray(R.array.states));
         addressTypes = Arrays.asList(getResources().getStringArray(R.array.address_type));

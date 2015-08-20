@@ -25,7 +25,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by chris_pound on 8/5/15.
  */
-public class CustomerLookUpActivity extends BaseActivity implements CustomerLookupFragment.CustomerSelectionListener, CustomerAddressOrderVerification.VerifyCreateOrderListener {
+public class OrderCreationAddCustomerActivity extends BaseActivity implements CustomerLookupFragment.CustomerSelectionListener, CustomerAddressOrderVerification.VerifyCreateOrderListener {
 
     public static final String ORDER_EXTRA_KEY = "ORDER";
     public static final String CURRENT_TENANT_ID = "curTenantIdWhenActLoaded";
@@ -47,7 +47,6 @@ public class CustomerLookUpActivity extends BaseActivity implements CustomerLook
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_create);
         ButterKnife.inject(this);
-
         if (getIntent() != null) {
             mOrder = (Order) getIntent().getSerializableExtra(ORDER_EXTRA_KEY);
             mTenantId = getIntent().getIntExtra(CURRENT_TENANT_ID, -1);
@@ -64,7 +63,7 @@ public class CustomerLookUpActivity extends BaseActivity implements CustomerLook
             getActionBar().setDisplayShowHomeEnabled(false);
             getActionBar().setDisplayHomeAsUpEnabled(true);
             getActionBar().setDisplayShowCustomEnabled(true);
-            getActionBar().setTitle("Create Order");
+            getActionBar().setTitle(R.string.create_order);
         }
 
     }
@@ -84,13 +83,13 @@ public class CustomerLookUpActivity extends BaseActivity implements CustomerLook
         FulfillmentInfo fulfillmentInfo = new FulfillmentInfo();
         fulfillmentInfo.setFulfillmentContact(getDefaultContact(mCustomerAccount, SHIPPING));
         mOrder.setFulfillmentInfo(fulfillmentInfo);
-        AndroidObservable.bindActivity(CustomerLookUpActivity.this, NewOrderManager.getInstance().createOrder(mTenantId, mSiteId, mOrder))
+        AndroidObservable.bindActivity(OrderCreationAddCustomerActivity.this, NewOrderManager.getInstance().createOrder(mTenantId, mSiteId, mOrder))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Order>() {
                     @Override
                     public void onCompleted() {
-                        Intent intent = new Intent(CustomerLookUpActivity.this, NewOrderActivity.class);
+                        Intent intent = new Intent(OrderCreationAddCustomerActivity.this, NewOrderActivity.class);
                         intent.putExtra(ORDER_CUSTOMER_EXTRA_KEY, mCustomerAccount);
                         intent.putExtra(ORDER_EXTRA_KEY, mOrder);
                         startActivity(intent);
@@ -164,8 +163,8 @@ public class CustomerLookUpActivity extends BaseActivity implements CustomerLook
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == CREATE_CUSTOMER) {
-            mCustomerAccount = (CustomerAccount) data.getSerializableExtra("customer");
+        if (requestCode == CREATE_CUSTOMER && resultCode == RESULT_OK) {
+            mCustomerAccount = (CustomerAccount) data.getSerializableExtra(CustomerCreationActivity.CUSTOMER);
             onSubmitClicked();
         }
     }
