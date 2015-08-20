@@ -4,7 +4,7 @@ import com.mozu.api.contracts.customer.CustomerAccount;
 
 public interface CustomerAsyncListener {
 
-    void customerRetreived(CustomerAccount customer);
+    void customerRetrieved(CustomerAccount customer);
     void onError(String errorMessage);
 
 }

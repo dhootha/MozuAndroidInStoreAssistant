@@ -1,54 +1,57 @@
 package com.mozu.mozuandroidinstoreassistant.app.order.adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
-import com.fasterxml.jackson.databind.deser.Deserializers;
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.commerceruntime.orders.OrderNote;
 import com.mozu.api.contracts.commerceruntime.orders.ShopperNotes;
 import com.mozu.mozuandroidinstoreassistant.app.R;
+import com.mozu.mozuandroidinstoreassistant.app.order.OrderNotesUpdateListener;
 
 import java.util.Date;
-import java.util.List;
 
-public class OrderDetailNotesAdapter extends BaseAdapter {
+public class OrderDetailNotesAdapter extends BaseAdapter implements ListView.OnItemClickListener {
 
-    public enum NotesType{
-        INTERNAL_NOTE,
-        CUSTOMER_NOTE
-    }
+    private final Context mContext;
+    private final OrderNotesUpdateListener mListener;
     private Order mOrder;
-    private NotesType mNotesType;
-    public OrderDetailNotesAdapter(Order order,boolean isInternalNotes) {
+    private boolean mIsInternalNotes;
+    private boolean mIsEditable;
+
+    public OrderDetailNotesAdapter(Context context, Order order, boolean isInternalNotes, boolean isEditable, OrderNotesUpdateListener listener) {
+        mContext = context;
+        mIsInternalNotes = isInternalNotes;
+        mIsEditable = isEditable;
         mOrder = order;
-        if (isInternalNotes) {
-            mNotesType = NotesType.INTERNAL_NOTE;
-        } else {
-            mNotesType = NotesType.CUSTOMER_NOTE;
-        }
+        mListener = listener;
     }
 
     @Override
     public int getCount() {
-        if(mNotesType == NotesType.INTERNAL_NOTE){
+        if (mOrder.getNotes() != null && mIsInternalNotes) {
             return mOrder.getNotes().size();
-        }else{
+        } else {
             return 1;
         }
     }
 
     @Override
     public Object getItem(int i) {
-        if(mNotesType == NotesType.INTERNAL_NOTE){
+        if (mOrder.getNotes() != null && mIsInternalNotes) {
             return mOrder.getNotes().get(i);
-        }else{
+        } else {
             return mOrder.getShopperNotes();
         }
     }
@@ -60,16 +63,16 @@ public class OrderDetailNotesAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if(mNotesType == NotesType.INTERNAL_NOTE){
+        if (mIsInternalNotes) {
             if (convertView == null) {
                 convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.notes_list_item, parent, false);
             }
-            if(getItem(position) instanceof  OrderNote){
+            if (getItem(position) instanceof OrderNote) {
                 OrderNote note = (OrderNote) getItem(position);
 
                 TextView noteDate = (TextView) convertView.findViewById(R.id.note_date);
                 TextView comment = (TextView) convertView.findViewById(R.id.note_comment);
-                TextView employee = (TextView)convertView.findViewById(R.id.note_employee);
+                TextView employee = (TextView) convertView.findViewById(R.id.note_employee);
 
                 String dateString = note.getAuditInfo() != null && note.getAuditInfo().getCreateDate() != null ? DateFormat.format("MM/dd/yy", new Date(note.getAuditInfo().getCreateDate().getMillis())).toString() : "";
                 noteDate.setText(dateString);
@@ -77,15 +80,14 @@ public class OrderDetailNotesAdapter extends BaseAdapter {
 
                 comment.setText(note.getText());
             }
-        }else{
+        } else {
             if (convertView == null) {
                 convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.customer_notes_list_item, parent, false);
             }
 
-            if(getItem(position) instanceof ShopperNotes){
+            if (getItem(position) instanceof ShopperNotes) {
                 ShopperNotes note = (ShopperNotes) getItem(position);
-                mOrder.getAuditInfo().getCreateDate();
-
+//                mOrder.getAuditInfo().getCreateDate();
 
                 TextView noteDate = (TextView) convertView.findViewById(R.id.note_date);
                 TextView comment = (TextView) convertView.findViewById(R.id.note_comment);
@@ -102,4 +104,105 @@ public class OrderDetailNotesAdapter extends BaseAdapter {
         return convertView;
     }
 
+    public void setOrder(Order order) {
+        this.mOrder = order;
+    }
+
+    public void isEditableMode(boolean isEditable) {
+        this.mIsEditable = isEditable;
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+        String note;
+        Object item = getItem(position);
+        if (getItem(position) instanceof ShopperNotes) {
+            note = ((ShopperNotes) item).getComments();
+        } else {
+            note = ((OrderNote) item).getText();
+        }
+        if (mIsEditable && mIsInternalNotes) {
+            showEditNoteDialog(note, position);
+        } else {
+            //shopper notes are read only
+            showNoteDialog(note);
+        }
+    }
+
+    private void showNoteDialog(final String note) {
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+        View view = inflater.inflate(R.layout.dialog_edit_order_notes, null);
+        final EditText editText = (EditText) view.findViewById(R.id.note);
+        final TextView title = (TextView) view.findViewById(R.id.title);
+        if (mIsEditable) {
+            title.setText(R.string.edit_note);
+        }
+        editText.setText(note);
+        final AlertDialog noteDialog = new AlertDialog.Builder(mContext)
+                .setView(view)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .create();
+        noteDialog.show();
+    }
+
+    private void showEditNoteDialog(final String note, final int position) {
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+        View view = inflater.inflate(R.layout.dialog_edit_order_notes, null);
+        final EditText editText = (EditText) view.findViewById(R.id.note);
+        final TextView title = (TextView) view.findViewById(R.id.title);
+        title.setText(R.string.edit_note);
+        editText.setText(note);
+        final AlertDialog editNoteDialog = new AlertDialog.Builder(mContext)
+                .setView(view)
+                .setNegativeButton(R.string.delete, null)
+                .setNeutralButton(R.string.edit, null)
+                .setPositiveButton(R.string.done, null)
+                .create();
+        editNoteDialog.show();
+        Button positive = editNoteDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        Button neutral = editNoteDialog.getButton(DialogInterface.BUTTON_NEUTRAL);
+        Button negative = editNoteDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+
+        positive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateItem(editText.getText().toString(), position);
+                editNoteDialog.dismiss();
+            }
+        });
+        neutral.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editText.setEnabled(true);
+                editText.setFocusable(true);
+            }
+        });
+        negative.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteItem(position);
+                editNoteDialog.dismiss();
+            }
+        });
+    }
+
+    private void updateItem(String note, int position) {
+        if (mOrder.getNotes() != null && mIsInternalNotes) {
+            mOrder.getNotes().get(position).setText(note);
+            mListener.onInternalNotesUpdated(mOrder.getNotes(), mOrder.getNotes().get(position));
+        }
+    }
+
+    private void deleteItem(int position) {
+        if (mOrder.getNotes() != null && mIsInternalNotes) {
+            OrderNote deletedNote = mOrder.getNotes().remove(position);
+            mListener.onInternalNoteDeleted(mOrder.getNotes(), deletedNote);
+        }
+    }
 }
