@@ -31,10 +31,9 @@ public class CustomerLookUpActivity extends BaseActivity implements CustomerLook
     public static final String CURRENT_TENANT_ID = "curTenantIdWhenActLoaded";
     public static final String CURRENT_SITE_ID = "curSiteIdWhenActLoaded";
     public static final String ORDER_CUSTOMER_EXTRA_KEY = "order_customer";
+    public static final int CREATE_CUSTOMER = 1;
     private static String BILLING = "billing";
     private static String SHIPPING = "shipping";
-    public static final int CREATE_CUSTOMER = 1;
-
     private Order mOrder;
 
     private int mTenantId;
@@ -137,7 +136,6 @@ public class CustomerLookUpActivity extends BaseActivity implements CustomerLook
 
         return defaultContact;
     }
-
 
     @Override
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
