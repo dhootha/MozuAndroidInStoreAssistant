@@ -28,10 +28,10 @@ import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfilmentDividerRow
 import com.mozu.mozuandroidinstoreassistant.app.data.order.PickupFullfillmentTitleDataitem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.ShipmentFullfillmentTitleDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.TopRowItem;
-import com.mozu.mozuandroidinstoreassistant.app.product.ProductDetailOverviewDialogFragment;
 import com.mozu.mozuandroidinstoreassistant.app.models.FulfillmentItem;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
+import com.mozu.mozuandroidinstoreassistant.app.product.ProductDetailOverviewDialogFragment;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -46,17 +46,64 @@ public class OrderDetailFullfillmentFragment extends Fragment {
 
     public static final String SHIP = "Ship";
     public static final String PICKUP = "pickup";
+    public static final int FIRST_PICKUP_COUNT = 1;
     private static final String PRODUCT_DIALOG_TAG = "prod_detail_fragment";
     private static final String PACKAGE_DIALOG_TAG = "package_detail_fragment";
     private static final String PICKUP_DIALOG_TAG = "pickup_detail_fragment";
-    public static final int FIRST_PICKUP_COUNT = 1;
-    private Order mOrder;
-
-    private ListView mFullfillmentListview;
-    private OrderDetailFullfillmentAdapter mOrderDetailFullfillmentAdapter;
-
     List<OrderItem> mShipItems;
     List<OrderItem> mPickupItems;
+    private Order mOrder;
+    private ListView mFullfillmentListview;
+    private OrderDetailFullfillmentAdapter mOrderDetailFullfillmentAdapter;
+    private AdapterView.OnItemClickListener mListClickListener = new AdapterView.OnItemClickListener() {
+
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            OrderDetailFullfillmentAdapter.RowType rowType = mOrderDetailFullfillmentAdapter.getRowType(position);
+            if (rowType == OrderDetailFullfillmentAdapter.RowType.PACKAGE_ROW) {
+                FullfillmentPackageDataItem dataItem = (FullfillmentPackageDataItem) mOrderDetailFullfillmentAdapter.getItem(position);
+                FragmentManager manager = getFragmentManager();
+                PackageInfoDialogFragment packageInfoDialogFragment = (PackageInfoDialogFragment) manager.findFragmentByTag(PACKAGE_DIALOG_TAG);
+                UserAuthenticationStateMachine userState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
+                if (packageInfoDialogFragment == null) {
+                    packageInfoDialogFragment = new PackageInfoDialogFragment();
+                    packageInfoDialogFragment.setFulfillmentItem(dataItem.getFulfillmentItem());
+                    packageInfoDialogFragment.setTenantAndSiteId(userState.getTenantId(), userState.getSiteId());
+                }
+                packageInfoDialogFragment.show(manager, PACKAGE_DIALOG_TAG);
+            }else if(rowType == OrderDetailFullfillmentAdapter.RowType.ITEM_ROW){
+                FullfillmentDataItem item = (FullfillmentDataItem) mOrderDetailFullfillmentAdapter.getItem(position);
+                FragmentManager manager = getFragmentManager();
+                ProductDetailOverviewDialogFragment productOverviewFragment = (ProductDetailOverviewDialogFragment) manager.findFragmentByTag(PRODUCT_DIALOG_TAG);
+                UserAuthenticationStateMachine userState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
+                if (productOverviewFragment == null) {
+                    productOverviewFragment = new ProductDetailOverviewDialogFragment();
+                    productOverviewFragment.setProduct(item.getOrderItem().getProduct());
+                    productOverviewFragment.setTenantId(userState.getTenantId());
+                    productOverviewFragment.setSiteId(userState.getSiteId());
+                    productOverviewFragment.setSiteDomain(userState.getSiteDomain());
+
+                }
+                productOverviewFragment.show(manager, PRODUCT_DIALOG_TAG);
+
+            }else if(rowType == OrderDetailFullfillmentAdapter.RowType.PICKUP_ITEM_ROW){
+                FullfillmentPickupItem item = (FullfillmentPickupItem) mOrderDetailFullfillmentAdapter.getItem(position);
+                FragmentManager manager = getFragmentManager();
+                PickupInfoDialogFragment pickupInfoDialogFragment = (PickupInfoDialogFragment) manager.findFragmentByTag(PICKUP_DIALOG_TAG);
+                UserAuthenticationStateMachine userState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
+
+                if (pickupInfoDialogFragment == null) {
+                    pickupInfoDialogFragment = new PickupInfoDialogFragment();
+                    pickupInfoDialogFragment.setPickup(item.getPickup());
+                    pickupInfoDialogFragment.setTenantAndSiteId(userState.getTenantId(), userState.getSiteId());
+                }
+
+                pickupInfoDialogFragment.show(manager, PICKUP_DIALOG_TAG);
+            }
+
+        }
+
+    };
 
     public OrderDetailFullfillmentFragment() {
         // Required empty public constructor
@@ -66,8 +113,8 @@ public class OrderDetailFullfillmentFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.order_detail_fulfillment_layout, null);
-        mShipItems = new ArrayList<OrderItem>();
-        mPickupItems = new ArrayList<OrderItem>();
+        mShipItems = new ArrayList<>();
+        mPickupItems = new ArrayList<>();
 
         mFullfillmentListview = (ListView) view.findViewById(R.id.fullfillment_list);
         if (mOrder != null) {
@@ -80,7 +127,6 @@ public class OrderDetailFullfillmentFragment extends Fragment {
         }
         return view;
     }
-
 
     private void categorizeOrders(Order order) {
         if (order == null || order.getItems() == null || order.getItems().size() < 1)
@@ -119,8 +165,6 @@ public class OrderDetailFullfillmentFragment extends Fragment {
         }
 
     }
-
-
 
     public void setOrder(Order order) {
         mOrder = order;
@@ -278,54 +322,4 @@ public class OrderDetailFullfillmentFragment extends Fragment {
         }
         return finalDataList;
     }
-
-    private AdapterView.OnItemClickListener mListClickListener = new AdapterView.OnItemClickListener() {
-
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            OrderDetailFullfillmentAdapter.RowType rowType = mOrderDetailFullfillmentAdapter.getRowType(position);
-            if (rowType == OrderDetailFullfillmentAdapter.RowType.PACKAGE_ROW) {
-                FullfillmentPackageDataItem dataItem = (FullfillmentPackageDataItem) mOrderDetailFullfillmentAdapter.getItem(position);
-                FragmentManager manager = getFragmentManager();
-                PackageInfoDialogFragment packageInfoDialogFragment = (PackageInfoDialogFragment) manager.findFragmentByTag(PACKAGE_DIALOG_TAG);
-                UserAuthenticationStateMachine userState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
-                if (packageInfoDialogFragment == null) {
-                    packageInfoDialogFragment = new PackageInfoDialogFragment();
-                    packageInfoDialogFragment.setFulfillmentItem(dataItem.getFulfillmentItem());
-                    packageInfoDialogFragment.setTenantAndSiteId(userState.getTenantId(), userState.getSiteId());
-                }
-                packageInfoDialogFragment.show(manager, PACKAGE_DIALOG_TAG);
-            }else if(rowType == OrderDetailFullfillmentAdapter.RowType.ITEM_ROW){
-                FullfillmentDataItem item = (FullfillmentDataItem) mOrderDetailFullfillmentAdapter.getItem(position);
-                FragmentManager manager = getFragmentManager();
-                ProductDetailOverviewDialogFragment productOverviewFragment = (ProductDetailOverviewDialogFragment) manager.findFragmentByTag(PRODUCT_DIALOG_TAG);
-                UserAuthenticationStateMachine userState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
-                if (productOverviewFragment == null) {
-                    productOverviewFragment = new ProductDetailOverviewDialogFragment();
-                    productOverviewFragment.setProduct(item.getOrderItem().getProduct());
-                    productOverviewFragment.setTenantId(userState.getTenantId());
-                    productOverviewFragment.setSiteId(userState.getSiteId());
-                    productOverviewFragment.setSiteDomain(userState.getSiteDomain());
-
-                }
-                productOverviewFragment.show(manager, PRODUCT_DIALOG_TAG);
-
-            }else if(rowType == OrderDetailFullfillmentAdapter.RowType.PICKUP_ITEM_ROW){
-                FullfillmentPickupItem item = (FullfillmentPickupItem) mOrderDetailFullfillmentAdapter.getItem(position);
-                FragmentManager manager = getFragmentManager();
-                PickupInfoDialogFragment pickupInfoDialogFragment = (PickupInfoDialogFragment) manager.findFragmentByTag(PICKUP_DIALOG_TAG);
-                UserAuthenticationStateMachine userState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
-
-                if (pickupInfoDialogFragment == null) {
-                    pickupInfoDialogFragment = new PickupInfoDialogFragment();
-                    pickupInfoDialogFragment.setPickup(item.getPickup());
-                    pickupInfoDialogFragment.setTenantAndSiteId(userState.getTenantId(), userState.getSiteId());
-                }
-
-                pickupInfoDialogFragment.show(manager, PICKUP_DIALOG_TAG);
-            }
-
-        }
-
-    };
 }
