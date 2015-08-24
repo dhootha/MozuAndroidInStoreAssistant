@@ -16,14 +16,10 @@ import com.mozu.mozuandroidinstoreassistant.app.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-/**
- * Created by chris_pound on 7/16/15.
- */
 public class OrderFilterDialogFragment extends DialogFragment {
 
     @InjectView(R.id.order_date_range_start)

@@ -6,9 +6,6 @@ import android.content.DialogInterface;
 
 import com.mozu.mozuandroidinstoreassistant.app.R;
 
-/**
- * Created by chris_pound on 8/11/15.
- */
 public class ErrorMessageAlertDialog {
 
     public static AlertDialog getStandardErrorMessageAlertDialog(Context context, String message) {

@@ -22,9 +22,6 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-/**
- * Created by chris_pound on 8/20/15.
- */
 public class CustomerAddressOrderVerification extends DialogFragment {
     private static final String BILLING = "billing";
     private static final String SHIPPING = "shipping";

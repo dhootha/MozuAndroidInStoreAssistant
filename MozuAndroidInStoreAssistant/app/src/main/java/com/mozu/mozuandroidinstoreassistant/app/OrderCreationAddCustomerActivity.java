@@ -22,9 +22,6 @@ import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by chris_pound on 8/5/15.
- */
 public class OrderCreationAddCustomerActivity extends BaseActivity implements CustomerLookupFragment.CustomerSelectionListener, CustomerAddressOrderVerification.VerifyCreateOrderListener {
 
     public static final String ORDER_EXTRA_KEY = "ORDER";

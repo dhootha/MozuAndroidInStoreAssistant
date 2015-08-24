@@ -1,23 +1,14 @@
 package com.mozu.mozuandroidinstoreassistant.app.customer.loaders;
 
-import android.content.Context;
-import android.util.Log;
-
-import com.crashlytics.android.Crashlytics;
 import com.mozu.api.MozuApiContext;
 import com.mozu.api.contracts.core.Address;
 import com.mozu.api.contracts.customer.AddressValidationRequest;
 import com.mozu.api.contracts.customer.AddressValidationResponse;
 import com.mozu.api.resources.commerce.customer.AddressValidationRequestResource;
-import com.mozu.mozuandroidinstoreassistant.app.loaders.InternetConnectedAsyncTaskLoader;
 
 import rx.Observable;
 import rx.Subscriber;
 
-
-/**
- * Created by chris_pound on 8/7/15.
- */
 public class CustomerAddressValidation  {
 
     private Integer mTenantApi;
