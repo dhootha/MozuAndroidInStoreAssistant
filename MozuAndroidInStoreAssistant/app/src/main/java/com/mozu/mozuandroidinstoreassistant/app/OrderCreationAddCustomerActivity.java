@@ -156,7 +156,6 @@ public class OrderCreationAddCustomerActivity extends BaseActivity implements Cu
     public void onCustomerSelected(CustomerAccount customerAccount) {
         mCustomerAccount = customerAccount;
         CustomerAddressOrderVerification fragment = CustomerAddressOrderVerification.getInstance(mCustomerAccount);
-        fragment.setListener(this);
         fragment.show(getFragmentManager(), "verify");
     }
 
