@@ -28,10 +28,10 @@ import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfilmentDividerRow
 import com.mozu.mozuandroidinstoreassistant.app.data.order.PickupFullfillmentTitleDataitem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.ShipmentFullfillmentTitleDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.TopRowItem;
-import com.mozu.mozuandroidinstoreassistant.app.product.ProductDetailOverviewDialogFragment;
 import com.mozu.mozuandroidinstoreassistant.app.models.FulfillmentItem;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
+import com.mozu.mozuandroidinstoreassistant.app.product.ProductDetailOverviewDialogFragment;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -45,7 +45,9 @@ public class OrderDetailFullfillmentFragment extends Fragment {
     public static final String NOTFULLFILLED = "NotFulfilled";
 
     public static final String SHIP = "Ship";
-    public static final String PICKUP = "pickup";
+    public static final String PICKUP = "Pickup";
+    public static final String DIGITAL = "digital";
+
     private static final String PRODUCT_DIALOG_TAG = "prod_detail_fragment";
     private static final String PACKAGE_DIALOG_TAG = "package_detail_fragment";
     private static final String PICKUP_DIALOG_TAG = "pickup_detail_fragment";

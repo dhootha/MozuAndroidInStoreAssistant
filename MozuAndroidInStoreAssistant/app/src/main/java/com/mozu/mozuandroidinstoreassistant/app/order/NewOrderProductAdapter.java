@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Spinner;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.commerceruntime.orders.OrderItem;
@@ -13,6 +14,7 @@ import com.mozu.mozuandroidinstoreassistant.app.data.order.CouponsRowItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.OrderItemRow;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.ShippingItemRow;
 import com.mozu.mozuandroidinstoreassistant.app.layout.IRowLayout;
+import com.mozu.mozuandroidinstoreassistant.app.layout.order.NewOrderItemLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,10 +31,17 @@ public class NewOrderProductAdapter extends BaseAdapter {
 
     private List<IData> mData;
 
+    @Override
+    public boolean isEnabled(int position) {
+        return getRowType(position) == RowType.ORDER_ITEM_ROW;
+    }
+
     public void addData(Order order) {
-        for(OrderItem item: order.getItems()){
+        mData.clear();
+        for (OrderItem item : order.getItems()) {
             mData.add(new OrderItemRow(item));
         }
+        mData.add(new ShippingItemRow(order.getShippingAdjustment(), order.getFulfillmentInfo().getShippingMethodCode()));
     }
 
     public NewOrderProductAdapter() {
@@ -86,7 +95,10 @@ public class NewOrderProductAdapter extends BaseAdapter {
             } else if (getRowType(position) == RowType.COUPON_ROW) {
                 convertView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.new_order_product_item, viewGroup, false);
             } else {
-                convertView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.new_order_product_item, viewGroup, false);
+                convertView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.new_order_shipping_item, viewGroup, false);
+                Spinner spinner = (Spinner) convertView.findViewById(R.id.shipping_spinner);
+                spinner.setAdapter();
+                (NewOrderItemLayout).
 
             }
         }
@@ -94,5 +106,6 @@ public class NewOrderProductAdapter extends BaseAdapter {
         ((IRowLayout) convertView).bindData(orderItem);
         return convertView;
     }
+
 
 }

@@ -75,12 +75,20 @@ public class OrderCreationActivity extends BaseActivity implements CustomerLooku
             public void onClick(View view) {
 
                 mOrder.setCustomerAccountId(mCustomerAccount.getId());
+
                 BillingInfo billingInfo = new BillingInfo();
                 billingInfo.setBillingContact(getDefaultContact(mCustomerAccount, BILLING));
+
+
+
                 mOrder.setBillingInfo(billingInfo);
+
+
                 FulfillmentInfo fulfillmentInfo = new FulfillmentInfo();
                 fulfillmentInfo.setFulfillmentContact(getDefaultContact(mCustomerAccount, SHIPPING));
                 mOrder.setFulfillmentInfo(fulfillmentInfo);
+
+
                 AndroidObservable.bindActivity(OrderCreationActivity.this, NewOrderManager.getInstance().getOrderCustomerUpdate(mTenantId, mSiteId, mOrder, mOrder.getId()))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())

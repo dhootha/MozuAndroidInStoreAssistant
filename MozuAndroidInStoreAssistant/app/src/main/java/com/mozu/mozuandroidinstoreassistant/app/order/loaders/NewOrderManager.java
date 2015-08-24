@@ -1,12 +1,21 @@
 package com.mozu.mozuandroidinstoreassistant.app.order.loaders;
 
+
 import com.mozu.api.MozuApiContext;
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.commerceruntime.orders.OrderItem;
+import com.mozu.api.contracts.location.Location;
+import com.mozu.api.contracts.location.LocationCollection;
 import com.mozu.api.contracts.productruntime.ProductSearchResult;
+import com.mozu.api.resources.commerce.LocationResource;
 import com.mozu.api.resources.commerce.OrderResource;
 import com.mozu.api.resources.commerce.catalog.storefront.ProductSearchResultResource;
 import com.mozu.api.resources.commerce.orders.OrderItemResource;
+import com.mozu.mozuandroidinstoreassistant.app.data.product.FulfillmentInfo;
+import com.mozu.mozuandroidinstoreassistant.app.order.OrderDetailFullfillmentFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -71,9 +80,7 @@ public class NewOrderManager {
                 });
     }
 
-    public Observable<Order> getOrderUpdate(final Integer tenantId, final Integer siteId, final OrderItem orderItem, final String orderId) {
-
-
+    public Observable<Order> getOrderItemCreateObservable(final Integer tenantId, final Integer siteId, final OrderItem orderItem, final String orderId) {
         return Observable
                 .create(new Observable.OnSubscribe<Order>() {
                     @Override
@@ -94,6 +101,70 @@ public class NewOrderManager {
                     }
                 });
     }
+
+    public Observable<Order> getOrderItemUpdateQuantityObservable(final Integer tenantId, final Integer siteId, final OrderItem orderItem, final String orderId, final Integer quantity, final FulfillmentInfo fulFillmentType) {
+        return Observable
+                .create(new Observable.OnSubscribe<Order>() {
+                    @Override
+                    public void call(Subscriber<? super Order> subscriber) {
+                        try {
+                            Order updatedOrder = null;
+                            final OrderItemResource orderItemResource = new OrderItemResource(new MozuApiContext(tenantId, siteId));
+                            if (quantity != null) {
+                                updatedOrder = orderItemResource.updateItemQuantity(orderId, orderItem.getId(), quantity);
+                            }
+                            if (fulFillmentType != null) {
+                                orderItem.setFulfillmentLocationCode(fulFillmentType.mLocation);
+                                orderItem.setFulfillmentMethod(fulFillmentType.mType);
+                                orderItem.setQuantity(quantity);
+                                updatedOrder = orderItemResource.updateItemFulfillment(orderItem, orderId, orderItem.getId());
+                            }
+                            if (!subscriber.isUnsubscribed()) {
+                                subscriber.onNext(updatedOrder);
+                                subscriber.onCompleted();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            if (!subscriber.isUnsubscribed()) {
+                                subscriber.onError(e);
+                            }
+                        }
+                    }
+                });
+    }
+
+    public Observable<List<FulfillmentInfo>> getInstoreLocationCodes(final Integer tenantId, final Integer siteId, final String productCode) {
+        return Observable
+                .create(new Observable.OnSubscribe<List<FulfillmentInfo>>() {
+                    @Override
+                    public void call(Subscriber<? super List<FulfillmentInfo>> subscriber) {
+                        try {
+                            LocationResource locationResource = new LocationResource(new MozuApiContext(tenantId, siteId));
+                            LocationCollection locationCollection = locationResource.getInStorePickupLocations();
+                            List<FulfillmentInfo> fulfillmentInfoList = new ArrayList<>();
+                            for (Location location : locationCollection.getItems()) {
+                                if (location.getSupportsInventory()) {
+                                    fulfillmentInfoList.add(new FulfillmentInfo(OrderDetailFullfillmentFragment.PICKUP, location.getCode()));
+                                }
+                            }
+
+                            Location directShipLocation = locationResource.getDirectShipLocation();
+                            fulfillmentInfoList.add(new FulfillmentInfo(OrderDetailFullfillmentFragment.SHIP, directShipLocation.getCode()));
+
+
+                            if (!subscriber.isUnsubscribed()) {
+                                subscriber.onNext(fulfillmentInfoList);
+                                subscriber.onCompleted();
+                            }
+                        } catch (Exception e) {
+                            if (!subscriber.isUnsubscribed()) {
+                                subscriber.onError(e);
+                            }
+                        }
+                    }
+                });
+    }
+
 
     public Observable<Order> getOrderCustomerUpdate(final Integer tenantId, final Integer siteId, final Order order, final String orderId) {
         return Observable
