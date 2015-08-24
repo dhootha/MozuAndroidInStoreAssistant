@@ -17,7 +17,7 @@ import android.widget.Button;
 
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.mozuandroidinstoreassistant.app.CustomerCreationActivity;
-import com.mozu.mozuandroidinstoreassistant.app.OrderCreationActivity;
+import com.mozu.mozuandroidinstoreassistant.app.OrderCreationAddCustomerActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.customer.adapters.CustomerLookupAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.CustomersLoader;
@@ -33,16 +33,26 @@ import butterknife.InjectView;
 public class CustomerLookupFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<CustomerAccount>>, AdapterView.OnItemClickListener, View.OnClickListener, CustomerCreationInterface {
 
     public static final int LOADER_CUSTOMER = 452;
-    private CustomersLoader mCustomersLoader;
-    private int mTenantId;
-    private int mSiteId;
+    public static final int CREATE_CUSTOMER = 1;
     @InjectView(R.id.customer_lookup)
     AutoCompleteTextView customerLookup;
     @InjectView(R.id.create)
     Button mCreateCustomer;
+    private CustomersLoader mCustomersLoader;
+    private int mTenantId;
+    private int mSiteId;
     private CustomerLookupAdapter mAdapter;
     private String mQuery = "";
     private CustomerSelectionListener mCustomerSelectionListener;
+
+    public static CustomerLookupFragment getInstance(int tenantId, int siteId) {
+        CustomerLookupFragment fragment = new CustomerLookupFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(OrderCreationAddCustomerActivity.CURRENT_TENANT_ID, tenantId);
+        bundle.putInt(OrderCreationAddCustomerActivity.CURRENT_SITE_ID, siteId);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -56,21 +66,11 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mTenantId = getArguments().getInt(OrderCreationActivity.CURRENT_TENANT_ID);
-            mSiteId = getArguments().getInt(OrderCreationActivity.CURRENT_SITE_ID);
+            mTenantId = getArguments().getInt(OrderCreationAddCustomerActivity.CURRENT_TENANT_ID);
+            mSiteId = getArguments().getInt(OrderCreationAddCustomerActivity.CURRENT_SITE_ID);
 
         }
         getLoaderManager().initLoader(LOADER_CUSTOMER, null, this);
-
-    }
-
-    public static CustomerLookupFragment getInstance(int tenantId, int siteId) {
-        CustomerLookupFragment fragment = new CustomerLookupFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt(OrderCreationActivity.CURRENT_TENANT_ID, tenantId);
-        bundle.putInt(OrderCreationActivity.CURRENT_SITE_ID, siteId);
-        fragment.setArguments(bundle);
-        return fragment;
     }
 
     @Override
@@ -146,18 +146,18 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
 
     private void launchCreateCustomerDialog() {
         Bundle bundle = new Bundle();
-        bundle.putInt(OrderCreationActivity.CURRENT_TENANT_ID, mTenantId);
-        bundle.putInt(OrderCreationActivity.CURRENT_SITE_ID, mSiteId);
+        bundle.putInt(OrderCreationAddCustomerActivity.CURRENT_TENANT_ID, mTenantId);
+        bundle.putInt(OrderCreationAddCustomerActivity.CURRENT_SITE_ID, mSiteId);
         Intent intent = new Intent(getActivity(), CustomerCreationActivity.class);
         intent.putExtras(bundle);
-        startActivity(intent);
-    }
-
-    public interface CustomerSelectionListener {
-        public void onCustomerSelected(CustomerAccount customerAccount);
+        getActivity().startActivityForResult(intent, CREATE_CUSTOMER);
     }
 
     @Override
     public void createCustomer() {
+    }
+
+    public interface CustomerSelectionListener {
+        void onCustomerSelected(CustomerAccount customerAccount);
     }
 }

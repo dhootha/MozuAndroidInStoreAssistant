@@ -38,19 +38,15 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
 
     private static final String CATEGORY_FRAGMENT = "category_fragment_taggy_tag_tag";
     private static final String CURRENTLY_SELECTED_NAV_VIEW_ID = "CURRENTLY_SELECTED_NAV_VIEW_ID";
-
+    public static String LAUNCH_SETTINGS = "launchSettings";
     private LinearLayout mSearchMenuLayout;
     private LinearLayout mProductsLayout;
     private LinearLayout mOrdersLayout;
     private LinearLayout mCustomersLayout;
-
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
-
     private int mCurrentlySelectedNavItem;
-
     private boolean mLaunchSettings;
-    public static String LAUNCH_SETTINGS = "launchSettings";
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -427,13 +423,12 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
     }
 
     @Override
-    public void createNewOrder(Order order) {
+    public void createNewOrder() {
         UserAuthenticationStateMachine userAuthenticationStateMachine = UserAuthenticationStateMachineProducer.getInstance(this);
-        Intent intent = new Intent(this, OrderCreationActivity.class);
+        Intent intent = new Intent(this, OrderCreationAddCustomerActivity.class);
 
-        intent.putExtra(OrderCreationActivity.ORDER_EXTRA_KEY, order);
-        intent.putExtra(OrderCreationActivity.CURRENT_TENANT_ID, userAuthenticationStateMachine.getTenantId());
-        intent.putExtra(OrderCreationActivity.CURRENT_SITE_ID, userAuthenticationStateMachine.getSiteId());
+        intent.putExtra(OrderCreationAddCustomerActivity.CURRENT_TENANT_ID, userAuthenticationStateMachine.getTenantId());
+        intent.putExtra(OrderCreationAddCustomerActivity.CURRENT_SITE_ID, userAuthenticationStateMachine.getSiteId());
 
         startActivity(intent);
     }

@@ -8,7 +8,20 @@ import rx.subjects.Subject;
  * Created by chris_pound on 8/19/15.
  */
 public class RxBus {
+
+    private static RxBus instance;
     private final Subject<Object, Object> _bus = PublishSubject.create();
+
+    private RxBus() {
+
+    }
+
+    public static RxBus getInstance() {
+        if (instance == null) {
+            instance = new RxBus();
+        }
+        return instance;
+    }
 
     public void send(Object o) {
         _bus.onNext(o);

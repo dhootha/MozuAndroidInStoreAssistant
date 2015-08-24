@@ -197,6 +197,7 @@
 
     <style name="AppTheme.ActivityDialog" parent="@android:style/Theme.Holo.Light.DialogWhenLarge">
         <item name="android:windowTitleStyle">@style/dialog_title_style</item>
+        <item name="android:editTextBackground">@drawable/mozu_edit_text_holo_light</item>
     </style>
 
     <style name="ActivityDialogMozu" parent="@android:style/Theme.Holo.Light.Dialog">

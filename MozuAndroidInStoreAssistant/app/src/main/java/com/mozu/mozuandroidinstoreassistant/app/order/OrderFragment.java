@@ -106,7 +106,6 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
     private boolean mLaunchFromGlobalSearch = false;
     private boolean mCurrentSortIsAsc;
     private String mCurrentSearch;
-    private OrderCreateLoader mOrderCreateLoader;
     private CreateOrderListener mOrderCreateListener;
 
     public OrderFragment() {
@@ -152,24 +151,6 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
 
         mOrderRefreshLayout.setRefreshing(true);
         getLoaderManager().initLoader(LOADER_ORDERS, null, this).forceLoad();
-        getLoaderManager().initLoader(LOADER_ORDER_CREATE, null, new LoaderManager.LoaderCallbacks<Order>() {
-            @Override
-            public Loader<Order> onCreateLoader(int id, Bundle args) {
-                OrderCreateLoader loader = new OrderCreateLoader(getActivity(), mTenantId, mSiteId);
-                return loader;
-            }
-
-            @Override
-            public void onLoadFinished(Loader<Order> loader, Order data) {
-                Log.d("Order", data.toString());
-                mOrderCreateListener.createNewOrder(data);
-            }
-
-            @Override
-            public void onLoaderReset(Loader<Order> loader) {
-
-            }
-        });
 
         mOrdersList.setOnItemClickListener(this);
         create.setOnClickListener(new View.OnClickListener() {
@@ -412,14 +393,6 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
         return mOrdersLoader;
     }
 
-    private OrderCreateLoader getOrderCreateLoader() {
-        if(mOrderCreateLoader == null) {
-            Loader<Order> loader = getLoaderManager().getLoader(LOADER_ORDER_CREATE);
-            mOrderCreateLoader = (OrderCreateLoader) loader;
-        }
-        return mOrderCreateLoader;
-    }
-
     @Override
     public boolean onQueryTextSubmit(String query) {
         mSearchView.clearFocus();
@@ -656,7 +629,7 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
     }
 
     public void onCreateOrderClick() {
-        getOrderCreateLoader().forceLoad();
+        mOrderCreateListener.createNewOrder();
     }
 
     @Override

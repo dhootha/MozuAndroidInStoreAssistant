@@ -34,7 +34,6 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import rx.Observable;
 
 public class OrderDetailActivity extends BaseActivity implements LoaderManager.LoaderCallbacks<Order>, CustomerAsyncListener, SwipeRefreshLayout.OnRefreshListener {
 
@@ -72,7 +71,7 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
         }
 
         setContentView(R.layout.activity_order_detail);
-        mRxBus = new RxBus();
+        mRxBus = RxBus.getInstance();
 
         ButterKnife.inject(this);
 
@@ -284,10 +283,6 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
     @Override
     public void onError(String errorMessage) {
         mCustomerName.setText(getString(R.string.error_message_for_order_customer_name));
-    }
-
-    public Observable<Object> getEventBusObserverable() {
-        return mRxBus.toObserverable();
     }
 
     public void onSwapEditMode() {

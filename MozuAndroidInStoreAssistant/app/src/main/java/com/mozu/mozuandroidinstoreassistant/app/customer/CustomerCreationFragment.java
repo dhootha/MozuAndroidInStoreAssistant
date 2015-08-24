@@ -21,7 +21,7 @@ import com.mozu.api.contracts.customer.AddressValidationResponse;
 import com.mozu.api.contracts.customer.ContactType;
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.api.contracts.customer.CustomerContact;
-import com.mozu.mozuandroidinstoreassistant.app.OrderCreationActivity;
+import com.mozu.mozuandroidinstoreassistant.app.OrderCreationAddCustomerActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.CustomerAddressValidation;
 import com.mozu.mozuandroidinstoreassistant.app.dialog.ErrorMessageAlertDialog;
@@ -92,8 +92,8 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
     public static CustomerCreationFragment getInstance(int tenantId, int siteId, CustomerAccount customerAccount, int editing) {
         Bundle bundle = new Bundle();
         CustomerCreationFragment fragment = new CustomerCreationFragment();
-        bundle.putInt(OrderCreationActivity.CURRENT_TENANT_ID, tenantId);
-        bundle.putInt(OrderCreationActivity.CURRENT_SITE_ID, siteId);
+        bundle.putInt(OrderCreationAddCustomerActivity.CURRENT_TENANT_ID, tenantId);
+        bundle.putInt(OrderCreationAddCustomerActivity.CURRENT_SITE_ID, siteId);
         bundle.putInt(IS_EDIT, editing);
         bundle.putSerializable(CUSTOMER, customerAccount);
         fragment.setArguments(bundle);
@@ -103,8 +103,8 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
     public static CustomerCreationFragment getInstance(int tenantId, int siteId) {
         Bundle bundle = new Bundle();
         CustomerCreationFragment fragment = new CustomerCreationFragment();
-        bundle.putInt(OrderCreationActivity.CURRENT_TENANT_ID, tenantId);
-        bundle.putInt(OrderCreationActivity.CURRENT_SITE_ID, siteId);
+        bundle.putInt(OrderCreationAddCustomerActivity.CURRENT_TENANT_ID, tenantId);
+        bundle.putInt(OrderCreationAddCustomerActivity.CURRENT_SITE_ID, siteId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -113,8 +113,8 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        mTenantId = getArguments().getInt(OrderCreationActivity.CURRENT_TENANT_ID, -1);
-        mSiteId = getArguments().getInt(OrderCreationActivity.CURRENT_SITE_ID, -1);
+        mTenantId = getArguments().getInt(OrderCreationAddCustomerActivity.CURRENT_TENANT_ID, -1);
+        mSiteId = getArguments().getInt(OrderCreationAddCustomerActivity.CURRENT_SITE_ID, -1);
         mEditing = getArguments().getInt(IS_EDIT, -1);
         states = Arrays.asList(getResources().getStringArray(R.array.states));
         addressTypes = Arrays.asList(getResources().getStringArray(R.array.address_type));
@@ -190,7 +190,7 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
             mFirstName.setText(customerEditing.getFirstName());
             mLastName.setText(customerEditing.getLastNameOrSurname());
             mEmail.setText(customerEditing.getEmail());
-            mPhoneNumber.setText(customerEditing.getPhoneNumbers().getHome());
+            mPhoneNumber.setText(customerEditing.getPhoneNumbers().getMobile());
             mAddress1.setText(customerEditing.getAddress().getAddress1());
             mAddress2.setText(customerEditing.getAddress().getAddress2());
             mCity.setText(customerEditing.getAddress().getCityOrTown());
@@ -204,7 +204,7 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
             mLastName.setText(mCustomerAccount.getLastName());
             mEmail.setText(mCustomerAccount.getEmailAddress());
             if (mCustomerAccount.getContacts() != null && mCustomerAccount.getContacts().get(0) != null) {
-                mPhoneNumber.setText(mCustomerAccount.getContacts().get(0).getPhoneNumbers().getHome());
+                mPhoneNumber.setText(mCustomerAccount.getContacts().get(0).getPhoneNumbers().getMobile());
             }
         }
     }
@@ -228,7 +228,7 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
         customerContact.setAddress(createAddressFromForm());
         customerContact.setEmail(mEmail.getText().toString());
         Phone phone = new Phone();
-        phone.setHome(mPhoneNumber.getText().toString());
+        phone.setMobile(mPhoneNumber.getText().toString());
         customerContact.setPhoneNumbers(phone);
         List<ContactType> contactTypes = new ArrayList<ContactType>();
         if (mDefaultShipping.isChecked()) {

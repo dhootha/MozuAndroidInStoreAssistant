@@ -3,6 +3,7 @@ package com.mozu.mozuandroidinstoreassistant.app.customer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,7 +16,8 @@ import android.widget.Button;
 
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.api.contracts.customer.CustomerContact;
-import com.mozu.mozuandroidinstoreassistant.app.OrderCreationActivity;
+import com.mozu.mozuandroidinstoreassistant.app.CustomerCreationActivity;
+import com.mozu.mozuandroidinstoreassistant.app.OrderCreationAddCustomerActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.customer.adapters.CustomerAddressesAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.AddCustomerContactObserverable;
@@ -26,6 +28,7 @@ import com.mozu.mozuandroidinstoreassistant.app.views.LoadingView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import rx.Subscriber;
+import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -53,8 +56,8 @@ public class CustomerAddAddressFragment extends Fragment {
     public static CustomerAddAddressFragment getInstance(Integer tenantId, Integer siteId, CustomerAccount account) {
         Bundle bundle = new Bundle();
         CustomerAddAddressFragment fragment = new CustomerAddAddressFragment();
-        bundle.putInt(OrderCreationActivity.CURRENT_TENANT_ID, tenantId);
-        bundle.putInt(OrderCreationActivity.CURRENT_SITE_ID, siteId);
+        bundle.putInt(OrderCreationAddCustomerActivity.CURRENT_TENANT_ID, tenantId);
+        bundle.putInt(OrderCreationAddCustomerActivity.CURRENT_SITE_ID, siteId);
         bundle.putSerializable(CUSTOMER_ACCOUNT, account);
         fragment.setArguments(bundle);
         return fragment;
@@ -75,8 +78,8 @@ public class CustomerAddAddressFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_customer_add_address, container, false);
         ButterKnife.inject(this, view);
-        mTenantId = getArguments().getInt(OrderCreationActivity.CURRENT_TENANT_ID);
-        mSiteId = getArguments().getInt(OrderCreationActivity.CURRENT_SITE_ID);
+        mTenantId = getArguments().getInt(OrderCreationAddCustomerActivity.CURRENT_TENANT_ID);
+        mSiteId = getArguments().getInt(OrderCreationAddCustomerActivity.CURRENT_SITE_ID);
         mCustomerAccount = (CustomerAccount) getArguments().getSerializable(CUSTOMER_ACCOUNT);
         return view;
     }
@@ -143,8 +146,8 @@ public class CustomerAddAddressFragment extends Fragment {
                 Log.d("Customer created", "created customer");
                 countdown = mCustomerAccount.getContacts().size();
                 for (int i = countdown; i > 0; i--) {
-                    AddCustomerContactObserverable
-                            .getCustomerContactCreationObserverable(mTenantId, mSiteId, customerAccount.getId(), mCustomerAccount.getContacts().get(i - 1))
+                    AndroidObservable.bindFragment(this, AddCustomerContactObserverable
+                            .getCustomerContactCreationObserverable(mTenantId, mSiteId, customerAccount.getId(), mCustomerAccount.getContacts().get(i - 1)))
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(getAddCustomerContactSubscriber());
@@ -172,8 +175,10 @@ public class CustomerAddAddressFragment extends Fragment {
                 countdown--;
                 if (countdown == 0) {
                     loadingView.success();
+                    Intent intent = new Intent();
+                    intent.putExtra(CustomerCreationActivity.CUSTOMER, mCustomerAccount);
+                    getActivity().setResult(Activity.RESULT_OK, intent);
                     getActivity().finish();
-                    //goto orders
                 }
             }
         };

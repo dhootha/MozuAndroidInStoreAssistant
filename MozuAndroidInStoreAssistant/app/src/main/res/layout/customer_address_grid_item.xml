@@ -1,56 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-
-    android:padding="20dp"
-    android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@drawable/product_detail_images_background"
-    android:minHeight="208dp"
-    android:minWidth="228dp"
     android:layout_width="228dp"
-    android:layout_height="208dp">
+    android:layout_height="238dp"
+    android:background="@drawable/product_detail_images_background"
+    android:minHeight="238dp"
+    android:minWidth="228dp"
+    android:orientation="vertical"
+    android:padding="20dp">
 
     <TextView
         android:id="@+id/customer_address_name"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"/>
 
     <TextView
         android:id="@+id/customer_address_company_name"
         android:layout_width="fill_parent"
-        android:fontFamily="sans-serif-light"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-light"/>
 
     <TextView
-        android:fontFamily="sans-serif-light"
         android:id="@+id/customer_address_line1"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-light"/>
 
     <TextView
-        android:fontFamily="sans-serif-light"
         android:id="@+id/customer_email"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:fontFamily="sans-serif-light"
-        android:id="@+id/customer_contact_num"
-        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"/>
+        android:layout_marginBottom="2dp"
+        android:fontFamily="sans-serif-light"/>
+
+    <LinearLayout
+        android:id="@+id/customer_home_num_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/home_phone_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="1dp"
+            android:layout_marginRight="4dp"
+            android:fontFamily="sans-serif-light"
+            android:labelFor="@+id/customer_home_num"
+            android:text="Home:"/>
+
+        <TextView
+            android:id="@+id/customer_home_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="1dp"
+            android:fontFamily="sans-serif-light"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/customer_mobile_num_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/customer_mobile_num_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="1dp"
+            android:layout_marginRight="4dp"
+            android:fontFamily="sans-serif-light"
+            android:labelFor="@+id/customer_mobile_num"
+            android:text="Mobile:"/>
+
+        <TextView
+            android:id="@+id/customer_mobile_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="1dp"
+            android:fontFamily="sans-serif-light"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/customer_work_num_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/customer_work_num_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="4dp"
+            android:fontFamily="sans-serif-light"
+            android:labelFor="@+id/customer_work_num"
+            android:text="Work:"/>
+
+        <TextView
+            android:id="@+id/customer_work_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:fontFamily="sans-serif-light"
+            />
+    </LinearLayout>
 
     <TextView
-        android:visibility="invisible"
-        android:text="@string/primary_address"
-        android:textStyle="bold"
-        android:textSize="14sp"
-        android:textAllCaps="true"
-        android:layout_marginTop="20dp"
-        android:textColor="@color/mozu_color"
         android:id="@+id/customer_primary_address"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
-
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/primary_address"
+        android:textAllCaps="true"
+        android:textColor="@color/mozu_color"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:visibility="invisible"/>
 
 </LinearLayout>
