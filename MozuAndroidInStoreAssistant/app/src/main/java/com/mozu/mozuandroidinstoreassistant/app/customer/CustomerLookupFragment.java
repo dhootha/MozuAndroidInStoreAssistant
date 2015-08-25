@@ -27,9 +27,6 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-/**
- * Created by chris_pound on 8/5/15.
- */
 public class CustomerLookupFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<CustomerAccount>>, AdapterView.OnItemClickListener, View.OnClickListener, CustomerCreationInterface {
 
     public static final int LOADER_CUSTOMER = 452;

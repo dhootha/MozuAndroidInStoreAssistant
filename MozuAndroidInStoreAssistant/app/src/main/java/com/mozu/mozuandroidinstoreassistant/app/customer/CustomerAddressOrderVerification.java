@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.TextView;
 
 import com.mozu.api.contracts.customer.ContactType;
 import com.mozu.api.contracts.customer.CustomerAccount;
@@ -23,10 +22,11 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-/**
- * Created by chris_pound on 8/20/15.
- */
 public class CustomerAddressOrderVerification extends DialogFragment {
+    private static final String BILLING = "billing";
+    private static final String SHIPPING = "shipping";
+    private final String SHIPPING_DEFAULT_TYPE = "Default Shipping";
+    private final String BILLING_DEFAULT_TYPE = "Default Billing";
     @InjectView(R.id.submitOrder)
     public Button mOrderSubmit;
     @InjectView(R.id.cancel)
@@ -37,11 +37,6 @@ public class CustomerAddressOrderVerification extends DialogFragment {
     private List<CustomerContactDataItem> mBillingContacts = new ArrayList<>();
     private List<CustomerContactDataItem> mShippingContacts = new ArrayList<>();
     private CustomerAddressAdapter mBillingAdapter;
-    private final String SHIPPING_DEFAULT_TYPE = "Default Shipping";
-    private final String BILLING_DEFAULT_TYPE = "Default Billing";
-    private static final String BILLING = "billing";
-    private static final String SHIPPING = "shipping";
-
 
     public static CustomerAddressOrderVerification getInstance(CustomerAccount customerAccount) {
         CustomerAddressOrderVerification fragment = new CustomerAddressOrderVerification();
@@ -69,13 +64,13 @@ public class CustomerAddressOrderVerification extends DialogFragment {
         mCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onCancelClicked();
+                ((VerifyCreateOrderListener) getActivity()).onCancelClicked();
             }
         });
         mOrderSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onSubmitClicked();
+                ((VerifyCreateOrderListener) getActivity()).onSubmitClicked();
             }
         });
         updateContacts(mCustomerAccount);
@@ -99,12 +94,6 @@ public class CustomerAddressOrderVerification extends DialogFragment {
         Dialog dialog = super.onCreateDialog(savedInstanceState);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         return dialog;
-    }
-
-    public interface VerifyCreateOrderListener {
-        void onCancelClicked();
-
-        void onSubmitClicked();
     }
 
     protected void updateContacts(CustomerAccount customerAccount) {
@@ -142,6 +131,12 @@ public class CustomerAddressOrderVerification extends DialogFragment {
                 mBillingContacts.add(customerContactDataItem);
             }
         }
+    }
+
+    public interface VerifyCreateOrderListener {
+        void onCancelClicked();
+
+        void onSubmitClicked();
     }
 
 }

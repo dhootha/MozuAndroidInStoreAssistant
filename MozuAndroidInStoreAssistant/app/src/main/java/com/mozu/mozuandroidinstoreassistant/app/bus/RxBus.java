@@ -4,9 +4,6 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 import rx.subjects.Subject;
 
-/**
- * Created by chris_pound on 8/19/15.
- */
 public class RxBus {
 
     private static RxBus instance;

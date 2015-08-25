@@ -8,9 +8,6 @@ import com.mozu.api.resources.commerce.orders.OrderNoteResource;
 import rx.Observable;
 import rx.Subscriber;
 
-/**
- * Created by chris_pound on 8/19/15.
- */
 public class OrderNoteObserverable {
 
     public static Observable<OrderNote> getOrderNoteObserverable(final Integer tenantId, final Integer siteId, final String orderId, final OrderNote note, final OrderCallType type) {
