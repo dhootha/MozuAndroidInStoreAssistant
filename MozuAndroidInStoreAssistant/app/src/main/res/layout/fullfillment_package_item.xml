@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.mozu.mozuandroidinstoreassistant.app.layout.order.FullfillmentPackageRow xmlns:android="http://schemas.android.com/apk/res/android"
+<com.mozu.mozuandroidinstoreassistant.app.layout.order.FullfillmentPackageRow
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="64dp"
-                                                                              android:background="@drawable/list_item_background"
+    android:background="@drawable/list_item_background"
     android:gravity="center_vertical"
-                                                                              android:minHeight="64dp"
-                                                                              android:orientation="vertical">
+    android:minHeight="64dp"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -56,8 +57,9 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="16dp"/>
+            android:layout_marginRight="16dp"
+            android:checked="true"/>
 
     </RelativeLayout>
-    </com.mozu.mozuandroidinstoreassistant.app.layout.order.FullfillmentPackageRow>
+</com.mozu.mozuandroidinstoreassistant.app.layout.order.FullfillmentPackageRow>
 

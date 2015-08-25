@@ -20,8 +20,9 @@ import com.mozu.mozuandroidinstoreassistant.app.OrderDetailActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.data.IData;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.BottomRowItem;
+import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentCategoryHeaderDataItem;
+import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentColumnHeader;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentDataItem;
-import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentHeaderDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentPackageDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentPickupItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfilmentDividerRowItem;
@@ -31,6 +32,7 @@ import com.mozu.mozuandroidinstoreassistant.app.data.order.TopRowItem;
 import com.mozu.mozuandroidinstoreassistant.app.models.FulfillmentItem;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
+import com.mozu.mozuandroidinstoreassistant.app.order.adapters.OrderDetailFullfillmentAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.product.ProductDetailOverviewDialogFragment;
 
 import java.util.ArrayList;
@@ -206,9 +208,10 @@ public class OrderDetailFullfillmentFragment extends Fragment {
             PickupFullfillmentTitleDataitem fullfillmentTitleDataItem = new PickupFullfillmentTitleDataitem();
             fullfillmentTitleDataItem.setTitle(getActivity().getResources().getString(R.string.instore_header));
             fullfillmentTitleDataItem.setFullfilledCount(totalFulfilledCount);
-            fullfillmentTitleDataItem.setUnfullfilledCount(totalPickupCount -totalFulfilledCount);
+            fullfillmentTitleDataItem.setUnfullfilledCount(totalPickupCount - totalFulfilledCount);
             fullfillmentTitleDataItem.setTotalCount(totalPickupCount);
             finalDataList.add(fullfillmentTitleDataItem);
+            finalDataList.add(new FullfillmentColumnHeader());
             finalDataList.add(new TopRowItem());
             if (itemsNotPickedUp.size() > 0) {
                 for (OrderItem item : itemsNotPickedUp) {
@@ -221,7 +224,7 @@ public class OrderDetailFullfillmentFragment extends Fragment {
                 if (itemsNotPickedUp.size() > 0) {
                     finalDataList.add(new FullfilmentDividerRowItem());
                 }
-                finalDataList.add(new FullfillmentHeaderDataItem("Pending Items"));
+                finalDataList.add(new FullfillmentCategoryHeaderDataItem("Pending Items"));
                 for (FullfillmentPickupItem unFullfilleditem : unFulFilledItems) {
                     finalDataList.add(unFullfilleditem);
                 }
@@ -230,7 +233,7 @@ public class OrderDetailFullfillmentFragment extends Fragment {
                 if (unFulFilledItems.size() > 0) {
                     finalDataList.add(new FullfilmentDividerRowItem());
                 }
-                finalDataList.add(new FullfillmentHeaderDataItem("PickedUp Items"));
+                finalDataList.add(new FullfillmentCategoryHeaderDataItem("PickedUp Items"));
                 for (FullfillmentPickupItem fullfilleditem : fulFilledItems) {
                     finalDataList.add(fullfilleditem);
                 }
@@ -250,10 +253,10 @@ public class OrderDetailFullfillmentFragment extends Fragment {
             totalItemCount += orderItem.getQuantity();
         }
         int totalFulfilledCount = 0;
-        List<IData> finalDataList = new ArrayList<IData>();
-        List<FullfillmentPackageDataItem> pendingItems = new ArrayList<FullfillmentPackageDataItem>();
-        List<FullfillmentPackageDataItem> fullfilledItems = new ArrayList<FullfillmentPackageDataItem>();
-        List<OrderItem> orderItemsNotPackaged = new ArrayList<OrderItem>(shipItems);
+        List<IData> finalDataList = new ArrayList<>();
+        List<FullfillmentPackageDataItem> pendingItems = new ArrayList<>();
+        List<FullfillmentPackageDataItem> fullfilledItems = new ArrayList<>();
+        List<OrderItem> orderItemsNotPackaged = new ArrayList<>(shipItems);
         if (shipItems.size() > 0) {
             int packageCount = 0;
 
@@ -297,9 +300,10 @@ public class OrderDetailFullfillmentFragment extends Fragment {
             fullfillmentTitleDataItem.setTotalCount(totalItemCount);
 
             finalDataList.add(fullfillmentTitleDataItem);
+            finalDataList.add(new FullfillmentColumnHeader());
             finalDataList.add(new TopRowItem());
             if (orderItemsNotPackaged.size() > 0) {
-                finalDataList.add(new FullfillmentHeaderDataItem("Pending Items"));
+                finalDataList.add(new FullfillmentCategoryHeaderDataItem("Pending Items"));
             }
             for (OrderItem orderItem : orderItemsNotPackaged) {
                 finalDataList.add(new FullfillmentDataItem(orderItem));
@@ -308,14 +312,14 @@ public class OrderDetailFullfillmentFragment extends Fragment {
                 if (orderItemsNotPackaged.size() > 0) {
                     finalDataList.add(new FullfilmentDividerRowItem());
                 }
-                finalDataList.add(new FullfillmentHeaderDataItem("Created Items"));
+                finalDataList.add(new FullfillmentCategoryHeaderDataItem("Created Items"));
             }
             finalDataList.addAll(pendingItems);
             if (fullfilledItems.size() > 0) {
                 if (pendingItems.size() > 0) {
                     finalDataList.add(new FullfilmentDividerRowItem());
                 }
-                finalDataList.add(new FullfillmentHeaderDataItem("Shipped Items"));
+                finalDataList.add(new FullfillmentCategoryHeaderDataItem("Shipped Items"));
             }
             finalDataList.addAll(fullfilledItems);
             finalDataList.add(new BottomRowItem());

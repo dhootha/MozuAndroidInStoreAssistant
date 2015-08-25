@@ -20,6 +20,7 @@ import com.mozu.api.contracts.productruntime.ProductSearchResult;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
+import com.mozu.mozuandroidinstoreassistant.app.order.adapters.NewOrderProductAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.order.adapters.ProductSuggestionAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.order.loaders.NewOrderManager;
 
@@ -35,20 +36,19 @@ import rx.schedulers.Schedulers;
 
 public class NewOrderCreateFragment extends Fragment {
 
-    private View mView;
+    private static final String NEW_ORDER = "neworder";
     @InjectView(R.id.product_lookup)
     public AutoCompleteTextView mProductLookup;
 
     @InjectView(R.id.product_listview)
     public ListView mOrderProducts;
-
-    private int mTenantId;
-    private int mSiteId;
     Subscription mSubscription;
     ProductSuggestionAdapter mAdapter;
+    private View mView;
+    private int mTenantId;
+    private int mSiteId;
     private NewOrderProductAdapter mProductsAdapter;
     private Order mOrder;
-    private static final String NEW_ORDER = "neworder";
 
     public static NewOrderCreateFragment getInstance(Order order) {
         NewOrderCreateFragment newOrderCreateFragment = new NewOrderCreateFragment();
