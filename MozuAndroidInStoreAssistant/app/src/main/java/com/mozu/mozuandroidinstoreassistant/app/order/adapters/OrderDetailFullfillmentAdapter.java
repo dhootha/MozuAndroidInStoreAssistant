@@ -9,14 +9,14 @@ import android.widget.BaseAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.data.IData;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.BottomRowItem;
+import com.mozu.mozuandroidinstoreassistant.app.data.order.FulfillmentColumnHeader;
+import com.mozu.mozuandroidinstoreassistant.app.data.order.FulfillmentDataItem;
+import com.mozu.mozuandroidinstoreassistant.app.data.order.FulfillmentPackageDataItem;
+import com.mozu.mozuandroidinstoreassistant.app.data.order.FulfillmentPickupItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentCategoryHeaderDataItem;
-import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentColumnHeader;
-import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentDataItem;
-import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentPackageDataItem;
-import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentPickupItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfilmentDividerRowItem;
-import com.mozu.mozuandroidinstoreassistant.app.data.order.PickupFullfillmentTitleDataitem;
-import com.mozu.mozuandroidinstoreassistant.app.data.order.ShipmentFullfillmentTitleDataItem;
+import com.mozu.mozuandroidinstoreassistant.app.data.order.PickupFulfillmentTitleDataItem;
+import com.mozu.mozuandroidinstoreassistant.app.data.order.ShipmentFulfillmentTitleDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.TopRowItem;
 import com.mozu.mozuandroidinstoreassistant.app.layout.IRowLayout;
 
@@ -46,23 +46,23 @@ public class OrderDetailFullfillmentAdapter extends BaseAdapter {
         IData dataItem = getItem(position);
         if (dataItem instanceof FullfillmentCategoryHeaderDataItem) {
             return RowType.CATEGORY_ROW;
-        } else if (dataItem instanceof ShipmentFullfillmentTitleDataItem) {
+        } else if (dataItem instanceof ShipmentFulfillmentTitleDataItem) {
             return RowType.SHIPMENT_TITLE_ROW;
-        } else if (dataItem instanceof PickupFullfillmentTitleDataitem) {
+        } else if (dataItem instanceof PickupFulfillmentTitleDataItem) {
             return RowType.PICKUP_TITLE_ROW;
-        } else if (dataItem instanceof FullfillmentDataItem) {
+        } else if (dataItem instanceof FulfillmentDataItem) {
             return RowType.ITEM_ROW;
-        } else if (dataItem instanceof FullfillmentPackageDataItem) {
+        } else if (dataItem instanceof FulfillmentPackageDataItem) {
             return RowType.PACKAGE_ROW;
         } else if (dataItem instanceof TopRowItem) {
             return RowType.TOP_ROW;
         } else if (dataItem instanceof BottomRowItem) {
             return RowType.BOTTOM_ROW;
-        } else if (dataItem instanceof FullfillmentPickupItem) {
+        } else if (dataItem instanceof FulfillmentPickupItem) {
             return RowType.PICKUP_ITEM_ROW;
         } else if (dataItem instanceof FullfilmentDividerRowItem) {
             return RowType.DIVIDER_ROW;
-        } else if (dataItem instanceof FullfillmentColumnHeader) {
+        } else if (dataItem instanceof FulfillmentColumnHeader) {
             return RowType.COLUMN_ROW;
         } else {
             return RowType.EMPTY_ROW;
@@ -123,7 +123,7 @@ public class OrderDetailFullfillmentAdapter extends BaseAdapter {
                     convertView = inflater.inflate(R.layout.order_fullfillment_divider_row, null);
                     break;
                 case COLUMN_ROW:
-                    convertView = inflater.inflate(R.layout.fullfillment_category_header, null);
+                    convertView = inflater.inflate(R.layout.fullfillment_column_header, null);
                     break;
             }
         }

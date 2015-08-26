@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.data.IData;
-import com.mozu.mozuandroidinstoreassistant.app.data.order.PickupFullfillmentTitleDataitem;
+import com.mozu.mozuandroidinstoreassistant.app.data.order.PickupFulfillmentTitleDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.layout.IRowLayout;
 
 public class PickupFullfillmentTitleRow extends RelativeLayout implements IRowLayout {
@@ -30,8 +30,8 @@ public class PickupFullfillmentTitleRow extends RelativeLayout implements IRowLa
         TextView mUnfullfilledTextView = (TextView) findViewById(R.id.unfulfilled_total);
         TextView mFulFilledTextView = (TextView) findViewById(R.id.fulfilled_total);
         TextView mTotalTextView = (TextView) findViewById(R.id.total);
-        if(data instanceof PickupFullfillmentTitleDataitem){
-            PickupFullfillmentTitleDataitem dataItem = (PickupFullfillmentTitleDataitem)data;
+        if (data instanceof PickupFulfillmentTitleDataItem) {
+            PickupFulfillmentTitleDataItem dataItem = (PickupFulfillmentTitleDataItem) data;
             if (dataItem.getTitle() != null) {
                 mTitleTextView.setText(dataItem.getTitle());
             }
