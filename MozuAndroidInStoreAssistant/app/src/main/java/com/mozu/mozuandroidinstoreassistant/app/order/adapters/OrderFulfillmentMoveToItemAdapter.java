@@ -15,12 +15,12 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class OrderFulfillmentMoveToItemAdaptertest extends RecyclerView.Adapter<OrderFulfillmentMoveToItemAdaptertest.ViewHolder> {
+public class OrderFulfillmentMoveToItemAdapter extends RecyclerView.Adapter<OrderFulfillmentMoveToItemAdapter.ViewHolder> {
 
     List<OrderItem> mData;
     MoveToListListener mListener;
 
-    public OrderFulfillmentMoveToItemAdaptertest(List<OrderItem> mData, MoveToListListener mListener) {
+    public OrderFulfillmentMoveToItemAdapter(List<OrderItem> mData, MoveToListListener mListener) {
         this.mData = mData;
         this.mListener = mListener;
     }
@@ -28,7 +28,7 @@ public class OrderFulfillmentMoveToItemAdaptertest extends RecyclerView.Adapter<
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.move_to_item, parent, false);
-        return new OrderFulfillmentMoveToItemAdaptertest.ViewHolder(view);
+        return new OrderFulfillmentMoveToItemAdapter.ViewHolder(view);
     }
 
     @Override
