@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/header"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/title"
+    android:background="@drawable/selectable_item_background"
+    android:minHeight="36dp"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/ordered_item_code"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_weight=".5"
+        android:text="Code"
+        android:textSize="14sp"/>
+
+    <TextView
+        android:id="@+id/ordered_item_product"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight=".75"
+        android:text="@string/order_item_product_header"
+        android:textSize="14sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/location_code"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight=".25"
+        android:gravity="right"
+        android:text="Location"
+        android:textSize="14sp"/>
+
+    <TextView
+        android:id="@+id/ordered_item_quantity"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="16dp"
+        android:layout_weight=".25"
+        android:gravity="right"
+        android:text="@string/order_item_quantity_header"
+        android:textSize="14sp"/>
+
+</LinearLayout>

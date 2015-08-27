@@ -8,12 +8,11 @@
     android:padding="16dp">
 
     <TextView
+        style="@style/AppTheme.DialogTitle"
         android:layout_width="match_parent"
         android:layout_height="32dp"
-        android:text="@string/filter"
-        android:textColor="@color/dark_gray_text"
         android:layout_marginBottom="8dp"
-        android:textSize="24sp" />
+        android:text="@string/filter"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -50,8 +49,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:focusable="false"
         android:clickable="true"
+        android:focusable="false"
         android:hint="Set End Date"
         android:inputType="date" />
 
@@ -87,8 +86,8 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="32dp"
-        android:textColor="@color/light_gray_text"
         android:text="@string/order_filter_payment_status_label"
+        android:textColor="@color/light_gray_text"
         android:textSize="20sp" />
 
     <ScrollView
