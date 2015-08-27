@@ -17,13 +17,12 @@ import android.widget.Toast;
 
 import com.mozu.api.contracts.commerceruntime.fulfillment.Pickup;
 import com.mozu.api.contracts.commerceruntime.fulfillment.PickupItem;
-import com.mozu.api.contracts.commerceruntime.fulfillment.Pickup;
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.commerceruntime.orders.OrderItem;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FulfillmentMoveToDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.dialog.ErrorMessageAlertDialog;
-import com.mozu.mozuandroidinstoreassistant.app.order.adapters.OrderFulfillmentMoveToItemAdapter;
+import com.mozu.mozuandroidinstoreassistant.app.order.adapters.ORderFulfillmentMoveToItemAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.order.loaders.PickupObservablesManager;
 
 import java.util.ArrayList;
@@ -37,7 +36,7 @@ import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class OrderFulfillmentMoveToPickupDialogFragment extends DialogFragment implements OrderFulfillmentMoveToItemAdapter.MoveToListListener {
+public class OrderFulfillmentMoveToPickupDialogFragment extends DialogFragment implements ORderFulfillmentMoveToItemAdapter.MoveToListListener {
 
     @InjectView(R.id.items)
     RecyclerView mRecyclerViewProducts;
@@ -76,7 +75,7 @@ public class OrderFulfillmentMoveToPickupDialogFragment extends DialogFragment i
         super.onViewCreated(view, savedInstanceState);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerViewProducts.setLayoutManager(layoutManager);
-        OrderFulfillmentMoveToItemAdapter adapter = new OrderFulfillmentMoveToItemAdapter(mData.getItems(), this);
+        ORderFulfillmentMoveToItemAdapter adapter = new ORderFulfillmentMoveToItemAdapter(mData.getItems(), this);
         mRecyclerViewProducts.setAdapter(adapter);
         mRecyclerViewProducts.setHasFixedSize(true);
         ArrayAdapter<String> dropDownAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, options);
@@ -95,7 +94,12 @@ public class OrderFulfillmentMoveToPickupDialogFragment extends DialogFragment i
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .subscribe(getCreatePickupSubscriber());
                         } else {
-                            //add too existing.
+                            Pickup pickup = mOrder.getPickups().get(position - 1);
+                            AndroidObservable.bindFragment(OrderFulfillmentMoveToPickupDialogFragment.this,
+                                    PickupObservablesManager.getInstance(mOrder.getTenantId(), mOrder.getSiteId()).updatePickup(pickup, mOrder.getId()))
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(getCreatePickupSubscriber());
                         }
                     } else {
                         Toast.makeText(getActivity(), "Please select one or more items to continue", Toast.LENGTH_LONG).show();
@@ -116,7 +120,7 @@ public class OrderFulfillmentMoveToPickupDialogFragment extends DialogFragment i
         this.mOrder = order;
         options = new ArrayList<>(order.getPickups().size() + 2);
         for (Pickup pickup : mOrder.getPickups()) {
-            options.add("Pickup " + pickup.getId());
+            options.add(pickup.getCode());
         }
         options.add("Create New Pickup");
         options.add(0, "Move To:");
@@ -149,26 +153,27 @@ public class OrderFulfillmentMoveToPickupDialogFragment extends DialogFragment i
             }
 
             @Override
-            public void onNext(Pickup aPickup) {
-                    //Dismiss and reload?
+            public void onNext(Pickup pickup) {
+                //Dismiss and reload?
             }
         };
     }
 
     private Pickup createNewPickup() {
-        Pickup pkg = new Pickup();
+        Pickup pickup = new Pickup();
         List<PickupItem> items = new ArrayList<>(selected.size());
         for (int i = 0; i < selected.size(); i++) {
             PickupItem item = new PickupItem();
             OrderItem orderItem = mData.getItems().get(selected.get(i));
-            item.setProductCode(orderItem.getProduct().getProductCode());
+
+            item.setProductCode(orderItem.getProduct().getVariationProductCode() != null ? orderItem.getProduct().getVariationProductCode() : orderItem.getProduct().getProductCode());
             item.setQuantity(orderItem.getQuantity());
 //            item.setLineId(orderItem.getLineId());
             items.add(item);
-            pkg.setFulfillmentLocationCode(orderItem.getFulfillmentLocationCode());
+            pickup.setFulfillmentLocationCode(orderItem.getFulfillmentLocationCode());
         }
-        pkg.setItems(items);
+        pickup.setItems(items);
 
-        return pkg;
+        return pickup;
     }
 }

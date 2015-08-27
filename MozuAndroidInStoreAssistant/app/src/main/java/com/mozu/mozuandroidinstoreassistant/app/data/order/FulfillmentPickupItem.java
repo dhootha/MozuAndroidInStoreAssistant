@@ -17,7 +17,7 @@ public class FulfillmentPickupItem implements IData {
         return mPickup;
     }
 
-    public Integer getmPickupCount() {
+    public Integer getPickupCount() {
         return mPickupCount;
     }
 }

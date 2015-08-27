@@ -31,7 +31,7 @@ public class FulfillmentPickupItemRow extends LinearLayout implements IRowLayout
 
         if (data instanceof FulfillmentPickupItem) {
             FulfillmentPickupItem fullfillmentDataPickUpItem = (FulfillmentPickupItem) data;
-            mPickUpNameText.setText(getContext().getResources().getString(R.string.fulfillment_pickup_number)+String.valueOf(fullfillmentDataPickUpItem.getmPickupCount()));
+            mPickUpNameText.setText(getContext().getResources().getString(R.string.fulfillment_pickup_number) + String.valueOf(fullfillmentDataPickUpItem.getPickupCount()));
 
             int totalItemCount = 0;
             for (PickupItem item : fullfillmentDataPickUpItem.getPickup().getItems()) {

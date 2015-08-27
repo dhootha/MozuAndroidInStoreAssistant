@@ -349,8 +349,8 @@ public class OrderDetailFullfillmentFragment extends Fragment implements Fulfill
     @Override
     public void onMoveToClicked(IData data) {
         if (data instanceof FulfillmentMoveToDataItem) {
-            OrderFulfillmentMoveToDialogFragment dialogFragment = new OrderFulfillmentMoveToDialogFragment();
-            dialogFragment.setData((FulfillmentMoveToDataItem) data, mOrder.getPackages());
+            OrderFulfillmentMoveToPickupDialogFragment dialogFragment = new OrderFulfillmentMoveToPickupDialogFragment();
+            dialogFragment.setData((FulfillmentMoveToDataItem) data, mOrder);
             dialogFragment.show(getFragmentManager(), "move to");
 
         }
