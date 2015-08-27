@@ -22,7 +22,7 @@ import com.mozu.api.contracts.commerceruntime.orders.OrderItem;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FulfillmentMoveToDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.dialog.ErrorMessageAlertDialog;
-import com.mozu.mozuandroidinstoreassistant.app.order.adapters.ORderFulfillmentMoveToItemAdapter;
+import com.mozu.mozuandroidinstoreassistant.app.order.adapters.OrderFulfillmentMoveToItemAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.order.loaders.PickupObservablesManager;
 
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class OrderFulfillmentMoveToPickupDialogFragment extends DialogFragment implements ORderFulfillmentMoveToItemAdapter.MoveToListListener {
+public class OrderFulfillmentMoveToPickupDialogFragment extends DialogFragment implements OrderFulfillmentMoveToItemAdapter.MoveToListListener {
 
     @InjectView(R.id.items)
     RecyclerView mRecyclerViewProducts;
@@ -75,7 +75,7 @@ public class OrderFulfillmentMoveToPickupDialogFragment extends DialogFragment i
         super.onViewCreated(view, savedInstanceState);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerViewProducts.setLayoutManager(layoutManager);
-        ORderFulfillmentMoveToItemAdapter adapter = new ORderFulfillmentMoveToItemAdapter(mData.getItems(), this);
+        OrderFulfillmentMoveToItemAdapter adapter = new OrderFulfillmentMoveToItemAdapter(mData.getItems(), this);
         mRecyclerViewProducts.setAdapter(adapter);
         mRecyclerViewProducts.setHasFixedSize(true);
         ArrayAdapter<String> dropDownAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, options);
