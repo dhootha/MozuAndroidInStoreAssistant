@@ -18,13 +18,12 @@ import rx.subjects.AsyncSubject;
  */
 public class NewOrderManager {
 
+    public static final String PRODUCT_SORT_BY = "productname asc";
+    private static final int ITEMS_PER_PAGE = 20;
     public static int count = 0;
-
     private static NewOrderManager mNewOrderManager;
     private AsyncSubject<ProductSearchResult> mProductSearchSubject;
     private String mSearch;
-    public static final String PRODUCT_SORT_BY = "productname asc";
-    private static final int ITEMS_PER_PAGE = 20;
 
     private NewOrderManager() {
     }
@@ -45,7 +44,6 @@ public class NewOrderManager {
         return mProductSearchSubject;
 
     }
-
 
     private Observable<ProductSearchResult> getProductSearchSuggestion(Integer tenantId, Integer siteId, final String query) {
         final ProductSearchResultResource productSearchResultResource = new ProductSearchResultResource(new MozuApiContext(tenantId, siteId));
