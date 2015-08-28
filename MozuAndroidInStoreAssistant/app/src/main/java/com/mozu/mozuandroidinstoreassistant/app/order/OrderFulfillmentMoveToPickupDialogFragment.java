@@ -19,6 +19,7 @@ import com.mozu.api.contracts.commerceruntime.fulfillment.Pickup;
 import com.mozu.api.contracts.commerceruntime.fulfillment.PickupItem;
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.commerceruntime.orders.OrderItem;
+import com.mozu.mozuandroidinstoreassistant.app.OrderDetailActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FulfillmentMoveToDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.dialog.ErrorMessageAlertDialog;
@@ -26,7 +27,9 @@ import com.mozu.mozuandroidinstoreassistant.app.order.adapters.OrderFulfillmentM
 import com.mozu.mozuandroidinstoreassistant.app.order.loaders.PickupObservablesManager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -48,6 +51,7 @@ public class OrderFulfillmentMoveToPickupDialogFragment extends DialogFragment i
     private List<String> options;
     private List<Integer> selected = new ArrayList<>();
     private Order mOrder;
+    private int createNewPickUpCount;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -87,22 +91,18 @@ public class OrderFulfillmentMoveToPickupDialogFragment extends DialogFragment i
                 if (position > 0) {
                     if (selected.size() > 0) {
                         if (position == options.size() - 1) {
-                            Pickup pkg = createNewPickup();
-                            AndroidObservable.bindFragment(OrderFulfillmentMoveToPickupDialogFragment.this,
-                                    PickupObservablesManager.getInstance(mOrder.getTenantId(), mOrder.getSiteId()).createPickup(pkg, mOrder.getId()))
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(getCreatePickupSubscriber());
+                            createNewPickUps();
                         } else {
                             Pickup pickup = mOrder.getPickups().get(position - 1);
+                            pickup.getItems().addAll(createNewPickUpItems());
                             AndroidObservable.bindFragment(OrderFulfillmentMoveToPickupDialogFragment.this,
                                     PickupObservablesManager.getInstance(mOrder.getTenantId(), mOrder.getSiteId()).updatePickup(pickup, mOrder.getId()))
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(getCreatePickupSubscriber());
+                                    .subscribe(getPickupSubscriber());
                         }
                     } else {
-                        Toast.makeText(getActivity(), "Please select one or more items to continue", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), R.string.no_items_selected_error, Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -113,6 +113,18 @@ public class OrderFulfillmentMoveToPickupDialogFragment extends DialogFragment i
             }
 
         });
+    }
+
+    public void createNewPickUps() {
+        List<Pickup> createPackage = createPickupsByLocale();
+        createNewPickUpCount = createPackage.size();
+        for (int i = 0; i < createNewPickUpCount; i++) {
+            AndroidObservable.bindFragment(OrderFulfillmentMoveToPickupDialogFragment.this,
+                    PickupObservablesManager.getInstance(mOrder.getTenantId(), mOrder.getSiteId()).createPickup(createPackage.get(i), mOrder.getId()))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(getPickupSubscriber());
+        }
     }
 
     public void setData(FulfillmentMoveToDataItem data, Order order) {
@@ -140,11 +152,15 @@ public class OrderFulfillmentMoveToPickupDialogFragment extends DialogFragment i
         }
     }
 
-    private Subscriber<Pickup> getCreatePickupSubscriber() {
+    private Subscriber<Pickup> getPickupSubscriber() {
         return new Subscriber<Pickup>() {
             @Override
             public void onCompleted() {
-                OrderFulfillmentMoveToPickupDialogFragment.this.dismiss();
+                createNewPickUpCount--;
+                if (createNewPickUpCount == 0) {
+                    OrderFulfillmentMoveToPickupDialogFragment.this.dismiss();
+                    ((OrderDetailActivity) getActivity()).onRefresh();
+                }
             }
 
             @Override
@@ -159,21 +175,47 @@ public class OrderFulfillmentMoveToPickupDialogFragment extends DialogFragment i
         };
     }
 
-    private Pickup createNewPickup() {
-        Pickup pickup = new Pickup();
+    private List<Pickup> createPickupsByLocale() {
+        Map<String, ArrayList<PickupItem>> sortedItems = new HashMap<>();
+        List<Pickup> pickups = new ArrayList<>();
+        for (int i = 0; i < selected.size(); i++) {
+            PickupItem item = new PickupItem();
+            OrderItem orderItem = mData.getItems().get(selected.get(i));
+            String productCode = orderItem.getProduct().getVariationProductCode() != null ? orderItem.getProduct().getVariationProductCode() : orderItem.getProduct().getProductCode();
+            item.setProductCode(productCode);
+            item.setQuantity(orderItem.getQuantity());
+            item.setLineId(orderItem.getLineId());
+            if (sortedItems.containsKey(orderItem.getFulfillmentLocationCode())) {
+                ArrayList<PickupItem> items1 = sortedItems.get(orderItem.getFulfillmentLocationCode());
+                items1.add(item);
+                sortedItems.put(orderItem.getFulfillmentLocationCode(), items1);
+            } else {
+                ArrayList<PickupItem> items1 = new ArrayList<>();
+                items1.add(item);
+                sortedItems.put(orderItem.getFulfillmentLocationCode(), items1);
+            }
+        }
+        for (Map.Entry<String, ArrayList<PickupItem>> item : sortedItems.entrySet()) {
+            Pickup pickup = new Pickup();
+            pickup.setItems(item.getValue());
+            pickup.setFulfillmentLocationCode(item.getKey());
+            pickups.add(pickup);
+        }
+        return pickups;
+
+    }
+
+    private List<PickupItem> createNewPickUpItems() {
         List<PickupItem> items = new ArrayList<>(selected.size());
         for (int i = 0; i < selected.size(); i++) {
             PickupItem item = new PickupItem();
             OrderItem orderItem = mData.getItems().get(selected.get(i));
-
-            item.setProductCode(orderItem.getProduct().getVariationProductCode() != null ? orderItem.getProduct().getVariationProductCode() : orderItem.getProduct().getProductCode());
+            String productCode = orderItem.getProduct().getVariationProductCode() != null ? orderItem.getProduct().getVariationProductCode() : orderItem.getProduct().getProductCode();
+            item.setProductCode(productCode);
             item.setQuantity(orderItem.getQuantity());
-//            item.setLineId(orderItem.getLineId());
+            item.setLineId(orderItem.getLineId());
             items.add(item);
-            pickup.setFulfillmentLocationCode(orderItem.getFulfillmentLocationCode());
         }
-        pickup.setItems(items);
-
-        return pickup;
+        return items;
     }
 }

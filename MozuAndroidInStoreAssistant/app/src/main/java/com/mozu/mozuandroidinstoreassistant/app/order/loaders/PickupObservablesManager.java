@@ -48,7 +48,8 @@ public class PickupObservablesManager {
             @Override
             public void call(Subscriber<? super Pickup> subscriber) {
                 try {
-                    subscriber.onNext(resource.createPickup(pkg, orderId, pkg.getId()));
+                    subscriber.onNext(resource.updatePickup(pkg, orderId, pkg.getId()));
+                    subscriber.onCompleted();
                 } catch (Exception e) {
                     Log.e("updatePickup", e.toString());
                     subscriber.onError(e);
