@@ -365,7 +365,6 @@ public class OrderDetailFullfillmentFragment extends Fragment implements MoveToL
             OrderFulfillmentMoveToPickupDialogFragment dialogFragment = new OrderFulfillmentMoveToPickupDialogFragment();
             dialogFragment.setData((FulfillmentMoveToDataItem) data, mOrder);
             dialogFragment.show(getFragmentManager(), "move to");
-
         }
     }
 
@@ -383,7 +382,6 @@ public class OrderDetailFullfillmentFragment extends Fragment implements MoveToL
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(getUpdatePickupSubscriber());
-
     }
 
     @Override
@@ -404,7 +402,8 @@ public class OrderDetailFullfillmentFragment extends Fragment implements MoveToL
 
             @Override
             public void onError(Throwable e) {
-                ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), e.toString())
+                ErrorMessageAlertDialog
+                        .getStandardErrorMessageAlertDialog(getActivity(), getResources().getString(R.string.standard_error))
                         .show();
             }
 
@@ -424,8 +423,9 @@ public class OrderDetailFullfillmentFragment extends Fragment implements MoveToL
 
             @Override
             public void onError(Throwable e) {
-                ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), e.toString())
-                        .show();
+                ErrorMessageAlertDialog
+                        .getStandardErrorMessageAlertDialog(getActivity(), getResources().getString(R.string.standard_error))
+                                .show();
             }
 
             @Override

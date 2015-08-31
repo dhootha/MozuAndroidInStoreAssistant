@@ -309,6 +309,7 @@
     <string name="done">Done</string>
     <string name="customer_lookup_instructions">Lookup or create a customer to continue</string>
     <string name="no_items_selected_error">Please select one or more items to continue</string>
+    <string name="standard_error">There was an error completing the request</string>
     <string-array name="register_email_address">
         <item>mozumobile@volusion.com</item>
     </string-array>
