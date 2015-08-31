@@ -191,8 +191,9 @@ public class OrderDetailNotesFragment extends Fragment implements OrderNotesUpda
         final EditText noteInput = (EditText) view.findViewById(R.id.note);
         final TextView noteTile = (TextView) view.findViewById(R.id.title);
         noteTile.setText(R.string.add_note);
-        noteInput.setFocusable(true);
         noteInput.setEnabled(true);
+        noteInput.setFocusable(true);
+        noteInput.setFocusableInTouchMode(true);
         noteInput.requestFocus();
         noteInput.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
         AlertDialog noteDialog = new AlertDialog.Builder(getActivity())

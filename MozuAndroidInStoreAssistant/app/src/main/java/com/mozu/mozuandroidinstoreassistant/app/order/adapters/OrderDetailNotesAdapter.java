@@ -7,6 +7,7 @@ import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -131,10 +132,6 @@ public class OrderDetailNotesAdapter extends BaseAdapter implements ListView.OnI
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.dialog_edit_order_notes, null);
         final EditText editText = (EditText) view.findViewById(R.id.note);
-        final TextView title = (TextView) view.findViewById(R.id.title);
-        if (mIsEditable) {
-            title.setText(R.string.edit_note);
-        }
         editText.setText(note);
         final AlertDialog noteDialog = new AlertDialog.Builder(mContext)
                 .setView(view)
@@ -178,6 +175,10 @@ public class OrderDetailNotesAdapter extends BaseAdapter implements ListView.OnI
             public void onClick(View v) {
                 editText.setEnabled(true);
                 editText.setFocusable(true);
+                editText.setFocusableInTouchMode(true);
+                editText.requestFocus();
+                InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
             }
         });
         negative.setOnClickListener(new View.OnClickListener() {
