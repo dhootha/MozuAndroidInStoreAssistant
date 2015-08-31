@@ -49,8 +49,6 @@ import java.util.List;
 
 import rx.Subscriber;
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 
 public class OrderDetailFullfillmentFragment extends Fragment implements MoveToListener, MarkPickupAsFulfilledListener {
@@ -379,8 +377,6 @@ public class OrderDetailFullfillmentFragment extends Fragment implements MoveToL
         AndroidObservable.bindFragment(this, FulfillmentActionObservablesManager.getInstance(
                 mOrder.getTenantId(), mOrder.getSiteId())
                 .performFulfillmentAction(action, mOrder.getId()))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
                 .subscribe(getUpdatePickupSubscriber());
     }
 
@@ -389,8 +385,6 @@ public class OrderDetailFullfillmentFragment extends Fragment implements MoveToL
         AndroidObservable.bindFragment(this, PickupObservablesManager.getInstance(
                 mOrder.getTenantId(), mOrder.getSiteId())
                 .deletePickup(pickup.getId(), mOrder.getId()))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
                 .subscribe(getCancelPickupSubscriber());
     }
 

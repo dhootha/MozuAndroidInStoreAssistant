@@ -9,6 +9,8 @@ import com.mozu.api.resources.commerce.orders.FulfillmentActionResource;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 public class FulfillmentActionObservablesManager {
@@ -43,6 +45,8 @@ public class FulfillmentActionObservablesManager {
                     subscriber.onError(e);
                 }
             }
-        });
+        })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
     }
 }

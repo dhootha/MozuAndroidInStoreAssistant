@@ -8,6 +8,8 @@ import com.mozu.api.resources.commerce.orders.PickupResource;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class PickupObservablesManager {
 
@@ -40,7 +42,9 @@ public class PickupObservablesManager {
                     subscriber.onError(e);
                 }
             }
-        });
+        })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
     }
 
     public Observable<Pickup> updatePickup(final Pickup pickup, final String orderId) {
@@ -55,7 +59,9 @@ public class PickupObservablesManager {
                     subscriber.onError(e);
                 }
             }
-        });
+        })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
     }
 
     public Observable<Pickup> deletePickup(final String pickupId, final String orderId) {
@@ -71,6 +77,8 @@ public class PickupObservablesManager {
                     subscriber.onError(e);
                 }
             }
-        });
+        })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
     }
 }
