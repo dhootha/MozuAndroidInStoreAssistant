@@ -2,7 +2,7 @@ package com.mozu.mozuandroidinstoreassistant.app.data.order;
 
 import com.mozu.mozuandroidinstoreassistant.app.data.IData;
 
-public class PickupFullfillmentTitleDataitem implements IData {
+public class PickupFulfillmentTitleDataItem implements IData {
 
     private String title;
     private Integer unFulfilledCount;

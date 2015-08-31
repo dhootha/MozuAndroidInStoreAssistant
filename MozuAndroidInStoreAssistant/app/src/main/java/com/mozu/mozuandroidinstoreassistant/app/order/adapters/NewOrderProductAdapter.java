@@ -1,4 +1,4 @@
-package com.mozu.mozuandroidinstoreassistant.app.order;
+package com.mozu.mozuandroidinstoreassistant.app.order.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,23 +20,16 @@ import java.util.List;
 
 public class NewOrderProductAdapter extends BaseAdapter {
 
-    public enum RowType {
-        ORDER_ITEM_ROW,
-        COUPON_ROW,
-        SHIPPING_ROW,
-        EMPTY_ROW
-    }
-
     private List<IData> mData;
+
+    public NewOrderProductAdapter() {
+        mData = new ArrayList<IData>();
+    }
 
     public void addData(Order order) {
         for(OrderItem item: order.getItems()){
             mData.add(new OrderItemRow(item));
         }
-    }
-
-    public NewOrderProductAdapter() {
-        mData = new ArrayList<IData>();
     }
 
     @Override
@@ -67,7 +60,6 @@ public class NewOrderProductAdapter extends BaseAdapter {
         return RowType.values().length;
     }
 
-
     @Override
     public IData getItem(int i) {
         return mData.get(i);
@@ -93,6 +85,13 @@ public class NewOrderProductAdapter extends BaseAdapter {
         IData orderItem = getItem(position);
         ((IRowLayout) convertView).bindData(orderItem);
         return convertView;
+    }
+
+    public enum RowType {
+        ORDER_ITEM_ROW,
+        COUPON_ROW,
+        SHIPPING_ROW,
+        EMPTY_ROW
     }
 
 }

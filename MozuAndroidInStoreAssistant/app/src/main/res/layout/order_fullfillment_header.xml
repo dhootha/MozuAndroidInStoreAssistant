@@ -1,18 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.mozu.mozuandroidinstoreassistant.app.layout.order.FullfillmentHeaderRow xmlns:android="http://schemas.android.com/apk/res/android"
+<com.mozu.mozuandroidinstoreassistant.app.layout.order.FullfillmentHeaderRow
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:gravity="center_vertical"
+    android:layout_height="58dp"
     android:background="@drawable/list_item"
+    android:gravity="center_vertical"
     android:minHeight="48dp"
-    android:layout_height="48dp">
+    android:orientation="vertical">
 
-    <TextView
-        android:layout_marginLeft="40dp"
-        android:id="@+id/fulfillment_header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:textColor="@color/light_gray_text" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/fulfillment_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="40dp"
+            android:layout_marginStart="40dp"
+            android:text="text"
+            android:textColor="@color/light_gray_text"
+            android:textSize="14sp"/>
+    </RelativeLayout>
 </com.mozu.mozuandroidinstoreassistant.app.layout.order.FullfillmentHeaderRow>
 
