@@ -38,9 +38,6 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by chris_pound on 8/7/15.
- */
 public class CustomerCreationFragment extends Fragment implements CustomerAddressVerifier {
 
     private static final String CUSTOMER = "customer";
