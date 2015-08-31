@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.mozuandroidinstoreassistant.app.bus.RxBus;
+import com.mozu.mozuandroidinstoreassistant.app.data.order.OrderEditEvent;
 import com.mozu.mozuandroidinstoreassistant.app.order.adapters.OrderDetailSectionPagerAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.order.loaders.OrderDetailLoader;
 import com.mozu.mozuandroidinstoreassistant.app.settings.SettingsFragment;
@@ -34,6 +35,9 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public class OrderDetailActivity extends BaseActivity implements LoaderManager.LoaderCallbacks<Order>, CustomerAsyncListener, SwipeRefreshLayout.OnRefreshListener {
 
@@ -72,6 +76,10 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
 
         setContentView(R.layout.activity_order_detail);
         mRxBus = RxBus.getInstance();
+        RxBus.getInstance().toObserverable()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(getEventSubscriber());
 
         ButterKnife.inject(this);
 
@@ -166,6 +174,23 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
                 R.color.third_color_swipe_refresh,
                 R.color.fourth_color_swipe_refresh);
 
+    }
+
+    private Action1<Object> getEventSubscriber() {
+        return new Action1<Object>() {
+
+            @Override
+            public void call(Object o) {
+                if (o instanceof OrderEditEvent) {
+                    OrderEditEvent event = (OrderEditEvent) o;
+                    if (event.shouldShowEdit) {
+                        enterEditMode.setVisibility(View.VISIBLE);
+                    } else {
+                        enterEditMode.setVisibility(View.GONE);
+                    }
+                }
+            }
+        };
     }
 
     @Override
@@ -288,7 +313,10 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
     public void onSwapEditMode() {
 
         mIsEditMode = !mIsEditMode;
-        mRxBus.send(mIsEditMode);
+        OrderEditEvent event = new OrderEditEvent();
+        event.isEditMode = mIsEditMode;
+        event.shouldShowEdit = true;
+        mRxBus.send(event);
         mAdapter.setIsEditMode(mIsEditMode);
         if (mIsEditMode) {
             enterEditMode.setText(getString(R.string.exit_edit_mode));
