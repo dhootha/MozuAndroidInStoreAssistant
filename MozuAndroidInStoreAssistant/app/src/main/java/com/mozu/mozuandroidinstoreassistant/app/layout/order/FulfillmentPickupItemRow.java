@@ -60,7 +60,7 @@ public class FulfillmentPickupItemRow extends RelativeLayout implements IRowLayo
             mCancel.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.cancelPickup();
+                    mListener.cancelPickup(fulfillmentPickupItem.getPickup());
                 }
             });
 
@@ -75,6 +75,6 @@ public class FulfillmentPickupItemRow extends RelativeLayout implements IRowLayo
     public interface MarkPickupAsFulfilledListener {
         void markPickUpAsFulfilled(Pickup pickup);
 
-        void cancelPickup();
+        void cancelPickup(Pickup pickup);
     }
 }

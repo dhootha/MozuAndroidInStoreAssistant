@@ -40,6 +40,7 @@ import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthen
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.order.adapters.OrderDetailFullfillmentAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.order.loaders.FulfillmentActionObservablesManager;
+import com.mozu.mozuandroidinstoreassistant.app.order.loaders.PickupObservablesManager;
 import com.mozu.mozuandroidinstoreassistant.app.product.ProductDetailOverviewDialogFragment;
 
 import java.util.ArrayList;
@@ -386,8 +387,13 @@ public class OrderDetailFullfillmentFragment extends Fragment implements MoveToL
     }
 
     @Override
-    public void cancelPickup() {
-
+    public void cancelPickup(Pickup pickup) {
+        AndroidObservable.bindFragment(this, PickupObservablesManager.getInstance(
+                mOrder.getTenantId(), mOrder.getSiteId())
+                .deletePickup(pickup.getId(), mOrder.getId()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(getCancelPickupSubscriber());
     }
 
     private Subscriber<Order> getUpdatePickupSubscriber() {
@@ -398,12 +404,34 @@ public class OrderDetailFullfillmentFragment extends Fragment implements MoveToL
 
             @Override
             public void onError(Throwable e) {
-                ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), e.toString());
+                ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), e.toString())
+                        .show();
             }
 
             @Override
             public void onNext(Order order) {
                 ((OrderDetailActivity) getActivity()).onRefresh();
+            }
+        };
+    }
+
+    private Subscriber<Pickup> getCancelPickupSubscriber() {
+        return new Subscriber<Pickup>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), e.toString())
+                        .show();
+            }
+
+            @Override
+            public void onNext(Pickup pickup) {
+                ((OrderDetailActivity) getActivity()).onRefresh();
+
             }
         };
     }

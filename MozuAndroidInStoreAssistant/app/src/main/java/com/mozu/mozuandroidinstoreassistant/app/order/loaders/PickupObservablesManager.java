@@ -43,12 +43,28 @@ public class PickupObservablesManager {
         });
     }
 
-    public Observable<Pickup> updatePickup(final Pickup pkg, final String orderId) {
+    public Observable<Pickup> updatePickup(final Pickup pickup, final String orderId) {
         return Observable.create(new Observable.OnSubscribe<Pickup>() {
             @Override
             public void call(Subscriber<? super Pickup> subscriber) {
                 try {
-                    subscriber.onNext(resource.updatePickup(pkg, orderId, pkg.getId()));
+                    subscriber.onNext(resource.updatePickup(pickup, orderId, pickup.getId()));
+                    subscriber.onCompleted();
+                } catch (Exception e) {
+                    Log.e("updatePickup", e.toString());
+                    subscriber.onError(e);
+                }
+            }
+        });
+    }
+
+    public Observable<Pickup> deletePickup(final String pickupId, final String orderId) {
+        return Observable.create(new Observable.OnSubscribe<Pickup>() {
+            @Override
+            public void call(Subscriber<? super Pickup> subscriber) {
+                try {
+                    resource.deletePickup(orderId, pickupId);
+                    subscriber.onNext(null);
                     subscriber.onCompleted();
                 } catch (Exception e) {
                     Log.e("updatePickup", e.toString());
