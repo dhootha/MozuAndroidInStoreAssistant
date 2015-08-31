@@ -1,26 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="64dp"
-    android:padding="0dp"
     android:layout_margin="0dp"
     android:gravity="center_vertical"
-    android:minHeight="?android:attr/listPreferredItemHeight">
+              android:minHeight="?android:attr/listPreferredItemHeight"
+              android:orientation="horizontal"
+              android:padding="0dp">
 
     <TextView
         android:id="@+id/note_date"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="2"
-        android:textStyle="bold"
-        />
-    <TextView
-        android:id="@+id/note_employee"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="3"
         android:textStyle="bold"
         />
 
