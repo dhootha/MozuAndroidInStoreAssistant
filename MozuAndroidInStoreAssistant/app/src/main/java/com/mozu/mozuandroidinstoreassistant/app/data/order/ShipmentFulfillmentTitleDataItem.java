@@ -2,10 +2,12 @@ package com.mozu.mozuandroidinstoreassistant.app.data.order;
 
 import com.mozu.mozuandroidinstoreassistant.app.data.IData;
 
-public class ShipmentFullfillmentTitleDataItem implements IData {
+public class ShipmentFulfillmentTitleDataItem implements IData {
 
     private String title;
     private Integer unShippedCount;
+    private Integer fullfilledCount;
+    private Integer totalCount;
 
     public String getTitle() {
         return title;
@@ -38,8 +40,5 @@ public class ShipmentFullfillmentTitleDataItem implements IData {
     public void setTotalCount(Integer totalCount) {
         this.totalCount = totalCount;
     }
-
-    private Integer fullfilledCount;
-    private Integer totalCount;
 
 }

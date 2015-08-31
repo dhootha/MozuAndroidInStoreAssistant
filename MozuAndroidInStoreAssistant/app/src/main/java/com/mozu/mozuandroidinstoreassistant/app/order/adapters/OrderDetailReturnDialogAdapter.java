@@ -1,4 +1,4 @@
-package com.mozu.mozuandroidinstoreassistant.app.order;
+package com.mozu.mozuandroidinstoreassistant.app.order.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -23,27 +23,16 @@ import java.util.List;
 
 public class OrderDetailReturnDialogAdapter extends BaseAdapter {
 
-    public enum RowType {
-        RETURN_TITLE_ROW,
-        RETURN_HEADER_ROW,
-        RETURN_ITEM_ROW,
-        REFUND_HEADER_ROW,
-        REFUND_ITEM_ROW,
-        EMPTY_ROW,
-        TOP_ROW,
-        BOTTOM_ROW
-    }
-
     List<IData> mData = new ArrayList<IData>();
+
+    public OrderDetailReturnDialogAdapter(Context context, List<IData> data) {
+        mData = data;
+    }
 
     @Override
     public boolean isEnabled(int position) {
         RowType rowType = getRowType(position);
         return (rowType == RowType.RETURN_ITEM_ROW || rowType == RowType.REFUND_ITEM_ROW);
-    }
-
-    public OrderDetailReturnDialogAdapter(Context context, List<IData> data) {
-        mData = data;
     }
 
     @Override
@@ -82,7 +71,6 @@ public class OrderDetailReturnDialogAdapter extends BaseAdapter {
         return RowType.values().length;
     }
 
-
     @Override
     public IData getItem(int i) {
         return mData.get(i);
@@ -92,7 +80,6 @@ public class OrderDetailReturnDialogAdapter extends BaseAdapter {
     public long getItemId(int i) {
         return i;
     }
-
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -121,9 +108,20 @@ public class OrderDetailReturnDialogAdapter extends BaseAdapter {
         return convertView;
     }
 
-
     public void setData(List<IData> data) {
         mData = data;
+    }
+
+
+    public enum RowType {
+        RETURN_TITLE_ROW,
+        RETURN_HEADER_ROW,
+        RETURN_ITEM_ROW,
+        REFUND_HEADER_ROW,
+        REFUND_ITEM_ROW,
+        EMPTY_ROW,
+        TOP_ROW,
+        BOTTOM_ROW
     }
 
 }

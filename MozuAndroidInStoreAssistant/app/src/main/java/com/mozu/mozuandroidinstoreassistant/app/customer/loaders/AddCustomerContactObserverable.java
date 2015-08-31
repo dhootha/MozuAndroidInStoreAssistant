@@ -8,9 +8,6 @@ import com.mozu.api.resources.commerce.customer.accounts.CustomerContactResource
 import rx.Observable;
 import rx.Subscriber;
 
-/**
- * Created by chris_pound on 8/14/15.
- */
 public class AddCustomerContactObserverable {
 
     public static Observable<CustomerContact> getCustomerContactCreationObserverable(final Integer tenantId, final Integer siteId, final Integer customerAccountId, final CustomerContact customerContact) {

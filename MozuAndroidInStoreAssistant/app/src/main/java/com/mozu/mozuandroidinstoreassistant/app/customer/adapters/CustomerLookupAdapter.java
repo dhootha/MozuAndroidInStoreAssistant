@@ -14,9 +14,6 @@ import com.mozu.mozuandroidinstoreassistant.app.R;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-/**
- * Created by chris_pound on 8/14/15.
- */
 public class CustomerLookupAdapter extends ArrayAdapter<CustomerAccount> {
 
     public CustomerLookupAdapter(Context context) {

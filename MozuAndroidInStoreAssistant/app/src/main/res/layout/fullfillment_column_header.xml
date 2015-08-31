@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.mozu.mozuandroidinstoreassistant.app.layout.order.FullfillmentItemRow
+
+<com.mozu.mozuandroidinstoreassistant.app.layout.order.FullfillmentColumnRow
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="64dp"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="16dp"
+    android:layout_marginLeft="40dp"
+    android:layout_marginRight="16dp"
+    android:layout_marginStart="40dp"
+    android:layout_marginTop="16dp"
     android:background="@drawable/list_item_background"
     android:gravity="center_vertical"
-    android:minHeight="64dp"
+    android:minHeight="?android:attr/listPreferredItemHeight"
     android:orientation="horizontal">
 
     <TextView
@@ -14,7 +20,8 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="40dp"
         android:layout_weight=".5"
-        android:text="@string/order_item_product_header"
+        android:text="Code"
+        android:textColor="@color/light_gray_text"
         android:textSize="14sp"/>
 
     <TextView
@@ -23,44 +30,43 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="@string/order_item_product_header"
-        android:textColor="@color/dark_gray_text"
+        android:textColor="@color/light_gray_text"
         android:textSize="14sp"/>
 
     <TextView
-        android:id="@+id/fulfillment_type"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight=".5"
+        android:layout_weight=".75"
+        android:text="Fulfillment"
+        android:textColor="@color/light_gray_text"
         android:textSize="14sp"/>
 
     <TextView
-        android:id="@+id/location_code"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight=".5"
         android:gravity="right"
-        android:text="@string/pickup_location"
+        android:text="Location"
+        android:textColor="@color/light_gray_text"
         android:textSize="14sp"/>
 
     <TextView
-        android:id="@+id/quantity"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight=".5"
         android:gravity="right"
         android:text="@string/order_item_quantity_header"
+        android:textColor="@color/light_gray_text"
         android:textSize="14sp"/>
 
     <TextView
-        android:id="@+id/ordered_item_total"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginRight="16dp"
         android:layout_weight=".5"
         android:gravity="right"
         android:text="@string/order_item_total_header"
+        android:textColor="@color/light_gray_text"
         android:textSize="14sp"/>
 
-
-</com.mozu.mozuandroidinstoreassistant.app.layout.order.FullfillmentItemRow>
-
+</com.mozu.mozuandroidinstoreassistant.app.layout.order.FullfillmentColumnRow>

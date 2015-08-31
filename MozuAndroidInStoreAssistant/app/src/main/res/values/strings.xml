@@ -318,6 +318,7 @@
     <string name="add_customer_note_title">Add Customer Note</string>
     <string name="select_coupons">Select Coupons</string>
     <string name="shipping_method">Shipping Method</string>
+    <string name="no_items_selected_error">Please select one or more items to continue</string>
     <string-array name="register_email_address">
         <item>mozumobile@volusion.com</item>
     </string-array>

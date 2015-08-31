@@ -1,4 +1,4 @@
-package com.mozu.mozuandroidinstoreassistant.app.order;
+package com.mozu.mozuandroidinstoreassistant.app.order.loaders;
 
 import com.mozu.api.MozuApiContext;
 import com.mozu.api.contracts.commerceruntime.orders.Order;

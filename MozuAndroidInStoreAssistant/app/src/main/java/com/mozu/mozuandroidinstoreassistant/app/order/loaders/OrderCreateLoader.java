@@ -9,9 +9,6 @@ import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.resources.commerce.OrderResource;
 import com.mozu.mozuandroidinstoreassistant.app.loaders.InternetConnectedAsyncTaskLoader;
 
-/**
- * Created by chris_pound on 8/4/15.
- */
 public class OrderCreateLoader extends InternetConnectedAsyncTaskLoader<Order>{
 
     private Integer  mTenantId;

@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.data.IData;
-import com.mozu.mozuandroidinstoreassistant.app.data.order.ShipmentFullfillmentTitleDataItem;
+import com.mozu.mozuandroidinstoreassistant.app.data.order.ShipmentFulfillmentTitleDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.layout.IRowLayout;
 
 public class FullfillmentTitleRow extends RelativeLayout implements IRowLayout {
@@ -30,8 +30,8 @@ public class FullfillmentTitleRow extends RelativeLayout implements IRowLayout {
         TextView mPendingTextView = (TextView) findViewById(R.id.shipment_pending_total);
         TextView mFulFilledTextView = (TextView) findViewById(R.id.shipment_fulfilled_total);
         TextView mTotalTextView = (TextView) findViewById(R.id.shipment_total);
-        if(data instanceof ShipmentFullfillmentTitleDataItem){
-            ShipmentFullfillmentTitleDataItem dataItem = (ShipmentFullfillmentTitleDataItem)data;
+        if (data instanceof ShipmentFulfillmentTitleDataItem) {
+            ShipmentFulfillmentTitleDataItem dataItem = (ShipmentFulfillmentTitleDataItem) data;
             if (dataItem.getTitle() != null) {
                 mTitleTextView.setText(dataItem.getTitle());
             }

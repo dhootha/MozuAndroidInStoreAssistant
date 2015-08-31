@@ -4,10 +4,11 @@ import com.mozu.api.contracts.commerceruntime.fulfillment.PackageItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.IData;
 import com.mozu.mozuandroidinstoreassistant.app.models.FulfillmentItem;
 
-public class FullfillmentPackageDataItem implements IData {
+public class FulfillmentPackageDataItem implements IData {
     private FulfillmentItem mFulfillmentItem;
 
-    public FullfillmentPackageDataItem(FulfillmentItem fulfillmentItem){
+
+    public FulfillmentPackageDataItem(FulfillmentItem fulfillmentItem) {
         mFulfillmentItem = fulfillmentItem;
     }
 

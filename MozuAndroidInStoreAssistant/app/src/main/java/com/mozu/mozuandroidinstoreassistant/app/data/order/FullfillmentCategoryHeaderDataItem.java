@@ -2,10 +2,11 @@ package com.mozu.mozuandroidinstoreassistant.app.data.order;
 
 import com.mozu.mozuandroidinstoreassistant.app.data.IData;
 
-public class FullfillmentHeaderDataItem implements IData {
+public class FullfillmentCategoryHeaderDataItem implements IData {
 
     private String mHeaderName;
-    public FullfillmentHeaderDataItem(String headerName) {
+
+    public FullfillmentCategoryHeaderDataItem(String headerName) {
         mHeaderName = headerName;
     }
 

@@ -8,7 +8,7 @@ import android.widget.TextView;
 import com.mozu.api.contracts.commerceruntime.fulfillment.PickupItem;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.data.IData;
-import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentPickupItem;
+import com.mozu.mozuandroidinstoreassistant.app.data.order.FulfillmentPickupItem;
 import com.mozu.mozuandroidinstoreassistant.app.layout.IRowLayout;
 
 public class FulfillmentPickupItemRow extends LinearLayout implements IRowLayout {
@@ -29,9 +29,9 @@ public class FulfillmentPickupItemRow extends LinearLayout implements IRowLayout
         TextView mPickUpNameText = (TextView) findViewById(R.id.pickup_name);
         TextView mItemCountText = (TextView) findViewById(R.id.item_count);
 
-        if (data instanceof FullfillmentPickupItem) {
-            FullfillmentPickupItem fullfillmentDataPickUpItem = (FullfillmentPickupItem) data;
-            mPickUpNameText.setText(getContext().getResources().getString(R.string.fulfillment_pickup_number)+String.valueOf(fullfillmentDataPickUpItem.getmPickupCount()));
+        if (data instanceof FulfillmentPickupItem) {
+            FulfillmentPickupItem fullfillmentDataPickUpItem = (FulfillmentPickupItem) data;
+            mPickUpNameText.setText(getContext().getResources().getString(R.string.fulfillment_pickup_number) + String.valueOf(fullfillmentDataPickUpItem.getPickupCount()));
 
             int totalItemCount = 0;
             for (PickupItem item : fullfillmentDataPickUpItem.getPickup().getItems()) {
