@@ -87,7 +87,6 @@ public class OrderDetailNotesAdapter extends BaseAdapter implements ListView.OnI
 
             if (getItem(position) instanceof ShopperNotes) {
                 ShopperNotes note = (ShopperNotes) getItem(position);
-//                mOrder.getAuditInfo().getCreateDate();
 
                 TextView noteDate = (TextView) convertView.findViewById(R.id.note_date);
                 TextView comment = (TextView) convertView.findViewById(R.id.note_comment);

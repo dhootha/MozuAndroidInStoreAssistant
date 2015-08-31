@@ -135,7 +135,7 @@ public class OrderDetailNotesFragment extends Fragment implements OrderNotesUpda
             mNotesLoadingView.success();
         }
 
-        if (mOrder == null || mOrder.getShopperNotes() == null || mOrder.getShopperNotes() == null) {
+        if (mOrder == null || mOrder.getShopperNotes() == null || mOrder.getShopperNotes().getComments() == null) {
             mCustomerLoadingView.setError(getActivity().getResources().getString(R.string.not_customer_notes_available));
         } else {
             mCustomerLoadingView.success();
