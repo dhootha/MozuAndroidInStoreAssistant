@@ -58,7 +58,7 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
     private int mSiteId;
     Subscription mSubscription;
     ProductSuggestionAdapter mAdapter;
-    private NewOrderProductAdapter mProductsAdapter;
+    private com.mozu.mozuandroidinstoreassistant.app.order.NewOrderProductAdapter mProductsAdapter;
     private Order mOrder;
     private boolean mIsEditMode;
     private static final String NEW_ORDER = "neworder";
@@ -137,7 +137,7 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
     private void setUpViews() {
         mAdapter = new ProductSuggestionAdapter(getActivity());
         mProductLookup.setAdapter(mAdapter);
-        mProductsAdapter = new NewOrderProductAdapter(this);
+        mProductsAdapter = new com.mozu.mozuandroidinstoreassistant.app.order.NewOrderProductAdapter(this);
         if (mOrder != null) {
             mProductsAdapter.addData(mOrder);
             updateEditMode(mIsEditMode);

@@ -30,9 +30,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subjects.AsyncSubject;
 
-/**
- * Created by santhosh_mankala on 8/17/15.
- */
 public class NewOrderManager {
 
     public static int count = 0;

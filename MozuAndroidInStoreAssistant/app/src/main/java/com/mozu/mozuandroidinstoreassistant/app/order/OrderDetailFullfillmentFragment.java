@@ -34,7 +34,6 @@ import com.mozu.mozuandroidinstoreassistant.app.layout.order.FulfillmentMoveToRo
 import com.mozu.mozuandroidinstoreassistant.app.models.FulfillmentItem;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
-import com.mozu.mozuandroidinstoreassistant.app.product.ProductDetailOverviewDialogFragment;
 import com.mozu.mozuandroidinstoreassistant.app.order.adapters.OrderDetailFullfillmentAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.product.ProductDetailOverviewDialogFragment;
 
