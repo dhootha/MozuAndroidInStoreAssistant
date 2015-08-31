@@ -16,7 +16,8 @@ public class NewOrderFragmentAdapter extends FragmentStatePagerAdapter {
 
     private CustomerAccount mCustomer;
     private Order mOrder;
-    public NewOrderFragmentAdapter(FragmentManager manager,Order order) {
+
+    public NewOrderFragmentAdapter(FragmentManager manager, Order order) {
         super(manager);
         mOrder = order;
     }
@@ -45,15 +46,12 @@ public class NewOrderFragmentAdapter extends FragmentStatePagerAdapter {
                 fragment.setOrder(mOrder);
                 return fragment;
             default:
-                  return NewOrderCreateFragment.getInstance(mOrder);
+                return NewOrderCreateFragment.getInstance(mOrder, true);
         }
     }
 
     private enum TabTypes {
         DETAILS("DETAILS"),
-        FULFILLMENT("FULFILLMENT"),
-        PAYMENT("PAYMENT"),
-        RETURNS("RETURNS"),
         NOTES("NOTES");
         String mDisplayTitle;
 

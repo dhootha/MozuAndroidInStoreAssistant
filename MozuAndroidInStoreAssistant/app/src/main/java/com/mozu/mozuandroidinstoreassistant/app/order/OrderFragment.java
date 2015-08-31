@@ -9,7 +9,6 @@ import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,7 +33,6 @@ import com.mozu.mozuandroidinstoreassistant.app.models.UserPreferences;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.order.adapters.OrdersAdapter;
-import com.mozu.mozuandroidinstoreassistant.app.order.loaders.OrderCreateLoader;
 import com.mozu.mozuandroidinstoreassistant.app.order.loaders.OrdersLoader;
 
 import java.util.ArrayList;

@@ -178,6 +178,16 @@
                 android:text="@string/customer_notes_header"
                 android:textColor="@color/dark_gray_text"
                 android:textSize="28sp"/>
+            <Button
+                android:id="@+id/add_customer_note"
+                style="@style/ButtonMozu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/customer_header"
+                android:layout_marginLeft="-4dp"
+                android:text="@string/add_customer_note_title"
+                android:visibility="gone"
+                />
 
             <TextView
                 android:id="@+id/show_internal_notes"

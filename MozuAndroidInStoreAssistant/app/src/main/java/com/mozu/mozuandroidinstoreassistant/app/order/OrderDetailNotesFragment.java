@@ -8,6 +8,7 @@ import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -16,12 +17,14 @@ import android.widget.TextView;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.commerceruntime.orders.OrderNote;
+import com.mozu.api.contracts.commerceruntime.orders.ShopperNotes;
 import com.mozu.api.contracts.core.AuditInfo;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.bus.RxBus;
 import com.mozu.mozuandroidinstoreassistant.app.dialog.ErrorMessageAlertDialog;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.order.adapters.OrderDetailNotesAdapter;
+import com.mozu.mozuandroidinstoreassistant.app.order.loaders.NewOrderManager;
 import com.mozu.mozuandroidinstoreassistant.app.order.loaders.OrderNoteObserverable;
 import com.mozu.mozuandroidinstoreassistant.app.views.LoadingView;
 
@@ -32,6 +35,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import rx.Subscriber;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -50,6 +54,10 @@ public class OrderDetailNotesFragment extends Fragment implements OrderNotesUpda
     TextView mShowInternalNotes;
     @InjectView(R.id.add_internal_note)
     Button mAddInternalNote;
+
+    @InjectView(R.id.add_customer_note)
+    Button mAddCustomerNote;
+
     private Order mOrder;
     private LoadingView mNotesLoadingView;
     private LoadingView mCustomerLoadingView;
@@ -109,6 +117,7 @@ public class OrderDetailNotesFragment extends Fragment implements OrderNotesUpda
 
         if (mIsEditable) {
             mAddInternalNote.setVisibility(View.VISIBLE);
+
         }
         return view;
     }
@@ -127,7 +136,15 @@ public class OrderDetailNotesFragment extends Fragment implements OrderNotesUpda
         mNoteList.setOnItemClickListener(internalNotesAdapter);
         ListView customerNotesList = (ListView) view.findViewById(R.id.customer_list);
         customerNotesAdapter = new OrderDetailNotesAdapter(getActivity(), mOrder, false, mIsEditable, this);
-        customerNotesList.setOnItemClickListener(customerNotesAdapter);
+        customerNotesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                if (adapterView.getItemAtPosition(position) instanceof ShopperNotes) {
+                    showCustomerNoteDialog(((ShopperNotes) adapterView.getItemAtPosition(position)).getComments());
+                }
+
+            }
+        });
         customerNotesList.setAdapter(customerNotesAdapter);
         if (mOrder == null || mOrder.getNotes() == null || mOrder.getNotes().size() < 1) {
             mNotesLoadingView.setError(getActivity().getResources().getString(R.string.not_internal_notes_available));
@@ -151,6 +168,9 @@ public class OrderDetailNotesFragment extends Fragment implements OrderNotesUpda
             @Override
             public void onClick(View view) {
                 showCustomerNotes();
+                if (mIsEditable && mOrder.getStatus().equalsIgnoreCase("Pending")) {
+                    mAddCustomerNote.setVisibility(View.VISIBLE);
+                }
                 isCurrentInternalNotes = false;
             }
         });
@@ -169,6 +189,12 @@ public class OrderDetailNotesFragment extends Fragment implements OrderNotesUpda
                 showAddNewNoteDialog();
             }
         });
+        mAddCustomerNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showCustomerNoteDialog(mOrder.getShopperNotes() == null ? null : mOrder.getShopperNotes().getComments());
+            }
+        });
 
     }
 
@@ -184,6 +210,7 @@ public class OrderDetailNotesFragment extends Fragment implements OrderNotesUpda
     private void showInternalNotes() {
         mCustomerNotesListLayout.setVisibility(View.GONE);
         mNoteListLayout.setVisibility(View.VISIBLE);
+        mAddCustomerNote.setVisibility(View.GONE);
     }
 
     private void showAddNewNoteDialog() {
@@ -220,11 +247,47 @@ public class OrderDetailNotesFragment extends Fragment implements OrderNotesUpda
         noteDialog.show();
     }
 
+    private void showCustomerNoteDialog(String currentNoteVal) {
+        View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_edit_order_notes, null);
+        final EditText noteInput = (EditText) view.findViewById(R.id.note);
+        final TextView noteTile = (TextView) view.findViewById(R.id.title);
+        noteTile.setText(R.string.add_note);
+        noteInput.setFocusable(true);
+        noteInput.setEnabled(true);
+        noteInput.setText(currentNoteVal);
+        noteInput.requestFocus();
+        noteInput.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+        AlertDialog noteDialog = new AlertDialog.Builder(getActivity())
+                .setView(view)
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setPositiveButton(R.string.new_note, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String note = noteInput.getText().toString();
+                        addEditCustomerNote(note);
+                        setOrderToViews(OrderDetailNotesFragment.this.getView());
+                        dialog.dismiss();
+                    }
+                })
+                .create();
+        noteDialog.show();
+    }
+
     private void onEditModeUpdateEvent() {
         if (mIsEditable) {
             mAddInternalNote.setVisibility(View.VISIBLE);
+            if (mOrder.getStatus().equalsIgnoreCase("Pending")) {
+                mAddCustomerNote.setVisibility(View.VISIBLE);
+            }
         } else {
             mAddInternalNote.setVisibility(View.GONE);
+            mAddCustomerNote.setVisibility(View.GONE);
+
         }
         customerNotesAdapter.isEditableMode(mIsEditable);
         internalNotesAdapter.isEditableMode(mIsEditable);
@@ -252,8 +315,38 @@ public class OrderDetailNotesFragment extends Fragment implements OrderNotesUpda
         mOrder.setNotes(notes);
         internalNotesAdapter.setOrder(mOrder);
         internalNotesAdapter.notifyDataSetChanged();
-//todo update order
-//        ((NewOrderActivity) getActivity()).updateOrder(mOrder);
+    }
+
+    private void addEditCustomerNote(String note) {
+        String user = UserAuthenticationStateMachineProducer
+                .getInstance(getActivity())
+                .getAuthProfile()
+                .getUserProfile()
+                .getUserName();
+        ShopperNotes shopperNotes = new ShopperNotes();
+        shopperNotes.setComments(note);
+        mOrder.setShopperNotes(shopperNotes);
+        updateCustomerNotes(mOrder);
+    }
+
+    private void updateCustomerNotes(Order mOrder) {
+        AndroidObservable.bindFragment(this, NewOrderManager.getInstance().getUpdateOrderObservable(mOrder.getTenantId(), mOrder.getSiteId(), mOrder, mOrder.getId())).subscribe(new Subscriber<Order>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), "Error Updating Customer Note");
+            }
+
+            @Override
+            public void onNext(Order order) {
+                customerNotesAdapter.setOrder(order);
+                customerNotesAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override

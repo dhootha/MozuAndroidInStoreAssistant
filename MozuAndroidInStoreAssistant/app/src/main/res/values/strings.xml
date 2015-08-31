@@ -181,7 +181,7 @@
     <string name="customer_wishlist_qty">Qty</string>
     <string name="customer_wishlist_purchasable">Purchasable</string>
     <string name="customer_wishlist_date_added">Date Added</string>
-    <string name="shipping">Shipping</string>
+    <string name="shipping">Shipping Method</string>
     <string name="billing">Billing</string>
     <string name="not_available">N/A</string>
     <string name="order_fulfillment_status">Status:</string>
@@ -302,13 +302,22 @@
     <string name="product_quantity_header">Quantity</string>
     <string name="product_total_header">Item Total</string>
     <string name="add_note">Add Note</string>
-    <string name="new_note">New Note</string>
+    <string name="new_note">Save Note</string>
     <string name="edit_note">Edit Note</string>
     <string name="exit_edit_mode">Finish Editing</string>
     <string name="add_internal_note_title">Add New Internal Note</string>
     <string name="done">Done</string>
     <string name="customer_lookup_instructions">Lookup or create a customer to continue</string>
     <string name="product_save">Save</string>
+    <string name="sub_total">Sub Total</string>
+    <string name="tax">Tax</string>
+    <string name="shipping_total">Shipping</string>
+    <string name="add_product">Add a Product</string>
+    <string name="add_coupon">Add Coupon(Order,Item, or Shipping)</string>
+    <string name="select_variation">Select Variation</string>
+    <string name="add_customer_note_title">Add Customer Note</string>
+    <string name="select_coupons">Select Coupons</string>
+    <string name="shipping_method">Shipping Method</string>
     <string-array name="register_email_address">
         <item>mozumobile@volusion.com</item>
     </string-array>

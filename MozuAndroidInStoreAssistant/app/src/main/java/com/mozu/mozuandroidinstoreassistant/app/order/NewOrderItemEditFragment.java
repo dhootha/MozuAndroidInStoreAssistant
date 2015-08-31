@@ -12,17 +12,26 @@ import android.view.Window;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.commerceruntime.orders.OrderItem;
+import com.mozu.api.contracts.commerceruntime.products.ProductOption;
+import com.mozu.api.contracts.productadmin.ProductVariation;
+import com.mozu.api.contracts.productadmin.ProductVariationOption;
+import com.mozu.api.contracts.productadmin.ProductVariationPagedCollection;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.data.product.FulfillmentInfo;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.order.loaders.NewOrderManager;
+import com.mozu.mozuandroidinstoreassistant.app.utils.ProductUtils;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,11 +41,13 @@ import rx.Subscriber;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 public class NewOrderItemEditFragment extends DialogFragment {
 
 
     private static final String ORDER_ITEM = "orderItem";
+
     private static final String ORDER_ID = "orderId";
     private static final String EDIT_MODE = "editmode";
     private OrderItem mOrderItem;
@@ -65,11 +76,25 @@ public class NewOrderItemEditFragment extends DialogFragment {
     @InjectView(R.id.fulfillment_type)
     public Spinner fulfillmentType;
 
+    @InjectView(R.id.product_variation)
+    public Spinner productVariationSpinner;
+
+    @InjectView(R.id.product_variation_layout)
+    public LinearLayout productVariationLayout;
+    @InjectView(R.id.product_variation_progress)
+    public ProgressBar productVariationProgress;
+    @InjectView(R.id.fulfillment_spinner_progress)
+    public ProgressBar fulfillmentSpinnerProgress;
+
+
     private int mTenantId;
     private int mSiteId;
     private onItemEditDoneListener mEditDoneListener;
-    private List<FulfillmentInfo> mFulFillmentInfoList;
     private SpinnerAdapter mSpinnerAdapter;
+    private ProductVariationAdapter mProductVariationAdapter;
+
+    private CompositeSubscription mCompositeSubscription;
+
 
     public static NewOrderItemEditFragment getInstance(OrderItem orderItem, String orderId, Boolean isEditMode) {
         NewOrderItemEditFragment newOrderItemEditFragment = new NewOrderItemEditFragment();
@@ -85,6 +110,7 @@ public class NewOrderItemEditFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         UserAuthenticationStateMachine userAuthenticationStateMachine = UserAuthenticationStateMachineProducer.getInstance(getActivity());
+        mCompositeSubscription = new CompositeSubscription();
         mTenantId = userAuthenticationStateMachine.getTenantId();
         mSiteId = userAuthenticationStateMachine.getSiteId();
         if (getArguments() != null) {
@@ -104,31 +130,114 @@ public class NewOrderItemEditFragment extends DialogFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         loadLocations();
+        if (ProductUtils.isProductConfigurable(mOrderItem.getProduct())) {
+            if (!isEditMode) {
+                loadProductVariations(mOrderItem.getProduct().getProductCode());
+            } else {
+                List<ProductVariation> productVariations = new ArrayList<>();
+                ProductVariation productVariation = new ProductVariation();
+                if (!TextUtils.isEmpty(mOrderItem.getProduct().getVariationProductCode())) {
+                    productVariation.setVariationProductCode(mOrderItem.getProduct().getVariationProductCode());
+                } else {
+                    productVariation.setVariationProductCode(mOrderItem.getProduct().getProductCode());
+                }
+                List<ProductVariationOption> productVariationOptions = new ArrayList<>();
+                for (ProductOption productOption : mOrderItem.getProduct().getOptions()) {
+                    ProductVariationOption productVariationOption = new ProductVariationOption();
+                    productVariationOption.setAttributeFQN(productOption.getAttributeFQN());
+                    productVariationOption.setValue(productOption.getValue());
+                    productVariationOptions.add(productVariationOption);
+                }
+
+                productVariation.setOptions(productVariationOptions);
+                productVariations.add(productVariation);
+                mProductVariationAdapter.setData(productVariations);
+                mProductVariationAdapter.notifyDataSetChanged();
+                productVariationSpinner.setEnabled(false);
+                productVariationSpinner.setClickable(false);
+
+            }
+        } else {
+            productVariationLayout.setVisibility(View.GONE);
+        }
+
     }
 
 
-    private void loadLocations() {
-        AndroidObservable.bindFragment(this, NewOrderManager.getInstance().getInstoreLocationCodes(mTenantId, mSiteId, mOrderItem.getProduct().getVariationProductCode()))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<FulfillmentInfo>>() {
+    private void loadProductVariations(String productCode) {
+        productSave.setEnabled(false);
+        productVariationProgress.setVisibility(View.VISIBLE);
+        mCompositeSubscription.add(AndroidObservable.bindFragment(this, NewOrderManager.getInstance().getProductVariationCodes(mTenantId, mSiteId, productCode))
+                .subscribe(new Subscriber<ProductVariationPagedCollection>() {
                     @Override
                     public void onCompleted() {
+                        productVariationProgress.setVisibility(View.GONE);
+                        productSave.setEnabled(true);
+                        if (mOrderItem.getProduct().getVariationProductCode() != null) {
+                            setProductSelection();
+                        }
 
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+
+                    }
+
+                    @Override
+                    public void onNext(ProductVariationPagedCollection productVariationPagedCollection) {
+                        if (productVariationPagedCollection != null) {
+                            mProductVariationAdapter.setData(productVariationPagedCollection.getItems());
+                            mProductVariationAdapter.notifyDataSetChanged();
+                        }
+
+                    }
+                }));
+    }
+
+    private void setProductSelection() {
+        for (int i = 0; i < mProductVariationAdapter.getCount(); i++) {
+            if (mProductVariationAdapter.getItem(i).getVariationProductCode().equals(mOrderItem.getProduct().getVariationProductCode())) {
+                productVariationSpinner.setSelection(i);
+                return;
+            }
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (mCompositeSubscription != null && !mCompositeSubscription.isUnsubscribed()) {
+            mCompositeSubscription.unsubscribe();
+
+        }
+    }
+
+    private void loadLocations() {
+        productSave.setEnabled(false);
+        fulfillmentSpinnerProgress.setVisibility(View.VISIBLE);
+        mCompositeSubscription.add(AndroidObservable.bindFragment(this, NewOrderManager.getInstance().getInstoreLocationCodes(mTenantId, mSiteId, mOrderItem.getProduct().getVariationProductCode()))
+                .subscribe(new Subscriber<List<FulfillmentInfo>>() {
+                    @Override
+                    public void onCompleted() {
+                        fulfillmentSpinnerProgress.setVisibility(View.GONE);
+                        productSave.setEnabled(true);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
 
                     }
 
                     @Override
                     public void onNext(List<FulfillmentInfo> fulfillmentInfos) {
-                        mFulFillmentInfoList = fulfillmentInfos;
                         mSpinnerAdapter.setData(fulfillmentInfos);
                         mSpinnerAdapter.notifyDataSetChanged();
+
                     }
-                });
+                }));
     }
 
     @Override
@@ -139,12 +248,15 @@ public class NewOrderItemEditFragment extends DialogFragment {
     }
 
     private void setupViews() {
+        NumberFormat format = NumberFormat.getCurrencyInstance();
         Double productPriceVal = mOrderItem.getProduct().getPrice().getPrice();
-        productPrice.setText(String.valueOf(productPriceVal));
+        productPrice.setText(format.format(productPriceVal));
         productQuantity.setText(String.valueOf(mOrderItem.getQuantity()));
         productCode.setText(mOrderItem.getProduct().getProductCode());
         productName.setText(mOrderItem.getProduct().getName());
-        productTotal.setText(String.valueOf(mOrderItem.getQuantity() * productPriceVal));
+        mProductVariationAdapter = new ProductVariationAdapter();
+        productVariationSpinner.setAdapter(mProductVariationAdapter);
+        productTotal.setText(format.format(mOrderItem.getQuantity() * productPriceVal));
         mSpinnerAdapter = new SpinnerAdapter();
         fulfillmentType.setAdapter(mSpinnerAdapter);
         productSave.setOnClickListener(new View.OnClickListener() {
@@ -176,6 +288,7 @@ public class NewOrderItemEditFragment extends DialogFragment {
 
                                     @Override
                                     public void onError(Throwable e) {
+                                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
 
                                     }
 
@@ -190,6 +303,24 @@ public class NewOrderItemEditFragment extends DialogFragment {
                     mOrderItem.setFulfillmentLocationCode(updatedFulFillmentType.mLocation);
                     mOrderItem.setFulfillmentMethod(updatedFulFillmentType.mType);
                     mOrderItem.setQuantity(Integer.valueOf(productQuantity.getText().toString()));
+                    if (ProductUtils.isProductConfigurable(mOrderItem.getProduct())) {
+                        ProductVariation productVariation = ((ProductVariation) productVariationSpinner.getSelectedItem());
+                        mOrderItem.getProduct().setVariationProductCode(productVariation.getVariationProductCode());
+                        for (ProductOption productOption : mOrderItem.getProduct().getOptions()) {
+                            productOption.getAttributeFQN();
+                            for (ProductVariationOption productVariationOption : productVariation.getOptions()) {
+                                if (productVariationOption.getAttributeFQN().equals(productOption.getAttributeFQN())) {
+                                    productOption.setShopperEnteredValue(productVariationOption.getValue());
+                                    productOption.setStringValue(productVariationOption.getContent().getStringValue());
+                                    productOption.setValue(productVariationOption.getValue());
+                                }
+                            }
+                        }
+                    } else {
+                        mOrderItem.getProduct().setVariationProductCode(mOrderItem.getProduct().getProductCode());
+                    }
+
+
                     AndroidObservable.bindFragment(NewOrderItemEditFragment.this, NewOrderManager
                             .getInstance()
                             .getOrderItemCreateObservable(mTenantId, mSiteId, mOrderItem, mOrderId))
@@ -204,6 +335,7 @@ public class NewOrderItemEditFragment extends DialogFragment {
 
                                 @Override
                                 public void onError(Throwable e) {
+                                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
 
                                 }
 
@@ -224,6 +356,66 @@ public class NewOrderItemEditFragment extends DialogFragment {
 
     }
 
+    class ProductVariationAdapter extends BaseAdapter {
+
+        private List<ProductVariation> mData;
+
+        public ProductVariationAdapter() {
+            mData = new ArrayList<>();
+        }
+
+        public void setData(List<ProductVariation> data) {
+            mData = data;
+        }
+
+        @Override
+        public View getDropDownView(int position, View convertView, ViewGroup parent) {
+            if (convertView == null) {
+                LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+                convertView = inflater.inflate(R.layout.orderfulfillment_spinner_item, parent, false);
+            }
+            TextView mTextView = (TextView) convertView.findViewById(R.id.order_fulfillment);
+            ProductVariation productVariation = getItem(position);
+            StringBuffer fulFillmentDisplay = new StringBuffer(productVariation.getVariationProductCode());
+            for (ProductVariationOption option : productVariation.getOptions()) {
+                fulFillmentDisplay.append("- " + option.getValue());
+            }
+
+            mTextView.setText(fulFillmentDisplay.toString());
+            return convertView;
+        }
+
+        @Override
+        public int getCount() {
+            return mData.size();
+        }
+
+        @Override
+        public ProductVariation getItem(int i) {
+            return mData.get(i);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            TextView textView = (TextView) View.inflate(parent.getContext(), R.layout.orderfulfillment_dropdown_resource, null);
+            ProductVariation productVariation = getItem(position);
+
+            StringBuffer fulFillmentDisplay = new StringBuffer(productVariation.getVariationProductCode());
+            for (ProductVariationOption option : productVariation.getOptions()) {
+                fulFillmentDisplay.append("- " + option.getValue());
+            }
+            textView.setText(fulFillmentDisplay.toString());
+            return textView;
+
+        }
+
+    }
+
     class SpinnerAdapter extends BaseAdapter {
 
         private List<FulfillmentInfo> mData;
@@ -240,9 +432,9 @@ public class NewOrderItemEditFragment extends DialogFragment {
         public View getDropDownView(int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
                 LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-                convertView = inflater.inflate(R.layout.productoption_spinner_item, parent, false);
+                convertView = inflater.inflate(R.layout.orderfulfillment_spinner_item, parent, false);
             }
-            TextView mTextView = (TextView) convertView.findViewById(R.id.product_option_name);
+            TextView mTextView = (TextView) convertView.findViewById(R.id.order_fulfillment);
             FulfillmentInfo fulfillmentInfo = getItem(position);
             String fulFillmentDisplay = fulfillmentInfo.mType + "_" + fulfillmentInfo.mLocation;
             mTextView.setText(fulFillmentDisplay);
@@ -266,7 +458,7 @@ public class NewOrderItemEditFragment extends DialogFragment {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            TextView textView = (TextView) View.inflate(parent.getContext(), R.layout.productoption_dropdown_resource, null);
+            TextView textView = (TextView) View.inflate(parent.getContext(), R.layout.orderfulfillment_dropdown_resource, null);
             FulfillmentInfo fulfillmentInfo = getItem(position);
             String fulFillmentDisplay = fulfillmentInfo.mType + "_" + fulfillmentInfo.mLocation;
             textView.setText(fulFillmentDisplay);
