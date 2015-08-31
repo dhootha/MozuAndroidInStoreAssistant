@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.mozu.api.contracts.commerceruntime.fulfillment.FulfillmentAction;
 import com.mozu.api.contracts.commerceruntime.fulfillment.Package;
 import com.mozu.api.contracts.commerceruntime.fulfillment.PackageItem;
 import com.mozu.api.contracts.commerceruntime.fulfillment.Pickup;
@@ -23,6 +24,7 @@ import com.mozu.mozuandroidinstoreassistant.app.data.order.BottomRowItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FulfillmentColumnHeader;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FulfillmentDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FulfillmentDividerRowItem;
+import com.mozu.mozuandroidinstoreassistant.app.data.order.FulfillmentFulfilledDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FulfillmentMoveToDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FulfillmentPackageDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FulfillmentPickupItem;
@@ -30,19 +32,26 @@ import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentCategoryH
 import com.mozu.mozuandroidinstoreassistant.app.data.order.PickupFulfillmentTitleDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.ShipmentFulfillmentTitleDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.TopRowItem;
-import com.mozu.mozuandroidinstoreassistant.app.layout.order.FulfillmentMoveToRow;
+import com.mozu.mozuandroidinstoreassistant.app.dialog.ErrorMessageAlertDialog;
+import com.mozu.mozuandroidinstoreassistant.app.layout.order.FulfillmentMoveToRow.MoveToListener;
+import com.mozu.mozuandroidinstoreassistant.app.layout.order.FulfillmentPickupItemRow.MarkPickupAsFulfilledListener;
 import com.mozu.mozuandroidinstoreassistant.app.models.FulfillmentItem;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.order.adapters.OrderDetailFullfillmentAdapter;
+import com.mozu.mozuandroidinstoreassistant.app.order.loaders.FulfillmentActionObservablesManager;
+import com.mozu.mozuandroidinstoreassistant.app.order.loaders.PickupObservablesManager;
 import com.mozu.mozuandroidinstoreassistant.app.product.ProductDetailOverviewDialogFragment;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import rx.Subscriber;
+import rx.android.observables.AndroidObservable;
 
-public class OrderDetailFullfillmentFragment extends Fragment implements FulfillmentMoveToRow.MoveToListener {
+
+public class OrderDetailFullfillmentFragment extends Fragment implements MoveToListener, MarkPickupAsFulfilledListener {
 
     public static final String PENDING = "Pending";
     public static final String FULFILLED = "Fulfilled";
@@ -75,7 +84,7 @@ public class OrderDetailFullfillmentFragment extends Fragment implements Fulfill
                     packageInfoDialogFragment.setTenantAndSiteId(userState.getTenantId(), userState.getSiteId());
                 }
                 packageInfoDialogFragment.show(manager, PACKAGE_DIALOG_TAG);
-            }else if(rowType == OrderDetailFullfillmentAdapter.RowType.ITEM_ROW){
+            } else if (rowType == OrderDetailFullfillmentAdapter.RowType.ITEM_ROW) {
                 FulfillmentDataItem item = (FulfillmentDataItem) mOrderDetailFullfillmentAdapter.getItem(position);
                 FragmentManager manager = getFragmentManager();
                 ProductDetailOverviewDialogFragment productOverviewFragment = (ProductDetailOverviewDialogFragment) manager.findFragmentByTag(PRODUCT_DIALOG_TAG);
@@ -90,7 +99,7 @@ public class OrderDetailFullfillmentFragment extends Fragment implements Fulfill
                 }
                 productOverviewFragment.show(manager, PRODUCT_DIALOG_TAG);
 
-            }else if(rowType == OrderDetailFullfillmentAdapter.RowType.PICKUP_ITEM_ROW){
+            } else if (rowType == OrderDetailFullfillmentAdapter.RowType.PICKUP_ITEM_ROW) {
                 FulfillmentPickupItem item = (FulfillmentPickupItem) mOrderDetailFullfillmentAdapter.getItem(position);
                 FragmentManager manager = getFragmentManager();
                 PickupInfoDialogFragment pickupInfoDialogFragment = (PickupInfoDialogFragment) manager.findFragmentByTag(PICKUP_DIALOG_TAG);
@@ -126,7 +135,7 @@ public class OrderDetailFullfillmentFragment extends Fragment implements Fulfill
             List<IData> data = new ArrayList<>();
             data.addAll(filterShipment(mShipItems));
             data.addAll(filterPickUp(mPickupItems));
-            mOrderDetailFullfillmentAdapter = new OrderDetailFullfillmentAdapter(getActivity(), data, this);
+            mOrderDetailFullfillmentAdapter = new OrderDetailFullfillmentAdapter(getActivity(), data, this, this);
             mFullfillmentListview.setAdapter(mOrderDetailFullfillmentAdapter);
             mFullfillmentListview.setOnItemClickListener(mListClickListener);
         }
@@ -184,7 +193,7 @@ public class OrderDetailFullfillmentFragment extends Fragment implements Fulfill
     private List<IData> filterPickUp(List<OrderItem> pickupItems) {
         List<IData> finalDataList = new ArrayList<>();
         List<OrderItem> itemsNotPickedUp = new ArrayList<>(pickupItems);
-        List<FulfillmentPickupItem> fulFilledItems = new ArrayList<>();
+        List<FulfillmentFulfilledDataItem> fulFilledItems = new ArrayList<>();
         List<FulfillmentPickupItem> unFulFilledItems = new ArrayList<>();
 
         int totalPickupCount = getTotalItemCountFromOrderQuantity(pickupItems);
@@ -200,11 +209,13 @@ public class OrderDetailFullfillmentFragment extends Fragment implements Fulfill
                         fulfilledCount += pickupItem.getQuantity();
                         itemsNotPickedUp = removeOrderItem(itemsNotPickedUp, pickupItem.getProductCode());
                     }
-                    FulfillmentPickupItem item = new FulfillmentPickupItem(pickup, pickUpCount);
+
                     if (pickup.getStatus().equalsIgnoreCase(NOTFULLFILLED)) {
+                        FulfillmentPickupItem item = new FulfillmentPickupItem(pickup, pickUpCount);
                         unFulFilledItems.add(item);
 
                     } else if (pickup.getStatus().equalsIgnoreCase(FULFILLED)) {
+                        FulfillmentFulfilledDataItem item = new FulfillmentFulfilledDataItem(pickup, pickUpCount);
                         fulFilledItems.add(item);
                         totalFulfilledCount += fulfilledCount;
                     }
@@ -245,7 +256,7 @@ public class OrderDetailFullfillmentFragment extends Fragment implements Fulfill
                     finalDataList.add(new FulfillmentDividerRowItem());
                 }
                 finalDataList.add(new FullfillmentCategoryHeaderDataItem("PickedUp Items"));
-                for (FulfillmentPickupItem fulfilledItem : fulFilledItems) {
+                for (FulfillmentFulfilledDataItem fulfilledItem : fulFilledItems) {
                     finalDataList.add(fulfilledItem);
                 }
             }
@@ -352,7 +363,70 @@ public class OrderDetailFullfillmentFragment extends Fragment implements Fulfill
             OrderFulfillmentMoveToPickupDialogFragment dialogFragment = new OrderFulfillmentMoveToPickupDialogFragment();
             dialogFragment.setData((FulfillmentMoveToDataItem) data, mOrder);
             dialogFragment.show(getFragmentManager(), "move to");
-
         }
+    }
+
+    @Override
+    public void markPickUpAsFulfilled(Pickup pickup) {
+        FulfillmentAction action = new FulfillmentAction();
+        List<String> pickups = new ArrayList<>();
+        pickups.add(pickup.getId());
+        action.setPickupIds(pickups);
+        action.setActionName("PickUp");
+
+        AndroidObservable.bindFragment(this, FulfillmentActionObservablesManager.getInstance(
+                mOrder.getTenantId(), mOrder.getSiteId())
+                .performFulfillmentAction(action, mOrder.getId()))
+                .subscribe(getUpdatePickupSubscriber());
+    }
+
+    @Override
+    public void cancelPickup(Pickup pickup) {
+        AndroidObservable.bindFragment(this, PickupObservablesManager.getInstance(
+                mOrder.getTenantId(), mOrder.getSiteId())
+                .deletePickup(pickup.getId(), mOrder.getId()))
+                .subscribe(getCancelPickupSubscriber());
+    }
+
+    private Subscriber<Order> getUpdatePickupSubscriber() {
+        return new Subscriber<Order>() {
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                ErrorMessageAlertDialog
+                        .getStandardErrorMessageAlertDialog(getActivity(), getResources().getString(R.string.standard_error))
+                        .show();
+            }
+
+            @Override
+            public void onNext(Order order) {
+                ((OrderDetailActivity) getActivity()).onRefresh();
+            }
+        };
+    }
+
+    private Subscriber<Pickup> getCancelPickupSubscriber() {
+        return new Subscriber<Pickup>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                ErrorMessageAlertDialog
+                        .getStandardErrorMessageAlertDialog(getActivity(), getResources().getString(R.string.standard_error))
+                                .show();
+            }
+
+            @Override
+            public void onNext(Pickup pickup) {
+                ((OrderDetailActivity) getActivity()).onRefresh();
+
+            }
+        };
     }
 }

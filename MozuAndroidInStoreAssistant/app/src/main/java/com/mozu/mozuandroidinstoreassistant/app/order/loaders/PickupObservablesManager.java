@@ -8,6 +8,8 @@ import com.mozu.api.resources.commerce.orders.PickupResource;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class PickupObservablesManager {
 
@@ -40,21 +42,43 @@ public class PickupObservablesManager {
                     subscriber.onError(e);
                 }
             }
-        });
+        })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
     }
 
-    public Observable<Pickup> updatePickup(final Pickup pkg, final String orderId) {
+    public Observable<Pickup> updatePickup(final Pickup pickup, final String orderId) {
         return Observable.create(new Observable.OnSubscribe<Pickup>() {
             @Override
             public void call(Subscriber<? super Pickup> subscriber) {
                 try {
-                    subscriber.onNext(resource.updatePickup(pkg, orderId, pkg.getId()));
+                    subscriber.onNext(resource.updatePickup(pickup, orderId, pickup.getId()));
                     subscriber.onCompleted();
                 } catch (Exception e) {
                     Log.e("updatePickup", e.toString());
                     subscriber.onError(e);
                 }
             }
-        });
+        })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
+    public Observable<Pickup> deletePickup(final String pickupId, final String orderId) {
+        return Observable.create(new Observable.OnSubscribe<Pickup>() {
+            @Override
+            public void call(Subscriber<? super Pickup> subscriber) {
+                try {
+                    resource.deletePickup(orderId, pickupId);
+                    subscriber.onNext(null);
+                    subscriber.onCompleted();
+                } catch (Exception e) {
+                    Log.e("updatePickup", e.toString());
+                    subscriber.onError(e);
+                }
+            }
+        })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
     }
 }
