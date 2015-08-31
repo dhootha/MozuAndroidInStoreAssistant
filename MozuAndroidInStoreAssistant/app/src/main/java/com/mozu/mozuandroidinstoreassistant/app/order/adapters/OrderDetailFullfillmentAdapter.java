@@ -29,13 +29,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class OrderDetailFulfillmentAdaptertemp extends BaseAdapter {
+public class OrderDetailFullfillmentAdapter extends BaseAdapter {
 
     private final MoveToListener mListener;
-    List<IData> mData = new ArrayList<IData>();
+    List<IData> mData = new ArrayList<>();
     private FulfillmentPickupItemRow.MarkPickupAsFulfilledListener mFulfillListener;
 
-    public OrderDetailFulfillmentAdaptertemp(Context context, List<IData> data, MoveToListener listener, FulfillmentPickupItemRow.MarkPickupAsFulfilledListener fulfilledListener) {
+    public OrderDetailFullfillmentAdapter(Context context, List<IData> data, MoveToListener listener, FulfillmentPickupItemRow.MarkPickupAsFulfilledListener fulfilledListener) {
         mData = data;
         mListener = listener;
         mFulfillListener = fulfilledListener;
