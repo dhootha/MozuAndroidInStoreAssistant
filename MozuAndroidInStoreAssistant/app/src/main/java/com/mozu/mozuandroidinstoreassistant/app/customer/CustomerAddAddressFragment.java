@@ -135,7 +135,7 @@ public class CustomerAddAddressFragment extends Fragment {
 
             @Override
             public void onError(Throwable e) {
-                AlertDialog error = ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), e.toString());
+                AlertDialog error = ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), getString(R.string.standard_error));
                 loadingView.success();
                 error.show();
             }
@@ -165,7 +165,7 @@ public class CustomerAddAddressFragment extends Fragment {
 
             @Override
             public void onError(Throwable e) {
-                AlertDialog error = ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), e.toString());
+                AlertDialog error = ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), getString(R.string.standard_error));
                 loadingView.success();
                 error.show();
             }
