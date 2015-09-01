@@ -49,10 +49,8 @@ public class OrderDetailNotesAdapter extends BaseAdapter {
         OrderNote note = getItem(position);
         TextView noteDate = (TextView) convertView.findViewById(R.id.note_date);
         TextView comment = (TextView) convertView.findViewById(R.id.note_comment);
-        TextView employee = (TextView) convertView.findViewById(R.id.note_employee);
         String dateString = note.getAuditInfo() != null && note.getAuditInfo().getCreateDate() != null ? DateFormat.format("MM/dd/yy", new Date(note.getAuditInfo().getCreateDate().getMillis())).toString() : "";
         noteDate.setText(dateString);
-        employee.setText(note.getAuditInfo().getCreateBy());
         comment.setText(note.getText());
         return convertView;
     }

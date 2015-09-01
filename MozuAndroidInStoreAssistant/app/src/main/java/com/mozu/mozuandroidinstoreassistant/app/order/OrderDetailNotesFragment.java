@@ -217,6 +217,7 @@ public class OrderDetailNotesFragment extends Fragment {
         final TextView noteTile = (TextView) view.findViewById(R.id.title);
         noteTile.setText(R.string.add_note);
         noteInput.setFocusable(true);
+        noteInput.setFocusableInTouchMode(true);
         noteInput.setEnabled(true);
         noteInput.requestFocus();
         noteInput.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
