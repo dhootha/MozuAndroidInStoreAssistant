@@ -22,11 +22,11 @@ repositories {
 }
 
 android {
-    compileSdkVersion 19
+    compileSdkVersion 22
     buildToolsVersion '19.1.0'
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 19
+        targetSdkVersion 22
         versionCode 110
         versionName "1.1.0 - " + getDate() + " - Build " + System.getenv("BUILD_NUMBER")
     }
@@ -116,6 +116,8 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.android.support:recyclerview-v7:22.2.1'
     compile 'com.android.support:support-v13:22.2.1'
+    compile "com.android.support:appcompat-v7:22.2.1"
+    compile 'com.android.support:design:22.2.1'
     compile 'org.joda:joda-convert:1.6'
     compile 'com.jakewharton:butterknife:5.1.2'
     compile 'com.netflix.rxjava:rxjava-android:0.17.5'

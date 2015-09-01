@@ -27,4 +27,6 @@
     <color name="second_color_swipe_refresh">#FFFFFF</color>
     <color name="third_color_swipe_refresh">@color/mozu_color</color>
     <color name="fourth_color_swipe_refresh">#FFFFFF</color>
+    <color name="accent_material_light">#c90f1c</color>
+    <color name="primary_material_light">#df3018</color>
 </resources>

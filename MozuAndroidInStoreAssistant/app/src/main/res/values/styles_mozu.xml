@@ -29,49 +29,55 @@
     </style>
 
     <!--
-        everything Below This Is Generated
+        everything Below This Is Generatedr
     -->
 
-    <style name="Theme.Mozu" parent="@android:style/Theme.Holo.Light">
+    <style name="Theme.Mozu" parent="Theme.AppCompat.Light">
         <!--<item name="android:actionBarSize">64dp</item>-->
         <item name="android:homeAsUpIndicator">@drawable/icon_up</item>
+        <item name="colorPrimary">@android:color/transparent</item>
+        <item name="colorPrimaryDark">#303030</item>
+        <item name="colorAccent">@color/accent_material_light</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
 
-        <item name="android:windowBackground">@color/main_background</item>
-        <item name="android:actionBarItemBackground">@drawable/selectable_background_mozu</item>
-        <item name="android:popupMenuStyle">@style/PopupMenu.Mozu</item>
-        <item name="android:dropDownListViewStyle">@style/DropDownListView.Mozu</item>
-        <item name="android:actionBarTabStyle">@style/ActionBarTabStyle.Mozu</item>
-        <item name="android:actionDropDownStyle">@style/DropDownNav.Mozu</item>
-        <item name="android:actionBarStyle">@style/ActionBar.Transparent.Mozu</item>
-        <item name="android:actionModeBackground">@drawable/cab_background_top_mozu</item>
-        <item name="android:actionModeSplitBackground">@drawable/cab_background_bottom_mozu</item>
-        <item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Mozu</item>
-        <item name="android:actionOverflowButtonStyle">@style/OverFlow</item>
-        <item name="android:windowContentOverlay">@null</item>
+        <!--<item name="android:windowBackground">@color/main_background</item>-->
+        <!--<item name="android:actionBarItemBackground">@drawable/selectable_background_mozu</item>-->
+        <!--<item name="android:popupMenuStyle">@style/PopupMenu.Mozu</item>-->
+        <!--<item name="android:dropDownListViewStyle">@style/DropDownListView.Mozu</item>-->
+        <!--<item name="android:actionBarTabStyle">@style/ActionBarTabStyle.Mozu</item>-->
+        <!--<item name="android:actionDropDownStyle">@style/DropDownNav.Mozu</item>-->
+        <!--<item name="android:actionBarStyle">@style/ActionBar.Transparent.Mozu</item>-->
+        <!--<item name="android:actionModeBackground">@drawable/cab_background_top_mozu</item>-->
+        <!--<item name="android:actionModeSplitBackground">@drawable/cab_background_bottom_mozu</item>-->
+        <!--<item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Mozu</item>-->
+        <!--<item name="android:actionOverflowButtonStyle">@style/OverFlow</item>-->
+        <!--<item name="android:windowContentOverlay">@null</item>-->
 
-        <item name="android:editTextBackground">@drawable/mozu_edit_text_holo_light</item>
-        <item name="android:textColorHighlight">#99df3018</item>
-        <item name="android:textSelectHandleLeft">@drawable/mozu_text_select_handle_left</item>
-        <item name="android:textSelectHandleRight">@drawable/mozu_text_select_handle_right</item>
-        <item name="android:textSelectHandle">@drawable/mozu_text_select_handle_middle</item>
-        <item name="android:autoCompleteTextViewStyle">@style/AutoCompleteTextViewMozu</item>
-        <item name="android:listChoiceIndicatorMultiple">@drawable/mozu_btn_check_holo_light</item>
-        <item name="android:listChoiceIndicatorSingle">@drawable/mozu_btn_radio_holo_light</item>
-        <item name="android:buttonStyle">@style/ButtonMozu</item>
-        <item name="android:imageButtonStyle">@style/ImageButtonMozu</item>
-        <item name="android:dropDownSpinnerStyle">@style/SpinnerMozu</item>
-        <item name="android:progressBarStyleHorizontal">@style/ProgressBarMozu</item>
-        <item name="android:seekBarStyle">@style/SeekBarMozu</item>
-        <item name="android:ratingBarStyle">@style/RatingBarMozu</item>
-        <item name="android:ratingBarStyleIndicator">@style/RatingBarBigMozu</item>
-        <item name="android:ratingBarStyleSmall">@style/RatingBarSmallMozu</item>
-        <item name="android:buttonStyleToggle">@style/ToggleMozu</item>
-        <item name="android:listChoiceBackgroundIndicator">@drawable/mozu_list_selector_holo_light</item>
-        <item name="android:activatedBackgroundIndicator">@drawable/mozu_activated_background_holo_light</item>
-        <item name="android:fastScrollThumbDrawable">@drawable/mozu_fastscroll_thumb_holo</item>
-        <item name="vpiTabPageIndicatorStyle">@style/CustomTabPageIndicator</item>
-        <item name="android:dialogTheme">@style/DialogMozu</item>
-        <item name="android:alertDialogTheme">@style/DialogMozu.Alert</item>
+        <!--<item name="android:editTextBackground">@drawable/mozu_edit_text_holo_light</item>-->
+        <!--<item name="android:textColorHighlight">#99df3018</item>-->
+        <!--<item name="android:textSelectHandleLeft">@drawable/mozu_text_select_handle_left</item>-->
+        <!--<item name="android:textSelectHandleRight">@drawable/mozu_text_select_handle_right</item>-->
+        <!--<item name="android:textSelectHandle">@drawable/mozu_text_select_handle_middle</item>-->
+        <!--<item name="android:autoCompleteTextViewStyle">@style/AutoCompleteTextViewMozu</item>-->
+        <!--<item name="android:listChoiceIndicatorMultiple">@drawable/mozu_btn_check_holo_light</item>-->
+        <!--<item name="android:listChoiceIndicatorSingle">@drawable/mozu_btn_radio_holo_light</item>-->
+        <!--<item name="android:buttonStyle">@style/ButtonMozu</item>-->
+        <!--<item name="android:imageButtonStyle">@style/ImageButtonMozu</item>-->
+        <!--<item name="android:dropDownSpinnerStyle">@style/SpinnerMozu</item>-->
+        <!--<item name="android:progressBarStyleHorizontal">@style/ProgressBarMozu</item>-->
+        <!--<item name="android:seekBarStyle">@style/SeekBarMozu</item>-->
+        <!--<item name="android:ratingBarStyle">@style/RatingBarMozu</item>-->
+        <!--<item name="android:ratingBarStyleIndicator">@style/RatingBarBigMozu</item>-->
+        <!--<item name="android:ratingBarStyleSmall">@style/RatingBarSmallMozu</item>-->
+        <!--<item name="android:buttonStyleToggle">@style/ToggleMozu</item>-->
+        <!--<item name="android:listChoiceBackgroundIndicator">@drawable/mozu_list_selector_holo_light</item>-->
+        <!--<item name="android:activatedBackgroundIndicator">@drawable/mozu_activated_background_holo_light</item>-->
+        <!--<item name="android:fastScrollThumbDrawable">@drawable/mozu_fastscroll_thumb_holo</item>-->
+        <!--<item name="vpiTabPageIndicatorStyle">@style/CustomTabPageIndicator</item>-->
+        <!--<item name="android:dialogTheme">@style/DialogMozu</item>-->
+        <!--<item name="android:alertDialogTheme">@style/DialogMozu.Alert</item>-->
 
     </style>
 
