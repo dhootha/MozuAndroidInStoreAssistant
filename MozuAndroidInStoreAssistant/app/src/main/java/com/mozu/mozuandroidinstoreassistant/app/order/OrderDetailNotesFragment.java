@@ -2,12 +2,14 @@ package com.mozu.mozuandroidinstoreassistant.app.order;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -177,6 +179,10 @@ public class OrderDetailNotesFragment extends Fragment {
             public void onClick(View v) {
                 editText.setEnabled(true);
                 editText.setFocusable(true);
+                editText.setFocusableInTouchMode(true);
+                editText.requestFocus();
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
             }
         });
         negative.setOnClickListener(new View.OnClickListener() {
@@ -218,6 +224,7 @@ public class OrderDetailNotesFragment extends Fragment {
         noteTile.setText(R.string.add_note);
         noteInput.setFocusable(true);
         noteInput.setEnabled(true);
+        noteInput.setFocusableInTouchMode(true);
         noteInput.requestFocus();
         noteInput.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
         AlertDialog noteDialog = new AlertDialog.Builder(getActivity())

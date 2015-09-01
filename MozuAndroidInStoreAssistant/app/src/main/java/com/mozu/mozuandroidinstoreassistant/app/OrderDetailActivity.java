@@ -20,7 +20,6 @@ import android.widget.TextView;
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.mozuandroidinstoreassistant.app.bus.RxBus;
-import com.mozu.mozuandroidinstoreassistant.app.data.order.OrderEditEvent;
 import com.mozu.mozuandroidinstoreassistant.app.order.adapters.OrderDetailSectionPagerAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.order.loaders.OrderDetailLoader;
 import com.mozu.mozuandroidinstoreassistant.app.settings.SettingsFragment;
@@ -35,10 +34,6 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 public class OrderDetailActivity extends BaseActivity implements LoaderManager.LoaderCallbacks<Order>, CustomerAsyncListener, SwipeRefreshLayout.OnRefreshListener {
 
@@ -67,7 +62,6 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
     private OrderDetailSectionPagerAdapter mAdapter;
     private TextView mOrderFulfillmentStatus;
     private Boolean mIsEditMode = false;
-    private Subscription mSubscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,10 +72,6 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
 
         setContentView(R.layout.activity_order_detail);
         mRxBus = RxBus.getInstance();
-        mSubscription = RxBus.getInstance().toObserverable()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(getEventSubscriber());
 
         ButterKnife.inject(this);
 
@@ -152,23 +142,6 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
 
     }
 
-    private Action1<Object> getEventSubscriber() {
-        return new Action1<Object>() {
-
-            @Override
-            public void call(Object o) {
-                if (o instanceof OrderEditEvent) {
-                    OrderEditEvent event = (OrderEditEvent) o;
-                    if (event.shouldShowEdit) {
-                        enterEditMode.setVisibility(View.VISIBLE);
-                    } else {
-                        enterEditMode.setVisibility(View.GONE);
-                    }
-                }
-            }
-        };
-    }
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putString(ORDER_NUMBER_EXTRA_KEY, mOrderNumber);
@@ -196,14 +169,6 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.order_detail, menu);
         return true;
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mSubscription != null && !mSubscription.isUnsubscribed()) {
-            mSubscription.unsubscribe();
-        }
     }
 
     @Override
@@ -300,10 +265,7 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
 
     public void onSwapEditMode() {
         mIsEditMode = !mIsEditMode;
-        OrderEditEvent event = new OrderEditEvent();
-        event.isEditMode = mIsEditMode;
-        event.shouldShowEdit = true;
-        mRxBus.send(event);
+        mRxBus.send(mIsEditMode);
         mAdapter.setIsEditMode(mIsEditMode);
         if (mIsEditMode) {
             enterEditMode.setText(getString(R.string.exit_edit_mode));
