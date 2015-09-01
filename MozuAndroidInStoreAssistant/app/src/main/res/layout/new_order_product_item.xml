@@ -1,47 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.mozu.mozuandroidinstoreassistant.app.layout.order.NewOrderItemLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-                                                                          android:orientation="horizontal"
-                                                                          android:layout_width="match_parent"
-                                                                          android:gravity="center_vertical"
-                                                                          android:background="@android:color/white"
-                                                                          android:paddingLeft="24dp"
-                                                                          android:layout_height="64dp">
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:gravity="center_vertical"
+    android:background="@android:color/white"
+    android:paddingLeft="24dp"
+    android:layout_height="72dp">
 
-    <TextView
-        android:id="@+id/product_code"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/product_name"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/product_code"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
 
-    <TextView
-        android:id="@+id/fulfillment_type"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"/>
+        <LinearLayout
+            android:layout_weight="3"
+            android:layout_width="0dp"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/product_price"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/product_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/product_variation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
-    <TextView
-        android:id="@+id/product_quantity"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"/>
+            <TextView
+                android:visibility="gone"
+                android:layout_marginTop="8dp"
+                android:id="@+id/product_discount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
 
-    <TextView
-        android:id="@+id/product_total"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/fulfillment_type"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/product_price"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/product_quantity"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/product_total"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:textColor="@color/mozu_color"
+                android:id="@+id/product_discount_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </LinearLayout>
+
 
 </com.mozu.mozuandroidinstoreassistant.app.layout.order.NewOrderItemLayout>

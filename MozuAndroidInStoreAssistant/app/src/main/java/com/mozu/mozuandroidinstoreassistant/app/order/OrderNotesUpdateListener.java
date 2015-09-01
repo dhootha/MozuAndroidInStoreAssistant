@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface OrderNotesUpdateListener {
 
-    void onInternalNotesUpdated(List<OrderNote> notes, OrderNote note);
+    void onInternalNotesUpdated(String noteId, String note);
 
     void onInternalNoteDeleted(List<OrderNote> notes, OrderNote note);
 }

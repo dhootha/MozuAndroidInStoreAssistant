@@ -1,8 +1,5 @@
 package com.mozu.mozuandroidinstoreassistant.app.order.adapters;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,33 +7,22 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.commerceruntime.orders.OrderNote;
-import com.mozu.api.contracts.commerceruntime.orders.ShopperNotes;
 import com.mozu.mozuandroidinstoreassistant.app.R;
-import com.mozu.mozuandroidinstoreassistant.app.order.OrderNotesUpdateListener;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-public class OrderDetailNotesAdapter extends BaseAdapter implements ListView.OnItemClickListener {
+public class OrderDetailNotesAdapter extends BaseAdapter {
 
-    private final Context mContext;
-    private final OrderNotesUpdateListener mListener;
-    private Order mOrder;
-    private boolean mIsInternalNotes;
-    private boolean mIsEditable;
+    private List<OrderNote> mOrderNotes = new ArrayList<>();
 
-    public OrderDetailNotesAdapter(Context context, Order order, boolean isInternalNotes, boolean isEditable, OrderNotesUpdateListener listener) {
-        mContext = context;
-        mIsInternalNotes = isInternalNotes;
-        mIsEditable = isEditable;
-        mOrder = order;
-        mListener = listener;
+    public OrderDetailNotesAdapter(List<OrderNote> notes) {
+        if (notes != null)
+            mOrderNotes = notes;
     }
 
     @Override
@@ -46,16 +32,20 @@ public class OrderDetailNotesAdapter extends BaseAdapter implements ListView.OnI
         } else {
             return 1;
         }
+        return mOrderNotes.size();
     }
 
     @Override
-    public Object getItem(int i) {
-        if (mOrder.getNotes() != null && mIsInternalNotes) {
-            return mOrder.getNotes().get(i);
-        } else {
-            return mOrder.getShopperNotes();
+    public OrderNote getItem(int i) {
+        return mOrderNotes.get(i);
+    }
+
+    public void setData(List<OrderNote> data) {
+        if (data != null) {
+            mOrderNotes = data;
         }
     }
+
 
     @Override
     public long getItemId(int i) {
@@ -64,41 +54,15 @@ public class OrderDetailNotesAdapter extends BaseAdapter implements ListView.OnI
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (mIsInternalNotes) {
-            if (convertView == null) {
-                convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.notes_list_item, parent, false);
-            }
-            if (getItem(position) instanceof OrderNote) {
-                OrderNote note = (OrderNote) getItem(position);
-
-                TextView noteDate = (TextView) convertView.findViewById(R.id.note_date);
-                TextView comment = (TextView) convertView.findViewById(R.id.note_comment);
-
-                String dateString = note.getAuditInfo() != null && note.getAuditInfo().getCreateDate() != null ? DateFormat.format("MM/dd/yy", new Date(note.getAuditInfo().getCreateDate().getMillis())).toString() : "";
-                noteDate.setText(dateString);
-
-                comment.setText(note.getText());
-            }
-        } else {
-            if (convertView == null) {
-                convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.customer_notes_list_item, parent, false);
-            }
-
-            if (getItem(position) instanceof ShopperNotes) {
-                ShopperNotes note = (ShopperNotes) getItem(position);
-
-                TextView noteDate = (TextView) convertView.findViewById(R.id.note_date);
-                TextView comment = (TextView) convertView.findViewById(R.id.note_comment);
-
-                String dateString = mOrder.getAuditInfo() != null && mOrder.getAuditInfo().getCreateDate() != null ? DateFormat.format("MM/dd/yy", new Date(mOrder.getAuditInfo().getCreateDate().getMillis())).toString() : "";
-                noteDate.setText(dateString);
-
-                comment.setText(note.getComments());
-
-            }
-
+        if (convertView == null) {
+            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.notes_list_item, parent, false);
         }
-
+        OrderNote note = getItem(position);
+        TextView noteDate = (TextView) convertView.findViewById(R.id.note_date);
+        TextView comment = (TextView) convertView.findViewById(R.id.note_comment);
+        String dateString = note.getAuditInfo() != null && note.getAuditInfo().getCreateDate() != null ? DateFormat.format("MM/dd/yy", new Date(note.getAuditInfo().getCreateDate().getMillis())).toString() : "";
+        noteDate.setText(dateString);
+        comment.setText(note.getText());
         return convertView;
     }
 

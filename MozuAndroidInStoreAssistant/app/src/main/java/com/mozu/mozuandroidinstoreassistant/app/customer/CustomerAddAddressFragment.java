@@ -135,7 +135,7 @@ public class CustomerAddAddressFragment extends Fragment {
 
             @Override
             public void onError(Throwable e) {
-                AlertDialog error = ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), e.toString());
+                AlertDialog error = ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), getString(R.string.standard_error));
                 loadingView.success();
                 error.show();
             }
@@ -146,7 +146,7 @@ public class CustomerAddAddressFragment extends Fragment {
                 Log.d("Customer created", "created customer");
                 countdown = mCustomerAccount.getContacts().size();
                 for (int i = countdown; i > 0; i--) {
-                    AndroidObservable.bindFragment(this, AddCustomerContactObserverable
+                    AndroidObservable.bindFragment(CustomerAddAddressFragment.this, AddCustomerContactObserverable
                             .getCustomerContactCreationObserverable(mTenantId, mSiteId, customerAccount.getId(), mCustomerAccount.getContacts().get(i - 1)))
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
@@ -165,7 +165,7 @@ public class CustomerAddAddressFragment extends Fragment {
 
             @Override
             public void onError(Throwable e) {
-                AlertDialog error = ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), e.toString());
+                AlertDialog error = ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), getString(R.string.standard_error));
                 loadingView.success();
                 error.show();
             }

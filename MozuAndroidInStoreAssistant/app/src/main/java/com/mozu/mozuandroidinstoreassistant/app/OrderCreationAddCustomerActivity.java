@@ -19,8 +19,6 @@ import com.mozu.mozuandroidinstoreassistant.app.order.loaders.NewOrderManager;
 import butterknife.ButterKnife;
 import rx.Subscriber;
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 public class OrderCreationAddCustomerActivity extends BaseActivity implements CustomerLookupFragment.CustomerSelectionListener, CustomerAddressOrderVerification.VerifyCreateOrderListener {
 
@@ -81,8 +79,6 @@ public class OrderCreationAddCustomerActivity extends BaseActivity implements Cu
         fulfillmentInfo.setFulfillmentContact(getDefaultContact(mCustomerAccount, SHIPPING));
         mOrder.setFulfillmentInfo(fulfillmentInfo);
         AndroidObservable.bindActivity(OrderCreationAddCustomerActivity.this, NewOrderManager.getInstance().createOrder(mTenantId, mSiteId, mOrder))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Order>() {
                     @Override
                     public void onCompleted() {

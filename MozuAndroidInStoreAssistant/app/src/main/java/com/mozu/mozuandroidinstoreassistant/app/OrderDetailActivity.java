@@ -133,32 +133,6 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
         mTitles.add(getString(R.string.notes_tab_name));
 
         mOrderViewPager = (ViewPager) findViewById(R.id.order_detail_sections_viewpager);
-        mOrderViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                switch (position) {
-                    case 0:
-                    case 4:
-                        enterEditMode.setVisibility(View.VISIBLE);
-                        break;
-                    case 1:
-                    case 2:
-                    case 3:
-                        enterEditMode.setVisibility(View.GONE);
-                        break;
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
         mTabIndicator = (TabPageIndicator) findViewById(R.id.order_detail_sections);
 
         if (getLoaderManager().getLoader(LOADER_ORDER_DETAIL) == null) {
@@ -211,6 +185,10 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
 
     public void clearFulfillmentStatus() {
         mOrderFulfillmentStatus.setVisibility(View.GONE);
+    }
+
+    public void setEditModeVisibility(boolean isVisible){
+        enterEditMode.setVisibility(isVisible?View.VISIBLE:View.GONE);
     }
 
     @Override
@@ -321,7 +299,6 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
     }
 
     public void onSwapEditMode() {
-
         mIsEditMode = !mIsEditMode;
         OrderEditEvent event = new OrderEditEvent();
         event.isEditMode = mIsEditMode;

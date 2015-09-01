@@ -7,11 +7,17 @@ public class StringUtils {
 
         try {
             Integer.parseInt(string);
-        } catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             isNumber = false;
         }
 
         return isNumber;
+    }
+
+    public static String FirstLetterUpper(String s) {
+        if (s == null || s.length() < 1) return s;
+        if (s.length() == 1) return s.toUpperCase();
+        return s.substring(0, 1).toUpperCase() + s.substring(1, s.length()).toLowerCase();
     }
 
 }
