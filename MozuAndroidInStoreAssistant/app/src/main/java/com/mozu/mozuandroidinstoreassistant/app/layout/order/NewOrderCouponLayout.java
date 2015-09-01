@@ -30,8 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 public class NewOrderCouponLayout extends LinearLayout implements IRowLayout, IEditMode {
 
@@ -86,8 +84,7 @@ public class NewOrderCouponLayout extends LinearLayout implements IRowLayout, IE
                 public boolean onTouch(View view, MotionEvent motionEvent) {
                     if (spinnerAdapter.getCount() <= 1) {
                         progressBar.setVisibility(VISIBLE);
-                        NewOrderManager.getInstance().getCoupons(mTenantId, mSiteId).subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
+                        NewOrderManager.getInstance().getCoupons(mTenantId, mSiteId)
                                 .subscribe(new Subscriber<DiscountCollection>() {
                                     @Override
                                     public void onCompleted() {
@@ -129,8 +126,7 @@ public class NewOrderCouponLayout extends LinearLayout implements IRowLayout, IE
                                 return;
                             final String couponSelected = (String) adapterView.getItemAtPosition(position);
                             progressBar.setVisibility(View.VISIBLE);
-                            NewOrderManager.getInstance().getApplyCouponObervable(mTenantId, mSiteId, order.getId(), couponSelected).subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
+                            NewOrderManager.getInstance().getApplyCouponObservable(mTenantId, mSiteId, order.getId(), couponSelected)
                                     .subscribe(new Subscriber<Order>() {
                                         @Override
                                         public void onCompleted() {

@@ -2,6 +2,7 @@ package com.mozu.mozuandroidinstoreassistant.app.order;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -25,6 +26,7 @@ import com.mozu.api.contracts.productruntime.ProductPrice;
 import com.mozu.api.contracts.productruntime.ProductProperty;
 import com.mozu.api.contracts.productruntime.ProductPropertyValue;
 import com.mozu.api.contracts.productruntime.ProductSearchResult;
+import com.mozu.mozuandroidinstoreassistant.app.OrderDetailActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.bus.RxBus;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.OrderItemRow;
@@ -75,6 +77,17 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
     }
 
     @Override
+    public void setUserVisibleHint(final boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                ((OrderDetailActivity) getActivity()).setEditModeVisibility(isVisibleToUser);
+            }
+        });
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setUpViews();
@@ -103,7 +116,6 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
         NewOrderManager.count = 0;
         return mView;
     }
-
 
     private Subscriber<Object> getEventSubscriber() {
         return new Subscriber<Object>() {

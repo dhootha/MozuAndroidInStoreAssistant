@@ -42,7 +42,7 @@ public class NewOrderFragmentAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (TabTypes.values()[position]) {
             case NOTES:
-                OrderDetailNotesFragment fragment = OrderDetailNotesFragment.getInstance(true);
+                OrderDetailNotesFragment fragment = OrderDetailNotesFragment.getInstance();
                 fragment.setOrder(mOrder);
                 return fragment;
             default:

@@ -324,8 +324,6 @@ public class NewOrderItemEditFragment extends DialogFragment {
                     AndroidObservable.bindFragment(NewOrderItemEditFragment.this, NewOrderManager
                             .getInstance()
                             .getOrderItemCreateObservable(mTenantId, mSiteId, mOrderItem, mOrderId))
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(new Subscriber<Order>() {
                                 @Override
                                 public void onCompleted() {

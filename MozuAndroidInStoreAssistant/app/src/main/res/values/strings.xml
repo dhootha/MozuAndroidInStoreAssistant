@@ -286,8 +286,8 @@
     <string name="state">State</string>
     <string name="type">Type</string>
     <string name="invalid_phone">Invalid Phone Number</string>
-    <string name="edit">EDIT</string>
-    <string name="delete">DELETE</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
     <string name="order_label">Order</string>
     <string name="status">Status</string>
     <string name="name_label">Name</string>
@@ -305,7 +305,7 @@
     <string name="new_note">Save Note</string>
     <string name="edit_note">Edit Note</string>
     <string name="exit_edit_mode">Finish Editing</string>
-    <string name="add_internal_note_title">Add New Internal Note</string>
+    <string name="add_internal_note_title">Add Internal Note</string>
     <string name="done">Done</string>
     <string name="customer_lookup_instructions">Lookup or create a customer to continue</string>
     <string name="product_save">Save</string>
@@ -319,6 +319,7 @@
     <string name="select_coupons">Select Coupons</string>
     <string name="shipping_method">Shipping Method</string>
     <string name="no_items_selected_error">Please select one or more items to continue</string>
+    <string name="save_customer_note">Save Note</string>
     <string-array name="register_email_address">
         <item>mozumobile@volusion.com</item>
     </string-array>

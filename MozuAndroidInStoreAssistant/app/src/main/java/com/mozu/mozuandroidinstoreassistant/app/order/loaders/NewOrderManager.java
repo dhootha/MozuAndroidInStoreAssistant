@@ -104,7 +104,8 @@ public class NewOrderManager {
                             }
                         }
                     }
-                });
+                }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<Order> createOrder(final Integer tenantId, final Integer siteId, final Order order) {
@@ -126,7 +127,9 @@ public class NewOrderManager {
                     }
                 }
             }
-        });
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
 
@@ -158,7 +161,9 @@ public class NewOrderManager {
                             }
                         }
                     }
-                });
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<List<FulfillmentInfo>> getInstoreLocationCodes(final Integer tenantId, final Integer siteId, final String productCode) {
@@ -211,7 +216,9 @@ public class NewOrderManager {
                             }
                         }
                     }
-                });
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
 
@@ -233,7 +240,9 @@ public class NewOrderManager {
                             }
                         }
                     }
-                });
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<Order> getUpdateOrderObservable(final Integer tenantId, final Integer siteId, final Order order, final String orderId) {
@@ -259,7 +268,7 @@ public class NewOrderManager {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<Order> getApplyCouponObervable(final Integer tenantId, final Integer siteId, final String orderId, final String couponCode) {
+    public Observable<Order> getApplyCouponObservable(final Integer tenantId, final Integer siteId, final String orderId, final String couponCode) {
         return Observable
                 .create(new Observable.OnSubscribe<Order>() {
                     @Override
@@ -276,7 +285,8 @@ public class NewOrderManager {
                             subscriber.onError(e);
                         }
                     }
-                });
+                }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<ProductVariationPagedCollection> getProductVariationCodes(final Integer tenantId, final Integer siteId, final String productCode) {
