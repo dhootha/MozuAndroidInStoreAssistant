@@ -18,8 +18,6 @@ import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.commerceruntime.orders.OrderNote;
 import com.mozu.api.contracts.core.AuditInfo;
 import com.mozu.mozuandroidinstoreassistant.app.R;
-import com.mozu.mozuandroidinstoreassistant.app.bus.RxBus;
-import com.mozu.mozuandroidinstoreassistant.app.data.order.OrderEditEvent;
 import com.mozu.mozuandroidinstoreassistant.app.dialog.ErrorMessageAlertDialog;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.order.adapters.OrderDetailNotesAdapter;
@@ -67,30 +65,6 @@ public class OrderDetailNotesFragment extends Fragment implements OrderNotesUpda
         bundle.putBoolean(NewOrderActivity.IS_EDITABLE, isEditable);
         fragment.setArguments(bundle);
         return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        RxBus.getInstance().toObserverable()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(getEventSubscriber());
-
-    }
-
-    private Action1<Object> getEventSubscriber() {
-        return new Action1<Object>() {
-
-            @Override
-            public void call(Object o) {
-                if (o instanceof OrderEditEvent) {
-                    OrderEditEvent event = (OrderEditEvent) o;
-                    mIsEditable = event.isEditMode;
-                    onEditModeUpdateEvent();
-                }
-            }
-        };
     }
 
     @Override
@@ -170,7 +144,6 @@ public class OrderDetailNotesFragment extends Fragment implements OrderNotesUpda
                 showAddNewNoteDialog();
             }
         });
-
     }
 
     public void setOrder(Order order) {
@@ -180,20 +153,12 @@ public class OrderDetailNotesFragment extends Fragment implements OrderNotesUpda
     private void showCustomerNotes() {
         mCustomerNotesListLayout.setVisibility(View.VISIBLE);
         mNoteListLayout.setVisibility(View.GONE);
-        OrderEditEvent event = new OrderEditEvent();
-        event.isEditMode = mIsEditable;
-        event.shouldShowEdit = false;
-        RxBus.getInstance().send(event);
 
     }
 
     private void showInternalNotes() {
         mCustomerNotesListLayout.setVisibility(View.GONE);
         mNoteListLayout.setVisibility(View.VISIBLE);
-        OrderEditEvent event = new OrderEditEvent();
-        event.isEditMode = mIsEditable;
-        event.shouldShowEdit = true;
-        RxBus.getInstance().send(event);
     }
 
     private void showAddNewNoteDialog() {

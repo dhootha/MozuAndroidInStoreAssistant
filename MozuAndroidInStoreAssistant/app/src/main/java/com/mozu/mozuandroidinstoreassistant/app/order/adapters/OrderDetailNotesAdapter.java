@@ -41,7 +41,7 @@ public class OrderDetailNotesAdapter extends BaseAdapter implements ListView.OnI
 
     @Override
     public int getCount() {
-        if (mOrder.getNotes() != null && mIsInternalNotes) {
+        if (mOrder != null && mOrder.getNotes() != null && mIsInternalNotes) {
             return mOrder.getNotes().size();
         } else {
             return 1;

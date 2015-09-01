@@ -35,6 +35,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -66,6 +67,7 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
     private OrderDetailSectionPagerAdapter mAdapter;
     private TextView mOrderFulfillmentStatus;
     private Boolean mIsEditMode = false;
+    private Subscription mSubscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +78,7 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
 
         setContentView(R.layout.activity_order_detail);
         mRxBus = RxBus.getInstance();
-        RxBus.getInstance().toObserverable()
+        mSubscription = RxBus.getInstance().toObserverable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getEventSubscriber());
@@ -216,6 +218,14 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.order_detail, menu);
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mSubscription != null && !mSubscription.isUnsubscribed()) {
+            mSubscription.unsubscribe();
+        }
     }
 
     @Override
