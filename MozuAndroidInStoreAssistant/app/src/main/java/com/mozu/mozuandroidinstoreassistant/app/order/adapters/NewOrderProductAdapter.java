@@ -1,4 +1,4 @@
-package com.mozu.mozuandroidinstoreassistant.app.order;
+package com.mozu.mozuandroidinstoreassistant.app.order.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,22 +26,18 @@ import java.util.List;
 public class NewOrderProductAdapter extends BaseAdapter {
 
     private boolean editMode;
+    private List<IData> mData;
+    private NewOrderShippingItemLayout.OrderUpdateListener mUpdateListener;
+
+    public NewOrderProductAdapter(NewOrderShippingItemLayout.OrderUpdateListener updateListener) {
+        mUpdateListener = updateListener;
+        mData = new ArrayList<IData>();
+        mData.add(new OrderHeaderItemRow());
+    }
 
     public void setEditMode(boolean editMode) {
         this.editMode = editMode;
     }
-
-    public enum RowType {
-        ORDER_HEADER_ROW,
-        ORDER_ITEM_ROW,
-        COUPON_ROW,
-        SHIPPING_ROW,
-        TOTAL_ROW,
-        EMPTY_ROW
-    }
-
-    private List<IData> mData;
-    private NewOrderShippingItemLayout.OrderUpdateListener mUpdateListener;
 
     @Override
     public boolean isEnabled(int position) {
@@ -59,12 +55,6 @@ public class NewOrderProductAdapter extends BaseAdapter {
             mData.add(new CouponsRowItem(order));
             mData.add(new OrderTotalRow(order));
         }
-    }
-
-    public NewOrderProductAdapter(NewOrderShippingItemLayout.OrderUpdateListener updateListener) {
-        mUpdateListener = updateListener;
-        mData = new ArrayList<IData>();
-        mData.add(new OrderHeaderItemRow());
     }
 
     @Override
@@ -98,7 +88,6 @@ public class NewOrderProductAdapter extends BaseAdapter {
     public int getViewTypeCount() {
         return RowType.values().length;
     }
-
 
     @Override
     public IData getItem(int i) {
@@ -138,6 +127,15 @@ public class NewOrderProductAdapter extends BaseAdapter {
             ((IEditMode) convertView).setEditMode(editMode);
         }
         return convertView;
+    }
+
+    public enum RowType {
+        ORDER_HEADER_ROW,
+        ORDER_ITEM_ROW,
+        COUPON_ROW,
+        SHIPPING_ROW,
+        TOTAL_ROW,
+        EMPTY_ROW
     }
 
 

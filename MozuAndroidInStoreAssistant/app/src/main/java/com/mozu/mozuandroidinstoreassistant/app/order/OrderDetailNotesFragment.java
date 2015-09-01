@@ -145,7 +145,47 @@ public class OrderDetailNotesFragment extends Fragment {
                 showAddNewNoteDialog();
             }
         });
+    }
 
+    private void showEditNoteDialog(final OrderNote orderNote) {
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+        View view = inflater.inflate(R.layout.dialog_edit_order_notes, null);
+        final EditText editText = (EditText) view.findViewById(R.id.note);
+        final TextView title = (TextView) view.findViewById(R.id.title);
+        title.setText(R.string.edit_note);
+        editText.setText(orderNote.getText());
+        final AlertDialog editNoteDialog = new AlertDialog.Builder(getActivity())
+                .setView(view)
+                .setNegativeButton(R.string.delete, null)
+                .setNeutralButton(R.string.edit, null)
+                .setPositiveButton(R.string.done, null)
+                .create();
+        editNoteDialog.show();
+        Button positive = editNoteDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        Button neutral = editNoteDialog.getButton(DialogInterface.BUTTON_NEUTRAL);
+        Button negative = editNoteDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+
+        positive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateItem(editText.getText().toString(), orderNote);
+                editNoteDialog.dismiss();
+            }
+        });
+        neutral.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editText.setEnabled(true);
+                editText.setFocusable(true);
+            }
+        });
+        negative.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteItem(orderNote);
+                editNoteDialog.dismiss();
+            }
+        });
     }
 
 

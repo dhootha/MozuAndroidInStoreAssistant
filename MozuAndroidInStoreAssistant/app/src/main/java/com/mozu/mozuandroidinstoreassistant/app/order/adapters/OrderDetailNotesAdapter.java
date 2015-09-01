@@ -4,8 +4,6 @@ import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
@@ -27,11 +25,6 @@ public class OrderDetailNotesAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        if (mOrder != null && mOrder.getNotes() != null && mIsInternalNotes) {
-            return mOrder.getNotes().size();
-        } else {
-            return 1;
-        }
         return mOrderNotes.size();
     }
 
@@ -64,107 +57,5 @@ public class OrderDetailNotesAdapter extends BaseAdapter {
         noteDate.setText(dateString);
         comment.setText(note.getText());
         return convertView;
-    }
-
-    public void setOrder(Order order) {
-        this.mOrder = order;
-    }
-
-    public void isEditableMode(boolean isEditable) {
-        this.mIsEditable = isEditable;
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-        String note;
-        Object item = getItem(position);
-        if (getItem(position) instanceof ShopperNotes) {
-            note = ((ShopperNotes) item).getComments();
-        } else {
-            note = ((OrderNote) item).getText();
-        }
-        if (mIsEditable && mIsInternalNotes) {
-            showEditNoteDialog(note, position);
-        } else {
-            //shopper notes are read only
-            showNoteDialog(note);
-        }
-    }
-
-    private void showNoteDialog(final String note) {
-        LayoutInflater inflater = LayoutInflater.from(mContext);
-        View view = inflater.inflate(R.layout.dialog_edit_order_notes, null);
-        final EditText editText = (EditText) view.findViewById(R.id.note);
-        editText.setText(note);
-        final AlertDialog noteDialog = new AlertDialog.Builder(mContext)
-                .setView(view)
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-                .create();
-        noteDialog.show();
-    }
-
-    private void showEditNoteDialog(final String note, final int position) {
-        LayoutInflater inflater = LayoutInflater.from(mContext);
-        View view = inflater.inflate(R.layout.dialog_edit_order_notes, null);
-        final EditText editText = (EditText) view.findViewById(R.id.note);
-        final TextView title = (TextView) view.findViewById(R.id.title);
-        title.setText(R.string.edit_note);
-        editText.setText(note);
-        final AlertDialog editNoteDialog = new AlertDialog.Builder(mContext)
-                .setView(view)
-                .setNegativeButton(R.string.delete, null)
-                .setNeutralButton(R.string.edit, null)
-                .setPositiveButton(R.string.done, null)
-                .create();
-        editNoteDialog.show();
-        Button positive = editNoteDialog.getButton(DialogInterface.BUTTON_POSITIVE);
-        Button neutral = editNoteDialog.getButton(DialogInterface.BUTTON_NEUTRAL);
-        Button negative = editNoteDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-
-        positive.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateItem(editText.getText().toString(), position);
-                editNoteDialog.dismiss();
-            }
-        });
-        neutral.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                editText.setEnabled(true);
-                editText.setFocusable(true);
-                editText.setFocusableInTouchMode(true);
-                editText.requestFocus();
-                InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
-            }
-        });
-        negative.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deleteItem(position);
-                editNoteDialog.dismiss();
-            }
-        });
-    }
-
-    private void updateItem(String note, int position) {
-        if (mOrder.getNotes() != null && mIsInternalNotes) {
-            mOrder.getNotes().get(position).setText(note);
-            mListener.onInternalNotesUpdated(mOrder.getNotes(), mOrder.getNotes().get(position));
-        }
-    }
-
-    private void deleteItem(int position) {
-        if (mOrder.getNotes() != null && mIsInternalNotes) {
-            OrderNote deletedNote = mOrder.getNotes().remove(position);
-            mListener.onInternalNoteDeleted(mOrder.getNotes(), deletedNote);
-        }
     }
 }
