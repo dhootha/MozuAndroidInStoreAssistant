@@ -2,18 +2,18 @@ package com.mozu.mozuandroidinstoreassistant.app.order.adapters;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.support.v13.app.FragmentStatePagerAdapter;
+import android.support.v13.app.FragmentPagerAdapter;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
+import com.mozu.mozuandroidinstoreassistant.app.order.NewOrderCreateFragment;
 import com.mozu.mozuandroidinstoreassistant.app.order.OrderDetailFullfillmentFragment;
 import com.mozu.mozuandroidinstoreassistant.app.order.OrderDetailNotesFragment;
-import com.mozu.mozuandroidinstoreassistant.app.order.OrderDetailOverviewFragment;
 import com.mozu.mozuandroidinstoreassistant.app.order.OrderDetailPaymentFragment;
 import com.mozu.mozuandroidinstoreassistant.app.order.OrderDetailReturnsFragment;
 
 import java.util.List;
 
-public class OrderDetailSectionPagerAdapter extends FragmentStatePagerAdapter {
+public class OrderDetailSectionPagerAdapter extends FragmentPagerAdapter {
 
     public static final int NUM_OF_ORDER_DETAIL_TABS = 5;
     public static final int OVERVIEW_TAB_POSITION = 0;
@@ -61,15 +61,13 @@ public class OrderDetailSectionPagerAdapter extends FragmentStatePagerAdapter {
 
         switch (position) {
             case OVERVIEW_TAB_POSITION:
-                OrderDetailOverviewFragment overviewFragment = new OrderDetailOverviewFragment();
-                overviewFragment.setOrder(mOrder);
-                return overviewFragment;
-
+                NewOrderCreateFragment newOrderCreateFragment = NewOrderCreateFragment.getInstance(false);
+                newOrderCreateFragment.setOrder(mOrder);
+                return newOrderCreateFragment;
             case FULFILLMENT_TAB_POSITION:
                 OrderDetailFullfillmentFragment fullfillmentFragment = new OrderDetailFullfillmentFragment();
                 fullfillmentFragment.setOrder(mOrder);
                 return fullfillmentFragment;
-
             case PAYMENT_TAB_POSITION:
                 OrderDetailPaymentFragment paymentFragment = new OrderDetailPaymentFragment();
                 paymentFragment.setOrder(mOrder);
@@ -80,7 +78,7 @@ public class OrderDetailSectionPagerAdapter extends FragmentStatePagerAdapter {
                 returnsFragment.setOrder(mOrder);
                 return returnsFragment;
             case NOTES_TAB_POSITION:
-                OrderDetailNotesFragment notesFragment = OrderDetailNotesFragment.getInstance(mIsEditMode);
+                OrderDetailNotesFragment notesFragment = OrderDetailNotesFragment.getInstance();
                 notesFragment.setOrder(mOrder);
                 return notesFragment;
 

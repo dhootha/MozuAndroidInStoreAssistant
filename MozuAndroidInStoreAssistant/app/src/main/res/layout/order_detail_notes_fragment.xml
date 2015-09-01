@@ -59,16 +59,6 @@
                 android:textColor="@color/mozu_color"
                 android:textSize="20sp"/>
 
-            <Button
-                android:id="@+id/add_internal_note"
-                style="@style/ButtonMozu"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/header"
-                android:layout_marginLeft="-4dp"
-                android:text="@string/add_internal_note_title"
-                android:visibility="gone"
-                />
 
         </RelativeLayout>
 
@@ -104,6 +94,17 @@
                     android:text="@string/comment_notes_header"
                     android:textColor="@android:color/darker_gray"
                     android:textStyle="bold"/>
+
+                <Button
+                    android:id="@+id/add_internal_note"
+                    style="@style/ButtonMozu"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/header"
+                    android:layout_marginLeft="-4dp"
+                    android:layout_weight="2"
+                    android:text="@string/add_internal_note_title"
+                    />
 
             </LinearLayout>
 
@@ -145,11 +146,11 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:paddingBottom="16dp"
             android:paddingLeft="@dimen/order_sub_margin_right"
             android:paddingRight="@dimen/order_sub_margin_right"
-            android:paddingTop="16dp">
+            android:paddingTop="16dp"
+            >
 
             <TextView
                 android:id="@+id/customer_blank_text"
@@ -179,71 +180,67 @@
                 android:layout_alignParentRight="true"
                 android:layout_below="@+id/customer_blank_text"
                 android:layout_centerVertical="true"
-                android:gravity="center"
+                android:clickable="true"
                 android:text="@string/show_internal_notes_text"
                 android:textColor="@color/mozu_color"
                 android:textSize="20sp"/>
 
         </RelativeLayout>
 
-        <LinearLayout
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/darker_grey"/>
 
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="0dp"
             android:background="@drawable/product_detail_images_background"
+            android:gravity="center_vertical"
+            android:minHeight="?android:attr/listPreferredItemHeight"
             android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="0dp"
                 android:gravity="center_vertical"
                 android:minHeight="?android:attr/listPreferredItemHeight"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:paddingLeft="@dimen/order_sub_margin_right"
                 android:paddingRight="@dimen/order_sub_margin_right">
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:text="@string/date_notes_header"
-                    android:textColor="@android:color/darker_gray"
-                    android:textStyle="bold"/>
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="7"
+                    android:padding="8dp"
                     android:text="@string/comment_notes_header"
                     android:textColor="@android:color/darker_gray"
                     android:textStyle="bold"/>
 
-            </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/darker_grey"/>
-
-            <com.mozu.mozuandroidinstoreassistant.app.views.LoadingView
-                android:id="@+id/customer_notes_loading_view"
-                android:layout_width="match_parent"
-                android:layout_height="64dp">
-
-
-                <ListView
-                    android:id="@+id/customer_list"
+                <EditText
+                    android:id="@+id/customer_notes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:divider="@android:color/transparent"
-                    android:dividerHeight="0dp"
-                    android:paddingLeft="@dimen/order_sub_margin_right"
-                    android:paddingRight="@dimen/order_sub_margin_right"
-                    android:scrollbars="none"/>
-            </com.mozu.mozuandroidinstoreassistant.app.views.LoadingView>
+                    android:layout_marginTop="16dp"
+                    />
+            </LinearLayout>
 
+            <Button
+                android:id="@+id/save_customer_note"
+                style="@style/ButtonMozu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginRight="@dimen/order_sub_margin_right"
+                android:layout_marginTop="8dp"
+                android:text="@string/save_customer_note"
+                android:visibility="gone"
+                />
         </LinearLayout>
 
+
     </LinearLayout>
+
 </LinearLayout>

@@ -58,8 +58,9 @@ public class OrderDetailFullfillmentFragment extends Fragment implements MoveToL
     public static final String NOTFULLFILLED = "NotFulfilled";
 
     public static final String SHIP = "Ship";
-    public static final String PICKUP = "pickup";
-    public static final int FIRST_PICKUP_COUNT = 1;
+    public static final String PICKUP = "Pickup";
+    public static final String DIGITAL = "digital";
+
     private static final String PRODUCT_DIALOG_TAG = "prod_detail_fragment";
     private static final String PACKAGE_DIALOG_TAG = "package_detail_fragment";
     private static final String PICKUP_DIALOG_TAG = "pickup_detail_fragment";

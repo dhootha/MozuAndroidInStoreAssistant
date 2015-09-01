@@ -5,27 +5,17 @@ import android.app.FragmentManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
-import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.mozuandroidinstoreassistant.app.order.NewOrderCreateFragment;
 import com.mozu.mozuandroidinstoreassistant.app.order.OrderDetailNotesFragment;
 
-/**
- * Created by santhosh_mankala on 8/14/15.
- */
 public class NewOrderFragmentAdapter extends FragmentStatePagerAdapter {
 
-    private CustomerAccount mCustomer;
     private Order mOrder;
-    public NewOrderFragmentAdapter(FragmentManager manager,Order order) {
+
+    public NewOrderFragmentAdapter(FragmentManager manager, Order order) {
         super(manager);
         mOrder = order;
     }
-
-    @Override
-    public int getItemPosition(Object object) {
-        return POSITION_NONE;
-    }
-
 
     @Override
     public int getCount() {
@@ -41,20 +31,21 @@ public class NewOrderFragmentAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (TabTypes.values()[position]) {
             case NOTES:
-                OrderDetailNotesFragment fragment = OrderDetailNotesFragment.getInstance(true);
+                OrderDetailNotesFragment fragment = OrderDetailNotesFragment.getInstance();
                 fragment.setOrder(mOrder);
                 return fragment;
-            default:
-                  return NewOrderCreateFragment.getInstance(mOrder);
+            case DETAILS:
+                NewOrderCreateFragment newOrderCreateFragment = NewOrderCreateFragment.getInstance(true);
+                newOrderCreateFragment.setOrder(mOrder);
+                return newOrderCreateFragment;
         }
+        return null;
     }
 
     private enum TabTypes {
-        DETAILS("DETAILS"),
-        FULFILLMENT("FULFILLMENT"),
-        PAYMENT("PAYMENT"),
-        RETURNS("RETURNS"),
-        NOTES("NOTES");
+        NOTES("NOTES"),
+        DETAILS("DETAILS");
+
         String mDisplayTitle;
 
         TabTypes(String displayTitle) {
