@@ -59,17 +59,6 @@
                 android:textColor="@color/mozu_color"
                 android:textSize="20sp"/>
 
-            <Button
-                android:id="@+id/add_internal_note"
-                style="@style/ButtonMozu"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/header"
-                android:layout_marginLeft="-4dp"
-                android:text="@string/add_internal_note_title"
-                android:visibility="gone"
-                />
-
         </RelativeLayout>
 
         <LinearLayout
@@ -127,6 +116,19 @@
                     android:paddingRight="@dimen/order_sub_margin_right"
                     android:scrollbars="none"/>
             </com.mozu.mozuandroidinstoreassistant.app.views.LoadingView>
+
+            <Button
+                android:id="@+id/add_internal_note"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_gravity="end|bottom"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:background="@drawable/floating_action_button"
+                android:elevation="4dp"
+                android:text="+"
+                android:textSize="25sp"/>
 
 
         </LinearLayout>
