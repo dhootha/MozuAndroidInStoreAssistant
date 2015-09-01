@@ -1,29 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.mozu.mozuandroidinstoreassistant.app.layout.order.FulfillmentPickupItemRow xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<com.mozu.mozuandroidinstoreassistant.app.layout.order.FulfillmentPickupItemRow
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/list_item_background"
-    android:gravity="center_vertical"
-    android:minHeight="64dp">
-        <TextView
-            android:id="@+id/pickup_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="40dp"
-            android:textStyle="bold"
-            android:textSize="14sp"
-            android:textColor="@color/dark_gray_text"
-            android:text="@string/not_available"
-            />
+    android:background="@drawable/list_item_background">
 
-        <TextView
-            android:id="@+id/item_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="40dp"
-            android:textSize="14sp"
-            android:textColor="@color/light_gray_text"
-            android:text="@string/not_available"
-            />
+    <TextView
+        android:id="@+id/pickup_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/not_available"
+        android:textColor="@color/dark_gray_text"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:id="@+id/item_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pickup_name"
+        android:layout_marginLeft="40dp"
+        android:text="@string/not_available"
+        android:textColor="@color/light_gray_text"
+        android:textSize="14sp"
+        />
+
+    <TextView
+        android:id="@+id/location_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/item_count"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="8dp"
+        android:labelFor="@+id/location_code"
+        android:text="Location:"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/location_code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/location_label"
+        android:layout_marginLeft="4dp"
+        android:layout_toRightOf="@+id/location_label"
+        android:text="Austin"/>
+
+    <TextView
+        android:id="@+id/status_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/location_label"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="40dp"
+        android:text="Status: "
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/status_label"
+        android:layout_marginLeft="4dp"
+        android:layout_toRightOf="@+id/status_label"
+        android:text="Not Fulfilled"/>
+
+    <Button
+        android:id="@+id/cancel"
+        style="@style/ButtonMozu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/mark_fulfilled"
+        android:layout_toLeftOf="@+id/mark_fulfilled"
+        android:text="@string/cancel"/>
+
+    <Button
+        android:id="@+id/mark_fulfilled"
+        style="@style/ButtonMozu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/status_label"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="-4dp"
+        android:text="Mark As Fulfilled"/>
+
 </com.mozu.mozuandroidinstoreassistant.app.layout.order.FulfillmentPickupItemRow>

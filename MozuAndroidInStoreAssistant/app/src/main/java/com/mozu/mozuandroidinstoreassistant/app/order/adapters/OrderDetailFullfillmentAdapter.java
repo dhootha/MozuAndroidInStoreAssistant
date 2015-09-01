@@ -12,6 +12,7 @@ import com.mozu.mozuandroidinstoreassistant.app.data.order.BottomRowItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FulfillmentColumnHeader;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FulfillmentDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FulfillmentDividerRowItem;
+import com.mozu.mozuandroidinstoreassistant.app.data.order.FulfillmentFulfilledDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FulfillmentMoveToDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FulfillmentPackageDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FulfillmentPickupItem;
@@ -21,6 +22,8 @@ import com.mozu.mozuandroidinstoreassistant.app.data.order.ShipmentFulfillmentTi
 import com.mozu.mozuandroidinstoreassistant.app.data.order.TopRowItem;
 import com.mozu.mozuandroidinstoreassistant.app.layout.IRowLayout;
 import com.mozu.mozuandroidinstoreassistant.app.layout.order.FulfillmentMoveToRow;
+import com.mozu.mozuandroidinstoreassistant.app.layout.order.FulfillmentMoveToRow.MoveToListener;
+import com.mozu.mozuandroidinstoreassistant.app.layout.order.FulfillmentPickupItemRow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +31,14 @@ import java.util.List;
 
 public class OrderDetailFullfillmentAdapter extends BaseAdapter {
 
-    private final FulfillmentMoveToRow.MoveToListener mListener;
-    List<IData> mData = new ArrayList<IData>();
+    private final MoveToListener mListener;
+    List<IData> mData = new ArrayList<>();
+    private FulfillmentPickupItemRow.MarkPickupAsFulfilledListener mFulfillListener;
 
-    public OrderDetailFullfillmentAdapter(Context context, List<IData> data, FulfillmentMoveToRow.MoveToListener listener) {
+    public OrderDetailFullfillmentAdapter(Context context, List<IData> data, MoveToListener listener, FulfillmentPickupItemRow.MarkPickupAsFulfilledListener fulfilledListener) {
         mData = data;
         mListener = listener;
+        mFulfillListener = fulfilledListener;
     }
 
     @Override
@@ -70,6 +75,8 @@ public class OrderDetailFullfillmentAdapter extends BaseAdapter {
             return RowType.COLUMN_ROW;
         } else if (dataItem instanceof FulfillmentMoveToDataItem) {
             return RowType.MOVE_TO;
+        } else if (dataItem instanceof FulfillmentFulfilledDataItem) {
+            return RowType.FULFILLED_ROW;
         } else {
             return RowType.EMPTY_ROW;
         }
@@ -124,6 +131,7 @@ public class OrderDetailFullfillmentAdapter extends BaseAdapter {
                     break;
                 case PICKUP_ITEM_ROW:
                     convertView = inflater.inflate(R.layout.fulfillment_pickup_item, null);
+                    ((FulfillmentPickupItemRow) convertView).setMarkAsFulfilledListener(mFulfillListener);
                     break;
                 case DIVIDER_ROW:
                     convertView = inflater.inflate(R.layout.order_fullfillment_divider_row, null);
@@ -134,6 +142,9 @@ public class OrderDetailFullfillmentAdapter extends BaseAdapter {
                 case MOVE_TO:
                     convertView = inflater.inflate(R.layout.fulfillment_move_to_row, null);
                     ((FulfillmentMoveToRow) convertView).setResponseListener(mListener);
+                    break;
+                case FULFILLED_ROW:
+                    convertView = inflater.inflate(R.layout.fulfillment_fulfilled_row, null);
                     break;
             }
         }
@@ -160,7 +171,8 @@ public class OrderDetailFullfillmentAdapter extends BaseAdapter {
         BOTTOM_ROW,
         DIVIDER_ROW,
         COLUMN_ROW,
-        MOVE_TO
+        MOVE_TO,
+        FULFILLED_ROW
     }
 
 }

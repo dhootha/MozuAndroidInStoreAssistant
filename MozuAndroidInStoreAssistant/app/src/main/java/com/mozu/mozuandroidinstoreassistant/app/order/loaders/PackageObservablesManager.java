@@ -8,6 +8,8 @@ import com.mozu.api.resources.commerce.orders.PackageResource;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class PackageObservablesManager {
 
@@ -40,7 +42,9 @@ public class PackageObservablesManager {
                     subscriber.onError(e);
                 }
             }
-        });
+        })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
     }
 
     public Observable<Package> updatePackage(final Package pkg, final String orderId, final String pkgId) {
@@ -54,6 +58,8 @@ public class PackageObservablesManager {
                     subscriber.onError(e);
                 }
             }
-        });
+        })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
     }
 }

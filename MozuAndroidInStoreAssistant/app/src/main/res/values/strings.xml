@@ -181,7 +181,7 @@
     <string name="customer_wishlist_qty">Qty</string>
     <string name="customer_wishlist_purchasable">Purchasable</string>
     <string name="customer_wishlist_date_added">Date Added</string>
-    <string name="shipping">Shipping Method</string>
+    <string name="shipping">Shipping</string>
     <string name="billing">Billing</string>
     <string name="not_available">N/A</string>
     <string name="order_fulfillment_status">Status:</string>
@@ -320,6 +320,7 @@
     <string name="shipping_method">Shipping Method</string>
     <string name="no_items_selected_error">Please select one or more items to continue</string>
     <string name="save_customer_note">Save Note</string>
+    <string name="standard_error">There was an error completing the request</string>
     <string-array name="register_email_address">
         <item>mozumobile@volusion.com</item>
     </string-array>

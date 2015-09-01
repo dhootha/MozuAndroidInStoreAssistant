@@ -36,8 +36,6 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import rx.Subscriber;
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 public class OrderFulfillmentMoveToPickupDialogFragment extends DialogFragment implements OrderFulfillmentMoveToItemAdapter.MoveToListListener {
 
@@ -97,8 +95,6 @@ public class OrderFulfillmentMoveToPickupDialogFragment extends DialogFragment i
                             pickup.getItems().addAll(createNewPickUpItems());
                             AndroidObservable.bindFragment(OrderFulfillmentMoveToPickupDialogFragment.this,
                                     PickupObservablesManager.getInstance(mOrder.getTenantId(), mOrder.getSiteId()).updatePickup(pickup, mOrder.getId()))
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
                                     .subscribe(getPickupSubscriber());
                         }
                     } else {
@@ -120,9 +116,9 @@ public class OrderFulfillmentMoveToPickupDialogFragment extends DialogFragment i
         createNewPickUpCount = createPackage.size();
         for (int i = 0; i < createNewPickUpCount; i++) {
             AndroidObservable.bindFragment(OrderFulfillmentMoveToPickupDialogFragment.this,
-                    PickupObservablesManager.getInstance(mOrder.getTenantId(), mOrder.getSiteId()).createPickup(createPackage.get(i), mOrder.getId()))
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
+                    PickupObservablesManager
+                            .getInstance(mOrder.getTenantId(), mOrder.getSiteId())
+                            .createPickup(createPackage.get(i), mOrder.getId()))
                     .subscribe(getPickupSubscriber());
         }
     }
