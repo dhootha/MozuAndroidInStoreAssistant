@@ -48,43 +48,32 @@ public class NewOrderItemEditFragment extends DialogFragment {
 
     private static final String ORDER_ID = "orderId";
     private static final String EDIT_MODE = "editmode";
-    private OrderItem mOrderItem;
-    private String mOrderId;
-    private View mView;
-
     @InjectView(R.id.product_code)
     public TextView productCode;
-
     @InjectView(R.id.product_name)
     public TextView productName;
-
     @InjectView(R.id.product_price)
     public TextView productPrice;
     @InjectView(R.id.product_quantity)
     public EditText productQuantity;
     @InjectView(R.id.product_total)
     public TextView productTotal;
-
     @InjectView(R.id.product_save)
     public Button productSave;
-
-    private boolean isEditMode = false;
-
-
     @InjectView(R.id.fulfillment_type)
     public Spinner fulfillmentType;
-
     @InjectView(R.id.product_variation)
     public Spinner productVariationSpinner;
-
     @InjectView(R.id.product_variation_layout)
     public LinearLayout productVariationLayout;
     @InjectView(R.id.product_variation_progress)
     public ProgressBar productVariationProgress;
     @InjectView(R.id.fulfillment_spinner_progress)
     public ProgressBar fulfillmentSpinnerProgress;
-
-
+    private OrderItem mOrderItem;
+    private String mOrderId;
+    private View mView;
+    private boolean isEditMode = false;
     private int mTenantId;
     private int mSiteId;
     private onItemEditDoneListener mEditDoneListener;
@@ -179,7 +168,7 @@ public class NewOrderItemEditFragment extends DialogFragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(),e.getMessage());
+                        ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), e.getMessage());
 
                     }
 
@@ -334,6 +323,10 @@ public class NewOrderItemEditFragment extends DialogFragment {
 
     }
 
+    public interface onItemEditDoneListener {
+        public void onEditDone(Order order);
+    }
+
     class ProductVariationAdapter extends BaseAdapter {
 
         private List<ProductVariation> mData;
@@ -444,10 +437,5 @@ public class NewOrderItemEditFragment extends DialogFragment {
 
         }
 
-    }
-
-
-    public interface onItemEditDoneListener {
-        public void onEditDone(Order order);
     }
 }

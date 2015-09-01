@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
     <LinearLayout
-        android:background="@color/darker_grey"
         android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:background="@color/darker_grey"
         android:paddingLeft="@dimen/customer_margin_right_total"
-        android:paddingRight="@dimen/customer_margin_left_total"
-        android:layout_height="64dp">
+        android:paddingRight="@dimen/customer_margin_left_total">
 
 
         <LinearLayout
-            android:gravity="center_vertical"
-            android:orientation="vertical"
             android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_height="match_parent">
+            android:gravity="center_vertical"
+            android:orientation="vertical">
 
             <TextView
-                android:text="@string/status"
                 android:layout_width="match_parent"
-                android:textColor="@color/light_gray_text"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:text="@string/status"
+                android:textColor="@color/light_gray_text"/>
 
             <TextView
                 android:id="@+id/order_status"
-                android:textColor="@color/dark_gray_text"
-                android:textSize="20sp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:textColor="@color/dark_gray_text"
+                android:textSize="20sp"/>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:gravity="center_vertical"
             android:orientation="vertical">
 
@@ -55,59 +55,59 @@
         </LinearLayout>
 
         <LinearLayout
-            android:gravity="center_vertical"
-            android:orientation="vertical"
             android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_height="match_parent">
+            android:gravity="center_vertical"
+            android:orientation="vertical">
 
             <TextView
-                android:text="@string/date_label"
                 android:layout_width="match_parent"
-                android:textColor="@color/light_gray_text"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:text="@string/date_label"
+                android:textColor="@color/light_gray_text"/>
 
             <TextView
                 android:id="@+id/order_date"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:textColor="@color/dark_gray_text"
-                android:textSize="20sp"
 
-                android:layout_height="wrap_content"/>
+                android:textSize="20sp"/>
         </LinearLayout>
 
 
         <LinearLayout
-            android:gravity="center_vertical"
-            android:orientation="vertical"
             android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_height="match_parent">
+            android:gravity="center_vertical"
+            android:orientation="vertical">
 
             <TextView
-                android:text="@string/email_label"
                 android:layout_width="match_parent"
-                android:textColor="@color/light_gray_text"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:text="@string/email_label"
+                android:textColor="@color/light_gray_text"/>
 
             <TextView
                 android:id="@+id/order_email"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:textColor="@color/dark_gray_text"
-                android:textSize="20sp"
 
-                android:layout_height="wrap_content"/>
+                android:textSize="20sp"/>
         </LinearLayout>
 
 
     </LinearLayout>
 
     <com.viewpagerindicator.TabPageIndicator
-        android:layout_marginRight="@dimen/customer_margin_right_total"
-        android:layout_marginLeft="@dimen/customer_tab_margin_left"
         android:id="@+id/order_tabs"
+        android:layout_width="wrap_content"
         android:layout_height="48dp"
-        android:layout_width="wrap_content"/>
+        android:layout_marginLeft="@dimen/customer_tab_margin_left"
+        android:layout_marginRight="@dimen/customer_margin_right_total"/>
 
     <View
         android:layout_width="fill_parent"
@@ -120,9 +120,9 @@
         android:background="@color/divider_white"/>
 
     <android.support.v4.view.ViewPager
-        android:layout_marginRight="@dimen/customer_margin_right_total"
-        android:layout_marginLeft="@dimen/customer_tab_margin_left"
         android:id="@+id/order_viewpager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/customer_tab_margin_left"
+        android:layout_marginRight="@dimen/customer_margin_right_total"/>
 </LinearLayout>

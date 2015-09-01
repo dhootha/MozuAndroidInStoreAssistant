@@ -160,8 +160,8 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
         mOrderFulfillmentStatus.setVisibility(View.GONE);
     }
 
-    public void setEditModeVisibility(boolean isVisible){
-        enterEditMode.setVisibility(isVisible?View.VISIBLE:View.GONE);
+    public void setEditModeVisibility(boolean isVisible) {
+        enterEditMode.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 
     @Override

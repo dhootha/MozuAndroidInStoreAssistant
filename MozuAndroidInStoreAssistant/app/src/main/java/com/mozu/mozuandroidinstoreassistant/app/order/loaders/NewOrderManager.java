@@ -32,13 +32,12 @@ import rx.subjects.AsyncSubject;
 
 public class NewOrderManager {
 
+    public static final String PRODUCT_SORT_BY = "productname asc";
+    private static final int ITEMS_PER_PAGE = 20;
     public static int count = 0;
-
     private static NewOrderManager mNewOrderManager;
     private AsyncSubject<ProductSearchResult> mProductSearchSubject;
     private String mSearch;
-    public static final String PRODUCT_SORT_BY = "productname asc";
-    private static final int ITEMS_PER_PAGE = 20;
 
     private NewOrderManager() {
     }

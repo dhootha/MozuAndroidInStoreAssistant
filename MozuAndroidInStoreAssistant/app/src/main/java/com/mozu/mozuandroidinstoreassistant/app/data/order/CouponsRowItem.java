@@ -6,7 +6,8 @@ import com.mozu.mozuandroidinstoreassistant.app.data.IData;
 public class CouponsRowItem implements IData {
 
     public Order mOrder;
-    public CouponsRowItem(Order order){
+
+    public CouponsRowItem(Order order) {
         mOrder = order;
     }
 }
