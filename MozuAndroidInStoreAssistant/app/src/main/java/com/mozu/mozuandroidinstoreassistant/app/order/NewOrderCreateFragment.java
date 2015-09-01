@@ -63,18 +63,21 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
     private com.mozu.mozuandroidinstoreassistant.app.order.NewOrderProductAdapter mProductsAdapter;
     private Order mOrder;
     private boolean mIsEditMode;
-    private static final String NEW_ORDER = "neworder";
     private static final String EDIT_MODE = "editMode";
 
 
-    public static NewOrderCreateFragment getInstance(Order order, boolean isEditMode) {
+    public static NewOrderCreateFragment getInstance(boolean isEditMode) {
         NewOrderCreateFragment newOrderCreateFragment = new NewOrderCreateFragment();
         Bundle b = new Bundle();
-        b.putSerializable(NEW_ORDER, order);
         b.putBoolean(EDIT_MODE, isEditMode);
         newOrderCreateFragment.setArguments(b);
         return newOrderCreateFragment;
     }
+
+    public void setOrder(Order order) {
+        mOrder = order;
+    }
+
 
     @Override
     public void setUserVisibleHint(final boolean isVisibleToUser) {
@@ -96,6 +99,12 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean("hsjdhsj", true);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
@@ -108,7 +117,6 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mOrder = (Order) getArguments().getSerializable(NEW_ORDER);
         mView = inflater.inflate(R.layout.new_order_details_fragment, null);
         UserAuthenticationStateMachine mUserState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
         mSiteId = mUserState.getSiteId();
@@ -250,13 +258,6 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
         }
 
         outProduct.setDescription(inProduct.getContent() != null ? inProduct.getContent().getProductShortDescription() : null);
-//        outProduct.setDiscountsRestricted(discountsRestricted);
-//        outProduct.setDiscountsRestrictedEndDate(discountsRestrictedEndDate);
-//        outProduct.setDiscountsRestrictedStartDate(discountsRestrictedStartDate);
-//        outProduct.setImageAlternateText(imageAlternateText);
-//        outProduct.setImageUrl();
-//        outProduct.setProductReservationId(productReservationId);
-
         outProduct.setFulfillmentTypesSupported(inProduct.getFulfillmentTypesSupported());
         outProduct.setIsPackagedStandAlone(inProduct.getIsPackagedStandAlone());
         outProduct.setIsRecurring(inProduct.getIsRecurring());
@@ -396,11 +397,15 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
         mOrder = order;
         mProductsAdapter.addData(mOrder);
         mProductsAdapter.notifyDataSetChanged();
+        if (getActivity() instanceof NewOrderActivity) {
+            ((NewOrderActivity) getActivity()).updateOrder(mOrder);
+        } else if (getActivity() instanceof OrderDetailActivity) {
+
+        }
     }
 
     @Override
     public void updateOrder(Order order) {
         onEditDone(order);
-
     }
 }

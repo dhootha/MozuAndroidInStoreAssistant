@@ -25,7 +25,6 @@ import butterknife.InjectView;
 
 public class NewOrderActivity extends BaseActivity {
 
-    public static final String IS_EDITABLE = "editable";
     @InjectView(R.id.order_status)
     public TextView mOrderStatus;
     @InjectView(R.id.order_date)
@@ -41,7 +40,6 @@ public class NewOrderActivity extends BaseActivity {
     private Order mOrder;
     private CustomerAccount mCustomerAccount;
     private NewOrderFragmentAdapter mOrderFragmentAdapter;
-
     private Integer mViewPagerPos;
 
     @Override
@@ -49,11 +47,22 @@ public class NewOrderActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.neworder_activity);
         ButterKnife.inject(this);
-        if (getIntent() != null) {
+        if (savedInstanceState != null) {
+            mOrder = (Order) savedInstanceState.getSerializable(OrderCreationAddCustomerActivity.ORDER_EXTRA_KEY);
+            mCustomerAccount = (CustomerAccount) savedInstanceState.getSerializable(OrderCreationAddCustomerActivity.ORDER_CUSTOMER_EXTRA_KEY);
+        } else if (getIntent() != null) {
             mOrder = (Order) getIntent().getSerializableExtra(OrderCreationAddCustomerActivity.ORDER_EXTRA_KEY);
             mCustomerAccount = (CustomerAccount) getIntent().getSerializableExtra(OrderCreationAddCustomerActivity.ORDER_CUSTOMER_EXTRA_KEY);
         }
         setUpViews();
+    }
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable(OrderCreationAddCustomerActivity.ORDER_EXTRA_KEY, mOrder);
+        outState.putSerializable(OrderCreationAddCustomerActivity.ORDER_CUSTOMER_EXTRA_KEY, mCustomerAccount);
+        super.onSaveInstanceState(outState);
     }
 
     private void setUpViews() {
@@ -87,6 +96,7 @@ public class NewOrderActivity extends BaseActivity {
             mOrderFragmentAdapter = new NewOrderFragmentAdapter(getFragmentManager(), mOrder);
             mOrderViewPager.setAdapter(mOrderFragmentAdapter);
             mOrderTabs.setViewPager(mOrderViewPager);
+            mOrderFragmentAdapter.notifyDataSetChanged();
         } else {
             mOrderFragmentAdapter.notifyDataSetChanged();
         }

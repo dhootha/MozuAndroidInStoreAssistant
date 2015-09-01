@@ -16,7 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.commerceruntime.orders.OrderItem;
@@ -26,6 +25,7 @@ import com.mozu.api.contracts.productadmin.ProductVariationOption;
 import com.mozu.api.contracts.productadmin.ProductVariationPagedCollection;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.data.product.FulfillmentInfo;
+import com.mozu.mozuandroidinstoreassistant.app.dialog.ErrorMessageAlertDialog;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.order.loaders.NewOrderManager;
@@ -39,8 +39,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import rx.Subscriber;
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 public class NewOrderItemEditFragment extends DialogFragment {
@@ -181,7 +179,7 @@ public class NewOrderItemEditFragment extends DialogFragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                        ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(),e.getMessage());
 
                     }
 
@@ -227,8 +225,7 @@ public class NewOrderItemEditFragment extends DialogFragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
-
+                        ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), e.getMessage()).show();
                     }
 
                     @Override
@@ -245,6 +242,25 @@ public class NewOrderItemEditFragment extends DialogFragment {
         Dialog dialog = super.onCreateDialog(savedInstanceState);
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         return dialog;
+    }
+
+    private Subscriber<Order> getOrderUpdateSubscriber() {
+        return new Subscriber<Order>() {
+            @Override
+            public void onCompleted() {
+                getDialog().dismiss();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), e.getMessage()).show();
+            }
+
+            @Override
+            public void onNext(Order order) {
+                mEditDoneListener.onEditDone(order);
+            }
+        };
     }
 
     private void setupViews() {
@@ -277,26 +293,7 @@ public class NewOrderItemEditFragment extends DialogFragment {
                         AndroidObservable.bindFragment(NewOrderItemEditFragment.this, NewOrderManager
                                 .getInstance()
                                 .getOrderItemUpdateQuantityObservable(mTenantId, mSiteId, mOrderItem, mOrderId, updatedProductQuantityVal == null ? null : Integer.valueOf(updatedProductQuantityVal), updatedFulFillmentType))
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new Subscriber<Order>() {
-                                    @Override
-                                    public void onCompleted() {
-                                        getDialog().dismiss();
-
-                                    }
-
-                                    @Override
-                                    public void onError(Throwable e) {
-                                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
-
-                                    }
-
-                                    @Override
-                                    public void onNext(Order order) {
-                                        mEditDoneListener.onEditDone(order);
-                                    }
-                                });
+                                .subscribe(getOrderUpdateSubscriber());
                     }
                 } else {
                     FulfillmentInfo updatedFulFillmentType = (FulfillmentInfo) fulfillmentType.getSelectedItem();
@@ -324,24 +321,7 @@ public class NewOrderItemEditFragment extends DialogFragment {
                     AndroidObservable.bindFragment(NewOrderItemEditFragment.this, NewOrderManager
                             .getInstance()
                             .getOrderItemCreateObservable(mTenantId, mSiteId, mOrderItem, mOrderId))
-                            .subscribe(new Subscriber<Order>() {
-                                @Override
-                                public void onCompleted() {
-                                    getDialog().dismiss();
-
-                                }
-
-                                @Override
-                                public void onError(Throwable e) {
-                                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
-
-                                }
-
-                                @Override
-                                public void onNext(Order order) {
-                                    mEditDoneListener.onEditDone(order);
-                                }
-                            });
+                            .subscribe(getOrderUpdateSubscriber());
 
                 }
 

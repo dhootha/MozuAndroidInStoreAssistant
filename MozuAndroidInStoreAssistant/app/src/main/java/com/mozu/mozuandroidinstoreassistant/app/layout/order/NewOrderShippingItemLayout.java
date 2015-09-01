@@ -27,17 +27,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 public class NewOrderShippingItemLayout extends LinearLayout implements IRowLayout, IEditMode {
-
 
     private OrderUpdateListener mOrderUpdateListener;
     private Integer mTenantId;
     private Integer mSiteId;
     Spinner mSpinner;
-    private String spinnerSelction;
+    private CompositeSubscription mCompositeSubscription;
 
     public void setOrderUpdateListener(OrderUpdateListener updateShippingListener) {
         mOrderUpdateListener = updateShippingListener;
@@ -62,6 +60,15 @@ public class NewOrderShippingItemLayout extends LinearLayout implements IRowLayo
         UserAuthenticationStateMachine userStateMachine = UserAuthenticationStateMachineProducer.getInstance(getContext());
         mTenantId = userStateMachine.getTenantId();
         mSiteId = userStateMachine.getSiteId();
+        mCompositeSubscription = new CompositeSubscription();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if(mCompositeSubscription != null && !mCompositeSubscription.isUnsubscribed()){
+            mCompositeSubscription.unsubscribe();
+        }
     }
 
     @Override
@@ -86,8 +93,7 @@ public class NewOrderShippingItemLayout extends LinearLayout implements IRowLayo
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
                     progressBar.setVisibility(VISIBLE);
-                    NewOrderManager.getInstance().getOrderShipments(mTenantId, mSiteId, shippingItemRow.mOrder.getId()).subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
+                    mCompositeSubscription.add(NewOrderManager.getInstance().getOrderShipments(mTenantId, mSiteId, shippingItemRow.mOrder.getId())
                             .subscribe(new Subscriber<List<ShippingRate>>() {
                                 @Override
                                 public void onCompleted() {
@@ -107,7 +113,7 @@ public class NewOrderShippingItemLayout extends LinearLayout implements IRowLayo
                                     setSpinnerSelction(spinnerAdapter, shippingItemRow.mCurrentFulfillmentInfo.getShippingMethodCode());
 
                                 }
-                            });
+                            }));
                     return false;
                 }
 
@@ -133,7 +139,7 @@ public class NewOrderShippingItemLayout extends LinearLayout implements IRowLayo
 
                     order.setFulfillmentInfo(fulfillmentInfo);
                     progressBar.setVisibility(View.VISIBLE);
-                    NewOrderManager.getInstance().getUpdateOrderObservable(mTenantId, mSiteId, order, order.getId())
+                    mCompositeSubscription.add(NewOrderManager.getInstance().getUpdateOrderObservable(mTenantId, mSiteId, order, order.getId())
                             .subscribe(new Subscriber<Order>() {
                                 @Override
                                 public void onCompleted() {
@@ -153,7 +159,7 @@ public class NewOrderShippingItemLayout extends LinearLayout implements IRowLayo
                                     mOrderUpdateListener.updateOrder(order);
 
                                 }
-                            });
+                            }));
                 }
 
                 @Override
@@ -178,6 +184,7 @@ public class NewOrderShippingItemLayout extends LinearLayout implements IRowLayo
         }
         mSpinner.setSelection(0);
     }
+
 
     @Override
     public void setEditMode(boolean isEditMode) {

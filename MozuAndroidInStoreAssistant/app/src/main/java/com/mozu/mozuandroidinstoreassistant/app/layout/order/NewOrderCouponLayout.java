@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Subscriber;
+import rx.subscriptions.CompositeSubscription;
 
 public class NewOrderCouponLayout extends LinearLayout implements IRowLayout, IEditMode {
 
@@ -38,6 +39,8 @@ public class NewOrderCouponLayout extends LinearLayout implements IRowLayout, IE
     private Integer mTenantId;
     private Integer mSiteId;
     Spinner mSpinner;
+    private CompositeSubscription mCompositeSubscription;
+
 
     public void setUpdateListener(NewOrderShippingItemLayout.OrderUpdateListener updateCouponListener) {
         mOrderUpdateListener = updateCouponListener;
@@ -62,6 +65,15 @@ public class NewOrderCouponLayout extends LinearLayout implements IRowLayout, IE
         UserAuthenticationStateMachine userStateMachine = UserAuthenticationStateMachineProducer.getInstance(getContext());
         mTenantId = userStateMachine.getTenantId();
         mSiteId = userStateMachine.getSiteId();
+        mCompositeSubscription = new CompositeSubscription();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (mCompositeSubscription != null && !mCompositeSubscription.isUnsubscribed()) {
+            mCompositeSubscription.unsubscribe();
+        }
     }
 
     @Override
@@ -84,7 +96,7 @@ public class NewOrderCouponLayout extends LinearLayout implements IRowLayout, IE
                 public boolean onTouch(View view, MotionEvent motionEvent) {
                     if (spinnerAdapter.getCount() <= 1) {
                         progressBar.setVisibility(VISIBLE);
-                        NewOrderManager.getInstance().getCoupons(mTenantId, mSiteId)
+                        mCompositeSubscription.add(NewOrderManager.getInstance().getCoupons(mTenantId, mSiteId)
                                 .subscribe(new Subscriber<DiscountCollection>() {
                                     @Override
                                     public void onCompleted() {
@@ -110,7 +122,7 @@ public class NewOrderCouponLayout extends LinearLayout implements IRowLayout, IE
                                         spinnerAdapter.notifyDataSetChanged();
 
                                     }
-                                });
+                                }));
                     }
 
                     return false;
@@ -126,7 +138,7 @@ public class NewOrderCouponLayout extends LinearLayout implements IRowLayout, IE
                                 return;
                             final String couponSelected = (String) adapterView.getItemAtPosition(position);
                             progressBar.setVisibility(View.VISIBLE);
-                            NewOrderManager.getInstance().getApplyCouponObservable(mTenantId, mSiteId, order.getId(), couponSelected)
+                            mCompositeSubscription.add(NewOrderManager.getInstance().getApplyCouponObservable(mTenantId, mSiteId, order.getId(), couponSelected)
                                     .subscribe(new Subscriber<Order>() {
                                         @Override
                                         public void onCompleted() {
@@ -135,9 +147,7 @@ public class NewOrderCouponLayout extends LinearLayout implements IRowLayout, IE
 
                                         @Override
                                         public void onError(Throwable e) {
-                                            e.printStackTrace();
                                             progressBar.setVisibility(View.GONE);
-
                                         }
 
                                         @Override
@@ -154,7 +164,7 @@ public class NewOrderCouponLayout extends LinearLayout implements IRowLayout, IE
                                             }
                                             mOrderUpdateListener.updateOrder(order);
                                         }
-                                    });
+                                    }));
                         }
 
                         @Override
