@@ -10,15 +10,17 @@ import android.widget.TextView;
 import com.mozu.api.contracts.commerceruntime.orders.OrderNote;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class OrderDetailNotesAdapter extends BaseAdapter {
 
-    private List<OrderNote> mOrderNotes;
+    private List<OrderNote> mOrderNotes = new ArrayList<>();
 
     public OrderDetailNotesAdapter(List<OrderNote> notes) {
-        mOrderNotes = notes;
+        if (notes != null)
+            mOrderNotes = notes;
     }
 
     @Override
@@ -32,7 +34,9 @@ public class OrderDetailNotesAdapter extends BaseAdapter {
     }
 
     public void setData(List<OrderNote> data) {
-        mOrderNotes = data;
+        if (data != null) {
+            mOrderNotes = data;
+        }
     }
 
 

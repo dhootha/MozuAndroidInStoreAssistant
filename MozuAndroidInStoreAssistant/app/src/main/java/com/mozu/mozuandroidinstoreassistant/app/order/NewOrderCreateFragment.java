@@ -82,7 +82,9 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
         new Handler().post(new Runnable() {
             @Override
             public void run() {
-                ((OrderDetailActivity) getActivity()).setEditModeVisibility(isVisibleToUser);
+                if (getActivity() instanceof OrderDetailActivity) {
+                    ((OrderDetailActivity) getActivity()).setEditModeVisibility(isVisibleToUser);
+                }
             }
         });
     }
@@ -150,7 +152,7 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
         mAdapter = new ProductSuggestionAdapter(getActivity());
         mProductLookup.setAdapter(mAdapter);
         mProductsAdapter = new com.mozu.mozuandroidinstoreassistant.app.order.NewOrderProductAdapter(this);
-        if (mOrder != null) {
+        if (mOrder != null && mOrder.getItems() != null) {
             mProductsAdapter.addData(mOrder);
             updateEditMode(mIsEditMode);
         }
