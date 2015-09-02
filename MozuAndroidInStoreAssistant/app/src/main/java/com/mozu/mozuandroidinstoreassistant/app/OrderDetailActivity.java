@@ -190,6 +190,7 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
 
     @Override
     public void onRefresh() {
+        mOrderSwipeRefresh.setRefreshing(true);
         Loader orderLoader = getLoaderManager().getLoader(LOADER_ORDER_DETAIL);
         orderLoader.reset();
         orderLoader.startLoading();
