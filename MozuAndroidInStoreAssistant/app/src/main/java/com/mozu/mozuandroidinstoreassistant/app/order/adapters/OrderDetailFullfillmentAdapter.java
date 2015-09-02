@@ -150,6 +150,7 @@ public class OrderDetailFullfillmentAdapter extends BaseAdapter {
         }
 
         IRowLayout rowItem = (IRowLayout) convertView;
+        if (rowItem != null)
         rowItem.bindData(getItem(position));
         return convertView;
     }

@@ -1,5 +1,6 @@
 package com.mozu.mozuandroidinstoreassistant.app.order;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
@@ -39,6 +40,7 @@ import rx.android.observables.AndroidObservable;
 
 public class OrderFulfillmentMoveToPickupDialogFragment extends DialogFragment implements OrderFulfillmentMoveToItemAdapter.MoveToListListener {
 
+    private static final String FULFILLED = "fulfilled";
     @InjectView(R.id.items)
     RecyclerView mRecyclerViewProducts;
     @InjectView(R.id.cancel)
@@ -70,6 +72,13 @@ public class OrderFulfillmentMoveToPickupDialogFragment extends DialogFragment i
         View view = inflater.inflate(R.layout.fulfillment_move_to, container, false);
         ButterKnife.inject(this, view);
         return view;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        options.add(getResources().getString(R.string.create_new_pickup));
+        options.add(0, getResources().getString(R.string.move_to));
     }
 
     @Override
@@ -128,10 +137,9 @@ public class OrderFulfillmentMoveToPickupDialogFragment extends DialogFragment i
         this.mOrder = order;
         options = new ArrayList<>(order.getPickups().size() + 2);
         for (Pickup pickup : mOrder.getPickups()) {
+            if (!FULFILLED.equalsIgnoreCase(pickup.getStatus()))
             options.add(pickup.getCode());
         }
-        options.add("Create New Pickup");
-        options.add(0, "Move To:");
     }
 
     @OnClick(R.id.cancel)
