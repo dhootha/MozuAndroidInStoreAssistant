@@ -113,6 +113,19 @@ public class OrderDetailFullfillmentFragment extends Fragment implements MoveToL
                 }
 
                 pickupInfoDialogFragment.show(manager, PICKUP_DIALOG_TAG);
+            } else if (rowType == OrderDetailFullfillmentAdapter.RowType.FULFILLED_ROW) {
+                FulfillmentFulfilledDataItem item = (FulfillmentFulfilledDataItem) mOrderDetailFullfillmentAdapter.getItem(position);
+                FragmentManager manager = getFragmentManager();
+                PickupInfoDialogFragment pickupInfoDialogFragment = (PickupInfoDialogFragment) manager.findFragmentByTag(PICKUP_DIALOG_TAG);
+                UserAuthenticationStateMachine userState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
+
+                if (pickupInfoDialogFragment == null) {
+                    pickupInfoDialogFragment = new PickupInfoDialogFragment();
+                    pickupInfoDialogFragment.setPickup(item.getPickup());
+                    pickupInfoDialogFragment.setTenantAndSiteId(userState.getTenantId(), userState.getSiteId());
+                }
+
+                pickupInfoDialogFragment.show(manager, PICKUP_DIALOG_TAG);
             }
 
         }
@@ -334,6 +347,8 @@ public class OrderDetailFullfillmentFragment extends Fragment implements MoveToL
             finalDataList.add(fulfillmentTitleDataItem);
             finalDataList.add(new TopRowItem());
             if (orderItemsNotPackaged.size() > 0) {
+                finalDataList.add(new FulfillmentColumnHeader());
+                finalDataList.add(new FulfillmentDividerRowItem());
                 finalDataList.add(new FullfillmentCategoryHeaderDataItem("Pending Items"));
             }
             for (OrderItem orderItem : orderItemsNotPackaged) {

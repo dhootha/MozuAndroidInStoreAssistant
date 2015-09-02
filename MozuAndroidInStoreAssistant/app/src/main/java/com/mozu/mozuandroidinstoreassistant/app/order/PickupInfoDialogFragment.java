@@ -15,9 +15,9 @@ import com.mozu.api.contracts.commerceruntime.fulfillment.Pickup;
 import com.mozu.api.contracts.commerceruntime.fulfillment.PickupItem;
 import com.mozu.mozuandroidinstoreassistant.app.ProductDetailActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
-import com.mozu.mozuandroidinstoreassistant.app.order.adapters.OrderDetailPickupItemAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
+import com.mozu.mozuandroidinstoreassistant.app.order.adapters.OrderDetailPickupItemAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.utils.ProductUtils;
 
 import butterknife.ButterKnife;
@@ -26,15 +26,14 @@ import butterknife.InjectView;
 
 public class PickupInfoDialogFragment extends DialogFragment {
 
-    private Pickup mPickup;
-
     @InjectView(R.id.pickup_items_list) ListView mList;
-
+    private Pickup mPickup;
     private Integer mTenantId;
     private Integer mSiteId;
     private TextView mStatus;
     private TextView mLocation;
     private ImageView mCloseView;
+    private TextView mPickupName;
 
     public PickupInfoDialogFragment() {
         // Required empty public constructor
@@ -49,6 +48,7 @@ public class PickupInfoDialogFragment extends DialogFragment {
         View view = inflater.inflate(R.layout.pickup_dialog_fragment, null);
         mStatus = (TextView) view.findViewById(R.id.pickup_status_value);
         mLocation = (TextView)view.findViewById(R.id.pickup_location_value);
+        mPickupName = (TextView) view.findViewById(R.id.pickup_name);
         mCloseView = (ImageView)view.findViewById(R.id.pickup_close);
         mCloseView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,6 +74,9 @@ public class PickupInfoDialogFragment extends DialogFragment {
     }
 
     private void setPickupItems() {
+        if (mPickup.getCode() != null && !mPickup.getCode().isEmpty()) {
+            mPickupName.setText(mPickup.getCode());
+        }
         if (mPickup.getStatus() != null) {
             mStatus.setText(mPickup.getStatus());
         } else {
