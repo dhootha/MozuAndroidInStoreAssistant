@@ -33,7 +33,7 @@ public class OrdersLoader extends InternetConnectedAsyncTaskLoader<List<Order>> 
     private static final String SORT_ORDER_DSC = "desc";
     public String mCurrentOrderBy = "";
     public String mSearchQueryFilter;
-    private String RESPONSE_FIELDS = "items(id,ordernumber,status,SubmittedDate,paymentStatus,total,status)";
+    private String RESPONSE_FIELDS = "items(id,ordernumber,status,SubmittedDate,paymentStatus,total,status,customerAccountId)";
     private List<Order> mOrdersList;
     private Integer mTenantId;
     private Integer mSiteId;
