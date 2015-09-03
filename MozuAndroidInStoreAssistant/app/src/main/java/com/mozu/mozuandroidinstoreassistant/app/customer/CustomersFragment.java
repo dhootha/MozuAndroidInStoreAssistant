@@ -48,24 +48,12 @@ public class CustomersFragment extends Fragment implements LoaderManager.LoaderC
     private static final String CURRENT_SORT_COLUMN_EXTRA = "currensortcolumnextra";
 
     private static final int LOADER_CUSTOMERS = 522;
-
-    private Integer mTenantId;
-    private Integer mSiteId;
-
     @InjectView(R.id.customer_list_container)
     SwipeRefreshLayout mCustomerRefreshLayout;
     @InjectView(R.id.customer_list)
     ListView mCustomersList;
     @InjectView(R.id.customer_list_progress)
     LinearLayout mProgress;
-
-    private CustomersLoader mCustomersLoader;
-    private CustomersAdapter mAdapter;
-    private SearchView mSearchView;
-    private MenuItem mSearchMenuItem;
-    private CustomerListener mListener;
-    private String mCurrentSearch;
-
     @InjectView(R.id.customer_number_header)
     TextView mCustomerNumberHeader;
     @InjectView(R.id.customer_last_name_header)
@@ -76,7 +64,6 @@ public class CustomersFragment extends Fragment implements LoaderManager.LoaderC
     TextView mCustomerEmailHeader;
     @InjectView(R.id.customer_lifetime_value_header)
     TextView mCustomerLifetimeValueHeader;
-
     @InjectView(R.id.customer_number_header_sort_image)
     ImageView mCustomerNumberHeaderSortImage;
     @InjectView(R.id.customer_last_name_header_sort_image)
@@ -87,15 +74,23 @@ public class CustomersFragment extends Fragment implements LoaderManager.LoaderC
     ImageView mCustomerEmailHeaderSortImage;
     @InjectView(R.id.customer_lifetime_value_header_sort_image)
     ImageView mCustomerLifetimeValueHeaderSortImage;
-
     @InjectView(R.id.customers_header)
     LinearLayout mCustomerHeaderLayout;
     @InjectView(R.id.customer_search_query)
     TextView mCustomerSearchQuery;
-
+    @InjectView(android.R.id.empty)
+    TextView mEmptyMsg;
+    private Integer mTenantId;
+    private Integer mSiteId;
+    private CustomersLoader mCustomersLoader;
+    private CustomersAdapter mAdapter;
+    private SearchView mSearchView;
+    private MenuItem mSearchMenuItem;
+    private CustomerListener mListener;
+    private String mCurrentSearch;
     private int mResourceOfCurrentSelectedColumn = -1;
     private String mDefaultSearchQuery;
-    private boolean mLauncedFromSearch;
+    private boolean mLaunchedFromSearch;
 
     public CustomersFragment() {
 
@@ -104,7 +99,7 @@ public class CustomersFragment extends Fragment implements LoaderManager.LoaderC
     }
 
     public void setLauncedFromSearch() {
-        mLauncedFromSearch = true;
+        mLaunchedFromSearch = true;
     }
 
     @Override
@@ -133,7 +128,7 @@ public class CustomersFragment extends Fragment implements LoaderManager.LoaderC
             initializeSortColumn();
         }
 
-        if (mLauncedFromSearch) {
+        if (mLaunchedFromSearch) {
             mCustomerRefreshLayout.setEnabled(false);
             setHasOptionsMenu(false);
             mCustomerHeaderLayout.setVisibility(View.VISIBLE);
@@ -278,6 +273,12 @@ public class CustomersFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public void onLoadFinished(Loader<List<CustomerAccount>> loader, List<CustomerAccount> data) {
         mCustomerRefreshLayout.setRefreshing(false);
+        if (data.size() <= 0) {
+            mEmptyMsg.setVisibility(View.VISIBLE);
+        } else {
+            mEmptyMsg.setVisibility(View.GONE);
+        }
+
 
         if (loader.getId() == LOADER_CUSTOMERS) {
             if (mAdapter == null) {
@@ -297,6 +298,7 @@ public class CustomersFragment extends Fragment implements LoaderManager.LoaderC
             mProgress.setVisibility(View.GONE);
             mCustomersList.setVisibility(View.VISIBLE);
             mAdapter.notifyDataSetChanged();
+
         }
     }
 

@@ -35,16 +35,12 @@ import rx.subscriptions.CompositeSubscription;
 public class NewOrderCouponLayout extends LinearLayout implements IRowLayout, IEditMode {
 
 
+    Spinner mSpinner;
     private NewOrderShippingItemLayout.OrderUpdateListener mOrderUpdateListener;
     private Integer mTenantId;
     private Integer mSiteId;
-    Spinner mSpinner;
     private CompositeSubscription mCompositeSubscription;
 
-
-    public void setUpdateListener(NewOrderShippingItemLayout.OrderUpdateListener updateCouponListener) {
-        mOrderUpdateListener = updateCouponListener;
-    }
 
     public NewOrderCouponLayout(Context context) {
         super(context);
@@ -59,6 +55,10 @@ public class NewOrderCouponLayout extends LinearLayout implements IRowLayout, IE
     public NewOrderCouponLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init();
+    }
+
+    public void setUpdateListener(NewOrderShippingItemLayout.OrderUpdateListener updateCouponListener) {
+        mOrderUpdateListener = updateCouponListener;
     }
 
     private void init() {

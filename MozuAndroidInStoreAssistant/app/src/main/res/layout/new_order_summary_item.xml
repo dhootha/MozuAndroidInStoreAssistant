@@ -1,38 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.mozu.mozuandroidinstoreassistant.app.layout.order.NewOrderTotalLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingTop="8dp"
     android:paddingBottom="8dp"
     android:paddingLeft="24dp"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:paddingTop="8dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="24dp">
 
         <TextView
-            android:layout_weight="7"
-            android:text="@string/sub_total"
-            android:gravity="right"
-            android:layout_marginRight="24dp"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginRight="24dp"
+            android:layout_weight="7"
+            android:gravity="right"
+            android:text="@string/sub_total"/>
 
         <TextView
             android:id="@+id/sub_total_id"
-            android:layout_weight="1"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
 
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/order_adjustment"
-        android:visibility="gone"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="24dp">
+        android:layout_height="24dp"
+        android:orientation="vertical"
+        android:visibility="gone">
 
     </LinearLayout>
 
@@ -41,18 +42,18 @@
         android:layout_height="24dp">
 
         <TextView
-            android:text="@string/tax"
-            android:gravity="right"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginRight="24dp"
             android:layout_weight="7"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"/>
+            android:gravity="right"
+            android:text="@string/tax"/>
 
         <TextView
-            android:layout_weight="1"
             android:id="@+id/tax_id"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
 
     </LinearLayout>
 
@@ -61,26 +62,27 @@
         android:layout_height="24dp">
 
         <TextView
-            android:text="@string/shipping_total"
-            android:gravity="right"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginRight="24dp"
             android:layout_weight="7"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"/>
+            android:gravity="right"
+            android:text="@string/shipping_total"/>
 
         <TextView
             android:id="@+id/shipping_total_id"
-            android:layout_weight="1"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
 
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/shipping_adjustment"
-        android:visibility="gone"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="24dp">
+        android:layout_height="24dp"
+        android:orientation="vertical"
+        android:visibility="gone">
 
     </LinearLayout>
 
@@ -89,18 +91,18 @@
         android:layout_height="24dp">
 
         <TextView
-            android:text="@string/order_total"
-            android:gravity="right"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginRight="24dp"
             android:layout_weight="7"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"/>
+            android:gravity="right"
+            android:text="@string/order_total"/>
 
         <TextView
             android:id="@+id/order_total_id"
-            android:layout_weight="1"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
 
     </LinearLayout>
 </com.mozu.mozuandroidinstoreassistant.app.layout.order.NewOrderTotalLayout>

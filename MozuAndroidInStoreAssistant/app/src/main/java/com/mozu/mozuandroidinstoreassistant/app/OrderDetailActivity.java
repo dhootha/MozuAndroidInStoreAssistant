@@ -160,8 +160,8 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
         mOrderFulfillmentStatus.setVisibility(View.GONE);
     }
 
-    public void setEditModeVisibility(boolean isVisible){
-        enterEditMode.setVisibility(isVisible?View.VISIBLE:View.GONE);
+    public void setEditModeVisibility(boolean isVisible) {
+        enterEditMode.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -190,6 +190,7 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
 
     @Override
     public void onRefresh() {
+        mOrderSwipeRefresh.setRefreshing(true);
         Loader orderLoader = getLoaderManager().getLoader(LOADER_ORDER_DETAIL);
         orderLoader.reset();
         orderLoader.startLoading();

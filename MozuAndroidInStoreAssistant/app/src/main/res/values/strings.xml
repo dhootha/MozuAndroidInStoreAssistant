@@ -321,6 +321,8 @@
     <string name="no_items_selected_error">Please select one or more items to continue</string>
     <string name="save_customer_note">Save Note</string>
     <string name="standard_error">There was an error completing the request</string>
+    <string name="create_new_pickup">Create New Pickup</string>
+    <string name="move_to">Move to:</string>
     <string name="submit">Submit</string>
     <string name="submit_confirm_message">Are you sure want to submit?</string>
     <string name="cancel_confirm_message">Are you sure you want to Cancel this order?</string>

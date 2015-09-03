@@ -31,15 +31,11 @@ import rx.subscriptions.CompositeSubscription;
 
 public class NewOrderShippingItemLayout extends LinearLayout implements IRowLayout, IEditMode {
 
+    Spinner mSpinner;
     private OrderUpdateListener mOrderUpdateListener;
     private Integer mTenantId;
     private Integer mSiteId;
-    Spinner mSpinner;
     private CompositeSubscription mCompositeSubscription;
-
-    public void setOrderUpdateListener(OrderUpdateListener updateShippingListener) {
-        mOrderUpdateListener = updateShippingListener;
-    }
 
     public NewOrderShippingItemLayout(Context context) {
         super(context);
@@ -56,6 +52,10 @@ public class NewOrderShippingItemLayout extends LinearLayout implements IRowLayo
         init();
     }
 
+    public void setOrderUpdateListener(OrderUpdateListener updateShippingListener) {
+        mOrderUpdateListener = updateShippingListener;
+    }
+
     private void init() {
         UserAuthenticationStateMachine userStateMachine = UserAuthenticationStateMachineProducer.getInstance(getContext());
         mTenantId = userStateMachine.getTenantId();
@@ -66,7 +66,7 @@ public class NewOrderShippingItemLayout extends LinearLayout implements IRowLayo
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if(mCompositeSubscription != null && !mCompositeSubscription.isUnsubscribed()){
+        if (mCompositeSubscription != null && !mCompositeSubscription.isUnsubscribed()) {
             mCompositeSubscription.unsubscribe();
         }
     }

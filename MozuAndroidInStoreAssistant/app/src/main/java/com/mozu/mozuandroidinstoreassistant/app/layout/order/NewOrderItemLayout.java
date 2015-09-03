@@ -20,7 +20,7 @@ import java.text.NumberFormat;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class NewOrderItemLayout extends LinearLayout implements IRowLayout{
+public class NewOrderItemLayout extends LinearLayout implements IRowLayout {
     @InjectView(R.id.product_code)
     public TextView productCode;
 
