@@ -24,6 +24,7 @@ import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthen
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.order.adapters.NewOrderFragmentAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.order.loaders.NewOrderManager;
+import com.mozu.mozuandroidinstoreassistant.app.views.LoadingView;
 import com.viewpagerindicator.TabPageIndicator;
 
 import java.text.DateFormat;
@@ -47,6 +48,9 @@ public class NewOrderActivity extends BaseActivity {
     public TextView mOrderEmail;
     @InjectView(R.id.order_tabs)
     public TabPageIndicator mOrderTabs;
+    @InjectView(R.id.order_loading)
+    public LoadingView mOrderLoading;
+
 
     @InjectView(R.id.submit_order)
     public Button mSubmitOrder;
@@ -83,15 +87,17 @@ public class NewOrderActivity extends BaseActivity {
     }
 
     private void loadOrderData(boolean hardReset) {
+        mOrderLoading.setLoading();
         AndroidObservable.bindActivity(this, NewOrderManager.getInstance().getOrderData(mTenantId, mSiteId, mOrderId, hardReset))
                 .subscribe(new Subscriber<Order>() {
                     @Override
                     public void onCompleted() {
+                        mOrderLoading.success();
                     }
 
                     @Override
                     public void onError(Throwable e) {
-
+                        mOrderLoading.setError("Couldn't Load Data order data");
                     }
 
                     @Override
@@ -104,7 +110,7 @@ public class NewOrderActivity extends BaseActivity {
     }
 
     private void loadCustomerData(Order order) {
-        AndroidObservable.bindActivity(this, NewOrderManager.getInstance().getCustomerInfoObservable(mTenantId, mSiteId, order.getCustomerAccountId())).subscribe(new Subscriber<CustomerAccount>() {
+        AndroidObservable.bindActivity(this, NewOrderManager.getInstance().getCustomerData(mTenantId, mSiteId, order.getCustomerAccountId())).subscribe(new Subscriber<CustomerAccount>() {
             @Override
             public void onCompleted() {
 
@@ -112,7 +118,8 @@ public class NewOrderActivity extends BaseActivity {
 
             @Override
             public void onError(Throwable e) {
-
+                mOrderName.setText(getString(R.string.not_available));
+                mOrderEmail.setText(getString(R.string.not_available));
             }
 
             @Override
@@ -124,6 +131,19 @@ public class NewOrderActivity extends BaseActivity {
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (isFinishing()) {
+            invalidateSubjects();
+        }
+    }
+
+    private void invalidateSubjects() {
+        NewOrderManager.getInstance().invalidateProductSearch();
+        NewOrderManager.getInstance().invalidateOrderData();
+        NewOrderManager.getInstance().invalidateCustomerInfo();
+    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {

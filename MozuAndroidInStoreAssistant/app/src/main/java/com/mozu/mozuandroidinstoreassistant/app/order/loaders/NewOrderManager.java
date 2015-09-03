@@ -41,8 +41,10 @@ public class NewOrderManager {
     private static NewOrderManager mNewOrderManager;
     private AsyncSubject<ProductSearchResult> mProductSearchSubject;
     private AsyncSubject<Order> mOrderSubject;
+    private AsyncSubject<CustomerAccount> mCustomerSubject;
 
     private String mSearch;
+    private Integer mCustomerId;
 
     private NewOrderManager() {
     }
@@ -51,9 +53,21 @@ public class NewOrderManager {
         if (mNewOrderManager == null) {
             mNewOrderManager = new NewOrderManager();
         }
-
         return mNewOrderManager;
     }
+
+    public void invalidateProductSearch(){
+        mProductSearchSubject = null;
+    }
+
+    public void invalidateOrderData(){
+        mOrderSubject = null;
+    }
+    public void invalidateCustomerInfo(){
+        mCustomerSubject = null;
+    }
+
+
 
     public Observable<Order> getOrderData(int tenantId, int siteId, String orderId, boolean hardReset) {
         if (hardReset || mOrderSubject == null) {
@@ -63,8 +77,18 @@ public class NewOrderManager {
         return mOrderSubject;
     }
 
+    public Observable<CustomerAccount> getCustomerData(int tenantId, int siteId, Integer customerId) {
+        if (mOrderSubject == null || !customerId.equals(mCustomerId)) {
+            mCustomerId = customerId;
+            mCustomerSubject = AsyncSubject.create();
+            getCustomerInfoObservable(tenantId, siteId, customerId).subscribeOn(Schedulers.io()).subscribe(mCustomerSubject);
+        }
+        return mCustomerSubject;
+    }
+
     public Observable<ProductSearchResult> getProductSuggestion(String search, int tenantId, int siteId) {
         if (mProductSearchSubject == null || !search.equals(mSearch)) {
+            mSearch = search;
             mProductSearchSubject = AsyncSubject.create();
             getProductSearchSuggestion(tenantId, siteId, search).subscribeOn(Schedulers.io()).subscribe(mProductSearchSubject);
         }
