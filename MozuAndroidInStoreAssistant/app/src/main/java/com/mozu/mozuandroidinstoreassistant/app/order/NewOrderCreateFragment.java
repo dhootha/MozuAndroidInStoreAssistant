@@ -33,6 +33,7 @@ import com.mozu.mozuandroidinstoreassistant.app.data.order.OrderItemRow;
 import com.mozu.mozuandroidinstoreassistant.app.layout.order.NewOrderShippingItemLayout;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
+import com.mozu.mozuandroidinstoreassistant.app.order.adapters.NewOrderProductAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.order.adapters.ProductSuggestionAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.order.loaders.NewOrderManager;
 
@@ -60,7 +61,7 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
     private int mSiteId;
     Subscription mSubscription;
     ProductSuggestionAdapter mAdapter;
-    private com.mozu.mozuandroidinstoreassistant.app.order.NewOrderProductAdapter mProductsAdapter;
+    private NewOrderProductAdapter mProductsAdapter;
     private Order mOrder;
     private boolean mIsEditMode;
     private static final String EDIT_MODE = "editMode";
@@ -153,7 +154,7 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
     private void setUpViews() {
         mAdapter = new ProductSuggestionAdapter(getActivity());
         mProductLookup.setAdapter(mAdapter);
-        mProductsAdapter = new com.mozu.mozuandroidinstoreassistant.app.order.NewOrderProductAdapter(this);
+        mProductsAdapter = new NewOrderProductAdapter(this);
         if (mOrder != null && mOrder.getItems() != null) {
             mProductsAdapter.addData(mOrder);
             updateEditMode(mIsEditMode);
