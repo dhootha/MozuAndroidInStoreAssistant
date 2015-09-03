@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.mozu.api.ApiException;
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.commerceruntime.orders.OrderItem;
 import com.mozu.api.contracts.commerceruntime.products.ProductOption;
@@ -242,7 +243,11 @@ public class NewOrderItemEditFragment extends DialogFragment {
 
             @Override
             public void onError(Throwable e) {
-                ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), e.getMessage()).show();
+                if (e instanceof ApiException) {
+                    ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), ((ApiException) e).getApiError().getMessage()).show();
+                } else {
+                    ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), e.getMessage()).show();
+                }
             }
 
             @Override

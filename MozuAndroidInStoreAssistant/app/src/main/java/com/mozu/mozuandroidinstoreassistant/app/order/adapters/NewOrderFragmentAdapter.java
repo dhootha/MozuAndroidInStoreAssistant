@@ -43,8 +43,8 @@ public class NewOrderFragmentAdapter extends FragmentStatePagerAdapter {
     }
 
     private enum TabTypes {
-        NOTES("NOTES"),
-        DETAILS("DETAILS");
+        DETAILS("DETAILS"),
+        NOTES("NOTES");
 
         String mDisplayTitle;
 

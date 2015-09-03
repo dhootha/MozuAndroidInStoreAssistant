@@ -4,7 +4,9 @@ package com.mozu.mozuandroidinstoreassistant.app.order.loaders;
 import com.mozu.api.MozuApiContext;
 import com.mozu.api.contracts.commerceruntime.fulfillment.ShippingRate;
 import com.mozu.api.contracts.commerceruntime.orders.Order;
+import com.mozu.api.contracts.commerceruntime.orders.OrderAction;
 import com.mozu.api.contracts.commerceruntime.orders.OrderItem;
+import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.api.contracts.location.Location;
 import com.mozu.api.contracts.location.LocationCollection;
 import com.mozu.api.contracts.productadmin.DiscountCollection;
@@ -15,6 +17,7 @@ import com.mozu.api.resources.commerce.OrderResource;
 import com.mozu.api.resources.commerce.catalog.admin.DiscountResource;
 import com.mozu.api.resources.commerce.catalog.admin.products.ProductVariationResource;
 import com.mozu.api.resources.commerce.catalog.storefront.ProductSearchResultResource;
+import com.mozu.api.resources.commerce.customer.CustomerAccountResource;
 import com.mozu.api.resources.commerce.orders.AppliedDiscountResource;
 import com.mozu.api.resources.commerce.orders.OrderItemResource;
 import com.mozu.api.resources.commerce.orders.ShipmentResource;
@@ -37,7 +40,11 @@ public class NewOrderManager {
     public static int count = 0;
     private static NewOrderManager mNewOrderManager;
     private AsyncSubject<ProductSearchResult> mProductSearchSubject;
+    private AsyncSubject<Order> mOrderSubject;
+    private AsyncSubject<CustomerAccount> mCustomerSubject;
+
     private String mSearch;
+    private Integer mCustomerId;
 
     private NewOrderManager() {
     }
@@ -46,19 +53,47 @@ public class NewOrderManager {
         if (mNewOrderManager == null) {
             mNewOrderManager = new NewOrderManager();
         }
-
         return mNewOrderManager;
+    }
+
+    public void invalidateProductSearch(){
+        mProductSearchSubject = null;
+    }
+
+    public void invalidateOrderData(){
+        mOrderSubject = null;
+    }
+    public void invalidateCustomerInfo(){
+        mCustomerSubject = null;
+    }
+
+
+
+    public Observable<Order> getOrderData(int tenantId, int siteId, String orderId, boolean hardReset) {
+        if (hardReset || mOrderSubject == null) {
+            mOrderSubject = AsyncSubject.create();
+            getOrderObservable(tenantId, siteId, orderId).subscribeOn(Schedulers.io()).subscribe(mOrderSubject);
+        }
+        return mOrderSubject;
+    }
+
+    public Observable<CustomerAccount> getCustomerData(int tenantId, int siteId, Integer customerId) {
+        if (mOrderSubject == null || !customerId.equals(mCustomerId)) {
+            mCustomerId = customerId;
+            mCustomerSubject = AsyncSubject.create();
+            getCustomerInfoObservable(tenantId, siteId, customerId).subscribeOn(Schedulers.io()).subscribe(mCustomerSubject);
+        }
+        return mCustomerSubject;
     }
 
     public Observable<ProductSearchResult> getProductSuggestion(String search, int tenantId, int siteId) {
         if (mProductSearchSubject == null || !search.equals(mSearch)) {
+            mSearch = search;
             mProductSearchSubject = AsyncSubject.create();
             getProductSearchSuggestion(tenantId, siteId, search).subscribeOn(Schedulers.io()).subscribe(mProductSearchSubject);
         }
         return mProductSearchSubject;
-
     }
-
 
     private Observable<ProductSearchResult> getProductSearchSuggestion(Integer tenantId, Integer siteId, final String query) {
         final ProductSearchResultResource productSearchResultResource = new ProductSearchResultResource(new MozuApiContext(tenantId, siteId));
@@ -146,7 +181,6 @@ public class NewOrderManager {
                             if (fulFillmentType != null) {
                                 orderItem.setFulfillmentLocationCode(fulFillmentType.mLocation);
                                 orderItem.setFulfillmentMethod(fulFillmentType.mType);
-                                orderItem.setQuantity(quantity);
                                 updatedOrder = orderItemResource.updateItemFulfillment(orderItem, orderId, orderItem.getId());
                             }
                             if (!subscriber.isUnsubscribed()) {
@@ -186,6 +220,46 @@ public class NewOrderManager {
 
                             if (!subscriber.isUnsubscribed()) {
                                 subscriber.onNext(fulfillmentInfoList);
+                                subscriber.onCompleted();
+                            }
+                        } catch (Exception e) {
+                            subscriber.onError(e);
+                        }
+                    }
+                }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<Order> getOrderObservable(final Integer tenantId, final Integer siteId, final String orderId) {
+        return Observable
+                .create(new Observable.OnSubscribe<Order>() {
+                    @Override
+                    public void call(Subscriber<? super Order> subscriber) {
+                        try {
+                            OrderResource orderResource = new OrderResource(new MozuApiContext(tenantId, siteId));
+                            Order order = orderResource.getOrder(orderId);
+                            if (!subscriber.isUnsubscribed()) {
+                                subscriber.onNext(order);
+                                subscriber.onCompleted();
+                            }
+                        } catch (Exception e) {
+                            subscriber.onError(e);
+                        }
+                    }
+                }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<CustomerAccount> getCustomerInfoObservable(final Integer tenantId, final Integer siteId, final Integer customerId) {
+        return Observable
+                .create(new Observable.OnSubscribe<CustomerAccount>() {
+                    @Override
+                    public void call(Subscriber<? super CustomerAccount> subscriber) {
+                        try {
+                            CustomerAccountResource customerAccountResource = new CustomerAccountResource(new MozuApiContext(tenantId, siteId));
+                            CustomerAccount customerAccount = customerAccountResource.getAccount(customerId);
+                            if (!subscriber.isUnsubscribed()) {
+                                subscriber.onNext(customerAccount);
                                 subscriber.onCompleted();
                             }
                         } catch (Exception e) {
@@ -267,6 +341,53 @@ public class NewOrderManager {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    public Observable<Order> getOrderActionObservable(final Integer tenantId, final Integer siteId, final Order order, final OrderAction orderAction) {
+        return Observable
+                .create(new Observable.OnSubscribe<Order>() {
+                    @Override
+                    public void call(Subscriber<? super Order> subscriber) {
+                        try {
+                            Order updatedOrder;
+                            final OrderResource orderResource = new OrderResource(new MozuApiContext(tenantId, siteId));
+                            updatedOrder = orderResource.performOrderAction(orderAction, order.getId());
+                            if (!subscriber.isUnsubscribed()) {
+                                subscriber.onNext(updatedOrder);
+                                subscriber.onCompleted();
+                            }
+                        } catch (Exception e) {
+                            if (!subscriber.isUnsubscribed()) {
+                                subscriber.onError(e);
+                            }
+                        }
+                    }
+                }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<List<String>> getOrderAvailableActionObservable(final Integer tenantId, final Integer siteId, final String orderId) {
+        return Observable
+                .create(new Observable.OnSubscribe<List<String>>() {
+                    @Override
+                    public void call(Subscriber<? super List<String>> subscriber) {
+                        try {
+
+                            final OrderResource orderResource = new OrderResource(new MozuApiContext(tenantId, siteId));
+                            List<String> actionList = orderResource.getAvailableActions(orderId);
+                            if (!subscriber.isUnsubscribed()) {
+                                subscriber.onNext(actionList);
+                                subscriber.onCompleted();
+                            }
+                        } catch (Exception e) {
+                            if (!subscriber.isUnsubscribed()) {
+                                subscriber.onError(e);
+                            }
+                        }
+                    }
+                }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+
     public Observable<Order> getApplyCouponObservable(final Integer tenantId, final Integer siteId, final String orderId, final String couponCode) {
         return Observable
                 .create(new Observable.OnSubscribe<Order>() {
@@ -277,7 +398,6 @@ public class NewOrderManager {
                             final AppliedDiscountResource appliedDiscountResource = new AppliedDiscountResource(new MozuApiContext(tenantId, siteId));
                             updatedOrder = appliedDiscountResource.applyCoupon(orderId, couponCode);
                             updatedOrder.getStatus();
-
                             subscriber.onNext(updatedOrder);
                             subscriber.onCompleted();
                         } catch (Exception e) {

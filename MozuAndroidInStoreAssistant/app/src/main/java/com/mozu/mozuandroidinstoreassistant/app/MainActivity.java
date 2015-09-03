@@ -25,6 +25,7 @@ import com.mozu.mozuandroidinstoreassistant.app.customer.CustomersFragment;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.order.CreateOrderListener;
+import com.mozu.mozuandroidinstoreassistant.app.order.NewOrderActivity;
 import com.mozu.mozuandroidinstoreassistant.app.order.OrderFragment;
 import com.mozu.mozuandroidinstoreassistant.app.order.OrderListener;
 import com.mozu.mozuandroidinstoreassistant.app.product.ProductFragment;
@@ -413,13 +414,17 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
     @Override
     public void orderSelected(Order order) {
         UserAuthenticationStateMachine userAuthenticationStateMachine = UserAuthenticationStateMachineProducer.getInstance(this);
-        Intent intent = new Intent(this, OrderDetailActivity.class);
-
-        intent.putExtra(OrderDetailActivity.ORDER_NUMBER_EXTRA_KEY, order.getId());
-        intent.putExtra(OrderDetailActivity.CURRENT_TENANT_ID, userAuthenticationStateMachine.getTenantId());
-        intent.putExtra(OrderDetailActivity.CURRENT_SITE_ID, userAuthenticationStateMachine.getSiteId());
-
-        startActivity(intent);
+        if (order.getStatus().equals("Pending")) {
+            Intent intent = new Intent(this, NewOrderActivity.class);
+            intent.putExtra(OrderCreationAddCustomerActivity.ORDER_EXTRA_KEY,order.getId());
+            startActivity(intent);
+        } else {
+            Intent intent = new Intent(this, OrderDetailActivity.class);
+            intent.putExtra(OrderDetailActivity.ORDER_NUMBER_EXTRA_KEY, order.getId());
+            intent.putExtra(OrderDetailActivity.CURRENT_TENANT_ID, userAuthenticationStateMachine.getTenantId());
+            intent.putExtra(OrderDetailActivity.CURRENT_SITE_ID, userAuthenticationStateMachine.getSiteId());
+            startActivity(intent);
+        }
     }
 
     @Override
