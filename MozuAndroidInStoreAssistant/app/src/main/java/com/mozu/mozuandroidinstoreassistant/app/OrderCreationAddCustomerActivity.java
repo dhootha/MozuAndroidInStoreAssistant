@@ -83,8 +83,7 @@ public class OrderCreationAddCustomerActivity extends BaseActivity implements Cu
                     @Override
                     public void onCompleted() {
                         Intent intent = new Intent(OrderCreationAddCustomerActivity.this, NewOrderActivity.class);
-                        intent.putExtra(ORDER_CUSTOMER_EXTRA_KEY, mCustomerAccount);
-                        intent.putExtra(ORDER_EXTRA_KEY, mOrder);
+                        intent.putExtra(ORDER_EXTRA_KEY, mOrder.getId());
                         startActivity(intent);
                         finish();
                     }

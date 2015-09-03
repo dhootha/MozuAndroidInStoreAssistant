@@ -57,12 +57,12 @@ public class NewOrderActivity extends BaseActivity {
     @InjectView(R.id.order_viewpager)
     public ViewPager mOrderViewPager;
 
-    private Order mOrder;
+    private String mOrderId;
     private CustomerAccount mCustomerAccount;
     private NewOrderFragmentAdapter mOrderFragmentAdapter;
-    private Integer mViewPagerPos;
     private Integer mTenantId;
     private Integer mSiteId;
+    private Order mOrder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,52 +72,67 @@ public class NewOrderActivity extends BaseActivity {
         mSiteId = userStateMachine.getSiteId();
         setContentView(R.layout.neworder_activity);
         ButterKnife.inject(this);
+        boolean reloadData = true;
         if (savedInstanceState != null) {
-            mOrder = (Order) savedInstanceState.getSerializable(OrderCreationAddCustomerActivity.ORDER_EXTRA_KEY);
-            mCustomerAccount = (CustomerAccount) savedInstanceState.getSerializable(OrderCreationAddCustomerActivity.ORDER_CUSTOMER_EXTRA_KEY);
+            reloadData = false;
+            mOrderId = savedInstanceState.getString(OrderCreationAddCustomerActivity.ORDER_EXTRA_KEY);
         } else if (getIntent() != null) {
-            mOrder = (Order) getIntent().getSerializableExtra(OrderCreationAddCustomerActivity.ORDER_EXTRA_KEY);
-            if (getIntent().hasExtra(OrderCreationAddCustomerActivity.ORDER_CUSTOMER_EXTRA_KEY)) {
-                mCustomerAccount = (CustomerAccount) getIntent().getSerializableExtra(OrderCreationAddCustomerActivity.ORDER_CUSTOMER_EXTRA_KEY);
-            }
+            mOrderId = getIntent().getStringExtra(OrderCreationAddCustomerActivity.ORDER_EXTRA_KEY);
         }
-        setUpViews();
+        loadOrderData(reloadData);
+    }
+
+    private void loadOrderData(boolean hardReset) {
+        AndroidObservable.bindActivity(this, NewOrderManager.getInstance().getOrderData(mTenantId, mSiteId, mOrderId, hardReset))
+                .subscribe(new Subscriber<Order>() {
+                    @Override
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Order order) {
+                        mOrder = order;
+                        setUpViews();
+                        loadCustomerData(order);
+                    }
+                });
+    }
+
+    private void loadCustomerData(Order order) {
+        AndroidObservable.bindActivity(this, NewOrderManager.getInstance().getCustomerInfoObservable(mTenantId, mSiteId, order.getCustomerAccountId())).subscribe(new Subscriber<CustomerAccount>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(CustomerAccount customerAccount) {
+                mCustomerAccount = customerAccount;
+                mOrderName.setText(mCustomerAccount.getLastName() + " " + mCustomerAccount.getFirstName());
+                mOrderEmail.setText(mCustomerAccount.getEmailAddress());
+            }
+        });
     }
 
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putSerializable(OrderCreationAddCustomerActivity.ORDER_EXTRA_KEY, mOrder);
-        outState.putSerializable(OrderCreationAddCustomerActivity.ORDER_CUSTOMER_EXTRA_KEY, mCustomerAccount);
+        outState.putString(OrderCreationAddCustomerActivity.ORDER_EXTRA_KEY, mOrder.getId());
         super.onSaveInstanceState(outState);
     }
 
+
     private void setUpViews() {
-        if (mCustomerAccount == null) {
-            AndroidObservable.bindActivity(this, NewOrderManager.getInstance().getCustomerInfoObservable(mTenantId, mSiteId, mOrder.getCustomerAccountId())).subscribe(new Subscriber<CustomerAccount>() {
-                @Override
-                public void onCompleted() {
-
-                }
-
-                @Override
-                public void onError(Throwable e) {
-
-                }
-
-                @Override
-                public void onNext(CustomerAccount customerAccount) {
-                    mCustomerAccount = customerAccount;
-                    mOrderName.setText(mCustomerAccount.getLastName() + " " + mCustomerAccount.getFirstName());
-                    mOrderEmail.setText(mCustomerAccount.getEmailAddress());
-                }
-            });
-
-        } else {
-            mOrderName.setText(mCustomerAccount.getLastName() + " " + mCustomerAccount.getFirstName());
-            mOrderEmail.setText(mCustomerAccount.getEmailAddress());
-        }
-
         if (getActionBar() != null) {
             getActionBar().setDisplayShowHomeEnabled(false);
             getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -151,10 +166,6 @@ public class NewOrderActivity extends BaseActivity {
         } else {
             mOrderFragmentAdapter.notifyDataSetChanged();
         }
-        if (mViewPagerPos != null) {
-            mOrderViewPager.setCurrentItem(mViewPagerPos);
-        }
-
         mSubmitOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -163,7 +174,7 @@ public class NewOrderActivity extends BaseActivity {
                         .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                submitOrCancelOrder(true);
+                                submitOrCancelOrder(mOrder, true);
                             }
                         })
                         .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -183,7 +194,7 @@ public class NewOrderActivity extends BaseActivity {
                         .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                submitOrCancelOrder(false);
+                                submitOrCancelOrder(mOrder, false);
                             }
                         })
                         .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -198,14 +209,14 @@ public class NewOrderActivity extends BaseActivity {
         });
     }
 
-    public void submitOrCancelOrder(final boolean isSubmit) {
+    public void submitOrCancelOrder(Order order, final boolean isSubmit) {
         OrderAction orderAction = new OrderAction();
         if (isSubmit) {
             orderAction.setActionName("SubmitOrder");
         } else {
             orderAction.setActionName("AbandonOrder");
         }
-        NewOrderManager.getInstance().getOrderActionObservable(mTenantId, mSiteId, mOrder, orderAction).subscribe(new Subscriber<Order>() {
+        NewOrderManager.getInstance().getOrderActionObservable(mTenantId, mSiteId, order, orderAction).subscribe(new Subscriber<Order>() {
             @Override
             public void onCompleted() {
                 finish();
@@ -233,8 +244,7 @@ public class NewOrderActivity extends BaseActivity {
     }
 
     public void updateOrder(Order order) {
-        this.mOrder = order;
-        //todo update fragments
+
     }
 
 }

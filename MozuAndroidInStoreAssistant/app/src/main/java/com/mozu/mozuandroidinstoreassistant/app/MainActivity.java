@@ -416,7 +416,7 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         UserAuthenticationStateMachine userAuthenticationStateMachine = UserAuthenticationStateMachineProducer.getInstance(this);
         if (order.getStatus().equals("Pending")) {
             Intent intent = new Intent(this, NewOrderActivity.class);
-            intent.putExtra(OrderCreationAddCustomerActivity.ORDER_EXTRA_KEY,order);
+            intent.putExtra(OrderCreationAddCustomerActivity.ORDER_EXTRA_KEY,order.getId());
             startActivity(intent);
         } else {
             Intent intent = new Intent(this, OrderDetailActivity.class);

@@ -184,13 +184,13 @@
 
             <Button
                 android:id="@+id/product_save"
+                style="@style/ButtonMozu"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|center_vertical"
                 android:layout_weight="1"
-                android:background="@color/mozu_color"
                 android:text="@string/product_save"
-                android:textColor="@android:color/white"/>
+                />
         </LinearLayout>
 
 

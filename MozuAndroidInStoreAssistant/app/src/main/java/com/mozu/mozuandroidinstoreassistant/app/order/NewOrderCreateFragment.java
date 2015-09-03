@@ -99,12 +99,6 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putBoolean("hsjdhsj", true);
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
