@@ -1,17 +1,24 @@
 package com.mozu.mozuandroidinstoreassistant.app.order;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -24,13 +31,18 @@ import com.mozu.api.contracts.commerceruntime.products.ProductOption;
 import com.mozu.api.contracts.productadmin.ProductVariation;
 import com.mozu.api.contracts.productadmin.ProductVariationOption;
 import com.mozu.api.contracts.productadmin.ProductVariationPagedCollection;
+import com.mozu.mozuandroidinstoreassistant.MozuApplication;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.data.product.FulfillmentInfo;
 import com.mozu.mozuandroidinstoreassistant.app.dialog.ErrorMessageAlertDialog;
+import com.mozu.mozuandroidinstoreassistant.app.models.ImageURLConverter;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.order.loaders.NewOrderManager;
 import com.mozu.mozuandroidinstoreassistant.app.utils.ProductUtils;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -61,6 +73,8 @@ public class NewOrderItemEditFragment extends DialogFragment {
     public TextView productTotal;
     @InjectView(R.id.product_save)
     public Button productSave;
+    @InjectView(R.id.order_item_delete)
+    public Button orderItemDelete;
     @InjectView(R.id.fulfillment_type)
     public Spinner fulfillmentType;
     @InjectView(R.id.product_variation)
@@ -71,6 +85,12 @@ public class NewOrderItemEditFragment extends DialogFragment {
     public ProgressBar productVariationProgress;
     @InjectView(R.id.fulfillment_spinner_progress)
     public ProgressBar fulfillmentSpinnerProgress;
+
+
+    @InjectView(R.id.main_product_image)
+    public ImageView mMainProductImage;
+
+
     private OrderItem mOrderItem;
     private String mOrderId;
     private View mView;
@@ -82,6 +102,7 @@ public class NewOrderItemEditFragment extends DialogFragment {
     private ProductVariationAdapter mProductVariationAdapter;
 
     private CompositeSubscription mCompositeSubscription;
+    private String mSiteDomain;
 
 
     public static NewOrderItemEditFragment getInstance(OrderItem orderItem, String orderId, Boolean isEditMode) {
@@ -101,6 +122,7 @@ public class NewOrderItemEditFragment extends DialogFragment {
         mCompositeSubscription = new CompositeSubscription();
         mTenantId = userAuthenticationStateMachine.getTenantId();
         mSiteId = userAuthenticationStateMachine.getSiteId();
+        mSiteDomain = userAuthenticationStateMachine.getSiteDomain();
         if (getArguments() != null) {
             mOrderId = getArguments().getString(ORDER_ID);
             mOrderItem = (OrderItem) getArguments().getSerializable(ORDER_ITEM);
@@ -117,7 +139,6 @@ public class NewOrderItemEditFragment extends DialogFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        loadLocations();
         if (ProductUtils.isProductConfigurable(mOrderItem.getProduct())) {
             if (!isEditMode) {
                 loadProductVariations(mOrderItem.getProduct().getProductCode());
@@ -147,8 +168,39 @@ public class NewOrderItemEditFragment extends DialogFragment {
             }
         } else {
             productVariationLayout.setVisibility(View.GONE);
+            loadLocations(mOrderItem.getProduct().getProductCode());
         }
 
+    }
+
+    private void setImage(String productImageUrl) {
+        ImageURLConverter mImageUrlConverter = new ImageURLConverter(mTenantId, mSiteId, mSiteDomain);
+        String imageUrl = mImageUrlConverter.getFullImageUrl(productImageUrl);
+
+        if (TextUtils.isEmpty(imageUrl)) {
+            return;
+        }
+
+        RequestCreator creator = Picasso.with(getActivity())
+                .load(imageUrl);
+
+        creator = creator.placeholder(R.drawable.icon_noproductphoto).fit().centerInside();
+
+        mMainProductImage.setBackgroundColor(getActivity().getResources().getColor(R.color.darker_grey));
+
+        creator.into(mMainProductImage, new Callback() {
+
+            @Override
+            public void onSuccess() {
+                Bitmap bitmap = ((BitmapDrawable) mMainProductImage.getDrawable()).getBitmap();
+                mMainProductImage.setBackgroundColor(bitmap.getPixel(0, 0));
+            }
+
+            @Override
+            public void onError() {
+            }
+
+        });
     }
 
 
@@ -202,10 +254,11 @@ public class NewOrderItemEditFragment extends DialogFragment {
         }
     }
 
-    private void loadLocations() {
+    private void loadLocations(String productCode) {
         productSave.setEnabled(false);
         fulfillmentSpinnerProgress.setVisibility(View.VISIBLE);
-        mCompositeSubscription.add(AndroidObservable.bindFragment(this, NewOrderManager.getInstance().getInstoreLocationCodes(mTenantId, mSiteId, mOrderItem.getProduct().getVariationProductCode()))
+        ArrayMap<String, String> locationMap = ((MozuApplication) getActivity().getApplication()).getLocations();
+        mCompositeSubscription.add(AndroidObservable.bindFragment(this, NewOrderManager.getInstance().getInventory(mTenantId, mSiteId, productCode, locationMap))
                 .subscribe(new Subscriber<List<FulfillmentInfo>>() {
                     @Override
                     public void onCompleted() {
@@ -222,7 +275,6 @@ public class NewOrderItemEditFragment extends DialogFragment {
                     public void onNext(List<FulfillmentInfo> fulfillmentInfos) {
                         mSpinnerAdapter.setData(fulfillmentInfos);
                         mSpinnerAdapter.notifyDataSetChanged();
-
                     }
                 }));
     }
@@ -257,6 +309,11 @@ public class NewOrderItemEditFragment extends DialogFragment {
         };
     }
 
+    private void deleteOrderItem(String orderItemId, String orderId) {
+        AndroidObservable.bindFragment(this, NewOrderManager.getInstance().getDeleteOrderItemObservable(mTenantId, mSiteId, orderItemId, orderId)).subscribe(getOrderUpdateSubscriber());
+    }
+
+
     private void setupViews() {
         NumberFormat format = NumberFormat.getCurrencyInstance();
         Double productPriceVal = mOrderItem.getProduct().getPrice().getPrice();
@@ -266,9 +323,43 @@ public class NewOrderItemEditFragment extends DialogFragment {
         productName.setText(mOrderItem.getProduct().getName());
         mProductVariationAdapter = new ProductVariationAdapter();
         productVariationSpinner.setAdapter(mProductVariationAdapter);
+        productVariationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                ProductVariation productVariation = (ProductVariation) adapterView.getItemAtPosition(i);
+                loadLocations(productVariation.getVariationProductCode());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
         productTotal.setText(format.format(mOrderItem.getQuantity() * productPriceVal));
         mSpinnerAdapter = new SpinnerAdapter();
         fulfillmentType.setAdapter(mSpinnerAdapter);
+        setImage(mOrderItem.getProduct().getImageUrl());
+        orderItemDelete.setVisibility(isEditMode ? View.VISIBLE : View.GONE);
+        orderItemDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AlertDialog.Builder(getActivity())
+                        .setMessage(getString(R.string.orderitem_remove_confirm))
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                deleteOrderItem(mOrderItem.getId(), mOrderId);
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int i) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .create().show();
+            }
+        });
         productSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -310,7 +401,6 @@ public class NewOrderItemEditFragment extends DialogFragment {
                     } else {
                         mOrderItem.getProduct().setVariationProductCode(mOrderItem.getProduct().getProductCode());
                     }
-
 
                     AndroidObservable.bindFragment(NewOrderItemEditFragment.this, NewOrderManager
                             .getInstance()

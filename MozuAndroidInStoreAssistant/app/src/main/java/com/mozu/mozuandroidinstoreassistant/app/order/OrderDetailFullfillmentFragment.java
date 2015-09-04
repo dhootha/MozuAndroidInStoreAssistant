@@ -53,13 +53,6 @@ import rx.android.observables.AndroidObservable;
 
 public class OrderDetailFullfillmentFragment extends Fragment implements MoveToListener, MarkPickupAsFulfilledListener {
 
-    public static final String PENDING = "Pending";
-    public static final String FULFILLED = "Fulfilled";
-    public static final String NOTFULLFILLED = "NotFulfilled";
-
-    public static final String SHIP = "Ship";
-    public static final String PICKUP = "Pickup";
-    public static final String DIGITAL = "digital";
 
     private static final String PRODUCT_DIALOG_TAG = "prod_detail_fragment";
     private static final String PACKAGE_DIALOG_TAG = "package_detail_fragment";
@@ -160,9 +153,9 @@ public class OrderDetailFullfillmentFragment extends Fragment implements MoveToL
         if (order == null || order.getItems() == null || order.getItems().size() < 1)
             return;
         for (OrderItem item : order.getItems()) {
-            if (SHIP.equalsIgnoreCase(item.getFulfillmentMethod())) {
+            if (OrderStrings.SHIP.equalsIgnoreCase(item.getFulfillmentMethod())) {
                 mShipItems.add(item);
-            } else if (PICKUP.equalsIgnoreCase(item.getFulfillmentMethod())) {
+            } else if (OrderStrings.PICKUP.equalsIgnoreCase(item.getFulfillmentMethod())) {
                 mPickupItems.add(item);
             }
         }
@@ -224,11 +217,11 @@ public class OrderDetailFullfillmentFragment extends Fragment implements MoveToL
                         itemsNotPickedUp = removeOrderItem(itemsNotPickedUp, pickupItem.getProductCode());
                     }
 
-                    if (pickup.getStatus().equalsIgnoreCase(NOTFULLFILLED)) {
+                    if (pickup.getStatus().equalsIgnoreCase(OrderStrings.NOTFULLFILLED)) {
                         FulfillmentPickupItem item = new FulfillmentPickupItem(pickup, pickUpCount);
                         unFulFilledItems.add(item);
 
-                    } else if (pickup.getStatus().equalsIgnoreCase(FULFILLED)) {
+                    } else if (pickup.getStatus().equalsIgnoreCase(OrderStrings.FULFILLED)) {
                         FulfillmentFulfilledDataItem item = new FulfillmentFulfilledDataItem(pickup, pickUpCount);
                         fulFilledItems.add(item);
                         totalFulfilledCount += fulfilledCount;
@@ -290,8 +283,8 @@ public class OrderDetailFullfillmentFragment extends Fragment implements MoveToL
     }
 
     /**
-     * Filter items fulfilled with the method {@value #SHIP} by fulfilled, pending, and not packaged.
-     * @param shipItems Items already filtered by fulfillment method {@value #SHIP}
+     * Filter items fulfilled with the method  by fulfilled, pending, and not packaged.
+     * @param shipItems Items already filtered by fulfillment method
      * @return filtered list of IData items for
      */
     private List<IData> filterShipment(List<OrderItem> shipItems) {
@@ -318,12 +311,12 @@ public class OrderDetailFullfillmentFragment extends Fragment implements MoveToL
                 fulfillmentItem.setOrderPackage(orderPackage);
                 String status = orderPackage.getStatus();
 
-                if (status.equalsIgnoreCase(NOTFULLFILLED)) {
+                if (status.equalsIgnoreCase(OrderStrings.NOTFULLFILLED)) {
                     fulfillmentItem.setFullfilled(false);
                     fulfillmentItem.setPackageNumber(getActivity().getString(R.string.package_number_string) + String.valueOf(packageCount));
                     fulfillmentItem.setFulfillmentContact(mOrder.getFulfillmentInfo().getFulfillmentContact());
                     pendingItems.add(new FulfillmentPackageDataItem(fulfillmentItem));
-                } else if (status.equalsIgnoreCase(FULFILLED)) {
+                } else if (status.equalsIgnoreCase(OrderStrings.FULFILLED)) {
                     fulfillmentItem.setFullfilled(true);
                     totalFulfilledCount += packageItemCount;
                     for (Shipment shipment : mOrder.getShipments()) {

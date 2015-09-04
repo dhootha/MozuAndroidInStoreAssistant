@@ -61,8 +61,9 @@ public class OrderDetailSectionPagerAdapter extends FragmentStatePagerAdapter {
 
         switch (position) {
             case OVERVIEW_TAB_POSITION:
-                NewOrderCreateFragment newOrderCreateFragment = NewOrderCreateFragment.getInstance(false);
+                NewOrderCreateFragment newOrderCreateFragment = NewOrderCreateFragment.getInstance();
                 newOrderCreateFragment.setOrder(mOrder);
+                newOrderCreateFragment.setEditMode(mIsEditMode);
                 return newOrderCreateFragment;
             case FULFILLMENT_TAB_POSITION:
                 OrderDetailFullfillmentFragment fullfillmentFragment = new OrderDetailFullfillmentFragment();

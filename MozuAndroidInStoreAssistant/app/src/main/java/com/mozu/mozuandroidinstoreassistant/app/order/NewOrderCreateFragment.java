@@ -64,19 +64,19 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
     private NewOrderProductAdapter mProductsAdapter;
     private Order mOrder;
     private boolean mIsEditMode;
-    private static final String EDIT_MODE = "editMode";
 
 
-    public static NewOrderCreateFragment getInstance(boolean isEditMode) {
+    public static NewOrderCreateFragment getInstance() {
         NewOrderCreateFragment newOrderCreateFragment = new NewOrderCreateFragment();
-        Bundle b = new Bundle();
-        b.putBoolean(EDIT_MODE, isEditMode);
-        newOrderCreateFragment.setArguments(b);
         return newOrderCreateFragment;
     }
 
     public void setOrder(Order order) {
         mOrder = order;
+    }
+
+    public void setEditMode(Boolean isEditMode) {
+        mIsEditMode = isEditMode;
     }
 
 
@@ -116,7 +116,6 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
         UserAuthenticationStateMachine mUserState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
         mSiteId = mUserState.getSiteId();
         mTenantId = mUserState.getTenantId();
-        mIsEditMode = getArguments().getBoolean(EDIT_MODE);
         ButterKnife.inject(this, mView);
         NewOrderManager.count = 0;
         return mView;
@@ -210,6 +209,7 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
                 orderItem.setProduct(convertProduct(product));
                 orderItem.setQuantity(1);
                 NewOrderItemEditFragment newOrderItemEditFragment = NewOrderItemEditFragment.getInstance(orderItem, mOrder.getId(), false);
+
                 newOrderItemEditFragment.setOnEditDoneListener(NewOrderCreateFragment.this);
                 newOrderItemEditFragment.show(getFragmentManager(), "");
             }
@@ -226,12 +226,14 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
                 }
             }
         });
+        updateEditMode(mIsEditMode);
     }
 
     public static com.mozu.api.contracts.commerceruntime.products.Product convertProduct(Product inProduct) {
         com.mozu.api.contracts.commerceruntime.products.Product outProduct =
                 new com.mozu.api.contracts.commerceruntime.products.Product();
 
+        outProduct.setImageUrl(inProduct.getContent().getProductImages().get(0).getImageUrl());
         if (inProduct.getBundledProducts() != null) {
             List<com.mozu.api.contracts.commerceruntime.products.BundledProduct> outBundledProducts = new ArrayList<>();
             for (BundledProduct inBundledProduct : inProduct.getBundledProducts()) {

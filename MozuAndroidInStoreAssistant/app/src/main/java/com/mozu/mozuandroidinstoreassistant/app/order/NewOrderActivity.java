@@ -6,20 +6,25 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.util.ArrayMap;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.mozu.api.ApiException;
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.commerceruntime.orders.OrderAction;
 import com.mozu.api.contracts.customer.CustomerAccount;
+import com.mozu.mozuandroidinstoreassistant.MozuApplication;
 import com.mozu.mozuandroidinstoreassistant.app.BaseActivity;
 import com.mozu.mozuandroidinstoreassistant.app.OrderCreationAddCustomerActivity;
 import com.mozu.mozuandroidinstoreassistant.app.OrderDetailActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
+import com.mozu.mozuandroidinstoreassistant.app.dialog.ErrorMessageAlertDialog;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.order.adapters.NewOrderFragmentAdapter;
@@ -50,7 +55,6 @@ public class NewOrderActivity extends BaseActivity {
     public TabPageIndicator mOrderTabs;
     @InjectView(R.id.order_loading)
     public LoadingView mOrderLoading;
-
 
     @InjectView(R.id.submit_order)
     public Button mSubmitOrder;
@@ -84,6 +88,28 @@ public class NewOrderActivity extends BaseActivity {
             mOrderId = getIntent().getStringExtra(OrderCreationAddCustomerActivity.ORDER_EXTRA_KEY);
         }
         loadOrderData(reloadData);
+        if (((MozuApplication) getApplication()).getLocations().size() < 0) {
+            loadLocationInformation(mTenantId, mSiteId);
+        }
+    }
+
+    private void loadLocationInformation(Integer mTenantId, Integer mSiteId) {
+        AndroidObservable.bindActivity(this, NewOrderManager.getInstance().getLocationsData(mTenantId, mSiteId)).subscribe(new Subscriber<ArrayMap<String, String>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e("Locations Fetch", "Couldn't fetch Locations Information");
+            }
+
+            @Override
+            public void onNext(ArrayMap<String, String> locationMap) {
+                ((MozuApplication) getApplication()).setLocations(locationMap);
+            }
+        });
     }
 
     private void loadOrderData(boolean hardReset) {
@@ -93,6 +119,7 @@ public class NewOrderActivity extends BaseActivity {
                     @Override
                     public void onCompleted() {
                         mOrderLoading.success();
+                        loadCustomerData(mOrder);
                     }
 
                     @Override
@@ -104,31 +131,36 @@ public class NewOrderActivity extends BaseActivity {
                     public void onNext(Order order) {
                         mOrder = order;
                         setUpViews();
-                        loadCustomerData(order);
+
                     }
                 });
     }
 
     private void loadCustomerData(Order order) {
-        AndroidObservable.bindActivity(this, NewOrderManager.getInstance().getCustomerData(mTenantId, mSiteId, order.getCustomerAccountId())).subscribe(new Subscriber<CustomerAccount>() {
-            @Override
-            public void onCompleted() {
+        if (order.getCustomerAccountId() != null) {
+            AndroidObservable.bindActivity(this, NewOrderManager.getInstance().getCustomerData(mTenantId, mSiteId, order.getCustomerAccountId())).subscribe(new Subscriber<CustomerAccount>() {
+                @Override
+                public void onCompleted() {
 
-            }
+                }
 
-            @Override
-            public void onError(Throwable e) {
-                mOrderName.setText(getString(R.string.not_available));
-                mOrderEmail.setText(getString(R.string.not_available));
-            }
+                @Override
+                public void onError(Throwable e) {
+                    mOrderName.setText(getString(R.string.not_available));
+                    mOrderEmail.setText(getString(R.string.not_available));
+                }
 
-            @Override
-            public void onNext(CustomerAccount customerAccount) {
-                mCustomerAccount = customerAccount;
-                mOrderName.setText(mCustomerAccount.getLastName() + " " + mCustomerAccount.getFirstName());
-                mOrderEmail.setText(mCustomerAccount.getEmailAddress());
-            }
-        });
+                @Override
+                public void onNext(CustomerAccount customerAccount) {
+                    mCustomerAccount = customerAccount;
+                    mOrderName.setText(mCustomerAccount.getLastName() + " " + mCustomerAccount.getFirstName());
+                    mOrderEmail.setText(mCustomerAccount.getEmailAddress());
+                }
+            });
+        } else {
+            mOrderName.setText(getString(R.string.not_available));
+            mOrderEmail.setText(getString(R.string.not_available));
+        }
     }
 
     @Override
@@ -232,9 +264,9 @@ public class NewOrderActivity extends BaseActivity {
     public void submitOrCancelOrder(Order order, final boolean isSubmit) {
         OrderAction orderAction = new OrderAction();
         if (isSubmit) {
-            orderAction.setActionName("SubmitOrder");
+            orderAction.setActionName(OrderStrings.SUBMIT_ACTION);
         } else {
-            orderAction.setActionName("AbandonOrder");
+            orderAction.setActionName(OrderStrings.ABANDON_ACTION);
         }
         NewOrderManager.getInstance().getOrderActionObservable(mTenantId, mSiteId, order, orderAction).subscribe(new Subscriber<Order>() {
             @Override
@@ -245,6 +277,11 @@ public class NewOrderActivity extends BaseActivity {
 
             @Override
             public void onError(Throwable e) {
+                String message = "";
+                if (e instanceof ApiException) {
+                    message = ((ApiException) e).getApiError().getMessage();
+                }
+                ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(NewOrderActivity.this, "Couldn't Submit Order:\n" + message).show();
 
             }
 
