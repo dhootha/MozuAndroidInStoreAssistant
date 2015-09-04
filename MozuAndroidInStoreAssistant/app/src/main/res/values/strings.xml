@@ -328,6 +328,7 @@
     <string name="cancel_confirm_message">Are you sure you want to Cancel this order?</string>
     <string name="product_delete">Remove</string>
     <string name="orderitem_remove_confirm">Are you sure you want to remove this item?</string>
+    <string name="remove_coupon_confirm">Are you sure you want to remove this coupon</string>
     <string-array name="register_email_address">
         <item>mozumobile@volusion.com</item>
     </string-array>

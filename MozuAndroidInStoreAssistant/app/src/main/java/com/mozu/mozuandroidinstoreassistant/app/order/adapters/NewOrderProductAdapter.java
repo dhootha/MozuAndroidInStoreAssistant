@@ -18,6 +18,7 @@ import com.mozu.mozuandroidinstoreassistant.app.layout.IRowLayout;
 import com.mozu.mozuandroidinstoreassistant.app.layout.order.IEditMode;
 import com.mozu.mozuandroidinstoreassistant.app.layout.order.NewOrderCouponLayout;
 import com.mozu.mozuandroidinstoreassistant.app.layout.order.NewOrderShippingItemLayout;
+import com.mozu.mozuandroidinstoreassistant.app.layout.order.NewOrderTotalLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -113,6 +114,7 @@ public class NewOrderProductAdapter extends BaseAdapter {
                 ((NewOrderShippingItemLayout) convertView).setOrderUpdateListener(mUpdateListener);
             } else if (rowType == RowType.TOTAL_ROW) {
                 convertView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.new_order_summary_item, viewGroup, false);
+                ((NewOrderTotalLayout) convertView).setUpdateListener(mUpdateListener);
             } else if (rowType == RowType.ORDER_HEADER_ROW) {
                 convertView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.neworder_header_layout, viewGroup, false);
                 return convertView;

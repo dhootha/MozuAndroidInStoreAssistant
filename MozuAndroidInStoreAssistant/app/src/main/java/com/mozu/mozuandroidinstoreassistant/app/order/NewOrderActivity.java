@@ -94,7 +94,7 @@ public class NewOrderActivity extends BaseActivity {
     }
 
     private void loadLocationInformation(Integer mTenantId, Integer mSiteId) {
-        AndroidObservable.bindActivity(this, NewOrderManager.getInstance().getLocationsData(mTenantId, mSiteId)).subscribe(new Subscriber<ArrayMap<String, String>>() {
+        AndroidObservable.bindActivity(this, NewOrderManager.getInstance().getLocationsData(mTenantId, mSiteId, true)).subscribe(new Subscriber<ArrayMap<String, String>>() {
             @Override
             public void onCompleted() {
 

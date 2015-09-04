@@ -185,11 +185,14 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        loadLocationInformation(mTenantId,mSiteId);
+        UserAuthenticationStateMachine userAuthenticationStateMachine = UserAuthenticationStateMachineProducer.getInstance(getActivity());
+        mTenantId = userAuthenticationStateMachine.getTenantId();
+        mSiteId = userAuthenticationStateMachine.getSiteId();
+        loadLocationInformation(mTenantId, mSiteId);
     }
 
     private void loadLocationInformation(Integer mTenantId, Integer mSiteId) {
-        AndroidObservable.bindFragment(this, NewOrderManager.getInstance().getLocationsData(mTenantId, mSiteId)).subscribe(new Subscriber<ArrayMap<String, String>>() {
+        AndroidObservable.bindFragment(this, NewOrderManager.getInstance().getLocationsData(mTenantId, mSiteId, true)).subscribe(new Subscriber<ArrayMap<String, String>>() {
             @Override
             public void onCompleted() {
 
@@ -197,7 +200,7 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
 
             @Override
             public void onError(Throwable e) {
-                Log.e("Locations Fetch","Couldn't fetch Locations Information");
+                Log.e("Locations Fetch", "Couldn't fetch Locations Information");
             }
 
             @Override

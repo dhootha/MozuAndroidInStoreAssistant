@@ -101,8 +101,8 @@ public class NewOrderManager {
         return mProductSearchSubject;
     }
 
-    public Observable<ArrayMap<String, String>> getLocationsData(int tenantId, int siteId) {
-        if (mLocationSubject == null) {
+    public Observable<ArrayMap<String, String>> getLocationsData(int tenantId, int siteId, boolean hardReset) {
+        if (mLocationSubject == null || hardReset) {
             mLocationSubject = AsyncSubject.create();
             getLocations(tenantId, siteId).subscribeOn(Schedulers.io()).subscribe(mLocationSubject);
         }
@@ -436,30 +436,6 @@ public class NewOrderManager {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<List<String>> getOrderAvailableActionObservable(final Integer tenantId, final Integer siteId, final String orderId) {
-        return Observable
-                .create(new Observable.OnSubscribe<List<String>>() {
-                    @Override
-                    public void call(Subscriber<? super List<String>> subscriber) {
-                        try {
-
-                            final OrderResource orderResource = new OrderResource(new MozuApiContext(tenantId, siteId));
-                            List<String> actionList = orderResource.getAvailableActions(orderId);
-                            if (!subscriber.isUnsubscribed()) {
-                                subscriber.onNext(actionList);
-                                subscriber.onCompleted();
-                            }
-                        } catch (Exception e) {
-                            if (!subscriber.isUnsubscribed()) {
-                                subscriber.onError(e);
-                            }
-                        }
-                    }
-                }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-    }
-
-
     public Observable<Order> getApplyCouponObservable(final Integer tenantId, final Integer siteId, final String orderId, final String couponCode) {
         return Observable
                 .create(new Observable.OnSubscribe<Order>() {
@@ -479,6 +455,27 @@ public class NewOrderManager {
                 }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
+
+    public Observable<Order> getRemoveCouponObservable(final Integer tenantId, final Integer siteId, final String orderId, final String couponCode) {
+        return Observable
+                .create(new Observable.OnSubscribe<Order>() {
+                    @Override
+                    public void call(Subscriber<? super Order> subscriber) {
+                        try {
+                            Order updatedOrder;
+                            final AppliedDiscountResource appliedDiscountResource = new AppliedDiscountResource(new MozuApiContext(tenantId, siteId));
+                            updatedOrder = appliedDiscountResource.removeCoupon(orderId, couponCode);
+                            updatedOrder.getStatus();
+                            subscriber.onNext(updatedOrder);
+                            subscriber.onCompleted();
+                        } catch (Exception e) {
+                            subscriber.onError(e);
+                        }
+                    }
+                }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
 
     public Observable<ProductVariationPagedCollection> getProductVariationCodes(final Integer tenantId, final Integer siteId, final String productCode) {
         return Observable
