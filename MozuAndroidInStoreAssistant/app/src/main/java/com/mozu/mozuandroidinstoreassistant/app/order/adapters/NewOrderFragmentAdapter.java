@@ -35,8 +35,9 @@ public class NewOrderFragmentAdapter extends FragmentStatePagerAdapter {
                 fragment.setOrder(mOrder);
                 return fragment;
             case DETAILS:
-                NewOrderCreateFragment newOrderCreateFragment = NewOrderCreateFragment.getInstance(true);
+                NewOrderCreateFragment newOrderCreateFragment = NewOrderCreateFragment.getInstance();
                 newOrderCreateFragment.setOrder(mOrder);
+                newOrderCreateFragment.setEditMode(true);
                 return newOrderCreateFragment;
         }
         return null;

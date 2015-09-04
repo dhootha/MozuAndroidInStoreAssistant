@@ -28,6 +28,7 @@ import com.mozu.mozuandroidinstoreassistant.app.order.CreateOrderListener;
 import com.mozu.mozuandroidinstoreassistant.app.order.NewOrderActivity;
 import com.mozu.mozuandroidinstoreassistant.app.order.OrderFragment;
 import com.mozu.mozuandroidinstoreassistant.app.order.OrderListener;
+import com.mozu.mozuandroidinstoreassistant.app.order.OrderStrings;
 import com.mozu.mozuandroidinstoreassistant.app.product.ProductFragment;
 import com.mozu.mozuandroidinstoreassistant.app.product.ProductFragmentListener;
 import com.mozu.mozuandroidinstoreassistant.app.product.ProductListListener;
@@ -414,9 +415,9 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
     @Override
     public void orderSelected(Order order) {
         UserAuthenticationStateMachine userAuthenticationStateMachine = UserAuthenticationStateMachineProducer.getInstance(this);
-        if (order.getStatus().equals("Pending")) {
+        if (order.getStatus().equalsIgnoreCase(OrderStrings.PENDING)) {
             Intent intent = new Intent(this, NewOrderActivity.class);
-            intent.putExtra(OrderCreationAddCustomerActivity.ORDER_EXTRA_KEY,order.getId());
+            intent.putExtra(OrderCreationAddCustomerActivity.ORDER_EXTRA_KEY, order.getId());
             startActivity(intent);
         } else {
             Intent intent = new Intent(this, OrderDetailActivity.class);

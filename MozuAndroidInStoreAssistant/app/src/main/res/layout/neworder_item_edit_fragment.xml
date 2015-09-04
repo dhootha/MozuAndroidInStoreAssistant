@@ -61,7 +61,7 @@
 
     <LinearLayout
         android:id="@+id/mainlayout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="32dp">
@@ -187,12 +187,24 @@
                 style="@style/ButtonMozu"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right|center_vertical"
+                android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:text="@string/product_save"
+                />
+
+            <Button
+                android:id="@+id/order_item_delete"
+                style="@style/ButtonMozu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:text="@string/product_delete"
+                android:visibility="gone"
                 />
         </LinearLayout>
 
 
     </LinearLayout>
+
 </LinearLayout>

@@ -1,6 +1,8 @@
 package com.mozu.mozuandroidinstoreassistant.app.order.loaders;
 
 
+import android.support.v4.util.ArrayMap;
+
 import com.mozu.api.MozuApiContext;
 import com.mozu.api.contracts.commerceruntime.fulfillment.ShippingRate;
 import com.mozu.api.contracts.commerceruntime.orders.Order;
@@ -10,11 +12,14 @@ import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.api.contracts.location.Location;
 import com.mozu.api.contracts.location.LocationCollection;
 import com.mozu.api.contracts.productadmin.DiscountCollection;
+import com.mozu.api.contracts.productadmin.LocationInventory;
+import com.mozu.api.contracts.productadmin.LocationInventoryCollection;
 import com.mozu.api.contracts.productadmin.ProductVariationPagedCollection;
 import com.mozu.api.contracts.productruntime.ProductSearchResult;
 import com.mozu.api.resources.commerce.LocationResource;
 import com.mozu.api.resources.commerce.OrderResource;
 import com.mozu.api.resources.commerce.catalog.admin.DiscountResource;
+import com.mozu.api.resources.commerce.catalog.admin.products.LocationInventoryResource;
 import com.mozu.api.resources.commerce.catalog.admin.products.ProductVariationResource;
 import com.mozu.api.resources.commerce.catalog.storefront.ProductSearchResultResource;
 import com.mozu.api.resources.commerce.customer.CustomerAccountResource;
@@ -22,7 +27,7 @@ import com.mozu.api.resources.commerce.orders.AppliedDiscountResource;
 import com.mozu.api.resources.commerce.orders.OrderItemResource;
 import com.mozu.api.resources.commerce.orders.ShipmentResource;
 import com.mozu.mozuandroidinstoreassistant.app.data.product.FulfillmentInfo;
-import com.mozu.mozuandroidinstoreassistant.app.order.OrderDetailFullfillmentFragment;
+import com.mozu.mozuandroidinstoreassistant.app.order.OrderStrings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +50,7 @@ public class NewOrderManager {
 
     private String mSearch;
     private Integer mCustomerId;
+    private AsyncSubject<ArrayMap<String, String>> mLocationSubject;
 
     private NewOrderManager() {
     }
@@ -56,17 +62,17 @@ public class NewOrderManager {
         return mNewOrderManager;
     }
 
-    public void invalidateProductSearch(){
+    public void invalidateProductSearch() {
         mProductSearchSubject = null;
     }
 
-    public void invalidateOrderData(){
+    public void invalidateOrderData() {
         mOrderSubject = null;
     }
-    public void invalidateCustomerInfo(){
+
+    public void invalidateCustomerInfo() {
         mCustomerSubject = null;
     }
-
 
 
     public Observable<Order> getOrderData(int tenantId, int siteId, String orderId, boolean hardReset) {
@@ -78,7 +84,7 @@ public class NewOrderManager {
     }
 
     public Observable<CustomerAccount> getCustomerData(int tenantId, int siteId, Integer customerId) {
-        if (mOrderSubject == null || !customerId.equals(mCustomerId)) {
+        if (mCustomerSubject == null || !customerId.equals(mCustomerId)) {
             mCustomerId = customerId;
             mCustomerSubject = AsyncSubject.create();
             getCustomerInfoObservable(tenantId, siteId, customerId).subscribeOn(Schedulers.io()).subscribe(mCustomerSubject);
@@ -93,6 +99,14 @@ public class NewOrderManager {
             getProductSearchSuggestion(tenantId, siteId, search).subscribeOn(Schedulers.io()).subscribe(mProductSearchSubject);
         }
         return mProductSearchSubject;
+    }
+
+    public Observable<ArrayMap<String, String>> getLocationsData(int tenantId, int siteId) {
+        if (mLocationSubject == null) {
+            mLocationSubject = AsyncSubject.create();
+            getLocations(tenantId, siteId).subscribeOn(Schedulers.io()).subscribe(mLocationSubject);
+        }
+        return mLocationSubject;
     }
 
     private Observable<ProductSearchResult> getProductSearchSuggestion(Integer tenantId, Integer siteId, final String query) {
@@ -128,6 +142,29 @@ public class NewOrderManager {
                             Order updatedOrder;
                             final OrderItemResource orderItemResource = new OrderItemResource(new MozuApiContext(tenantId, siteId));
                             updatedOrder = orderItemResource.createOrderItem(orderItem, orderId);
+                            if (!subscriber.isUnsubscribed()) {
+                                subscriber.onNext(updatedOrder);
+                                subscriber.onCompleted();
+                            }
+                        } catch (Exception e) {
+                            if (!subscriber.isUnsubscribed()) {
+                                subscriber.onError(e);
+                            }
+                        }
+                    }
+                }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<Order> getDeleteOrderItemObservable(final Integer tenantId, final Integer siteId, final String orderItemId, final String orderId) {
+        return Observable
+                .create(new Observable.OnSubscribe<Order>() {
+                    @Override
+                    public void call(Subscriber<? super Order> subscriber) {
+                        try {
+                            Order updatedOrder;
+                            final OrderItemResource orderItemResource = new OrderItemResource(new MozuApiContext(tenantId, siteId));
+                            updatedOrder = orderItemResource.deleteOrderItem(orderId, orderItemId);
                             if (!subscriber.isUnsubscribed()) {
                                 subscriber.onNext(updatedOrder);
                                 subscriber.onCompleted();
@@ -199,23 +236,25 @@ public class NewOrderManager {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<List<FulfillmentInfo>> getInstoreLocationCodes(final Integer tenantId, final Integer siteId, final String productCode) {
+    public Observable<List<FulfillmentInfo>> getInventory(final Integer tenantId, final Integer siteId, final String productCode, final ArrayMap<String, String> locationMap) {
         return Observable
                 .create(new Observable.OnSubscribe<List<FulfillmentInfo>>() {
                     @Override
                     public void call(Subscriber<? super List<FulfillmentInfo>> subscriber) {
                         try {
-                            LocationResource locationResource = new LocationResource(new MozuApiContext(tenantId, siteId));
-                            LocationCollection locationCollection = locationResource.getInStorePickupLocations();
                             List<FulfillmentInfo> fulfillmentInfoList = new ArrayList<>();
-                            for (Location location : locationCollection.getItems()) {
-                                if (location.getSupportsInventory()) {
-                                    fulfillmentInfoList.add(new FulfillmentInfo(OrderDetailFullfillmentFragment.PICKUP, location.getCode()));
+                            LocationInventoryResource locationInventoryResource = new LocationInventoryResource(new MozuApiContext(tenantId, siteId));
+                            LocationInventoryCollection locationInventoryCollection = locationInventoryResource.getLocationInventories(productCode);
+                            for (LocationInventory locationInventory : locationInventoryCollection.getItems()) {
+                                if (locationInventory.getStockAvailable() > 0) {
+                                    String locationType = locationMap.get(locationInventory.getLocationCode());
+                                    if (locationType != null) {
+                                        FulfillmentInfo fulfillmentInfo = new FulfillmentInfo(locationType, locationInventory.getLocationCode());
+                                        fulfillmentInfoList.add(fulfillmentInfo);
+                                    }
+
                                 }
                             }
-
-                            Location directShipLocation = locationResource.getDirectShipLocation();
-                            fulfillmentInfoList.add(new FulfillmentInfo(OrderDetailFullfillmentFragment.SHIP, directShipLocation.getCode()));
 
 
                             if (!subscriber.isUnsubscribed()) {
@@ -229,6 +268,39 @@ public class NewOrderManager {
                 }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
+
+
+    public Observable<ArrayMap<String, String>> getLocations(final Integer tenantId, final Integer siteId) {
+        return Observable
+                .create(new Observable.OnSubscribe<ArrayMap<String, String>>() {
+                    @Override
+                    public void call(Subscriber<? super ArrayMap<String, String>> subscriber) {
+                        try {
+                            ArrayMap<String, String> locations = new ArrayMap<String, String>();
+                            LocationResource locationResource = new LocationResource(new MozuApiContext(tenantId, siteId));
+                            LocationCollection locationCollection = locationResource.getInStorePickupLocations();
+
+                            for (Location location : locationCollection.getItems()) {
+                                if (location.getSupportsInventory()) {
+                                    locations.put(location.getCode(), OrderStrings.PICKUP);
+                                }
+                            }
+
+                            Location directShipLocation = locationResource.getDirectShipLocation();
+                            locations.put(directShipLocation.getCode(), OrderStrings.SHIP);
+
+                            if (!subscriber.isUnsubscribed()) {
+                                subscriber.onNext(locations);
+                                subscriber.onCompleted();
+                            }
+                        } catch (Exception e) {
+                            subscriber.onError(e);
+                        }
+                    }
+                }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
 
     public Observable<Order> getOrderObservable(final Integer tenantId, final Integer siteId, final String orderId) {
         return Observable
