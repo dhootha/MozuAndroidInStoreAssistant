@@ -80,8 +80,19 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        customerLookup.setThreshold(1);
+        customerLookup.setThreshold(0);
         customerLookup.setOnItemClickListener(this);
+        customerLookup.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    getLoaderManager().restartLoader(LOADER_CUSTOMER, null, CustomerLookupFragment.this);
+                    Loader<List<CustomerAccount>> loader = getLoaderManager().getLoader(LOADER_CUSTOMER);
+                    mCustomersLoader = (CustomersLoader) loader;
+                    mCustomersLoader.forceLoad();
+                }
+            }
+        });
         mCreateCustomer.setOnClickListener(this);
         customerLookup.addTextChangedListener(new TextWatcher() {
             @Override

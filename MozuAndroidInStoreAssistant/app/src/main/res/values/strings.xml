@@ -293,7 +293,7 @@
     <string name="name_label">Name</string>
     <string name="email_label">Email</string>
     <string name="title_new_order">New Order</string>
-    <string name="lookup_customer_hint">Lookup existing customer </string>
+    <string name="lookup_customer_hint">Customer Search</string>
     <string name="customer_lookup">Customer Lookup</string>
     <string name="create_new_customer">Create New Customer</string>
     <string name="product_lookuphint">Lookup Product</string>
