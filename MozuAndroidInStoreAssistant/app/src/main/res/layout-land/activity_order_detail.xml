@@ -86,17 +86,6 @@
                     android:textSize="20sp"/>
             </LinearLayout>
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:background="@color/darker_grey"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingLeft="@dimen/order_margin_right_total"
-            android:paddingRight="@dimen/order_margin_left_total">
-
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"

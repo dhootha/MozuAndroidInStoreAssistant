@@ -124,7 +124,7 @@ public class ProductSearchLoader extends InternetConnectedAsyncTaskLoader<List<P
         try {
             ProductSearchResult result = searchResultResource.search(mQueryString, mCategoryId == -1 || mCategoryId == 0 || mCategoryId == null ? null : CATEGORY_FILTER + String.valueOf(mCategoryId),
                     null, null, null, null, null, null, null, null, null, null, null,
-                    SORT_BY, ITEMS_PER_PAGE, mCurrentPage * ITEMS_PER_PAGE, null,null,null,null,null);
+                    SORT_BY, ITEMS_PER_PAGE, mCurrentPage * ITEMS_PER_PAGE, null,null,null,null,null,null);
 
             mTotalPages = result.getTotalCount() / ITEMS_PER_PAGE;
 

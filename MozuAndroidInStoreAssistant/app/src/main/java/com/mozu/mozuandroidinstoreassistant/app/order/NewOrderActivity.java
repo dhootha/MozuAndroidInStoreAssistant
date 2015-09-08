@@ -94,7 +94,7 @@ public class NewOrderActivity extends BaseActivity {
     }
 
     private void loadLocationInformation(Integer mTenantId, Integer mSiteId) {
-        AndroidObservable.bindActivity(this, NewOrderManager.getInstance().getLocationsData(mTenantId, mSiteId, true)).subscribe(new Subscriber<ArrayMap<String, String>>() {
+        NewOrderManager.getInstance().getLocationsData(mTenantId, mSiteId, true).subscribe(new Subscriber<ArrayMap<String, String>>() {
             @Override
             public void onCompleted() {
 
@@ -205,7 +205,7 @@ public class NewOrderActivity extends BaseActivity {
             });
 
         }
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
         Calendar cal = Calendar.getInstance();
         mOrderStatus.setText(mOrder.getStatus());
         mOrderDate.setText(dateFormat.format(cal.getTime()));
@@ -221,21 +221,7 @@ public class NewOrderActivity extends BaseActivity {
         mSubmitOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new AlertDialog.Builder(NewOrderActivity.this)
-                        .setMessage(getString(R.string.submit_confirm_message))
-                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                submitOrCancelOrder(mOrder, true);
-                            }
-                        })
-                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int i) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .create().show();
+                submitOrCancelOrder(mOrder, true);
             }
         });
         mCancelOrder.setOnClickListener(new View.OnClickListener() {

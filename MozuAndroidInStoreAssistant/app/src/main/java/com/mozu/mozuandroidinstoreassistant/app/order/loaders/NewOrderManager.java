@@ -119,7 +119,7 @@ public class NewOrderManager {
                         try {
                             ProductSearchResult result = productSearchResultResource.search(query, null,
                                     null, null, null, null, null, null, null, null, null, null, null,
-                                    PRODUCT_SORT_BY, ITEMS_PER_PAGE, 0, null, null, null, null, null);
+                                    PRODUCT_SORT_BY, ITEMS_PER_PAGE, 0, null, null, null, null, null, null);
                             if (!subscriber.isUnsubscribed()) {
                                 subscriber.onNext(result);
                                 subscriber.onCompleted();

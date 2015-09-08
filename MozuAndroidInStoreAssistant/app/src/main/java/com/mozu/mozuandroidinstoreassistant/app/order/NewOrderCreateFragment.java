@@ -145,6 +145,7 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
 
     private void updateEditMode(Boolean editMode) {
         mProductsAdapter.setEditMode(editMode);
+        mProductsAdapter.addData(mOrder);
         mProductsAdapter.notifyDataSetChanged();
         mProductLookup.setVisibility(editMode ? View.VISIBLE : View.GONE);
     }
