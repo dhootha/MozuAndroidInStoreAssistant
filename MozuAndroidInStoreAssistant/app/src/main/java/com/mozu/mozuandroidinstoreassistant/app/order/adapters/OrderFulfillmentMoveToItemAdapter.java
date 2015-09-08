@@ -1,7 +1,6 @@
 package com.mozu.mozuandroidinstoreassistant.app.order.adapters;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +9,7 @@ import android.widget.TextView;
 import com.mozu.api.contracts.commerceruntime.orders.OrderItem;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -19,6 +19,7 @@ public class OrderFulfillmentMoveToItemAdapter extends RecyclerView.Adapter<Orde
 
     List<OrderItem> mData;
     MoveToListListener mListener;
+    private ArrayList<Integer> mSelected;
 
     public OrderFulfillmentMoveToItemAdapter(List<OrderItem> mData, MoveToListListener mListener) {
         this.mData = mData;
@@ -33,6 +34,11 @@ public class OrderFulfillmentMoveToItemAdapter extends RecyclerView.Adapter<Orde
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        if (mSelected != null && !mSelected.isEmpty()) {
+            if (mSelected.contains(position)) {
+                holder.itemView.setActivated(true);
+            }
+        }
         OrderItem item = mData.get(position);
         holder.code.setText(item.getProduct().getProductCode());
         holder.product.setText(item.getProduct().getName());
@@ -43,6 +49,10 @@ public class OrderFulfillmentMoveToItemAdapter extends RecyclerView.Adapter<Orde
     @Override
     public int getItemCount() {
         return mData.size();
+    }
+
+    public void setSelected(ArrayList<Integer> selected) {
+        mSelected = selected;
     }
 
     public interface MoveToListListener {
@@ -68,7 +78,6 @@ public class OrderFulfillmentMoveToItemAdapter extends RecyclerView.Adapter<Orde
 
         @Override
         public void onClick(View itemView) {
-            Log.d("intellij", "");
             itemView.setActivated(!itemView.isActivated());
             mListener.onItemSelected(getAdapterPosition(), itemView.isActivated());
         }
