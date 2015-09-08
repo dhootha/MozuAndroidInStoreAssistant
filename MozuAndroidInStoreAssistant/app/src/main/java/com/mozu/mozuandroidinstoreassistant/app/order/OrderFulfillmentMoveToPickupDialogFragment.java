@@ -41,6 +41,7 @@ import rx.android.observables.AndroidObservable;
 public class OrderFulfillmentMoveToPickupDialogFragment extends DialogFragment implements OrderFulfillmentMoveToItemAdapter.MoveToListListener {
 
     private static final String FULFILLED = "fulfilled";
+    private static final String SELECTED = "selected";
     @InjectView(R.id.items)
     RecyclerView mRecyclerViewProducts;
     @InjectView(R.id.cancel)
@@ -58,7 +59,7 @@ public class OrderFulfillmentMoveToPickupDialogFragment extends DialogFragment i
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
-            selected = savedInstanceState.getIntegerArrayList("selected");
+            selected = savedInstanceState.getIntegerArrayList(SELECTED);
         }
         setRetainInstance(true);
 
@@ -77,22 +78,6 @@ public class OrderFulfillmentMoveToPickupDialogFragment extends DialogFragment i
         View view = inflater.inflate(R.layout.fulfillment_move_to, container, false);
         ButterKnife.inject(this, view);
         return view;
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        if (selected != null && !selected.isEmpty()) {
-            outState.putIntegerArrayList("selected", selected);
-        }
-        super.onSaveInstanceState(outState);
-
-    }
-
-    @Override
-    public void onDestroyView() {
-        if (getDialog() != null && getRetainInstance())
-            getDialog().setDismissMessage(null);
-        super.onDestroyView();
     }
 
     @Override
@@ -145,6 +130,22 @@ public class OrderFulfillmentMoveToPickupDialogFragment extends DialogFragment i
             }
 
         });
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if (selected != null && !selected.isEmpty()) {
+            outState.putIntegerArrayList(SELECTED, selected);
+        }
+        super.onSaveInstanceState(outState);
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (getDialog() != null && getRetainInstance())
+            getDialog().setDismissMessage(null);
+        super.onDestroyView();
     }
 
     public void createNewPickUps() {
