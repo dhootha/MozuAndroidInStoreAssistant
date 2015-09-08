@@ -183,15 +183,20 @@ public class NewOrderTotalLayout extends LinearLayout implements IRowLayout, IEd
     @Override
     public void setEditMode(boolean isEditMode) {
 
-        int discountChildCount = mDiscountAdjustment.getChildCount();
-        for (int i = 0; i < discountChildCount; i++) {
-            View view = mDiscountAdjustment.getChildAt(i);
-            view.findViewById(R.id.remove_icon).setVisibility(isEditMode ? View.VISIBLE : View.GONE);
+        if (mDiscountAdjustment != null) {
+            int discountChildCount = mDiscountAdjustment.getChildCount();
+            for (int i = 0; i < discountChildCount; i++) {
+                View view = mDiscountAdjustment.getChildAt(i);
+                view.findViewById(R.id.remove_icon).setVisibility(isEditMode ? View.VISIBLE : View.GONE);
+            }
         }
-        discountChildCount = mShippingAdjustment.getChildCount();
-        for (int i = 0; i < discountChildCount; i++) {
-            View view = mShippingAdjustment.getChildAt(i);
-            view.findViewById(R.id.remove_icon).setVisibility(isEditMode ? View.VISIBLE : View.GONE);
+
+        if (mShippingAdjustment != null) {
+            int discountChildCount = mShippingAdjustment.getChildCount();
+            for (int i = 0; i < discountChildCount; i++) {
+                View view = mShippingAdjustment.getChildAt(i);
+                view.findViewById(R.id.remove_icon).setVisibility(isEditMode ? View.VISIBLE : View.GONE);
+            }
         }
     }
 }

@@ -23,6 +23,7 @@ import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthen
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.order.loaders.NewOrderManager;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -217,11 +218,15 @@ public class NewOrderShippingItemLayout extends LinearLayout implements IRowLayo
                 LayoutInflater inflater = LayoutInflater.from(parent.getContext());
                 convertView = inflater.inflate(R.layout.orderfulfillment_spinner_item, parent, false);
             }
+            NumberFormat numberFormat = NumberFormat.getCurrencyInstance();
             TextView mTextView = (TextView) convertView.findViewById(R.id.order_fulfillment);
             ShippingRate shipment = getItem(position);
             if (shipment != null) {
-                String shipmentDisplay = shipment.getShippingMethodName() + " (" + shipment.getPrice() + ")";
-                mTextView.setText(shipmentDisplay);
+                StringBuffer shipmentDisplay = new StringBuffer(shipment.getShippingMethodName());
+                if (shipment.getPrice() != null) {
+                    shipmentDisplay.append(" (" + numberFormat.format(shipment.getPrice()) + ")");
+                }
+                mTextView.setText(shipmentDisplay.toString());
             } else {
                 mTextView.setText(getResources().getString(R.string.shipping_method));
             }
