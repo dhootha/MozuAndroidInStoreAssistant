@@ -41,6 +41,7 @@ import rx.android.observables.AndroidObservable;
 public class OrderFulfillmentMoveToPickupDialogFragment extends DialogFragment implements OrderFulfillmentMoveToItemAdapter.MoveToListListener {
 
     private static final String FULFILLED = "fulfilled";
+    private static final String SELECTED = "selected";
     @InjectView(R.id.items)
     RecyclerView mRecyclerViewProducts;
     @InjectView(R.id.cancel)
@@ -49,13 +50,18 @@ public class OrderFulfillmentMoveToPickupDialogFragment extends DialogFragment i
     Spinner mMoveToOptions;
     private FulfillmentMoveToDataItem mData;
     private List<String> options;
-    private List<Integer> selected = new ArrayList<>();
+    private ArrayList<Integer> selected = new ArrayList<>();
     private Order mOrder;
     private int createNewPickUpCount;
+    private OrderFulfillmentMoveToItemAdapter mProductsAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            selected = savedInstanceState.getIntegerArrayList(SELECTED);
+        }
+        setRetainInstance(true);
 
     }
 
@@ -77,8 +83,10 @@ public class OrderFulfillmentMoveToPickupDialogFragment extends DialogFragment i
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        options.add(getResources().getString(R.string.create_new_pickup));
-        options.add(0, getResources().getString(R.string.move_to));
+        if (!options.contains(getResources().getString(R.string.move_to)) && !options.contains(getResources().getString(R.string.create_new_pickup))) {
+            options.add(getResources().getString(R.string.create_new_pickup));
+            options.add(0, getResources().getString(R.string.move_to));
+        }
     }
 
     @Override
@@ -86,8 +94,11 @@ public class OrderFulfillmentMoveToPickupDialogFragment extends DialogFragment i
         super.onViewCreated(view, savedInstanceState);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerViewProducts.setLayoutManager(layoutManager);
-        OrderFulfillmentMoveToItemAdapter adapter = new OrderFulfillmentMoveToItemAdapter(mData.getItems(), this);
-        mRecyclerViewProducts.setAdapter(adapter);
+        mProductsAdapter = new OrderFulfillmentMoveToItemAdapter(mData.getItems(), this);
+        if (selected != null && !selected.isEmpty()) {
+            mProductsAdapter.setSelected(selected);
+        }
+        mRecyclerViewProducts.setAdapter(mProductsAdapter);
         mRecyclerViewProducts.setHasFixedSize(true);
         ArrayAdapter<String> dropDownAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, options);
         dropDownAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -108,6 +119,7 @@ public class OrderFulfillmentMoveToPickupDialogFragment extends DialogFragment i
                         }
                     } else {
                         Toast.makeText(getActivity(), R.string.no_items_selected_error, Toast.LENGTH_LONG).show();
+                        mMoveToOptions.setSelection(0);
                     }
                 }
             }
@@ -118,6 +130,22 @@ public class OrderFulfillmentMoveToPickupDialogFragment extends DialogFragment i
             }
 
         });
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if (selected != null && !selected.isEmpty()) {
+            outState.putIntegerArrayList(SELECTED, selected);
+        }
+        super.onSaveInstanceState(outState);
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (getDialog() != null && getRetainInstance())
+            getDialog().setDismissMessage(null);
+        super.onDestroyView();
     }
 
     public void createNewPickUps() {
