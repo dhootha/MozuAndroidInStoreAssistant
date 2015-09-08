@@ -417,7 +417,7 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         UserAuthenticationStateMachine userAuthenticationStateMachine = UserAuthenticationStateMachineProducer.getInstance(this);
         if (order.getStatus().equalsIgnoreCase(OrderStrings.PENDING)) {
             Intent intent = new Intent(this, NewOrderActivity.class);
-            intent.putExtra(OrderCreationAddCustomerActivity.ORDER_EXTRA_KEY, order.getId());
+            intent.putExtra(NewOrderActivity.ORDER_EXTRA_KEY, order.getId());
             startActivity(intent);
         } else {
             Intent intent = new Intent(this, OrderDetailActivity.class);
@@ -433,8 +433,8 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         UserAuthenticationStateMachine userAuthenticationStateMachine = UserAuthenticationStateMachineProducer.getInstance(this);
         Intent intent = new Intent(this, OrderCreationAddCustomerActivity.class);
 
-        intent.putExtra(OrderCreationAddCustomerActivity.CURRENT_TENANT_ID, userAuthenticationStateMachine.getTenantId());
-        intent.putExtra(OrderCreationAddCustomerActivity.CURRENT_SITE_ID, userAuthenticationStateMachine.getSiteId());
+        intent.putExtra(OrderDetailActivity.CURRENT_TENANT_ID, userAuthenticationStateMachine.getTenantId());
+        intent.putExtra(OrderDetailActivity.CURRENT_SITE_ID, userAuthenticationStateMachine.getSiteId());
 
         startActivity(intent);
     }
