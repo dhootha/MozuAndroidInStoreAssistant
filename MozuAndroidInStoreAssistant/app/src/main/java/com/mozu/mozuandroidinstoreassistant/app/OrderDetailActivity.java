@@ -62,6 +62,7 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
     private OrderDetailSectionPagerAdapter mAdapter;
     private TextView mOrderFulfillmentStatus;
     private Boolean mIsEditMode = false;
+    private TextView mCustomerEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +102,7 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
         mOrderStatus = (TextView) findViewById(R.id.order_status_value);
         mOrderDate = (TextView) findViewById(R.id.order_date_value);
         mCustomerName = (TextView) findViewById(R.id.customer_value);
+        mCustomerEmail = (TextView) findViewById(R.id.customer_email);
         mOrderTotal = (TextView) findViewById(R.id.order_total_value);
         mCustomerName.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -247,6 +249,7 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
     public void customerRetrieved(CustomerAccount customer) {
         if (mCustomerName != null && customer != null) {
             mCustomerName.setText(customer.getFirstName() + " " + customer.getLastName());
+            mCustomerEmail.setText(customer.getEmailAddress());
         }
     }
 

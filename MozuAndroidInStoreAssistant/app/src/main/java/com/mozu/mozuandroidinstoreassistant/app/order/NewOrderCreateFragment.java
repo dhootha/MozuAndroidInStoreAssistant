@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.mozu.api.contracts.commerceruntime.commerce.PackageMeasurements;
@@ -53,6 +54,10 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
     private View mView;
     @InjectView(R.id.product_lookup)
     public AutoCompleteTextView mProductLookup;
+
+    @InjectView(R.id.product_search_loading)
+    public ProgressBar mProductSearchLoading;
+
 
     @InjectView(R.id.product_listview)
     public ListView mOrderProducts;
@@ -145,6 +150,7 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
 
     private void updateEditMode(Boolean editMode) {
         mProductsAdapter.setEditMode(editMode);
+        mProductsAdapter.addData(mOrder);
         mProductsAdapter.notifyDataSetChanged();
         mProductLookup.setVisibility(editMode ? View.VISIBLE : View.GONE);
     }
@@ -171,17 +177,20 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
             public void onTextChanged(final CharSequence charSequence, int start, int before, int count) {
                 if (mSubscription != null && !mSubscription.isUnsubscribed()) {
                     mSubscription.unsubscribe();
+                    mProductSearchLoading.setVisibility(View.GONE);
                 }
-
+                mProductSearchLoading.setVisibility(View.VISIBLE);
                 mSubscription = AndroidObservable.bindFragment(NewOrderCreateFragment.this, NewOrderManager.getInstance().getProductSuggestion(charSequence.toString(), mTenantId, mSiteId))
                         .subscribe(new Subscriber<ProductSearchResult>() {
                             @Override
                             public void onCompleted() {
+                                mProductSearchLoading.setVisibility(View.GONE);
 
                             }
 
                             @Override
                             public void onError(Throwable e) {
+                                mProductSearchLoading.setVisibility(View.GONE);
                                 Toast.makeText(getActivity(), "Error Searching for product " + charSequence, Toast.LENGTH_SHORT).show();
                             }
 

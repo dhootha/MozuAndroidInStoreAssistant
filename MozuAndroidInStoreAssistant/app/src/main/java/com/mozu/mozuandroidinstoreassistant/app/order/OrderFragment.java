@@ -46,7 +46,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import rx.Subscriber;
-import rx.android.observables.AndroidObservable;
 
 public class OrderFragment extends Fragment implements OrderFilterListener, LoaderManager.LoaderCallbacks<List<Order>>, AbsListView.OnScrollListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, SearchManager.OnCancelListener, SearchManager.OnDismissListener, SearchView.OnSuggestionListener, MenuItem.OnActionExpandListener, AdapterView.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
 
@@ -192,7 +191,7 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
     }
 
     private void loadLocationInformation(Integer mTenantId, Integer mSiteId) {
-        AndroidObservable.bindFragment(this, NewOrderManager.getInstance().getLocationsData(mTenantId, mSiteId, true)).subscribe(new Subscriber<ArrayMap<String, String>>() {
+        NewOrderManager.getInstance().getLocationsData(mTenantId, mSiteId, true).subscribe(new Subscriber<ArrayMap<String, String>>() {
             @Override
             public void onCompleted() {
 

@@ -18,6 +18,7 @@ import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.data.IData;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.ShippingItemRow;
+import com.mozu.mozuandroidinstoreassistant.app.dialog.ErrorMessageAlertDialog;
 import com.mozu.mozuandroidinstoreassistant.app.layout.IRowLayout;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
@@ -149,9 +150,8 @@ public class NewOrderShippingItemLayout extends LinearLayout implements IRowLayo
 
                                 @Override
                                 public void onError(Throwable e) {
-                                    e.printStackTrace();
+                                    ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getContext(), "Failed to update shipping");
                                     progressBar.setVisibility(View.GONE);
-
                                 }
 
                                 @Override

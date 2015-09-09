@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.mozu.mozuandroidinstoreassistant.app.views.LoadingView
-    android:id="@+id/order_loading"
+
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    android:orientation="vertical">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                  android:layout_width="match_parent"
-                  android:layout_height="match_parent"
-                  android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -23,7 +23,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="64dp"
                 >
-
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -45,6 +44,59 @@
                         android:textColor="@color/dark_gray_text"
                         android:textSize="20sp"/>
                 </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/date_label"
+                        android:textColor="@color/light_gray_text"/>
+
+                    <TextView
+                        android:id="@+id/order_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/dark_gray_text"
+                        android:textSize="20sp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+
+                    <Button
+                        android:id="@+id/cancel_order"
+                        style="@style/ButtonMozu"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cancel"/>
+
+                    <Button
+                        android:id="@+id/submit_order"
+                        style="@style/ButtonMozu"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/submit"/>
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                >
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -77,28 +129,6 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/date_label"
-                        android:textColor="@color/light_gray_text"/>
-
-                    <TextView
-                        android:id="@+id/order_date"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/dark_gray_text"
-                        android:textSize="20sp"/>
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:gravity="center_vertical"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
                         android:text="@string/email_label"
                         android:textColor="@color/light_gray_text"/>
 
@@ -106,32 +136,11 @@
                         android:id="@+id/order_email"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/dark_gray_text"
+                        android:textColor="@color/mozu_color"
                         android:textSize="20sp"/>
                 </LinearLayout>
 
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical|right"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/submit_order"
-                    style="@style/ButtonMozu"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/submit"/>
-
-                <Button
-                    android:id="@+id/cancel_order"
-                    style="@style/ButtonMozu"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/cancel"/>
             </LinearLayout>
 
 
@@ -161,4 +170,17 @@
             android:layout_marginLeft="@dimen/customer_tab_margin_left"
             android:layout_marginRight="@dimen/customer_margin_right_total"/>
     </LinearLayout>
-</com.mozu.mozuandroidinstoreassistant.app.views.LoadingView>
+
+    <LinearLayout
+        android:id="@+id/order_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/semi_transparent_image_view_background"
+        android:gravity="center">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"/>
+    </LinearLayout>
+</FrameLayout>
