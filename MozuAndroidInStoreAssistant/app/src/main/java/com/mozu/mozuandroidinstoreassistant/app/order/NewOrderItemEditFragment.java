@@ -86,6 +86,9 @@ public class NewOrderItemEditFragment extends DialogFragment {
     @InjectView(R.id.fulfillment_spinner_progress)
     public ProgressBar fulfillmentSpinnerProgress;
 
+    @InjectView(R.id.product_loading)
+    public LinearLayout mProductLoading;
+
 
     @InjectView(R.id.main_product_image)
     public ImageView mMainProductImage;
@@ -254,10 +257,43 @@ public class NewOrderItemEditFragment extends DialogFragment {
         }
     }
 
-    private void loadLocations(String productCode) {
+    private void loadLocations(final String productCode) {
+        final ArrayMap<String, String> mLocationMap = ((MozuApplication) getActivity().getApplication()).getLocations();
+        if (mLocationMap.size() < 1) {
+            mCompositeSubscription.add(AndroidObservable.bindFragment(this, NewOrderManager.getInstance().getLocationsData(mTenantId, mSiteId, false))
+                    .subscribe(new Subscriber<ArrayMap<String, String>>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), getResources().getString(R.string.order_fulfillment_error));
+                            productSave.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onNext(ArrayMap<String, String> locationMap) {
+                            ((MozuApplication) getActivity().getApplication()).setLocations(locationMap);
+                            loadInventory(productCode, locationMap);
+                        }
+                    }));
+        } else {
+            loadInventory(productCode, mLocationMap);
+        }
+
+    }
+
+
+    private void loadInventory(final String productCode, ArrayMap<String, String> locationMap) {
+        if (locationMap.size() < 1) {
+            ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), getResources().getString(R.string.order_fulfillment_error));
+            return;
+        }
+
         productSave.setEnabled(false);
         fulfillmentSpinnerProgress.setVisibility(View.VISIBLE);
-        ArrayMap<String, String> locationMap = ((MozuApplication) getActivity().getApplication()).getLocations();
         mCompositeSubscription.add(AndroidObservable.bindFragment(this, NewOrderManager.getInstance().getInventory(mTenantId, mSiteId, productCode, locationMap))
                 .subscribe(new Subscriber<List<FulfillmentInfo>>() {
                     @Override
@@ -268,7 +304,8 @@ public class NewOrderItemEditFragment extends DialogFragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), e.getMessage()).show();
+                        ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), getResources().getString(R.string.order_fulfillment_error));
+                        productSave.setVisibility(View.GONE);
                     }
 
                     @Override
@@ -291,10 +328,12 @@ public class NewOrderItemEditFragment extends DialogFragment {
             @Override
             public void onCompleted() {
                 getDialog().dismiss();
+                mProductLoading.setVisibility(View.GONE);
             }
 
             @Override
             public void onError(Throwable e) {
+                mProductLoading.setVisibility(View.GONE);
                 if (e instanceof ApiException) {
                     ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), ((ApiException) e).getApiError().getMessage()).show();
                 } else {
@@ -315,6 +354,7 @@ public class NewOrderItemEditFragment extends DialogFragment {
 
 
     private void setupViews() {
+        mProductLoading.setVisibility(View.GONE);
         NumberFormat format = NumberFormat.getCurrencyInstance();
         Double productPriceVal = mOrderItem.getProduct().getPrice().getPrice();
         productPrice.setText(format.format(productPriceVal));
@@ -367,7 +407,7 @@ public class NewOrderItemEditFragment extends DialogFragment {
                     String updatedProductQuantityVal = productQuantity.getText().toString();
                     FulfillmentInfo updatedFulFillmentType = (FulfillmentInfo) fulfillmentType.getSelectedItem();
 
-                    if (updatedFulFillmentType.mType.equals(mOrderItem.getFulfillmentMethod().toLowerCase()) && updatedFulFillmentType.mLocation.equals(updatedFulFillmentType.mLocation)) {
+                    if (updatedFulFillmentType.mType.equalsIgnoreCase(mOrderItem.getFulfillmentMethod()) && updatedFulFillmentType.mLocation.equalsIgnoreCase(mOrderItem.getFulfillmentLocationCode())) {
                         updatedFulFillmentType = null;
                     }
                     if (TextUtils.isEmpty(updatedProductQuantityVal) || updatedProductQuantityVal.equals(String.valueOf(mOrderItem.getQuantity()))) {
@@ -375,10 +415,13 @@ public class NewOrderItemEditFragment extends DialogFragment {
 
                     }
                     if (updatedProductQuantityVal != null || updatedFulFillmentType != null) {
+                        mProductLoading.setVisibility(View.VISIBLE);
                         AndroidObservable.bindFragment(NewOrderItemEditFragment.this, NewOrderManager
                                 .getInstance()
                                 .getOrderItemUpdateQuantityObservable(mTenantId, mSiteId, mOrderItem, mOrderId, updatedProductQuantityVal == null ? null : Integer.valueOf(updatedProductQuantityVal), updatedFulFillmentType))
                                 .subscribe(getOrderUpdateSubscriber());
+                    } else {
+                        getDialog().dismiss();
                     }
                 } else {
                     FulfillmentInfo updatedFulFillmentType = (FulfillmentInfo) fulfillmentType.getSelectedItem();

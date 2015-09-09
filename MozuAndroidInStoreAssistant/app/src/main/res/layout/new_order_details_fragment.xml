@@ -14,20 +14,34 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"/>
 
-    <AutoCompleteTextView
-        android:id="@+id/product_lookup"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:background="@drawable/card_background"
-        android:drawableLeft="@drawable/search"
-        android:drawableStart="@drawable/search"
-        android:hint="@string/product_lookuphint"
-        android:padding="8dp"
-        android:singleLine="true"/>
+        android:layout_height="wrap_content">
+
+        <AutoCompleteTextView
+            android:id="@+id/product_lookup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/card_background"
+            android:drawableLeft="@drawable/search"
+            android:drawableStart="@drawable/search"
+            android:hint="@string/product_lookuphint"
+            android:padding="8dp"
+            android:singleLine="true"/>
+
+        <ProgressBar
+            android:id="@+id/product_search_loading"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginRight="32dp"
+            android:layout_gravity="right|top"
+            android:visibility="gone"/>
+    </FrameLayout>
 
     <ListView
         android:id="@+id/product_listview"
