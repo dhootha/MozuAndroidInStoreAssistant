@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,9 @@ import com.mozu.api.contracts.productruntime.ProductOptionValue;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.htmlutils.HTMLTagHandler;
 import com.mozu.mozuandroidinstoreassistant.app.models.ImageURLConverter;
+import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
+import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
+import com.mozu.mozuandroidinstoreassistant.app.product.loaders.ProductAdminObservableManager;
 import com.mozu.mozuandroidinstoreassistant.app.views.NoUnderlineClickableSpan;
 import com.mozu.mozuandroidinstoreassistant.app.views.ProductOptionsLayout;
 import com.squareup.picasso.Callback;
@@ -37,31 +41,55 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import rx.Subscriber;
+import rx.android.observables.AndroidObservable;
 
 
 public class ProductDetailOverviewDialogFragment extends DialogFragment {
 
     private static final int MAX_DESC_LENGTH = 500;
     private static final String PRODUCT_CONFIGURABLE = "Configurable";
-
+    @InjectView(R.id.main_price)
+    TextView mMainPrice;
+    @InjectView(R.id.regular_price)
+    TextView mRegPrice;
+    @InjectView(R.id.msrp_price)
+    TextView mMsrpPrice;
+    @InjectView(R.id.map_price)
+    TextView mMapPrice;
+    @InjectView(R.id.includes)
+    TextView mIncludes;
+    @InjectView(R.id.product_description)
+    TextView mDescription;
+    @InjectView(R.id.includesLayout)
+    LinearLayout mIncludesLayout;
+    @InjectView(R.id.main_product_image)
+    ImageView mMainProductImage;
+    @InjectView(R.id.sku)
+    TextView mSku;
+    @InjectView(R.id.name)
+    TextView mName;
     private Product mProduct;
-
     private int mTenantId;
     private int mSiteId;
     private String mSiteDomain;
-
-    @InjectView(R.id.main_price) TextView mMainPrice;
-    @InjectView(R.id.regular_price) TextView mRegPrice;
-    @InjectView(R.id.msrp_price) TextView mMsrpPrice;
-    @InjectView(R.id.map_price) TextView mMapPrice;
-    @InjectView(R.id.includes) TextView mIncludes;
-    @InjectView(R.id.product_description) TextView mDescription;
-    @InjectView(R.id.includesLayout) LinearLayout mIncludesLayout;
-    @InjectView(R.id.main_product_image) ImageView mMainProductImage;
-    @InjectView(R.id.sku) TextView mSku;
-    @InjectView(R.id.name) TextView mName;
-
     private ImageURLConverter mImageUrlConverter;
+    private NoUnderlineClickableSpan mContractClickableSpan = new NoUnderlineClickableSpan() {
+
+        @Override
+        public void onClick(View widget) {
+            mDescription.setText(getDescriptionWithSpannableClick(false));
+        }
+
+    };
+    private NoUnderlineClickableSpan mExpandClickableSpan = new NoUnderlineClickableSpan() {
+
+        @Override
+        public void onClick(View widget) {
+            mDescription.setText(getDescriptionWithSpannableClick(true));
+        }
+
+    };
 
     public ProductDetailOverviewDialogFragment() {
         // Required empty public constructor
@@ -72,7 +100,7 @@ public class ProductDetailOverviewDialogFragment extends DialogFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,  Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.product_detail_overview_dialog_fragment, null);
         ImageView overviewClose = (ImageView) view.findViewById(R.id.product_detail_overview_close);
         overviewClose.setOnClickListener(new View.OnClickListener() {
@@ -85,7 +113,7 @@ public class ProductDetailOverviewDialogFragment extends DialogFragment {
         ButterKnife.inject(this, view);
 
         if (mProduct != null) {
-            mImageUrlConverter = new ImageURLConverter(mTenantId, mSiteId,mSiteDomain);
+            mImageUrlConverter = new ImageURLConverter(mTenantId, mSiteId, mSiteDomain);
 
             setProductOverviewViews(view);
         }
@@ -110,7 +138,7 @@ public class ProductDetailOverviewDialogFragment extends DialogFragment {
 
         mRegPrice.setText(getRegularPriceText(defaultFormat));
         mMsrpPrice.setText(getMSRPPriceText(defaultFormat));
-        mMapPrice.setText(getMAPPriceText(defaultFormat));
+        getMAPPriceText(defaultFormat);
 
         if (isProductConfigurable(mProduct)) {
             mIncludesLayout.setVisibility(View.GONE);
@@ -148,7 +176,8 @@ public class ProductDetailOverviewDialogFragment extends DialogFragment {
             }
 
             @Override
-            public void onError() {}
+            public void onError() {
+            }
 
         });
     }
@@ -158,8 +187,8 @@ public class ProductDetailOverviewDialogFragment extends DialogFragment {
             LinearLayout layout = (LinearLayout) view.findViewById(R.id.options_layout);
             layout.setVisibility(View.VISIBLE);
 
-            for(ProductOption option: mProduct.getOptions()){
-                ProductOptionsLayout optionsLayout = new ProductOptionsLayout(getActivity(),null);
+            for (ProductOption option : mProduct.getOptions()) {
+                ProductOptionsLayout optionsLayout = new ProductOptionsLayout(getActivity(), null);
                 optionsLayout.setTitle(option.getName());
 
                 List<ProductOptionValue> optionValues = new ArrayList<ProductOptionValue>();
@@ -175,17 +204,16 @@ public class ProductDetailOverviewDialogFragment extends DialogFragment {
         }
     }
 
-    private boolean isProductConfigurable(Product product){
+    private boolean isProductConfigurable(Product product) {
         return PRODUCT_CONFIGURABLE.equalsIgnoreCase(product.getProductUsage());
     }
-
 
     public void setProduct(Product product) {
 
         mProduct = product;
     }
 
-    private boolean hasSalePrice(Product product){
+    private boolean hasSalePrice(Product product) {
         return product.getPrice() != null && product.getPrice().getSalePrice() != null;
 
     }
@@ -221,10 +249,26 @@ public class ProductDetailOverviewDialogFragment extends DialogFragment {
         return msrpPriceString;
     }
 
-    private String getMAPPriceText(NumberFormat format) {
-        ///This API is not avaiable
-        String mapString = "N/A";
-        return mapString;
+    private void getMAPPriceText(final NumberFormat format) {
+        UserAuthenticationStateMachine mUserState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
+
+        AndroidObservable.bindFragment(this, ProductAdminObservableManager.getInstance().getMAPPriceObservable(mUserState.getTenantId(), mUserState.getSiteId(), mProduct.getProductCode()))
+                .subscribe(new Subscriber<com.mozu.api.contracts.productadmin.Product>() {
+                    @Override
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        mMapPrice.setText("N/A");
+                    }
+
+                    @Override
+                    public void onNext(com.mozu.api.contracts.productadmin.Product product) {
+                        Log.d("", "");
+                        mMapPrice.setText(format.format(product.getPrice().getMap()));
+                    }
+                });
     }
 
     private String getBundledProductsString() {
@@ -236,7 +280,7 @@ public class ProductDetailOverviewDialogFragment extends DialogFragment {
 
         bundledString = "";
 
-        for (BundledProduct bundable: mProduct.getBundledProducts()) {
+        for (BundledProduct bundable : mProduct.getBundledProducts()) {
             bundledString += bundable.getName() + ", ";
         }
 
@@ -247,7 +291,7 @@ public class ProductDetailOverviewDialogFragment extends DialogFragment {
         return bundledString;
     }
 
-    private SpannableString getDescriptionWithSpannableClick(boolean showLargeDescription){
+    private SpannableString getDescriptionWithSpannableClick(boolean showLargeDescription) {
         if (mProduct == null) {
             return new SpannableString("N/A");
         }
@@ -260,7 +304,7 @@ public class ProductDetailOverviewDialogFragment extends DialogFragment {
         if (showLargeDescription) {
             buttonText = getString(R.string.show_less_click_link);
             clickableSpan = mContractClickableSpan;
-            Spanned spannedText = Html.fromHtml(desc,null,new HTMLTagHandler());
+            Spanned spannedText = Html.fromHtml(desc, null, new HTMLTagHandler());
             spannableString = new SpannableString(spannedText);
         } else {
             buttonText = getString(R.string.full_description_click_link);
@@ -270,7 +314,7 @@ public class ProductDetailOverviewDialogFragment extends DialogFragment {
                 desc = desc.subSequence(0, MAX_DESC_LENGTH).toString();
             }
 
-            Spanned spannedText = Html.fromHtml(desc,null,new HTMLTagHandler());
+            Spanned spannedText = Html.fromHtml(desc, null, new HTMLTagHandler());
             spannableString = new SpannableString(spannedText);
         }
 
@@ -284,24 +328,6 @@ public class ProductDetailOverviewDialogFragment extends DialogFragment {
 
         return new SpannableString(TextUtils.concat(spannableString, linkSpan));
     }
-
-    private NoUnderlineClickableSpan mExpandClickableSpan = new NoUnderlineClickableSpan() {
-
-        @Override
-        public void onClick(View widget) {
-            mDescription.setText(getDescriptionWithSpannableClick(true));
-        }
-
-    };
-
-    private NoUnderlineClickableSpan mContractClickableSpan = new NoUnderlineClickableSpan() {
-
-        @Override
-        public void onClick(View widget) {
-            mDescription.setText(getDescriptionWithSpannableClick(false));
-        }
-
-    };
 
     public void setTenantId(int tenantId) {
         mTenantId = tenantId;

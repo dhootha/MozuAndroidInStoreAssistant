@@ -151,15 +151,6 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
         super.onSaveInstanceState(outState);
     }
 
-    public void setFulfillmentStatus(String fulfillmentStatus) {
-        mOrderFulfillmentStatus.setText(fulfillmentStatus);
-        mOrderFulfillmentStatus.setVisibility(View.VISIBLE);
-    }
-
-    public void clearFulfillmentStatus() {
-        mOrderFulfillmentStatus.setVisibility(View.GONE);
-    }
-
     public void setEditModeVisibility(boolean isVisible) {
         enterEditMode.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }

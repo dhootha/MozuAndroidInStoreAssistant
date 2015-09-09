@@ -138,21 +138,7 @@
                 android:paddingRight="16dp"
                 android:text="@string/edit"/>
 
-            <TextView
-                android:id="@+id/order_fulfillment_status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:background="@color/text_background_color"
-                android:gravity="center_vertical"
-                android:paddingBottom="5dp"
-                android:paddingLeft="32dp"
-                android:paddingRight="32dp"
-                android:paddingTop="5dp"
-                android:textColor="@color/semi_white_background"
-                android:visibility="gone"
-                />
+
         </RelativeLayout>
 
         <View
