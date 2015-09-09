@@ -13,6 +13,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mozu.api.ApiException;
@@ -29,7 +30,6 @@ import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthen
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.order.adapters.NewOrderFragmentAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.order.loaders.NewOrderManager;
-import com.mozu.mozuandroidinstoreassistant.app.views.LoadingView;
 import com.viewpagerindicator.TabPageIndicator;
 
 import java.text.DateFormat;
@@ -54,7 +54,7 @@ public class NewOrderActivity extends BaseActivity {
     @InjectView(R.id.order_tabs)
     public TabPageIndicator mOrderTabs;
     @InjectView(R.id.order_loading)
-    public LoadingView mOrderLoading;
+    public LinearLayout mOrderLoading;
 
     @InjectView(R.id.submit_order)
     public Button mSubmitOrder;
@@ -80,6 +80,13 @@ public class NewOrderActivity extends BaseActivity {
         mSiteId = userStateMachine.getSiteId();
         setContentView(R.layout.neworder_activity);
         ButterKnife.inject(this);
+        if (getActionBar() != null) {
+            getActionBar().setDisplayShowHomeEnabled(false);
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+            getActionBar().setDisplayShowCustomEnabled(true);
+            getActionBar().setTitle(" ");
+        }
+
         boolean reloadData = true;
         if (savedInstanceState != null) {
             reloadData = false;
@@ -113,18 +120,19 @@ public class NewOrderActivity extends BaseActivity {
     }
 
     private void loadOrderData(boolean hardReset) {
-        mOrderLoading.setLoading();
+        mOrderLoading.setVisibility(View.VISIBLE);
         AndroidObservable.bindActivity(this, NewOrderManager.getInstance().getOrderData(mTenantId, mSiteId, mOrderId, hardReset))
                 .subscribe(new Subscriber<Order>() {
                     @Override
                     public void onCompleted() {
-                        mOrderLoading.success();
+                        mOrderLoading.setVisibility(View.GONE);
                         loadCustomerData(mOrder);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        mOrderLoading.setError("Couldn't Load Data order data");
+                        mOrderLoading.setVisibility(View.GONE);
+                        ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(NewOrderActivity.this, getString(R.string.order_load_failure));
                     }
 
                     @Override
@@ -185,26 +193,20 @@ public class NewOrderActivity extends BaseActivity {
 
 
     private void setUpViews() {
-        if (getActionBar() != null) {
-            getActionBar().setDisplayShowHomeEnabled(false);
-            getActionBar().setDisplayHomeAsUpEnabled(true);
-            getActionBar().setDisplayShowCustomEnabled(true);
-            getActionBar().setTitle(" ");
-            new Handler().post(new Runnable() {
-                @Override
-                public void run() {
-                    TextView tv = new TextView(NewOrderActivity.this);
-                    tv.setText("Order #" + mOrder.getOrderNumber());
-                    tv.setPadding(getResources().getDimensionPixelSize(R.dimen.order_actionbar_margin_left), 0, 0, 0);
-                    tv.setGravity(Gravity.CENTER);
-                    tv.setTextColor(getResources().getColor(R.color.dark_gray_text));
-                    tv.setTypeface(null, Typeface.BOLD);
-                    tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-                    getActionBar().setCustomView(tv);
-                }
-            });
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                TextView tv = new TextView(NewOrderActivity.this);
+                tv.setText("Order #" + mOrder.getOrderNumber());
+                tv.setPadding(getResources().getDimensionPixelSize(R.dimen.order_actionbar_margin_left), 0, 0, 0);
+                tv.setGravity(Gravity.CENTER);
+                tv.setTextColor(getResources().getColor(R.color.dark_gray_text));
+                tv.setTypeface(null, Typeface.BOLD);
+                tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+                getActionBar().setCustomView(tv);
+            }
+        });
 
-        }
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
         Calendar cal = Calendar.getInstance();
         mOrderStatus.setText(mOrder.getStatus());
@@ -254,16 +256,18 @@ public class NewOrderActivity extends BaseActivity {
         } else {
             orderAction.setActionName(OrderStrings.ABANDON_ACTION);
         }
+        mOrderLoading.setVisibility(View.VISIBLE);
         NewOrderManager.getInstance().getOrderActionObservable(mTenantId, mSiteId, order, orderAction).subscribe(new Subscriber<Order>() {
             @Override
             public void onCompleted() {
+                mOrderLoading.setVisibility(View.GONE);
                 finish();
-
             }
 
             @Override
             public void onError(Throwable e) {
                 String message = "";
+                mOrderLoading.setVisibility(View.GONE);
                 if (e instanceof ApiException) {
                     message = ((ApiException) e).getApiError().getMessage();
                 }
