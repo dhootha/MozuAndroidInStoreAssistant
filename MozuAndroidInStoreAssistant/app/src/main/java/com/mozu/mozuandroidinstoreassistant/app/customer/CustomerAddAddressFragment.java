@@ -122,7 +122,6 @@ public class CustomerAddAddressFragment extends Fragment {
 
     private void onSaveClicked() {
         loadingView.setLoading();
-        //todo skip this if our customer was already created.
         if (mIsCusomterCreated) {
             updateCustomerAddresses(mCustomerAccount.getId());
         } else {
