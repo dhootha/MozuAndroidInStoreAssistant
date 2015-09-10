@@ -22,7 +22,6 @@ import com.mozu.api.contracts.commerceruntime.orders.OrderAction;
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.mozuandroidinstoreassistant.MozuApplication;
 import com.mozu.mozuandroidinstoreassistant.app.BaseActivity;
-import com.mozu.mozuandroidinstoreassistant.app.OrderCreationAddCustomerActivity;
 import com.mozu.mozuandroidinstoreassistant.app.OrderDetailActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.dialog.ErrorMessageAlertDialog;
@@ -42,6 +41,8 @@ import rx.Subscriber;
 import rx.android.observables.AndroidObservable;
 
 public class NewOrderActivity extends BaseActivity {
+
+    public static final String ORDER_EXTRA_KEY = "ORDER";
 
     @InjectView(R.id.order_status)
     public TextView mOrderStatus;
@@ -90,9 +91,9 @@ public class NewOrderActivity extends BaseActivity {
         boolean reloadData = true;
         if (savedInstanceState != null) {
             reloadData = false;
-            mOrderId = savedInstanceState.getString(OrderCreationAddCustomerActivity.ORDER_EXTRA_KEY);
+            mOrderId = savedInstanceState.getString(ORDER_EXTRA_KEY);
         } else if (getIntent() != null) {
-            mOrderId = getIntent().getStringExtra(OrderCreationAddCustomerActivity.ORDER_EXTRA_KEY);
+            mOrderId = getIntent().getStringExtra(ORDER_EXTRA_KEY);
         }
         loadOrderData(reloadData);
         if (((MozuApplication) getApplication()).getLocations().size() < 0) {
@@ -187,7 +188,7 @@ public class NewOrderActivity extends BaseActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putString(OrderCreationAddCustomerActivity.ORDER_EXTRA_KEY, mOrder.getId());
+        outState.putString(ORDER_EXTRA_KEY, mOrder.getId());
         super.onSaveInstanceState(outState);
     }
 

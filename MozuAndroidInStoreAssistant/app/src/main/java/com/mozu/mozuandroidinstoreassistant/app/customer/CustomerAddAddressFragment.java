@@ -17,7 +17,6 @@ import android.widget.Button;
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.api.contracts.customer.CustomerContact;
 import com.mozu.mozuandroidinstoreassistant.app.CustomerCreationActivity;
-import com.mozu.mozuandroidinstoreassistant.app.OrderCreationAddCustomerActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.customer.adapters.CustomerAddressesAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.AddCustomerContactObserverable;
@@ -51,13 +50,15 @@ public class CustomerAddAddressFragment extends Fragment {
     private CustomerAccount mCustomerAccount;
     private CustomerAddressesAdapter mRecyclerViewAddressAdapter;
     private int countdown;
+    private boolean mIsCusomterCreated;
 
 
-    public static CustomerAddAddressFragment getInstance(Integer tenantId, Integer siteId, CustomerAccount account) {
+    public static CustomerAddAddressFragment getInstance(Integer tenantId, Integer siteId, CustomerAccount account, boolean isCustomerCreated) {
         Bundle bundle = new Bundle();
         CustomerAddAddressFragment fragment = new CustomerAddAddressFragment();
-        bundle.putInt(OrderCreationAddCustomerActivity.CURRENT_TENANT_ID, tenantId);
-        bundle.putInt(OrderCreationAddCustomerActivity.CURRENT_SITE_ID, siteId);
+        bundle.putInt(CustomerCreationActivity.CURRENT_TENANT_ID, tenantId);
+        bundle.putInt(CustomerCreationActivity.CURRENT_SITE_ID, siteId);
+        bundle.putBoolean(CustomerCreationActivity.CUSTOMER_CREATED, isCustomerCreated);
         bundle.putSerializable(CUSTOMER_ACCOUNT, account);
         fragment.setArguments(bundle);
         return fragment;
@@ -78,9 +79,10 @@ public class CustomerAddAddressFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_customer_add_address, container, false);
         ButterKnife.inject(this, view);
-        mTenantId = getArguments().getInt(OrderCreationAddCustomerActivity.CURRENT_TENANT_ID);
-        mSiteId = getArguments().getInt(OrderCreationAddCustomerActivity.CURRENT_SITE_ID);
+        mTenantId = getArguments().getInt(CustomerCreationActivity.CURRENT_TENANT_ID);
+        mSiteId = getArguments().getInt(CustomerCreationActivity.CURRENT_SITE_ID);
         mCustomerAccount = (CustomerAccount) getArguments().getSerializable(CUSTOMER_ACCOUNT);
+        mIsCusomterCreated = getArguments().getBoolean(CustomerCreationActivity.CUSTOMER_CREATED);
         return view;
     }
 
@@ -120,10 +122,16 @@ public class CustomerAddAddressFragment extends Fragment {
 
     private void onSaveClicked() {
         loadingView.setLoading();
-        CustomerAccountCreationObserver.getCustomerAccountCreationObserverable(mTenantId, mSiteId, mCustomerAccount)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(getCreateCustomerAccountSubscriber());
+        //todo skip this if our customer was already created.
+        if (mIsCusomterCreated) {
+            updateCustomerAddresses(mCustomerAccount.getId());
+        } else {
+            CustomerAccountCreationObserver.getCustomerAccountCreationObserverable(mTenantId, mSiteId, mCustomerAccount)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(getCreateCustomerAccountSubscriber());
+        }
+
     }
 
     public Subscriber<CustomerAccount> getCreateCustomerAccountSubscriber() {
@@ -142,18 +150,22 @@ public class CustomerAddAddressFragment extends Fragment {
 
             @Override
             public void onNext(CustomerAccount customerAccount) {
-                //customer saved goto orders.
-                Log.d("Customer created", "created customer");
-                countdown = mCustomerAccount.getContacts().size();
-                for (int i = countdown; i > 0; i--) {
-                    AndroidObservable.bindFragment(CustomerAddAddressFragment.this, AddCustomerContactObserverable
-                            .getCustomerContactCreationObserverable(mTenantId, mSiteId, customerAccount.getId(), mCustomerAccount.getContacts().get(i - 1)))
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(getAddCustomerContactSubscriber());
-                }
+                updateCustomerAddresses(customerAccount.getId());
             }
         };
+    }
+
+    private void updateCustomerAddresses(Integer customerId) {
+        //customer saved goto orders.
+        Log.d("Customer created", "created customer");
+        countdown = mCustomerAccount.getContacts().size();
+        for (int i = countdown; i > 0; i--) {
+            AndroidObservable.bindFragment(CustomerAddAddressFragment.this, AddCustomerContactObserverable
+                    .getCustomerContactCreationObserverable(mTenantId, mSiteId, customerId, mCustomerAccount.getContacts().get(i - 1)))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(getAddCustomerContactSubscriber());
+        }
     }
 
     public Subscriber<CustomerContact> getAddCustomerContactSubscriber() {
