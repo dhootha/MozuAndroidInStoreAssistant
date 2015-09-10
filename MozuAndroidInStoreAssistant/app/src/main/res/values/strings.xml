@@ -333,6 +333,8 @@
     <string name="order_fulfillment_error">Failed to fetch fulfillment types</string>
     <string name="previous">Previous</string>
     <string name="validate">Validate</string>
+    <string name="clear">Clear</string>
+    <string name="address_not_found">Address Not Found</string>
     <string-array name="register_email_address">
         <item>mozumobile@volusion.com</item>
     </string-array>

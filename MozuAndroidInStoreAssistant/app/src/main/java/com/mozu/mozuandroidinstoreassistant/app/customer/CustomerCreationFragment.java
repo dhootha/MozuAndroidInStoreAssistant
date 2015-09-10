@@ -195,6 +195,8 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
         });
         if (mEditing > -1) {
             CustomerContact customerEditing = mCustomerAccount.getContacts().get(mEditing);
+            mDefaultBilling.setChecked(false);
+            mDefaultShipping.setChecked(false);
             mFirstName.setText(customerEditing.getFirstName());
             mLastName.setText(customerEditing.getLastNameOrSurname());
             mEmail.setText(customerEditing.getEmail());
@@ -206,6 +208,15 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
             setSelectedState(customerEditing.getAddress().getStateOrProvince());
             setSelectedAddressType(customerEditing.getAddress().getAddressType());
             mCountry.setText(customerEditing.getAddress().getCountryCode());
+            if (mCustomerAccount.getContacts() != null && mCustomerAccount.getContacts().size() > 0) {
+                for (ContactType type : customerEditing.getTypes()) {
+                    if (type.getIsPrimary() && type.getName().equals(BILLING)) {
+                        mDefaultBilling.setChecked(true);
+                    } else if (type.getIsPrimary() && type.getName().equals(SHIPPING)) {
+                        mDefaultShipping.setChecked(true);
+                    }
+                }
+            }
         } else if (mCustomerAccount != null) {
             //adding new account
             mFirstName.setText(mCustomerAccount.getFirstName());
@@ -213,6 +224,10 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
             mEmail.setText(mCustomerAccount.getEmailAddress());
             if (mCustomerAccount.getContacts() != null && mCustomerAccount.getContacts().size() > 0 && mCustomerAccount.getContacts().get(0) != null) {
                 mPhoneNumber.setText(mCustomerAccount.getContacts().get(0).getPhoneNumbers().getMobile());
+            }
+            if (mCustomerAccount.getContacts() != null && mCustomerAccount.getContacts().size() > 0) {
+                mDefaultBilling.setChecked(false);
+                mDefaultShipping.setChecked(false);
             }
         }
     }
@@ -238,7 +253,7 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
         Phone phone = new Phone();
         phone.setMobile(mPhoneNumber.getText().toString());
         customerContact.setPhoneNumbers(phone);
-        List<ContactType> contactTypes = new ArrayList<ContactType>();
+        List<ContactType> contactTypes = new ArrayList<>();
         if (mDefaultShipping.isChecked()) {
             ContactType contactType = new ContactType();
             contactType.setName(SHIPPING);
@@ -347,7 +362,11 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
 
             @Override
             public void onError(Throwable e) {
-                AlertDialog error = ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), e.toString());
+                String message = getResources().getString(R.string.standard_error);
+                if (e.getMessage() != null && e.getMessage().contains("Address Not Found")) {
+                    message = getResources().getString(R.string.address_not_found);
+                }
+                AlertDialog error = ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), message);
                 error.show();
             }
 
