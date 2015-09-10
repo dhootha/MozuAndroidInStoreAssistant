@@ -72,7 +72,7 @@
         android:layout_height="120dp">
 
         <RadioGroup
-            android:id="@+id/order_filter_status_list"
+            android:id="@+id/order_filter_status_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </ScrollView>
@@ -95,7 +95,7 @@
         android:layout_height="wrap_content">
 
         <RadioGroup
-            android:id="@+id/order_filter_payment_status_list"
+            android:id="@+id/order_filter_payment_status_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:divider="@null" />

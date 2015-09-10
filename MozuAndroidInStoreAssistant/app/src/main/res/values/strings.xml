@@ -332,6 +332,7 @@
     <string name="order_load_failure">Failed to load order. Please try later.</string>
     <string name="order_fulfillment_error">Failed to fetch fulfillment types</string>
     <string name="validate">Validate</string>
+    <string name="clear">Clear</string>
     <string-array name="register_email_address">
         <item>mozumobile@volusion.com</item>
     </string-array>
