@@ -93,7 +93,7 @@ public class NewOrderManager {
     }
 
     public Observable<ProductSearchResult> getProductSuggestion(String search, int tenantId, int siteId) {
-        if (mProductSearchSubject == null || !search.equals(mSearch)) {
+        if (mProductSearchSubject == null || search == null || !search.equals(mSearch)) {
             mSearch = search;
             mProductSearchSubject = AsyncSubject.create();
             getProductSearchSuggestion(tenantId, siteId, search).subscribeOn(Schedulers.io()).subscribe(mProductSearchSubject);

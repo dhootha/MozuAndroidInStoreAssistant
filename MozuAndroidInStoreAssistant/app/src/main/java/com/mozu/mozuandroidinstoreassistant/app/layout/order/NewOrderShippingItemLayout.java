@@ -1,6 +1,7 @@
 package com.mozu.mozuandroidinstoreassistant.app.layout.order;
 
 import android.content.Context;
+import android.text.Html;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -86,11 +87,13 @@ public class NewOrderShippingItemLayout extends LinearLayout implements IRowLayo
                 shippingRate.setShippingMethodCode(shippingItemRow.mCurrentFulfillmentInfo.getShippingMethodCode());
                 shippingRate.setShippingMethodName(shippingItemRow.mCurrentFulfillmentInfo.getShippingMethodName());
                 shipments.add(shippingRate);
+            } else {
+                shipments.add(0, null);
             }
             final SpinnerAdapter spinnerAdapter = new SpinnerAdapter();
             spinnerAdapter.setData(shipments);
             mSpinner.setAdapter(spinnerAdapter);
-            setSpinnerSelction(spinnerAdapter, shippingItemRow.mCurrentFulfillmentInfo.getShippingMethodCode());
+            setSpinnerSelection(spinnerAdapter, shippingItemRow.mCurrentFulfillmentInfo.getShippingMethodCode());
             mSpinner.setOnTouchListener(new OnTouchListener() {
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -99,20 +102,24 @@ public class NewOrderShippingItemLayout extends LinearLayout implements IRowLayo
                             .subscribe(new Subscriber<List<ShippingRate>>() {
                                 @Override
                                 public void onCompleted() {
-
+                                    progressBar.setVisibility(GONE);
                                 }
 
                                 @Override
                                 public void onError(Throwable e) {
-
+                                    ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getContext(), "Failed to fetch Shipping information");
+                                    progressBar.setVisibility(GONE);
                                 }
 
                                 @Override
                                 public void onNext(List<ShippingRate> shippingRates) {
-                                    progressBar.setVisibility(GONE);
+                                    if (shippingItemRow.mCurrentFulfillmentInfo.getShippingMethodCode() == null) {
+                                        shippingRates.add(0, null);
+                                    }
                                     spinnerAdapter.setData(shippingRates);
                                     spinnerAdapter.notifyDataSetChanged();
-                                    setSpinnerSelction(spinnerAdapter, shippingItemRow.mCurrentFulfillmentInfo.getShippingMethodCode());
+
+                                    setSpinnerSelection(spinnerAdapter, shippingItemRow.mCurrentFulfillmentInfo.getShippingMethodCode());
 
                                 }
                             }));
@@ -173,7 +180,7 @@ public class NewOrderShippingItemLayout extends LinearLayout implements IRowLayo
         }
     }
 
-    public void setSpinnerSelction(SpinnerAdapter spinnerAdapter, String spinnerSelection) {
+    public void setSpinnerSelection(SpinnerAdapter spinnerAdapter, String spinnerSelection) {
         if (spinnerAdapter.getCount() > 1) {
             for (int i = 1; i < spinnerAdapter.getCount(); i++) {
                 String shippingMethod = spinnerAdapter.getItem(i).getShippingMethodCode();
@@ -208,7 +215,6 @@ public class NewOrderShippingItemLayout extends LinearLayout implements IRowLayo
 
         public void setData(List<ShippingRate> data) {
             mData = new ArrayList<>();
-            mData.add(null);
             mData.addAll(data);
         }
 
@@ -224,9 +230,9 @@ public class NewOrderShippingItemLayout extends LinearLayout implements IRowLayo
             if (shipment != null) {
                 StringBuffer shipmentDisplay = new StringBuffer(shipment.getShippingMethodName());
                 if (shipment.getPrice() != null) {
-                    shipmentDisplay.append(" (" + numberFormat.format(shipment.getPrice()) + ")");
+                    shipmentDisplay.append(" &nbsp&nbsp&nbsp <font color='#df3018'>" + numberFormat.format(shipment.getPrice()) + " </font> ");
                 }
-                mTextView.setText(shipmentDisplay.toString());
+                mTextView.setText(Html.fromHtml(shipmentDisplay.toString()));
             } else {
                 mTextView.setText(getResources().getString(R.string.shipping_method));
             }
