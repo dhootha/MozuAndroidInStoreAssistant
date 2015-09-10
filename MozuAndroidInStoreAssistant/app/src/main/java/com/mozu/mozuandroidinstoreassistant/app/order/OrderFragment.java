@@ -485,6 +485,15 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
         mOrderRefreshLayout.setRefreshing(true);
     }
 
+    private void reloadKeepFilter() {
+        getOrdersLoader().removeQuery();
+        getOrdersLoader().reset();
+        getOrdersLoader().startLoading();
+        getOrdersLoader().forceLoad();
+
+        mOrderRefreshLayout.setRefreshing(true);
+    }
+
     @Override
     public boolean onMenuItemActionExpand(MenuItem item) {
 
@@ -596,7 +605,7 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
             return;
         }
 
-        clearSearchReload();
+        reloadKeepFilter();
     }
 
     private void initializeSortColumn() {
