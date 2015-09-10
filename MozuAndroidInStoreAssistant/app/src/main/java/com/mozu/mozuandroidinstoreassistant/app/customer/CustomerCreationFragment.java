@@ -184,6 +184,8 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
         });
         if (mEditing > -1) {
             CustomerContact customerEditing = mCustomerAccount.getContacts().get(mEditing);
+            mDefaultBilling.setChecked(false);
+            mDefaultShipping.setChecked(false);
             mFirstName.setText(customerEditing.getFirstName());
             mLastName.setText(customerEditing.getLastNameOrSurname());
             mEmail.setText(customerEditing.getEmail());
@@ -195,6 +197,15 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
             setSelectedState(customerEditing.getAddress().getStateOrProvince());
             setSelectedAddressType(customerEditing.getAddress().getAddressType());
             mCountry.setText(customerEditing.getAddress().getCountryCode());
+            if (mCustomerAccount.getContacts() != null && mCustomerAccount.getContacts().size() > 0) {
+                for (ContactType type : customerEditing.getTypes()) {
+                    if (type.getIsPrimary() && type.getName().equals(BILLING)) {
+                        mDefaultBilling.setChecked(true);
+                    } else if (type.getIsPrimary() && type.getName().equals(SHIPPING)) {
+                        mDefaultShipping.setChecked(true);
+                    }
+                }
+            }
         } else if (mCustomerAccount != null) {
             //adding new account
             mFirstName.setText(mCustomerAccount.getFirstName());
