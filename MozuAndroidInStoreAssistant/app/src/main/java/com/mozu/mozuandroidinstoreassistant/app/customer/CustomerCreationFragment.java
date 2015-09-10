@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.telephony.PhoneNumberFormattingTextWatcher;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +22,9 @@ import com.mozu.api.contracts.customer.AddressValidationResponse;
 import com.mozu.api.contracts.customer.ContactType;
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.api.contracts.customer.CustomerContact;
-import com.mozu.mozuandroidinstoreassistant.app.OrderCreationAddCustomerActivity;
+import com.mozu.mozuandroidinstoreassistant.app.CustomerCreationActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
-import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.CustomerAddressValidation;
+import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.CustomerAddressValidationObservable;
 import com.mozu.mozuandroidinstoreassistant.app.dialog.ErrorMessageAlertDialog;
 import com.mozu.mozuandroidinstoreassistant.app.utils.InputValidation;
 
@@ -89,9 +90,19 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
     public static CustomerCreationFragment getInstance(int tenantId, int siteId, CustomerAccount customerAccount, int editing) {
         Bundle bundle = new Bundle();
         CustomerCreationFragment fragment = new CustomerCreationFragment();
-        bundle.putInt(OrderCreationAddCustomerActivity.CURRENT_TENANT_ID, tenantId);
-        bundle.putInt(OrderCreationAddCustomerActivity.CURRENT_SITE_ID, siteId);
+        bundle.putInt(CustomerCreationActivity.CURRENT_TENANT_ID, tenantId);
+        bundle.putInt(CustomerCreationActivity.CURRENT_SITE_ID, siteId);
         bundle.putInt(IS_EDIT, editing);
+        bundle.putSerializable(CUSTOMER, customerAccount);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    public static CustomerCreationFragment getInstance(int tenantId, int siteId, CustomerAccount customerAccount) {
+        Bundle bundle = new Bundle();
+        CustomerCreationFragment fragment = new CustomerCreationFragment();
+        bundle.putInt(CustomerCreationActivity.CURRENT_TENANT_ID, tenantId);
+        bundle.putInt(CustomerCreationActivity.CURRENT_SITE_ID, siteId);
         bundle.putSerializable(CUSTOMER, customerAccount);
         fragment.setArguments(bundle);
         return fragment;
@@ -100,8 +111,8 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
     public static CustomerCreationFragment getInstance(int tenantId, int siteId) {
         Bundle bundle = new Bundle();
         CustomerCreationFragment fragment = new CustomerCreationFragment();
-        bundle.putInt(OrderCreationAddCustomerActivity.CURRENT_TENANT_ID, tenantId);
-        bundle.putInt(OrderCreationAddCustomerActivity.CURRENT_SITE_ID, siteId);
+        bundle.putInt(CustomerCreationActivity.CURRENT_TENANT_ID, tenantId);
+        bundle.putInt(CustomerCreationActivity.CURRENT_SITE_ID, siteId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -110,8 +121,8 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        mTenantId = getArguments().getInt(OrderCreationAddCustomerActivity.CURRENT_TENANT_ID, -1);
-        mSiteId = getArguments().getInt(OrderCreationAddCustomerActivity.CURRENT_SITE_ID, -1);
+        mTenantId = getArguments().getInt(CustomerCreationActivity.CURRENT_TENANT_ID, -1);
+        mSiteId = getArguments().getInt(CustomerCreationActivity.CURRENT_SITE_ID, -1);
         mEditing = getArguments().getInt(IS_EDIT, -1);
         states = Arrays.asList(getResources().getStringArray(R.array.states));
         addressTypes = Arrays.asList(getResources().getStringArray(R.array.address_type));
@@ -211,7 +222,7 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
             mFirstName.setText(mCustomerAccount.getFirstName());
             mLastName.setText(mCustomerAccount.getLastName());
             mEmail.setText(mCustomerAccount.getEmailAddress());
-            if (mCustomerAccount.getContacts() != null && mCustomerAccount.getContacts().get(0) != null) {
+            if (mCustomerAccount.getContacts() != null && mCustomerAccount.getContacts().size() > 0 && mCustomerAccount.getContacts().get(0) != null) {
                 mPhoneNumber.setText(mCustomerAccount.getContacts().get(0).getPhoneNumbers().getMobile());
             }
             if (mCustomerAccount.getContacts() != null && mCustomerAccount.getContacts().size() > 0) {
@@ -333,7 +344,7 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
 
     public void verifyAddressIsValid(Address address) {
         if (validateForm()) {
-            addressValidationResponseObservable = new CustomerAddressValidation(mTenantId, mSiteId).getAddressValidationObservable(address);
+            addressValidationResponseObservable = new CustomerAddressValidationObservable(mTenantId, mSiteId).getAddressValidationObservable(address);
             addressValidationResponseObservable
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -387,7 +398,7 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
     }
 
     private AlertDialog createValidatedAddressDialog() {
-        return new AlertDialog.Builder(getActivity())
+        return new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.DialogMozu))
                 .setTitle(R.string.verify_title)
                 .setMessage(R.string.valid_address)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -400,9 +411,10 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
     }
 
     private AlertDialog createSuggestedAddressDialog(final Address address) {
-        return new AlertDialog.Builder(getActivity())
+        return new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.DialogMozu))
                 .setTitle(R.string.verify_title)
                 .setMessage(address.getAddress1() + "\n" +
+                        address.getAddress2() + "\n" +
                         address.getCityOrTown() + ", " +
                         address.getStateOrProvince() + " " +
                         address.getPostalOrZipCode() + "\n" +

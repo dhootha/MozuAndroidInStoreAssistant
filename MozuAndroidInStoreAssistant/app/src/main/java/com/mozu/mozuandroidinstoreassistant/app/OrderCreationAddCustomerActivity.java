@@ -20,13 +20,13 @@ import butterknife.ButterKnife;
 import rx.Subscriber;
 import rx.android.observables.AndroidObservable;
 
-public class OrderCreationAddCustomerActivity extends BaseActivity implements CustomerLookupFragment.CustomerSelectionListener, CustomerAddressOrderVerification.VerifyCreateOrderListener {
+public class OrderCreationAddCustomerActivity extends BaseActivity implements CustomerAddressOrderVerification.VerifyCreateOrderListener {
 
-    public static final String ORDER_EXTRA_KEY = "ORDER";
-    public static final String CURRENT_TENANT_ID = "curTenantIdWhenActLoaded";
-    public static final String CURRENT_SITE_ID = "curSiteIdWhenActLoaded";
-    public static final String ORDER_CUSTOMER_EXTRA_KEY = "order_customer";
-    public static final int CREATE_CUSTOMER = 1;
+    private static final String ORDER_EXTRA_KEY = "ORDER";
+    private static final String CURRENT_TENANT_ID = "curTenantIdWhenActLoaded";
+    private static final String CURRENT_SITE_ID = "curSiteIdWhenActLoaded";
+    private static final String ORDER_CUSTOMER_EXTRA_KEY = "order_customer";
+    private static final int CREATE_CUSTOMER = 1;
     private static String BILLING = "billing";
     private static String SHIPPING = "shipping";
     private Order mOrder;
@@ -110,7 +110,6 @@ public class OrderCreationAddCustomerActivity extends BaseActivity implements Cu
         return contact;
     }
 
-
     private Contact getDefaultContact(CustomerAccount mCustomerAccount, String contactType) {
         Contact defaultContact = null;
         for (CustomerContact contact : mCustomerAccount.getContacts()) {
@@ -142,13 +141,6 @@ public class OrderCreationAddCustomerActivity extends BaseActivity implements Cu
         outState.putInt(CURRENT_TENANT_ID, mTenantId);
         outState.putInt(CURRENT_SITE_ID, mSiteId);
         super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onCustomerSelected(CustomerAccount customerAccount) {
-        mCustomerAccount = customerAccount;
-        CustomerAddressOrderVerification fragment = CustomerAddressOrderVerification.getInstance(mCustomerAccount);
-        fragment.show(getFragmentManager(), "verify");
     }
 
     @Override

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.mozu.api.contracts.commerceruntime.fulfillment.FulfillmentAction;
 import com.mozu.api.contracts.commerceruntime.fulfillment.Package;
@@ -43,6 +44,8 @@ import com.mozu.mozuandroidinstoreassistant.app.order.loaders.FulfillmentActionO
 import com.mozu.mozuandroidinstoreassistant.app.order.loaders.PickupObservablesManager;
 import com.mozu.mozuandroidinstoreassistant.app.product.ProductDetailOverviewDialogFragment;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -56,10 +59,12 @@ public class OrderDetailFulfillmentFragment extends Fragment implements MoveToLi
     private static final String PRODUCT_DIALOG_TAG = "prod_detail_fragment";
     private static final String PACKAGE_DIALOG_TAG = "package_detail_fragment";
     private static final String PICKUP_DIALOG_TAG = "pickup_detail_fragment";
-    List<OrderItem> mShipItems;
-    List<OrderItem> mPickupItems;
+    private List<OrderItem> mShipItems;
+    private List<OrderItem> mPickupItems;
     private Order mOrder;
     private ListView mFullfillmentListview;
+    private TextView mFulfillmentStatus;
+
     private OrderDetailFullfillmentAdapter mOrderDetailFullfillmentAdapter;
     private AdapterView.OnItemClickListener mListClickListener = new AdapterView.OnItemClickListener() {
 
@@ -136,9 +141,13 @@ public class OrderDetailFulfillmentFragment extends Fragment implements MoveToLi
         mPickupItems = new ArrayList<>();
 
         mFullfillmentListview = (ListView) view.findViewById(R.id.fullfillment_list);
+        mFulfillmentStatus = (TextView) view.findViewById(R.id.order_fulfillment_status);
+        String status = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(mOrder.getFulfillmentStatus()), " ");
+        mFulfillmentStatus.setText("Status: " + status);
         if (mOrder != null) {
             categorizeOrdersByFulfillmentMethod(mOrder);
             List<IData> data = new ArrayList<>();
+
             data.addAll(filterShipment(mShipItems));
             data.addAll(filterPickUp(mPickupItems));
             mOrderDetailFullfillmentAdapter = new OrderDetailFullfillmentAdapter(getActivity(), data, this, this);
@@ -170,20 +179,6 @@ public class OrderDetailFulfillmentFragment extends Fragment implements MoveToLi
         }
 
         return orderItems;
-    }
-
-    @Override
-    public void setMenuVisibility(final boolean visible) {
-        super.setMenuVisibility(visible);
-        if (getActivity() == null) {
-            return;
-        }
-        if (visible) {
-            ((OrderDetailActivity) getActivity()).setFulfillmentStatus(mOrder.getFulfillmentStatus());
-        } else {
-            ((OrderDetailActivity) getActivity()).clearFulfillmentStatus();
-        }
-
     }
 
     public void setOrder(Order order) {

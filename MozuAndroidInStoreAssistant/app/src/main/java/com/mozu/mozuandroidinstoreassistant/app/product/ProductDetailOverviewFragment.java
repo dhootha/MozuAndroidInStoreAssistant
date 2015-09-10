@@ -12,6 +12,7 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,13 +26,13 @@ import com.mozu.api.contracts.productadmin.ProductVariationPagedCollection;
 import com.mozu.api.contracts.productruntime.BundledProduct;
 import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.api.contracts.productruntime.ProductOption;
-import com.mozu.api.resources.commerce.catalog.admin.ProductResource;
 import com.mozu.api.resources.commerce.catalog.admin.products.ProductVariationResource;
 import com.mozu.mozuandroidinstoreassistant.app.ProductDetailActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.htmlutils.HTMLTagHandler;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
+import com.mozu.mozuandroidinstoreassistant.app.product.loaders.ProductAdminObservableManager;
 import com.mozu.mozuandroidinstoreassistant.app.views.NoUnderlineClickableSpan;
 import com.mozu.mozuandroidinstoreassistant.app.views.ProductOptionsLayout;
 
@@ -49,21 +50,34 @@ import rx.schedulers.Schedulers;
 public class ProductDetailOverviewFragment extends Fragment implements ProductOptionsLayout.onOptionChangeListener {
 
 
-    private Product mProduct;
-
-    TextView mDescription;
-
     private static final int MAX_DESC_LENGTH = 500;
-    private View mView;
+    TextView mDescription;
     TextView msrpPrice = null;
     TextView mapPrice = null;
     HashMap<ProductOptionsContainer, Double> variationMap;
+    private Product mProduct;
+    private View mView;
+    private NoUnderlineClickableSpan mContractClickableSpan = new NoUnderlineClickableSpan() {
+
+        @Override
+        public void onClick(View widget) {
+            mDescription.setText(getDescriptionWithSpannableClick(false));
+        }
+
+    };
+    private NoUnderlineClickableSpan mExpandClickableSpan = new NoUnderlineClickableSpan() {
+
+        @Override
+        public void onClick(View widget) {
+            mDescription.setText(getDescriptionWithSpannableClick(true));
+        }
+
+    };
 
     public ProductDetailOverviewFragment() {
         // Required empty public constructor
         setRetainInstance(true);
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -80,21 +94,9 @@ public class ProductDetailOverviewFragment extends Fragment implements ProductOp
     }
 
     private void getMAPPrice(final NumberFormat format) {
-        AndroidObservable.bindFragment(this, Observable.create(new Observable.OnSubscribe<com.mozu.api.contracts.productadmin.Product>() {
-            @Override
-            public void call(Subscriber<? super com.mozu.api.contracts.productadmin.Product> subscriber) {
-                UserAuthenticationStateMachine mUserState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
-                ProductResource adminProductResource = new ProductResource(new MozuApiContext(mUserState.getTenantId(), mUserState.getSiteId()));
-                try {
-                    com.mozu.api.contracts.productadmin.Product product = adminProductResource.getProduct(mProduct.getProductCode());
-                    subscriber.onNext(product);
-                    subscriber.onCompleted();
-                } catch (Exception e) {
-                    subscriber.onError(e);
-                }
-            }
-        })).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        UserAuthenticationStateMachine mUserState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
+
+        AndroidObservable.bindFragment(this, ProductAdminObservableManager.getInstance().getMAPPriceObservable(mUserState.getTenantId(), mUserState.getSiteId(), mProduct.getProductCode()))
                 .subscribe(new Subscriber<com.mozu.api.contracts.productadmin.Product>() {
                     @Override
                     public void onCompleted() {
@@ -107,11 +109,11 @@ public class ProductDetailOverviewFragment extends Fragment implements ProductOp
 
                     @Override
                     public void onNext(com.mozu.api.contracts.productadmin.Product product) {
+                        Log.d("", "");
                         mapPrice.setText(format.format(product.getPrice().getMap()));
                     }
                 });
     }
-
 
     private void buildVariationMap() {
         AndroidObservable.bindFragment(this, Observable.create(new Observable.OnSubscribe<ProductVariationPagedCollection>() {
@@ -262,7 +264,6 @@ public class ProductDetailOverviewFragment extends Fragment implements ProductOp
         return msrpPriceString;
     }
 
-
     private SpannableString getBundledProductsStringWithClick(final Product product) {
         SpannableString bundledSpannableString = new SpannableString("");
         for (final BundledProduct bundable : product.getBundledProducts()) {
@@ -362,24 +363,6 @@ public class ProductDetailOverviewFragment extends Fragment implements ProductOp
         }
 
     }
-
-    private NoUnderlineClickableSpan mExpandClickableSpan = new NoUnderlineClickableSpan() {
-
-        @Override
-        public void onClick(View widget) {
-            mDescription.setText(getDescriptionWithSpannableClick(true));
-        }
-
-    };
-
-    private NoUnderlineClickableSpan mContractClickableSpan = new NoUnderlineClickableSpan() {
-
-        @Override
-        public void onClick(View widget) {
-            mDescription.setText(getDescriptionWithSpannableClick(false));
-        }
-
-    };
 
     @Override
     public void onOptionChanged() {

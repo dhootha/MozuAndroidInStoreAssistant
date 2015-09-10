@@ -110,6 +110,7 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
     private boolean mCurrentSortIsAsc;
     private String mCurrentSearch;
     private CreateOrderListener mOrderCreateListener;
+    private String[] filterOptions = new String[4];
 
     public OrderFragment() {
 
@@ -253,12 +254,23 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
 
     private void onFilter() {
         OrderFilterDialogFragment filterFragment = new OrderFilterDialogFragment();
+        Bundle bundle = new Bundle();
+        bundle.putStringArray("options", filterOptions);
+        filterFragment.setArguments(bundle);
         filterFragment.setStyle(android.app.DialogFragment.STYLE_NO_FRAME, R.style.DialogMozu);
         filterFragment.setTargetFragment(this, 0);
         filterFragment.show(getFragmentManager(), "filter");
     }
 
+    private void setFilterOptions() {
+        filter(filterOptions[0], filterOptions[1], filterOptions[2], filterOptions[3]);
+    }
+
     public void filter(String start, String end, String status, String paymentStatus) {
+        filterOptions[0] = start;
+        filterOptions[1] = end;
+        filterOptions[2] = status;
+        filterOptions[3] = paymentStatus;
         getOrdersLoader().reset();
         getOrdersLoader().removeFilter();
         String filter = (start != null ? "submittedDate gt " + start : "");
@@ -516,7 +528,6 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
         mOrderPaymentStatusHeaderSortImage.setVisibility(View.GONE);
         mOrderStatusHeaderSortImage.setVisibility(View.GONE);
         mOrderTotalHeaderSortImage.setVisibility(View.GONE);
-
 
         if (v.getId() == mOrderNumberHeaderLayout.getId()) {
             getOrdersLoader().orderByNumber();
