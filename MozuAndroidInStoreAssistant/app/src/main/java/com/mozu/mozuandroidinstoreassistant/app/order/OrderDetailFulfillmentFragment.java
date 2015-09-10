@@ -51,8 +51,7 @@ import rx.Subscriber;
 import rx.android.observables.AndroidObservable;
 
 
-public class OrderDetailFullfillmentFragment extends Fragment implements MoveToListener, MarkPickupAsFulfilledListener {
-
+public class OrderDetailFulfillmentFragment extends Fragment implements MoveToListener, MarkPickupAsFulfilledListener {
 
     private static final String PRODUCT_DIALOG_TAG = "prod_detail_fragment";
     private static final String PACKAGE_DIALOG_TAG = "package_detail_fragment";
@@ -125,7 +124,7 @@ public class OrderDetailFullfillmentFragment extends Fragment implements MoveToL
 
     };
 
-    public OrderDetailFullfillmentFragment() {
+    public OrderDetailFulfillmentFragment() {
         // Required empty public constructor
         setRetainInstance(true);
     }
