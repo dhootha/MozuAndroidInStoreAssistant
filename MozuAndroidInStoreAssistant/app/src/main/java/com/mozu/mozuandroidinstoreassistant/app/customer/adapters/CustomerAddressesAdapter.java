@@ -5,13 +5,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.mozu.api.contracts.core.Address;
 import com.mozu.api.contracts.core.Phone;
+import com.mozu.api.contracts.customer.ContactType;
 import com.mozu.api.contracts.customer.CustomerContact;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -19,8 +23,11 @@ import butterknife.InjectView;
 
 public class CustomerAddressesAdapter extends RecyclerView.Adapter<CustomerAddressesAdapter.ViewHolder> {
 
+    private static String BILLING = "billing";
+    private static String SHIPPING = "shipping";
     private List<CustomerContact> data;
     private AddressEditListener addressEditListener;
+    private boolean onBind = false;
 
     public CustomerAddressesAdapter(List<CustomerContact> data, AddressEditListener addressEditListener) {
         this.data = data;
@@ -41,6 +48,7 @@ public class CustomerAddressesAdapter extends RecyclerView.Adapter<CustomerAddre
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
+        onBind = false;
         CustomerContact customerContact = data.get(position);
         Address address = customerContact.getAddress();
         Phone phone = customerContact.getPhoneNumbers();
@@ -77,6 +85,16 @@ public class CustomerAddressesAdapter extends RecyclerView.Adapter<CustomerAddre
         });
         holder.email.setText(customerContact.getEmail());
 
+        for (ContactType type : customerContact.getTypes()) {
+            if (type.getIsPrimary() && type.getName().equalsIgnoreCase(BILLING)) {
+                holder.isBilling.setChecked(true);
+            }
+            if (type.getIsPrimary() && type.getName().equalsIgnoreCase(SHIPPING)) {
+                holder.isShipping.setChecked(true);
+            }
+        }
+        onBind = true;
+
     }
 
     @Override
@@ -107,10 +125,57 @@ public class CustomerAddressesAdapter extends RecyclerView.Adapter<CustomerAddre
         Button delete;
         @InjectView(R.id.edit)
         Button edit;
+        @InjectView(R.id.default_billing)
+        CheckBox isBilling;
+        @InjectView(R.id.default_shipping)
+        CheckBox isShipping;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(final View itemView) {
             super(itemView);
             ButterKnife.inject(this, itemView);
+            isBilling.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (onBind && isChecked) {
+                        updatePrimaryAddressSelection(BILLING);
+                        notifyDataSetChanged();
+                    }
+                }
+            });
+
+            isShipping.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (onBind && isChecked) {
+                        updatePrimaryAddressSelection(SHIPPING);
+                        notifyDataSetChanged();
+                    }
+                }
+            });
         }
+
+        private void updatePrimaryAddressSelection(String name) {
+            int position = ViewHolder.this.getAdapterPosition();
+            List<ContactType> types;
+            for (int i = 0; i < data.size(); i++) {
+                if (i != position) {
+                    types = data.get(i).getTypes();
+                    for (ContactType type : types) {
+                        if (type.getIsPrimary() && type.getName().equals(name)) {
+                            type.setIsPrimary(false);
+                        }
+                    }
+                } else {
+                    types = data.get(position).getTypes();
+                    if (types == null) {
+                        types = new ArrayList<>();
+                    }
+                    ContactType type = new ContactType();
+                    type.setIsPrimary(true);
+                    type.setName(name);
+                }
+            }
+        }
+
     }
 }

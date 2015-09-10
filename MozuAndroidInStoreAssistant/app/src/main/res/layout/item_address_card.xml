@@ -55,14 +55,31 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/phone_number"
+        android:text="test"
         android:textSize="16sp"/>
+
+    <CheckBox
+        android:id="@+id/default_billing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/email"
+        android:layout_marginLeft="-8dp"
+        android:text="@string/default_billing"/>
+
+    <CheckBox
+        android:id="@+id/default_shipping"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/default_billing"
+        android:layout_marginLeft="-8dp"
+        android:text="@string/default_shipping"/>
 
     <Button
         android:id="@+id/edit"
         style="@android:style/Widget.Holo.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/email"
+        android:layout_below="@+id/default_shipping"
         android:layout_toLeftOf="@+id/delete"
         android:text="@string/edit"
         android:textColor="@color/mozu_color"
@@ -74,7 +91,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/email"
+        android:layout_below="@+id/default_shipping"
         android:text="@string/delete"
         android:textColor="@color/mozu_color"
         android:textSize="16sp"/>
