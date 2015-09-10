@@ -374,12 +374,10 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
 
         if (loader.getId() == LOADER_ORDERS) {
             if (mAdapter == null) {
-
                 mAdapter = new OrdersAdapter(getActivity());
             }
 
-            mAdapter.clear();
-            mAdapter.addAll(data);
+            mAdapter.setData((ArrayList<Order>) data);
 
             if (mOrdersList.getAdapter() == null) {
                 mOrdersList.setAdapter(mAdapter);
@@ -491,7 +489,7 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
         if (mSearchView != null) {
             mSearchView.setQuery("", false);
         }
-        mListener.orderSelected((Order) mOrdersList.getAdapter().getItem(position));
+        mListener.orderSelected((Order) mOrdersList.getAdapter().getItem(position), mAdapter.getData(), position);
     }
 
     public void setListener(OrderListener listener) {

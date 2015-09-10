@@ -36,6 +36,8 @@ import com.mozu.mozuandroidinstoreassistant.app.product.ProductSearchFragment;
 import com.mozu.mozuandroidinstoreassistant.app.search.SearchFragment;
 import com.mozu.mozuandroidinstoreassistant.app.settings.SettingsFragment;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AuthActivity implements View.OnClickListener, CategoryFragmentListener, ProductFragmentListener, ProductListListener, OrderListener, CustomerListener, CreateOrderListener, SearchFragment.GlobalSearchListener {
 
     private static final String CATEGORY_FRAGMENT = "category_fragment_taggy_tag_tag";
@@ -413,7 +415,7 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
     }
 
     @Override
-    public void orderSelected(Order order) {
+    public void orderSelected(Order order,ArrayList<Order> orderList,int position) {
         UserAuthenticationStateMachine userAuthenticationStateMachine = UserAuthenticationStateMachineProducer.getInstance(this);
         if (order.getStatus().equalsIgnoreCase(OrderStrings.PENDING)) {
             Intent intent = new Intent(this, NewOrderActivity.class);
@@ -422,6 +424,8 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         } else {
             Intent intent = new Intent(this, OrderDetailActivity.class);
             intent.putExtra(OrderDetailActivity.ORDER_NUMBER_EXTRA_KEY, order.getId());
+            intent.putExtra(OrderDetailActivity.ORDER_LIST, orderList);
+            intent.putExtra(OrderDetailActivity.ORDER_LIST_POSITION, position);
             intent.putExtra(OrderDetailActivity.CURRENT_TENANT_ID, userAuthenticationStateMachine.getTenantId());
             intent.putExtra(OrderDetailActivity.CURRENT_SITE_ID, userAuthenticationStateMachine.getSiteId());
             startActivity(intent);

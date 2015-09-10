@@ -5,22 +5,46 @@ import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
-public class OrdersAdapter extends ArrayAdapter<Order> {
+public class OrdersAdapter extends BaseAdapter {
 
     private NumberFormat mNumberFormat;
+    private ArrayList<Order> mData = new ArrayList<>();
 
     public OrdersAdapter(Context context) {
-        super(context, R.layout.order_list_item);
-
         mNumberFormat = NumberFormat.getCurrencyInstance();
+    }
+
+    public void setData(ArrayList<Order> data) {
+        mData.clear();
+        mData = data;
+    }
+
+    public ArrayList<Order> getData() {
+        return mData;
+    }
+
+    @Override
+    public int getCount() {
+        return mData.size();
+    }
+
+    @Override
+    public Order getItem(int i) {
+        return mData.get(i);
+    }
+
+    @Override
+    public long getItemId(int i) {
+        return 0;
     }
 
     @Override
@@ -30,11 +54,10 @@ public class OrdersAdapter extends ArrayAdapter<Order> {
         if (convertView != null) {
             viewHolder = (OrderViewHolder) convertView.getTag();
         } else {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.order_list_item, parent, false);
+            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.order_list_item, parent, false);
             viewHolder = new OrderViewHolder(convertView);
             convertView.setTag(viewHolder);
         }
-
         Order order = getItem(position);
 
         viewHolder.orderNumber.setText(String.valueOf(order.getOrderNumber()));
