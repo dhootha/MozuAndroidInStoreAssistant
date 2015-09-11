@@ -76,7 +76,6 @@ public class OrderDetailNotesFragment extends Fragment {
         return fragment;
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -256,8 +255,12 @@ public class OrderDetailNotesFragment extends Fragment {
         if (mOrder.getShopperNotes() == null || mOrder.getShopperNotes().getComments() == null) {
             if (mOrder.getStatus().equalsIgnoreCase("Pending")) {
                 mCustomerNote.setHint("Add Customer Notes Here");
+                mCustomerNote.setEnabled(true);
+                mCustomerNote.setFocusableInTouchMode(true);
+                mCustomerNote.setFocusable(true);
             } else {
                 mCustomerNote.setText("No Customer Notes Available");
+
             }
         } else {
             mCustomerNote.setText(mOrder.getShopperNotes().getComments());
@@ -274,7 +277,6 @@ public class OrderDetailNotesFragment extends Fragment {
         } else {
             mCustomerNoteSave.setVisibility(View.GONE);
         }
-
 
     }
 
