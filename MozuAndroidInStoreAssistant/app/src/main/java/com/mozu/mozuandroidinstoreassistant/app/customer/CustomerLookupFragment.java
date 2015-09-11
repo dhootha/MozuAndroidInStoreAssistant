@@ -15,7 +15,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 
 import com.mozu.api.contracts.customer.CustomerAccount;
-import com.mozu.mozuandroidinstoreassistant.app.CustomerCreationActivity;
+import com.mozu.mozuandroidinstoreassistant.app.CustomerUpdateActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.customer.adapters.CustomerLookupAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.CustomersLoader;
@@ -42,8 +42,8 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
     public static CustomerLookupFragment getInstance(int tenantId, int siteId) {
         CustomerLookupFragment fragment = new CustomerLookupFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(CustomerCreationActivity.CURRENT_TENANT_ID, tenantId);
-        bundle.putInt(CustomerCreationActivity.CURRENT_SITE_ID, siteId);
+        bundle.putInt(CustomerUpdateActivity.CURRENT_TENANT_ID, tenantId);
+        bundle.putInt(CustomerUpdateActivity.CURRENT_SITE_ID, siteId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -52,8 +52,8 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mTenantId = getArguments().getInt(CustomerCreationActivity.CURRENT_TENANT_ID);
-            mSiteId = getArguments().getInt(CustomerCreationActivity.CURRENT_SITE_ID);
+            mTenantId = getArguments().getInt(CustomerUpdateActivity.CURRENT_TENANT_ID);
+            mSiteId = getArguments().getInt(CustomerUpdateActivity.CURRENT_SITE_ID);
 
         }
         getLoaderManager().initLoader(LOADER_CUSTOMER, null, this);
@@ -144,11 +144,11 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
 
     private void launchCreateCustomerDialog(CustomerAccount customerAccount, boolean isCustomerCreated) {
         Bundle bundle = new Bundle();
-        bundle.putInt(CustomerCreationActivity.CURRENT_TENANT_ID, mTenantId);
-        bundle.putInt(CustomerCreationActivity.CURRENT_SITE_ID, mSiteId);
-        bundle.putBoolean(CustomerCreationActivity.CUSTOMER_CREATED, isCustomerCreated);
-        bundle.putSerializable(CustomerCreationActivity.CUSTOMER, customerAccount);
-        Intent intent = new Intent(getActivity(), CustomerCreationActivity.class);
+        bundle.putInt(CustomerUpdateActivity.CURRENT_TENANT_ID, mTenantId);
+        bundle.putInt(CustomerUpdateActivity.CURRENT_SITE_ID, mSiteId);
+        bundle.putBoolean(CustomerUpdateActivity.CUSTOMER_CREATED, isCustomerCreated);
+        bundle.putSerializable(CustomerUpdateActivity.CUSTOMER, customerAccount);
+        Intent intent = new Intent(getActivity(), CustomerUpdateActivity.class);
         intent.putExtras(bundle);
         getActivity().startActivityForResult(intent, CREATE_CUSTOMER);
     }
