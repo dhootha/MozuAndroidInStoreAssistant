@@ -6,7 +6,7 @@ import android.support.v13.app.FragmentStatePagerAdapter;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.mozuandroidinstoreassistant.app.order.NewOrderCreateFragment;
-import com.mozu.mozuandroidinstoreassistant.app.order.OrderDetailFullfillmentFragment;
+import com.mozu.mozuandroidinstoreassistant.app.order.OrderDetailFulfillmentFragment;
 import com.mozu.mozuandroidinstoreassistant.app.order.OrderDetailNotesFragment;
 import com.mozu.mozuandroidinstoreassistant.app.order.OrderDetailPaymentFragment;
 import com.mozu.mozuandroidinstoreassistant.app.order.OrderDetailReturnsFragment;
@@ -66,7 +66,7 @@ public class OrderDetailSectionPagerAdapter extends FragmentStatePagerAdapter {
                 newOrderCreateFragment.setEditMode(mIsEditMode);
                 return newOrderCreateFragment;
             case FULFILLMENT_TAB_POSITION:
-                OrderDetailFullfillmentFragment fullfillmentFragment = new OrderDetailFullfillmentFragment();
+                OrderDetailFulfillmentFragment fullfillmentFragment = new OrderDetailFulfillmentFragment();
                 fullfillmentFragment.setOrder(mOrder);
                 return fullfillmentFragment;
             case PAYMENT_TAB_POSITION:

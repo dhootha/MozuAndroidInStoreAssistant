@@ -22,7 +22,7 @@ import com.mozu.api.contracts.customer.AddressValidationResponse;
 import com.mozu.api.contracts.customer.ContactType;
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.api.contracts.customer.CustomerContact;
-import com.mozu.mozuandroidinstoreassistant.app.CustomerCreationActivity;
+import com.mozu.mozuandroidinstoreassistant.app.CustomerUpdateActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.CustomerAddressValidationObservable;
 import com.mozu.mozuandroidinstoreassistant.app.dialog.ErrorMessageAlertDialog;
@@ -90,8 +90,8 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
     public static CustomerCreationFragment getInstance(int tenantId, int siteId, CustomerAccount customerAccount, int editing) {
         Bundle bundle = new Bundle();
         CustomerCreationFragment fragment = new CustomerCreationFragment();
-        bundle.putInt(CustomerCreationActivity.CURRENT_TENANT_ID, tenantId);
-        bundle.putInt(CustomerCreationActivity.CURRENT_SITE_ID, siteId);
+        bundle.putInt(CustomerUpdateActivity.CURRENT_TENANT_ID, tenantId);
+        bundle.putInt(CustomerUpdateActivity.CURRENT_SITE_ID, siteId);
         bundle.putInt(IS_EDIT, editing);
         bundle.putSerializable(CUSTOMER, customerAccount);
         fragment.setArguments(bundle);
@@ -101,8 +101,8 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
     public static CustomerCreationFragment getInstance(int tenantId, int siteId, CustomerAccount customerAccount) {
         Bundle bundle = new Bundle();
         CustomerCreationFragment fragment = new CustomerCreationFragment();
-        bundle.putInt(CustomerCreationActivity.CURRENT_TENANT_ID, tenantId);
-        bundle.putInt(CustomerCreationActivity.CURRENT_SITE_ID, siteId);
+        bundle.putInt(CustomerUpdateActivity.CURRENT_TENANT_ID, tenantId);
+        bundle.putInt(CustomerUpdateActivity.CURRENT_SITE_ID, siteId);
         bundle.putSerializable(CUSTOMER, customerAccount);
         fragment.setArguments(bundle);
         return fragment;
@@ -111,8 +111,8 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
     public static CustomerCreationFragment getInstance(int tenantId, int siteId) {
         Bundle bundle = new Bundle();
         CustomerCreationFragment fragment = new CustomerCreationFragment();
-        bundle.putInt(CustomerCreationActivity.CURRENT_TENANT_ID, tenantId);
-        bundle.putInt(CustomerCreationActivity.CURRENT_SITE_ID, siteId);
+        bundle.putInt(CustomerUpdateActivity.CURRENT_TENANT_ID, tenantId);
+        bundle.putInt(CustomerUpdateActivity.CURRENT_SITE_ID, siteId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -121,8 +121,8 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        mTenantId = getArguments().getInt(CustomerCreationActivity.CURRENT_TENANT_ID, -1);
-        mSiteId = getArguments().getInt(CustomerCreationActivity.CURRENT_SITE_ID, -1);
+        mTenantId = getArguments().getInt(CustomerUpdateActivity.CURRENT_TENANT_ID, -1);
+        mSiteId = getArguments().getInt(CustomerUpdateActivity.CURRENT_SITE_ID, -1);
         mEditing = getArguments().getInt(IS_EDIT, -1);
         states = Arrays.asList(getResources().getStringArray(R.array.states));
         addressTypes = Arrays.asList(getResources().getStringArray(R.array.address_type));
@@ -175,6 +175,7 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
             @Override
             public void onClick(View v) {
                 if (validateForm()) {
+                    updateDefaultAddress();
                     createOrUpdateCustomerAccount();
                     ((CustomerCreationListener) getActivity()).onNextClicked(mCustomerAccount);
                 }
@@ -195,6 +196,8 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
         });
         if (mEditing > -1) {
             CustomerContact customerEditing = mCustomerAccount.getContacts().get(mEditing);
+            mDefaultBilling.setChecked(false);
+            mDefaultShipping.setChecked(false);
             mFirstName.setText(customerEditing.getFirstName());
             mLastName.setText(customerEditing.getLastNameOrSurname());
             mEmail.setText(customerEditing.getEmail());
@@ -206,6 +209,15 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
             setSelectedState(customerEditing.getAddress().getStateOrProvince());
             setSelectedAddressType(customerEditing.getAddress().getAddressType());
             mCountry.setText(customerEditing.getAddress().getCountryCode());
+            if (mCustomerAccount.getContacts() != null && mCustomerAccount.getContacts().size() > 0) {
+                for (ContactType type : customerEditing.getTypes()) {
+                    if (type.getIsPrimary() && type.getName().equals(BILLING)) {
+                        mDefaultBilling.setChecked(true);
+                    } else if (type.getIsPrimary() && type.getName().equals(SHIPPING)) {
+                        mDefaultShipping.setChecked(true);
+                    }
+                }
+            }
         } else if (mCustomerAccount != null) {
             //adding new account
             mFirstName.setText(mCustomerAccount.getFirstName());
@@ -213,6 +225,34 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
             mEmail.setText(mCustomerAccount.getEmailAddress());
             if (mCustomerAccount.getContacts() != null && mCustomerAccount.getContacts().size() > 0 && mCustomerAccount.getContacts().get(0) != null) {
                 mPhoneNumber.setText(mCustomerAccount.getContacts().get(0).getPhoneNumbers().getMobile());
+            }
+            if (mCustomerAccount.getContacts() != null && mCustomerAccount.getContacts().size() > 0) {
+                mDefaultBilling.setChecked(false);
+                mDefaultShipping.setChecked(false);
+            }
+        }
+    }
+
+    private void updateDefaultAddress() {
+        if (mCustomerAccount.getContacts() != null &&
+                mCustomerAccount.getContacts().size() > 0) {
+            if (mDefaultBilling.isChecked()) {
+                for (CustomerContact contact : mCustomerAccount.getContacts()) {
+                    for (ContactType type : contact.getTypes()) {
+                        if (type.getName().equalsIgnoreCase(BILLING)) {
+                            type.setIsPrimary(false);
+                        }
+                    }
+                }
+            }
+            if (mDefaultShipping.isChecked()) {
+                for (CustomerContact contact : mCustomerAccount.getContacts()) {
+                    for (ContactType type : contact.getTypes()) {
+                        if (type.getName().equalsIgnoreCase(SHIPPING)) {
+                            type.setIsPrimary(false);
+                        }
+                    }
+                }
             }
         }
     }
@@ -238,7 +278,7 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
         Phone phone = new Phone();
         phone.setMobile(mPhoneNumber.getText().toString());
         customerContact.setPhoneNumbers(phone);
-        List<ContactType> contactTypes = new ArrayList<ContactType>();
+        List<ContactType> contactTypes = new ArrayList<>();
         if (mDefaultShipping.isChecked()) {
             ContactType contactType = new ContactType();
             contactType.setName(SHIPPING);
@@ -347,7 +387,11 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
 
             @Override
             public void onError(Throwable e) {
-                AlertDialog error = ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), e.toString());
+                String message = getResources().getString(R.string.standard_error);
+                if (e.getMessage() != null && e.getMessage().contains("Address Not Found")) {
+                    message = getResources().getString(R.string.address_not_found);
+                }
+                AlertDialog error = ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), message);
                 error.show();
             }
 
