@@ -41,13 +41,6 @@ import rx.subscriptions.Subscriptions;
 
 public class ProductDetailInventoryFragment extends DialogFragment implements Observer<LocationInventoryCollection> {
 
-    private Product mProduct;
-
-    private int mTenantId;
-    private int mSiteId;
-
-    private List<LocationInventory> mInventory;
-
     @InjectView(R.id.inventory_list)
     ListView mInventoryList;
     @InjectView(R.id.inventory_loading)
@@ -58,10 +51,12 @@ public class ProductDetailInventoryFragment extends DialogFragment implements Ob
     LinearLayout mMainLayout;
     @InjectView(R.id.product_variation_spinner)
     Spinner mProductVariation;
-
     @InjectView(R.id.product_variation_layout)
     LinearLayout mProductVariationLayout;
-
+    private Product mProduct;
+    private int mTenantId;
+    private int mSiteId;
+    private List<LocationInventory> mInventory;
     private String mVariatonProductCode;
     private InventoryRetriever mInventoryRetriever;
 
@@ -128,46 +123,6 @@ public class ProductDetailInventoryFragment extends DialogFragment implements Ob
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(this);
     }
 
-    class SpinnerAdapter extends ArrayAdapter<VariationSummary> {
-        public SpinnerAdapter(Context context, int res, int textViewResourceId, List<VariationSummary> objects) {
-            super(context, res, textViewResourceId, objects);
-        }
-
-        @Override
-        public View getDropDownView(int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-                convertView = inflater.inflate(R.layout.productinventory_spinner_item, parent, false);
-            }
-            TextView mTextView = (TextView) convertView.findViewById(R.id.product_option_name);
-            VariationSummary variationSummary = getItem(position);
-            mTextView.setText(getDisplayText(variationSummary));
-            return convertView;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            TextView textView = (TextView) View.inflate(parent.getContext(), R.layout.product_inventory_dropdown, null);
-            textView.setText(getDisplayText(getItem(position)));
-            return textView;
-        }
-
-        private String getDisplayText(VariationSummary variationSummary) {
-            StringBuffer optionString = new StringBuffer();
-            optionString.append(variationSummary.getProductCode());
-            optionString.append("  ");
-            optionString.append(mProduct.getContent().getProductName());
-            optionString.append("(");
-            for (VariationOption option : variationSummary.getOptions()) {
-                optionString.append(option.getValue());
-                optionString.append(" ");
-            }
-            optionString.append(")");
-            return optionString.toString();
-        }
-
-    }
-
     public void onPause() {
         super.onPause();
         mSubscription.unsubscribe();
@@ -229,6 +184,46 @@ public class ProductDetailInventoryFragment extends DialogFragment implements Ob
         Dialog dialog = super.onCreateDialog(savedInstanceState);
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         return dialog;
+    }
+
+    class SpinnerAdapter extends ArrayAdapter<VariationSummary> {
+        public SpinnerAdapter(Context context, int res, int textViewResourceId, List<VariationSummary> objects) {
+            super(context, res, textViewResourceId, objects);
+        }
+
+        @Override
+        public View getDropDownView(int position, View convertView, ViewGroup parent) {
+            if (convertView == null) {
+                LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+                convertView = inflater.inflate(R.layout.productinventory_spinner_item, parent, false);
+            }
+            TextView mTextView = (TextView) convertView.findViewById(R.id.product_option_name);
+            VariationSummary variationSummary = getItem(position);
+            mTextView.setText(getDisplayText(variationSummary));
+            return convertView;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            TextView textView = (TextView) View.inflate(parent.getContext(), R.layout.product_inventory_dropdown, null);
+            textView.setText(getDisplayText(getItem(position)));
+            return textView;
+        }
+
+        private String getDisplayText(VariationSummary variationSummary) {
+            StringBuffer optionString = new StringBuffer();
+            optionString.append(variationSummary.getProductCode());
+            optionString.append("  ");
+            optionString.append(mProduct.getContent().getProductName());
+            optionString.append("(");
+            for (VariationOption option : variationSummary.getOptions()) {
+                optionString.append(option.getValue());
+                optionString.append(" ");
+            }
+            optionString.append(")");
+            return optionString.toString();
+        }
+
     }
 
 }

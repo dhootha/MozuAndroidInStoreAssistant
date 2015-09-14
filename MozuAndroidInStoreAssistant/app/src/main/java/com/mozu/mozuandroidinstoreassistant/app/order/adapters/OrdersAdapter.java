@@ -23,13 +23,13 @@ public class OrdersAdapter extends BaseAdapter {
         mNumberFormat = NumberFormat.getCurrencyInstance();
     }
 
+    public ArrayList<Order> getData() {
+        return mData;
+    }
+
     public void setData(ArrayList<Order> data) {
         mData.clear();
         mData = data;
-    }
-
-    public ArrayList<Order> getData() {
-        return mData;
     }
 
     @Override
