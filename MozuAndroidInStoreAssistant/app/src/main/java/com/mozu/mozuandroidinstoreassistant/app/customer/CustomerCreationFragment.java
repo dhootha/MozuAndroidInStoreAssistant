@@ -234,7 +234,7 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
     }
 
     private void updateDefaultAddress() {
-        if (mCustomerAccount.getContacts() != null &&
+        if (mCustomerAccount != null && mCustomerAccount.getContacts() != null &&
                 mCustomerAccount.getContacts().size() > 0) {
             if (mDefaultBilling.isChecked()) {
                 for (CustomerContact contact : mCustomerAccount.getContacts()) {

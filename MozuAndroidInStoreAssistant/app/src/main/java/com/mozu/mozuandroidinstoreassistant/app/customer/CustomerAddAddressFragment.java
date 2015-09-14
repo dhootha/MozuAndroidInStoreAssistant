@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.mozu.api.contracts.customer.ContactType;
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.api.contracts.customer.CustomerContact;
 import com.mozu.mozuandroidinstoreassistant.app.CustomerUpdateActivity;
@@ -113,6 +114,17 @@ public class CustomerAddAddressFragment extends Fragment {
         });
         mAddressesRecyclerView.setHasFixedSize(true);
         GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2, LinearLayoutManager.VERTICAL, false);
+        for (int i = 0; i < mCustomerAccount.getContacts().size(); i++) {
+            CustomerContact customerContact = mCustomerAccount.getContacts().get(i);
+            if (customerContact != null && customerContact.getTypes() != null && customerContact.getTypes().size() > 0) {
+                for (ContactType type : customerContact.getTypes()) {
+                    if (type.getIsPrimary()) {
+                        mCustomerAccount.getContacts().remove(i);
+                        mCustomerAccount.getContacts().add(0, customerContact);
+                    }
+                }
+            }
+        }
         mRecyclerViewAddressAdapter = new CustomerAddressesAdapter(mCustomerAccount.getContacts(), (CustomerAddressesAdapter.AddressEditListener) getActivity());
         mAddressesRecyclerView.setLayoutManager(layoutManager);
         mAddressesRecyclerView.setAdapter(mRecyclerViewAddressAdapter);

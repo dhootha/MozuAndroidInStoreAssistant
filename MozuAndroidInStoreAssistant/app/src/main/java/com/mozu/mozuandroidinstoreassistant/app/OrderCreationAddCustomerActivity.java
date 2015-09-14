@@ -57,7 +57,7 @@ public class OrderCreationAddCustomerActivity extends BaseActivity {
             getActionBar().setDisplayShowHomeEnabled(false);
             getActionBar().setDisplayHomeAsUpEnabled(true);
             getActionBar().setDisplayShowCustomEnabled(true);
-            getActionBar().setTitle(R.string.create_order);
+            getActionBar().setTitle("  " + getString(R.string.create_order));
         }
 
     }
