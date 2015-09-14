@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -12,7 +13,6 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,8 +52,7 @@ public class ProductDetailOverviewFragment extends Fragment implements ProductOp
 
     private static final int MAX_DESC_LENGTH = 500;
     TextView mDescription;
-    TextView msrpPrice = null;
-    TextView mapPrice = null;
+
     HashMap<ProductOptionsContainer, Double> variationMap;
     private Product mProduct;
     private View mView;
@@ -85,12 +84,18 @@ public class ProductDetailOverviewFragment extends Fragment implements ProductOp
 
         if (mProduct != null) {
             setProductOverviewViews(mView);
-            if (mProduct.getVariations() != null && mProduct.getVariations().size() > 0) {
-                buildVariationMap();
-            }
+
         }
 
         return mView;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (mProduct != null && mProduct.getVariations() != null && mProduct.getVariations().size() > 0) {
+            buildVariationMap();
+        }
     }
 
     private void getMAPPrice(final NumberFormat format) {
@@ -104,64 +109,61 @@ public class ProductDetailOverviewFragment extends Fragment implements ProductOp
 
                     @Override
                     public void onError(Throwable e) {
-                        mapPrice.setText("N/A");
+                        ((TextView) mView.findViewById(R.id.map_price)).setText("N/A");
                     }
 
                     @Override
                     public void onNext(com.mozu.api.contracts.productadmin.Product product) {
-                        Log.d("", "");
-                        mapPrice.setText(format.format(product.getPrice().getMap()));
+                        ((TextView) mView.findViewById(R.id.map_price)).setText(format.format(product.getPrice().getMap()));
                     }
                 });
     }
 
     private void buildVariationMap() {
         AndroidObservable.bindFragment(this, Observable.create(new Observable.OnSubscribe<ProductVariationPagedCollection>() {
-            @Override
-            public void call(Subscriber<? super ProductVariationPagedCollection> subscriber) {
-                UserAuthenticationStateMachine mUserState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
-                ProductVariationResource productVariationResource = new ProductVariationResource(new MozuApiContext(mUserState.getTenantId(), mUserState.getSiteId()));
-                try {
-                    ProductVariationPagedCollection pagedCollection = productVariationResource.getProductVariations(mProduct.getProductCode());
-                    subscriber.onNext(pagedCollection);
-                    subscriber.onCompleted();
-                } catch (Exception e) {
-                    subscriber.onError(e);
-                }
-            }
-        })).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<ProductVariationPagedCollection>() {
                     @Override
-                    public void onCompleted() {
-                        onOptionChanged();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        msrpPrice.setText("N/A");
-                    }
-
-                    @Override
-                    public void onNext(ProductVariationPagedCollection product) {
-                        variationMap = new HashMap<ProductOptionsContainer, Double>();
-                        List<ProductVariation> productVariations = product.getItems();
-                        for (ProductVariation productVariation : productVariations) {
-                            ProductOptionsContainer productOptionsContainer = new ProductOptionsContainer();
-                            for (ProductVariationOption option : productVariation.getOptions()) {
-                                productOptionsContainer.add(option.getAttributeFQN(), option.getValue().toString());
-                            }
-                            variationMap.put(productOptionsContainer, productVariation.getDeltaPrice().getMsrp());
+                    public void call(Subscriber<? super ProductVariationPagedCollection> subscriber) {
+                        UserAuthenticationStateMachine mUserState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
+                        ProductVariationResource productVariationResource = new ProductVariationResource(new MozuApiContext(mUserState.getTenantId(), mUserState.getSiteId()));
+                        try {
+                            ProductVariationPagedCollection pagedCollection = productVariationResource.getProductVariations(mProduct.getProductCode());
+                            subscriber.onNext(pagedCollection);
+                            subscriber.onCompleted();
+                        } catch (Exception e) {
+                            subscriber.onError(e);
                         }
                     }
-                });
+                })
+        ).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<ProductVariationPagedCollection>() {
+            @Override
+            public void onCompleted() {
+                onOptionChanged();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                ((TextView) mView.findViewById(R.id.msrp_price)).setText("N/A");
+            }
+
+            @Override
+            public void onNext(ProductVariationPagedCollection product) {
+                variationMap = new HashMap<ProductOptionsContainer, Double>();
+                List<ProductVariation> productVariations = product.getItems();
+                for (ProductVariation productVariation : productVariations) {
+                    ProductOptionsContainer productOptionsContainer = new ProductOptionsContainer();
+                    for (ProductVariationOption option : productVariation.getOptions()) {
+                        productOptionsContainer.add(option.getAttributeFQN(), option.getValue().toString());
+                    }
+                    variationMap.put(productOptionsContainer, productVariation.getDeltaPrice().getMsrp());
+                }
+            }
+        });
     }
 
     private void setProductOverviewViews(View view) {
         TextView mainPrice = (TextView) view.findViewById(R.id.main_price);
         TextView regPrice = (TextView) view.findViewById(R.id.regular_price);
-        msrpPrice = (TextView) view.findViewById(R.id.msrp_price);
-        mapPrice = (TextView) view.findViewById(R.id.map_price);
         TextView includes = (TextView) view.findViewById(R.id.includes);
         mDescription = (TextView) view.findViewById(R.id.product_description);
         TextView upc = (TextView) view.findViewById(R.id.upc);
@@ -367,7 +369,7 @@ public class ProductDetailOverviewFragment extends Fragment implements ProductOp
     @Override
     public void onOptionChanged() {
         if (variationMap == null || variationMap.size() < 1) {
-            msrpPrice.setText("N/A");
+            ((TextView) mView.findViewById(R.id.msrp_price)).setText("N/A");
             return;
         }
         if (mProduct.getOptions() != null && !mProduct.getOptions().isEmpty()) {
@@ -382,10 +384,14 @@ public class ProductDetailOverviewFragment extends Fragment implements ProductOp
 
             final NumberFormat format = NumberFormat.getCurrencyInstance();
             if (variationMap.get(productOptionsContainer) != null) {
-                msrpPrice.setText(variationMap.get(productOptionsContainer) + "");
-
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        ((TextView) mView.findViewById(R.id.msrp_price)).setText(format.format(variationMap.get(productOptionsContainer)));
+                    }
+                });
             } else {
-                msrpPrice.setText("N/A");
+                ((TextView) mView.findViewById(R.id.msrp_price)).setText("N/A");
             }
         }
 
