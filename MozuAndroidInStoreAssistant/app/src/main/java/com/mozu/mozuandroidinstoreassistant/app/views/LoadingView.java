@@ -29,6 +29,11 @@ public class LoadingView extends CustomViewFlipper {
 
     }
 
+
+    public TextView getErrorTextView() {
+        return mTextView;
+    }
+
     public void success(){
         setDisplayedChild(2);
     }
