@@ -44,7 +44,7 @@ public class CustomerAddressesAdapter extends RecyclerView.Adapter<CustomerAddre
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         CustomerContact customerContact = data.get(position);
         Address address = customerContact.getAddress();
         Phone phone = customerContact.getPhoneNumbers();
@@ -66,19 +66,6 @@ public class CustomerAddressesAdapter extends RecyclerView.Adapter<CustomerAddre
             holder.phoneNumber.setText("Phone: " + phone.getWork());
 
         }
-        holder.delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                data.remove(position);
-                notifyDataSetChanged();
-            }
-        });
-        holder.edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addressEditListener.onEditAddressClicked(position);
-            }
-        });
         holder.email.setText(customerContact.getEmail());
 
         for (ContactType type : customerContact.getTypes()) {
@@ -127,6 +114,19 @@ public class CustomerAddressesAdapter extends RecyclerView.Adapter<CustomerAddre
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.inject(this, itemView);
+            delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    data.remove(getAdapterPosition());
+                    notifyDataSetChanged();
+                }
+            });
+            edit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addressEditListener.onEditAddressClicked(getAdapterPosition());
+                }
+            });
         }
     }
 }

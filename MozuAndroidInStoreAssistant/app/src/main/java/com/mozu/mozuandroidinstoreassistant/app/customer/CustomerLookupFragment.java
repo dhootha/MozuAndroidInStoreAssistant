@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.mozuandroidinstoreassistant.app.CustomerUpdateActivity;
@@ -33,6 +34,8 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
     AutoCompleteTextView customerLookup;
     @InjectView(R.id.create)
     Button mCreateCustomer;
+    @InjectView(R.id.lookup_spinner)
+    ProgressBar mCustomerProgressBar;
     private CustomersLoader mCustomersLoader;
     private int mTenantId;
     private int mSiteId;
@@ -94,6 +97,7 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
                 mQuery = customerLookup.getText().toString();
                 getLoaderManager().restartLoader(LOADER_CUSTOMER, null, CustomerLookupFragment.this);
                 Loader<List<CustomerAccount>> loader = getLoaderManager().getLoader(LOADER_CUSTOMER);
+                mCustomerProgressBar.setVisibility(View.VISIBLE);
                 mCustomersLoader = (CustomersLoader) loader;
                 mCustomersLoader.forceLoad();
             }
@@ -113,6 +117,7 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
 
     @Override
     public void onLoadFinished(Loader<List<CustomerAccount>> loader, List<CustomerAccount> data) {
+        mCustomerProgressBar.setVisibility(View.INVISIBLE);
         if (mAdapter == null) {
             mAdapter = new CustomerLookupAdapter(getActivity());
             customerLookup.setAdapter(mAdapter);
