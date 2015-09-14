@@ -37,6 +37,8 @@ import butterknife.InjectView;
 
 public class OrderDetailActivity extends BaseActivity implements LoaderManager.LoaderCallbacks<Order>, CustomerAsyncListener, SwipeRefreshLayout.OnRefreshListener {
 
+    public static final String ORDER_LIST = "orderList";
+    public static final String ORDER_LIST_POSITION = "orderListPosition";
     public static final String ORDER_NUMBER_EXTRA_KEY = "ORDER_NUMBER";
     public static final String CURRENT_TENANT_ID = "curTenantIdWhenActLoaded";
     public static final String CURRENT_SITE_ID = "curSiteIdWhenActLoaded";
@@ -52,6 +54,10 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
     private TextView mOrderDate;
     private TextView mCustomerName;
     private TextView mOrderTotal;
+
+    private Button mPreviousOrder;
+    private Button mNextOrder;
+
     private Order mOrder;
     private int mTenantId;
     private int mSiteId;
@@ -63,6 +69,8 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
     private TextView mOrderFulfillmentStatus;
     private Boolean mIsEditMode = false;
     private TextView mCustomerEmail;
+    private ArrayList<Order> mOrderList;
+    private int mOrderPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +88,8 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
             mOrderNumber = getIntent().getStringExtra(ORDER_NUMBER_EXTRA_KEY);
             mTenantId = getIntent().getIntExtra(CURRENT_TENANT_ID, -1);
             mSiteId = getIntent().getIntExtra(CURRENT_SITE_ID, -1);
+            mOrderList = (ArrayList<Order>) (getIntent().getSerializableExtra(OrderDetailActivity.ORDER_LIST));
+            mOrderPosition = getIntent().getIntExtra(OrderDetailActivity.ORDER_LIST_POSITION, -1);
         } else if (savedInstanceState != null) {
             mOrderNumber = savedInstanceState.getString(ORDER_NUMBER_EXTRA_KEY);
             mTenantId = savedInstanceState.getInt(CURRENT_TENANT_ID, -1);
@@ -104,6 +114,48 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
         mCustomerName = (TextView) findViewById(R.id.customer_value);
         mCustomerEmail = (TextView) findViewById(R.id.customer_email);
         mOrderTotal = (TextView) findViewById(R.id.order_total_value);
+        mPreviousOrder = (Button) findViewById(R.id.previous_order);
+        mNextOrder = (Button) findViewById(R.id.next_order);
+        if (mOrderList == null || mOrderPosition == -1) {
+            mPreviousOrder.setVisibility(View.GONE);
+            mNextOrder.setVisibility(View.GONE);
+        } else {
+            if(mOrderPosition == 0){
+                mPreviousOrder.setVisibility(View.GONE);
+            }
+            if(mOrderPosition == mOrderList.size()-1){
+                mNextOrder.setVisibility(View.GONE);
+            }
+
+            mPreviousOrder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Order order = mOrderList.get(mOrderPosition - 1);
+                    Intent intent = new Intent(OrderDetailActivity.this, OrderDetailActivity.class);
+                    intent.putExtra(OrderDetailActivity.ORDER_NUMBER_EXTRA_KEY, order.getId());
+                    intent.putExtra(OrderDetailActivity.ORDER_LIST, mOrderList);
+                    intent.putExtra(OrderDetailActivity.ORDER_LIST_POSITION, mOrderPosition - 1);
+                    intent.putExtra(OrderDetailActivity.CURRENT_TENANT_ID, mTenantId);
+                    intent.putExtra(OrderDetailActivity.CURRENT_SITE_ID, mSiteId);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+            mNextOrder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Order order = mOrderList.get(mOrderPosition + 1);
+                    Intent intent = new Intent(OrderDetailActivity.this, OrderDetailActivity.class);
+                    intent.putExtra(OrderDetailActivity.ORDER_NUMBER_EXTRA_KEY, order.getId());
+                    intent.putExtra(OrderDetailActivity.ORDER_LIST, mOrderList);
+                    intent.putExtra(OrderDetailActivity.ORDER_LIST_POSITION, mOrderPosition + 1);
+                    intent.putExtra(OrderDetailActivity.CURRENT_TENANT_ID, mTenantId);
+                    intent.putExtra(OrderDetailActivity.CURRENT_SITE_ID, mSiteId);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+        }
         mCustomerName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -151,15 +203,6 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
         outState.putInt(CURRENT_SITE_ID, mSiteId);
 
         super.onSaveInstanceState(outState);
-    }
-
-    public void setFulfillmentStatus(String fulfillmentStatus) {
-        mOrderFulfillmentStatus.setText(fulfillmentStatus);
-        mOrderFulfillmentStatus.setVisibility(View.VISIBLE);
-    }
-
-    public void clearFulfillmentStatus() {
-        mOrderFulfillmentStatus.setVisibility(View.GONE);
     }
 
     public void setEditModeVisibility(boolean isVisible) {

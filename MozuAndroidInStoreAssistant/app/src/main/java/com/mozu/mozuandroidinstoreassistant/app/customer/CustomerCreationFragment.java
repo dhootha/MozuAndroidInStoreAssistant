@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.telephony.PhoneNumberFormattingTextWatcher;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +22,9 @@ import com.mozu.api.contracts.customer.AddressValidationResponse;
 import com.mozu.api.contracts.customer.ContactType;
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.api.contracts.customer.CustomerContact;
-import com.mozu.mozuandroidinstoreassistant.app.OrderCreationAddCustomerActivity;
+import com.mozu.mozuandroidinstoreassistant.app.CustomerUpdateActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
-import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.CustomerAddressValidation;
+import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.CustomerAddressValidationObservable;
 import com.mozu.mozuandroidinstoreassistant.app.dialog.ErrorMessageAlertDialog;
 import com.mozu.mozuandroidinstoreassistant.app.utils.InputValidation;
 
@@ -89,9 +90,19 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
     public static CustomerCreationFragment getInstance(int tenantId, int siteId, CustomerAccount customerAccount, int editing) {
         Bundle bundle = new Bundle();
         CustomerCreationFragment fragment = new CustomerCreationFragment();
-        bundle.putInt(OrderCreationAddCustomerActivity.CURRENT_TENANT_ID, tenantId);
-        bundle.putInt(OrderCreationAddCustomerActivity.CURRENT_SITE_ID, siteId);
+        bundle.putInt(CustomerUpdateActivity.CURRENT_TENANT_ID, tenantId);
+        bundle.putInt(CustomerUpdateActivity.CURRENT_SITE_ID, siteId);
         bundle.putInt(IS_EDIT, editing);
+        bundle.putSerializable(CUSTOMER, customerAccount);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    public static CustomerCreationFragment getInstance(int tenantId, int siteId, CustomerAccount customerAccount) {
+        Bundle bundle = new Bundle();
+        CustomerCreationFragment fragment = new CustomerCreationFragment();
+        bundle.putInt(CustomerUpdateActivity.CURRENT_TENANT_ID, tenantId);
+        bundle.putInt(CustomerUpdateActivity.CURRENT_SITE_ID, siteId);
         bundle.putSerializable(CUSTOMER, customerAccount);
         fragment.setArguments(bundle);
         return fragment;
@@ -100,8 +111,8 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
     public static CustomerCreationFragment getInstance(int tenantId, int siteId) {
         Bundle bundle = new Bundle();
         CustomerCreationFragment fragment = new CustomerCreationFragment();
-        bundle.putInt(OrderCreationAddCustomerActivity.CURRENT_TENANT_ID, tenantId);
-        bundle.putInt(OrderCreationAddCustomerActivity.CURRENT_SITE_ID, siteId);
+        bundle.putInt(CustomerUpdateActivity.CURRENT_TENANT_ID, tenantId);
+        bundle.putInt(CustomerUpdateActivity.CURRENT_SITE_ID, siteId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -110,8 +121,8 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        mTenantId = getArguments().getInt(OrderCreationAddCustomerActivity.CURRENT_TENANT_ID, -1);
-        mSiteId = getArguments().getInt(OrderCreationAddCustomerActivity.CURRENT_SITE_ID, -1);
+        mTenantId = getArguments().getInt(CustomerUpdateActivity.CURRENT_TENANT_ID, -1);
+        mSiteId = getArguments().getInt(CustomerUpdateActivity.CURRENT_SITE_ID, -1);
         mEditing = getArguments().getInt(IS_EDIT, -1);
         states = Arrays.asList(getResources().getStringArray(R.array.states));
         addressTypes = Arrays.asList(getResources().getStringArray(R.array.address_type));
@@ -164,6 +175,7 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
             @Override
             public void onClick(View v) {
                 if (validateForm()) {
+                    updateDefaultAddress();
                     createOrUpdateCustomerAccount();
                     ((CustomerCreationListener) getActivity()).onNextClicked(mCustomerAccount);
                 }
@@ -184,6 +196,8 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
         });
         if (mEditing > -1) {
             CustomerContact customerEditing = mCustomerAccount.getContacts().get(mEditing);
+            mDefaultBilling.setChecked(false);
+            mDefaultShipping.setChecked(false);
             mFirstName.setText(customerEditing.getFirstName());
             mLastName.setText(customerEditing.getLastNameOrSurname());
             mEmail.setText(customerEditing.getEmail());
@@ -195,17 +209,50 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
             setSelectedState(customerEditing.getAddress().getStateOrProvince());
             setSelectedAddressType(customerEditing.getAddress().getAddressType());
             mCountry.setText(customerEditing.getAddress().getCountryCode());
+            if (mCustomerAccount.getContacts() != null && mCustomerAccount.getContacts().size() > 0) {
+                for (ContactType type : customerEditing.getTypes()) {
+                    if (type.getIsPrimary() && type.getName().equals(BILLING)) {
+                        mDefaultBilling.setChecked(true);
+                    } else if (type.getIsPrimary() && type.getName().equals(SHIPPING)) {
+                        mDefaultShipping.setChecked(true);
+                    }
+                }
+            }
         } else if (mCustomerAccount != null) {
             //adding new account
             mFirstName.setText(mCustomerAccount.getFirstName());
             mLastName.setText(mCustomerAccount.getLastName());
             mEmail.setText(mCustomerAccount.getEmailAddress());
-            if (mCustomerAccount.getContacts() != null && mCustomerAccount.getContacts().get(0) != null) {
+            if (mCustomerAccount.getContacts() != null && mCustomerAccount.getContacts().size() > 0 && mCustomerAccount.getContacts().get(0) != null) {
                 mPhoneNumber.setText(mCustomerAccount.getContacts().get(0).getPhoneNumbers().getMobile());
             }
             if (mCustomerAccount.getContacts() != null && mCustomerAccount.getContacts().size() > 0) {
                 mDefaultBilling.setChecked(false);
                 mDefaultShipping.setChecked(false);
+            }
+        }
+    }
+
+    private void updateDefaultAddress() {
+        if (mCustomerAccount != null && mCustomerAccount.getContacts() != null &&
+                mCustomerAccount.getContacts().size() > 0) {
+            if (mDefaultBilling.isChecked()) {
+                for (CustomerContact contact : mCustomerAccount.getContacts()) {
+                    for (ContactType type : contact.getTypes()) {
+                        if (type.getName().equalsIgnoreCase(BILLING)) {
+                            type.setIsPrimary(false);
+                        }
+                    }
+                }
+            }
+            if (mDefaultShipping.isChecked()) {
+                for (CustomerContact contact : mCustomerAccount.getContacts()) {
+                    for (ContactType type : contact.getTypes()) {
+                        if (type.getName().equalsIgnoreCase(SHIPPING)) {
+                            type.setIsPrimary(false);
+                        }
+                    }
+                }
             }
         }
     }
@@ -322,7 +369,7 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
 
     public void verifyAddressIsValid(Address address) {
         if (validateForm()) {
-            addressValidationResponseObservable = new CustomerAddressValidation(mTenantId, mSiteId).getAddressValidationObservable(address);
+            addressValidationResponseObservable = new CustomerAddressValidationObservable(mTenantId, mSiteId).getAddressValidationObservable(address);
             addressValidationResponseObservable
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -376,7 +423,7 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
     }
 
     private AlertDialog createValidatedAddressDialog() {
-        return new AlertDialog.Builder(getActivity())
+        return new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.DialogMozu))
                 .setTitle(R.string.verify_title)
                 .setMessage(R.string.valid_address)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -389,9 +436,10 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
     }
 
     private AlertDialog createSuggestedAddressDialog(final Address address) {
-        return new AlertDialog.Builder(getActivity())
+        return new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.DialogMozu))
                 .setTitle(R.string.verify_title)
                 .setMessage(address.getAddress1() + "\n" +
+                        address.getAddress2() + "\n" +
                         address.getCityOrTown() + ", " +
                         address.getStateOrProvince() + " " +
                         address.getPostalOrZipCode() + "\n" +

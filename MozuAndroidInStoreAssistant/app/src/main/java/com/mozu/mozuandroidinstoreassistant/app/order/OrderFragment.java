@@ -110,6 +110,7 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
     private boolean mCurrentSortIsAsc;
     private String mCurrentSearch;
     private CreateOrderListener mOrderCreateListener;
+    private String[] filterOptions = new String[4];
 
     public OrderFragment() {
 
@@ -253,12 +254,23 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
 
     private void onFilter() {
         OrderFilterDialogFragment filterFragment = new OrderFilterDialogFragment();
+        Bundle bundle = new Bundle();
+        bundle.putStringArray("options", filterOptions);
+        filterFragment.setArguments(bundle);
         filterFragment.setStyle(android.app.DialogFragment.STYLE_NO_FRAME, R.style.DialogMozu);
         filterFragment.setTargetFragment(this, 0);
         filterFragment.show(getFragmentManager(), "filter");
     }
 
+    private void setFilterOptions() {
+        filter(filterOptions[0], filterOptions[1], filterOptions[2], filterOptions[3]);
+    }
+
     public void filter(String start, String end, String status, String paymentStatus) {
+        filterOptions[0] = start;
+        filterOptions[1] = end;
+        filterOptions[2] = status;
+        filterOptions[3] = paymentStatus;
         getOrdersLoader().reset();
         getOrdersLoader().removeFilter();
         String filter = (start != null ? "submittedDate gt " + start : "");
@@ -374,12 +386,10 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
 
         if (loader.getId() == LOADER_ORDERS) {
             if (mAdapter == null) {
-
                 mAdapter = new OrdersAdapter(getActivity());
             }
 
-            mAdapter.clear();
-            mAdapter.addAll(data);
+            mAdapter.setData((ArrayList<Order>) data);
 
             if (mOrdersList.getAdapter() == null) {
                 mOrdersList.setAdapter(mAdapter);
@@ -473,6 +483,15 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
         mOrderRefreshLayout.setRefreshing(true);
     }
 
+    private void reloadKeepFilter() {
+        getOrdersLoader().removeQuery();
+        getOrdersLoader().reset();
+        getOrdersLoader().startLoading();
+        getOrdersLoader().forceLoad();
+
+        mOrderRefreshLayout.setRefreshing(true);
+    }
+
     @Override
     public boolean onMenuItemActionExpand(MenuItem item) {
 
@@ -491,7 +510,7 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
         if (mSearchView != null) {
             mSearchView.setQuery("", false);
         }
-        mListener.orderSelected((Order) mOrdersList.getAdapter().getItem(position));
+        mListener.orderSelected((Order) mOrdersList.getAdapter().getItem(position), mAdapter.getData(), position);
     }
 
     public void setListener(OrderListener listener) {
@@ -516,7 +535,6 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
         mOrderPaymentStatusHeaderSortImage.setVisibility(View.GONE);
         mOrderStatusHeaderSortImage.setVisibility(View.GONE);
         mOrderTotalHeaderSortImage.setVisibility(View.GONE);
-
 
         if (v.getId() == mOrderNumberHeaderLayout.getId()) {
             getOrdersLoader().orderByNumber();
@@ -585,7 +603,7 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
             return;
         }
 
-        clearSearchReload();
+        reloadKeepFilter();
     }
 
     private void initializeSortColumn() {

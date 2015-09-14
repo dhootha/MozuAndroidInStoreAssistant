@@ -7,10 +7,10 @@ import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -37,6 +37,7 @@ import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthen
 import com.mozu.mozuandroidinstoreassistant.app.order.adapters.NewOrderProductAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.order.adapters.ProductSuggestionAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.order.loaders.NewOrderManager;
+import com.mozu.mozuandroidinstoreassistant.app.views.CustomerLookupAutoCompleteTextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +54,7 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
 
     private View mView;
     @InjectView(R.id.product_lookup)
-    public AutoCompleteTextView mProductLookup;
+    public CustomerLookupAutoCompleteTextView mProductLookup;
 
     @InjectView(R.id.product_search_loading)
     public ProgressBar mProductSearchLoading;
@@ -155,6 +156,36 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
         mProductLookup.setVisibility(editMode ? View.VISIBLE : View.GONE);
     }
 
+    private void lookUpProduct(final String search) {
+        if (mSubscription != null && !mSubscription.isUnsubscribed()) {
+            mSubscription.unsubscribe();
+            mProductSearchLoading.setVisibility(View.GONE);
+        }
+        mProductSearchLoading.setVisibility(View.VISIBLE);
+        mSubscription = AndroidObservable.bindFragment(NewOrderCreateFragment.this, NewOrderManager.getInstance().getProductSuggestion(search, mTenantId, mSiteId))
+                .subscribe(new Subscriber<ProductSearchResult>() {
+                    @Override
+                    public void onCompleted() {
+                        mProductSearchLoading.setVisibility(View.GONE);
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        mProductSearchLoading.setVisibility(View.GONE);
+                        Toast.makeText(getActivity(), "Error Searching for product " + search, Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNext(ProductSearchResult productSearchResult) {
+                        List<Product> data = productSearchResult.getItems();
+                        mAdapter.clear();
+                        mAdapter.addAll(data);
+                        mAdapter.notifyDataSetChanged();
+                        mProductLookup.showDropDown();
+                    }
+                });
+    }
 
     private void setUpViews() {
         mAdapter = new ProductSuggestionAdapter(getActivity());
@@ -167,6 +198,17 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
 
 
         mOrderProducts.setAdapter(mProductsAdapter);
+        mProductLookup.setThreshold(0);
+        mProductLookup.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (mProductLookup.getText().length() == 0) {
+                    lookUpProduct(null);
+                }
+                return false;
+            }
+        });
+
         mProductLookup.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
@@ -180,28 +222,7 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
                     mProductSearchLoading.setVisibility(View.GONE);
                 }
                 mProductSearchLoading.setVisibility(View.VISIBLE);
-                mSubscription = AndroidObservable.bindFragment(NewOrderCreateFragment.this, NewOrderManager.getInstance().getProductSuggestion(charSequence.toString(), mTenantId, mSiteId))
-                        .subscribe(new Subscriber<ProductSearchResult>() {
-                            @Override
-                            public void onCompleted() {
-                                mProductSearchLoading.setVisibility(View.GONE);
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                mProductSearchLoading.setVisibility(View.GONE);
-                                Toast.makeText(getActivity(), "Error Searching for product " + charSequence, Toast.LENGTH_SHORT).show();
-                            }
-
-                            @Override
-                            public void onNext(ProductSearchResult productSearchResult) {
-                                List<Product> data = productSearchResult.getItems();
-                                mAdapter.clear();
-                                mAdapter.addAll(data);
-                                mAdapter.notifyDataSetChanged();
-                            }
-                        });
+                lookUpProduct(charSequence.toString());
             }
 
             @Override

@@ -39,7 +39,6 @@ public class OrderDetailNotesAdapter extends BaseAdapter {
         }
     }
 
-
     @Override
     public long getItemId(int i) {
         return i;

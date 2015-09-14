@@ -55,8 +55,8 @@ public class NewOrderProductAdapter extends BaseAdapter {
             mData.add(new OrderItemRow(item));
         }
         if (order.getItems().size() > 0) {
-            mData.add(new ShippingItemRow(order, order.getFulfillmentInfo()));
             if (editMode) {
+                mData.add(new ShippingItemRow(order, order.getFulfillmentInfo()));
                 mData.add(new CouponsRowItem(order));
             }
             mData.add(new OrderTotalRow(order));
