@@ -5,12 +5,16 @@ import android.view.MenuItem;
 import android.view.Window;
 
 import com.mozu.api.contracts.customer.CustomerAccount;
+import com.mozu.api.contracts.customer.CustomerContact;
 import com.mozu.mozuandroidinstoreassistant.app.customer.CustomerAddAddressFragment;
 import com.mozu.mozuandroidinstoreassistant.app.customer.CustomerCreationFragment;
 import com.mozu.mozuandroidinstoreassistant.app.customer.CustomerCreationListener;
 import com.mozu.mozuandroidinstoreassistant.app.customer.adapters.CustomerAddressesAdapter;
 
-public class CustomerCreationActivity extends BaseActivity implements CustomerCreationListener, CustomerAddressesAdapter.AddressEditListener {
+import java.util.HashSet;
+import java.util.Set;
+
+public class CustomerUpdateActivity extends BaseActivity implements CustomerCreationListener, CustomerAddressesAdapter.AddressEditListener {
 
     public static final String CUSTOMER = "customer";
     public static final String CUSTOMER_CREATED = "customer_created";
@@ -24,6 +28,7 @@ public class CustomerCreationActivity extends BaseActivity implements CustomerCr
     private Integer mSiteId;
     private CustomerAccount mCustomerAccount;
     private boolean mIsCustomerCreated;
+    private Set<Integer> alreadyCreatedAddresses = new HashSet<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +39,7 @@ public class CustomerCreationActivity extends BaseActivity implements CustomerCr
         if (savedInstanceState != null) {
             mTenantId = savedInstanceState.getInt(CURRENT_TENANT_ID, -1);
             mSiteId = savedInstanceState.getInt(CURRENT_SITE_ID, -1);
-            mIsCustomerCreated = getIntent().getExtras().getBoolean(CUSTOMER_CREATED, false);
+            mIsCustomerCreated = savedInstanceState.getBoolean(CUSTOMER_CREATED, false);
             Object temp = savedInstanceState.getSerializable(CUSTOMER);
             if (temp != null && temp instanceof CustomerAccount) {
                 mCustomerAccount = (CustomerAccount) savedInstanceState.getSerializable(CUSTOMER);
@@ -48,12 +53,23 @@ public class CustomerCreationActivity extends BaseActivity implements CustomerCr
             }
             if (mCustomerAccount != null) {
                 if (mCustomerAccount.getContacts() != null && mCustomerAccount.getContacts().size() > 0) {
+                    //customer is created with addresses
+                    if (alreadyCreatedAddresses == null || !alreadyCreatedAddresses.isEmpty()) {
+                        alreadyCreatedAddresses = new HashSet<>();
+                    }
+                    if (mCustomerAccount != null && mCustomerAccount.getContacts() != null) {
+                        for (CustomerContact contact : mCustomerAccount.getContacts()) {
+                            alreadyCreatedAddresses.add(contact.getId());
+                        }
+                    }
                     onNextClicked(mCustomerAccount);
                 } else {
+                    //customer is created but has no addresses
                     CustomerCreationFragment customerCreationFragment = CustomerCreationFragment.getInstance(mTenantId, mSiteId, mCustomerAccount);
                     getFragmentManager().beginTransaction().replace(R.id.content_fragment_holder, customerCreationFragment, "create_customer").commit();
                 }
             } else {
+                //customer is not created
                 CustomerCreationFragment customerCreationFragment = CustomerCreationFragment.getInstance(mTenantId, mSiteId);
                 getFragmentManager().beginTransaction().replace(R.id.content_fragment_holder, customerCreationFragment, "create_customer").commit();
             }
@@ -68,6 +84,10 @@ public class CustomerCreationActivity extends BaseActivity implements CustomerCr
         mCustomerAccount = account;
         CustomerAddAddressFragment customerCreationFragment = CustomerAddAddressFragment.getInstance(mTenantId, mSiteId, mCustomerAccount, mIsCustomerCreated);
         getFragmentManager().beginTransaction().replace(R.id.content_fragment_holder, customerCreationFragment, "add_address").commit();
+    }
+
+    public Set<Integer> getAlreadyCreatedAddresses() {
+        return alreadyCreatedAddresses;
     }
 
     @Override

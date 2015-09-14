@@ -11,7 +11,6 @@ import com.mozu.api.contracts.core.Contact;
 import com.mozu.api.contracts.customer.ContactType;
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.api.contracts.customer.CustomerContact;
-import com.mozu.mozuandroidinstoreassistant.app.customer.CustomerAddressOrderVerification;
 import com.mozu.mozuandroidinstoreassistant.app.customer.CustomerLookupFragment;
 import com.mozu.mozuandroidinstoreassistant.app.order.NewOrderActivity;
 import com.mozu.mozuandroidinstoreassistant.app.order.loaders.NewOrderManager;
@@ -20,7 +19,7 @@ import butterknife.ButterKnife;
 import rx.Subscriber;
 import rx.android.observables.AndroidObservable;
 
-public class OrderCreationAddCustomerActivity extends BaseActivity implements CustomerAddressOrderVerification.VerifyCreateOrderListener {
+public class OrderCreationAddCustomerActivity extends BaseActivity {
 
     private static final String ORDER_EXTRA_KEY = "ORDER";
     private static final String CURRENT_TENANT_ID = "curTenantIdWhenActLoaded";
@@ -63,12 +62,6 @@ public class OrderCreationAddCustomerActivity extends BaseActivity implements Cu
 
     }
 
-    @Override
-    public void onCancelClicked() {
-        finish();
-    }
-
-    @Override
     public void onSubmitClicked() {
         mOrder = new Order();
         mOrder.setCustomerAccountId(mCustomerAccount.getId());
@@ -147,7 +140,7 @@ public class OrderCreationAddCustomerActivity extends BaseActivity implements Cu
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CREATE_CUSTOMER && resultCode == RESULT_OK) {
-            mCustomerAccount = (CustomerAccount) data.getSerializableExtra(CustomerCreationActivity.CUSTOMER);
+            mCustomerAccount = (CustomerAccount) data.getSerializableExtra(CustomerUpdateActivity.CUSTOMER);
             onSubmitClicked();
         }
     }
