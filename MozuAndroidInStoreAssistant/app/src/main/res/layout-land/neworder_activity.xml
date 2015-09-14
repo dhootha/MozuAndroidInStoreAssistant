@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="64dp"
             android:background="@color/darker_grey"
@@ -20,9 +20,11 @@
 
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:id="@+id/status_layout"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_alignParentLeft="true"
+                android:layout_marginRight="32dp"
                 android:gravity="center_vertical"
                 android:orientation="vertical">
 
@@ -41,9 +43,11 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:id="@+id/name_layout"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="2"
+                android:layout_marginRight="32dp"
+                android:layout_toRightOf="@+id/status_layout"
                 android:gravity="center_vertical"
                 android:orientation="vertical">
 
@@ -62,9 +66,10 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="2"
+                android:layout_marginRight="32dp"
+                android:layout_toRightOf="@+id/name_layout"
                 android:gravity="center_vertical"
                 android:orientation="vertical">
 
@@ -83,9 +88,10 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_marginRight="32dp"
+                android:layout_toLeftOf="@+id/buttons_layout"
                 android:gravity="center_vertical"
                 android:orientation="vertical">
 
@@ -105,9 +111,10 @@
 
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:id="@+id/buttons_layout"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="2"
+                android:layout_alignParentRight="true"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -128,7 +135,7 @@
             </LinearLayout>
 
 
-        </LinearLayout>
+        </RelativeLayout>
 
         <com.viewpagerindicator.TabPageIndicator
             android:id="@+id/order_tabs"
