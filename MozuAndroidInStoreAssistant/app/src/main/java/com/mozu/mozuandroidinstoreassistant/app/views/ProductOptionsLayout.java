@@ -36,15 +36,21 @@ public class ProductOptionsLayout extends LinearLayout {
         View v = inflater.inflate(R.layout.product_option, this, true);
         mTitle = (TextView) v.findViewById(R.id.product_option_label);
         mSpinner = (Spinner) v.findViewById(R.id.product_option_spinner);
-        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mSpinner.post(new Runnable() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                mOnOptionChangeListener.onOptionChanged();
-            }
+            public void run() {
+                mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                        mOnOptionChangeListener.onOptionChanged();
+                    }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                //DO NOTHING
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+                        //DO NOTHING
+                    }
+                });
+
             }
         });
         mValue = (TextView) v.findViewById(R.id.product_option_name);
