@@ -209,11 +209,11 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
             setSelectedState(customerEditing.getAddress().getStateOrProvince());
             setSelectedAddressType(customerEditing.getAddress().getAddressType());
             mCountry.setText(customerEditing.getAddress().getCountryCode());
-            if (mCustomerAccount.getContacts() != null && mCustomerAccount.getContacts().size() > 0) {
+            if (customerEditing.getTypes() != null && customerEditing.getTypes().size() > 0) {
                 for (ContactType type : customerEditing.getTypes()) {
-                    if (type.getIsPrimary() && type.getName().equals(BILLING)) {
+                    if (type.getIsPrimary() && type.getName().equalsIgnoreCase(BILLING)) {
                         mDefaultBilling.setChecked(true);
-                    } else if (type.getIsPrimary() && type.getName().equals(SHIPPING)) {
+                    } else if (type.getIsPrimary() && type.getName().equalsIgnoreCase(SHIPPING)) {
                         mDefaultShipping.setChecked(true);
                     }
                 }
@@ -411,7 +411,6 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
         int position = states.indexOf(state);
         mStateSelected = state;
         mState.setSelection(position);
-
     }
 
     private void setSelectedAddressType(String type) {
