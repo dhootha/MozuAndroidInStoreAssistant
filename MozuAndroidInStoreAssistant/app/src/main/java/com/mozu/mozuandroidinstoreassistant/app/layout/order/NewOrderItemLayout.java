@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mozu.api.contracts.commerceruntime.orders.OrderItem;
+import com.mozu.api.contracts.commerceruntime.products.Product;
 import com.mozu.api.contracts.commerceruntime.products.ProductOption;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.data.IData;
@@ -62,6 +63,15 @@ public class NewOrderItemLayout extends LinearLayout implements IRowLayout {
         super(context, attrs, defStyle);
     }
 
+
+    private Double getProductPrice(Product product) {
+        if (product.getPrice().getSalePrice() != null) {
+            return product.getPrice().getSalePrice();
+        } else {
+            return product.getPrice().getPrice();
+        }
+    }
+
     @Override
     public void bindData(IData data) {
         if (productTotal == null) {
@@ -75,7 +85,8 @@ public class NewOrderItemLayout extends LinearLayout implements IRowLayout {
             productName.setText(orderItem.getProduct().getName());
             productFulfillment.setText(orderItem.getFulfillmentMethod() + "_" + orderItem.getFulfillmentLocationCode());
             productQuantity.setText(orderItem.getQuantity().toString());
-            productPrice.setText(mNumberFormat.format(orderItem.getProduct().getPrice().getPrice()));
+
+            productPrice.setText(mNumberFormat.format(getProductPrice(orderItem.getProduct())));
             productTotal.setText(mNumberFormat.format(orderItem.getSubtotal()));
             if (orderItem.getProduct().getOptions().size() > 0) {
                 StringBuffer optionsVal = new StringBuffer();
