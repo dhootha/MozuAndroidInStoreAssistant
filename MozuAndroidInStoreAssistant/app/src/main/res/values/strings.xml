@@ -351,6 +351,7 @@
         <item>Cancelled</item>
         <item>Closed</item>
         <item>Validated</item>
+        <item>Errored</item>
     </string-array>
     <string-array name="order_payment_statuses">
         <item>All</item>
