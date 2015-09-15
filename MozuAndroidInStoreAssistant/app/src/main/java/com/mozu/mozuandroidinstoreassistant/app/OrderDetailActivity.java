@@ -120,10 +120,10 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
             mPreviousOrder.setVisibility(View.GONE);
             mNextOrder.setVisibility(View.GONE);
         } else {
-            if(mOrderPosition == 0){
+            if (mOrderPosition == 0) {
                 mPreviousOrder.setVisibility(View.GONE);
             }
-            if(mOrderPosition == mOrderList.size()-1){
+            if (mOrderPosition == mOrderList.size() - 1) {
                 mNextOrder.setVisibility(View.GONE);
             }
 
