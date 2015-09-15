@@ -118,9 +118,10 @@ public class CustomerAddAddressFragment extends Fragment {
             CustomerContact customerContact = mCustomerAccount.getContacts().get(i);
             if (customerContact != null && customerContact.getTypes() != null && customerContact.getTypes().size() > 0) {
                 for (ContactType type : customerContact.getTypes()) {
-                    if (type.getIsPrimary()) {
-                        mCustomerAccount.getContacts().remove(i);
-                        mCustomerAccount.getContacts().add(0, customerContact);
+                    if (type.getIsPrimary() && i != 0) {
+                        CustomerContact temp = mCustomerAccount.getContacts().get(0);
+                        mCustomerAccount.getContacts().set(0, mCustomerAccount.getContacts().get(i));
+                        mCustomerAccount.getContacts().set(i, temp);
                     }
                 }
             }
