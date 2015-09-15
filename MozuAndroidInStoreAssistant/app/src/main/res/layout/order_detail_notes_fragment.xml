@@ -62,44 +62,46 @@
         </RelativeLayout>
 
         <LinearLayout
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/product_detail_images_background"
             android:orientation="vertical">
 
-            <LinearLayout
+            <RelativeLayout
+                android:id="@+id/internal_note_header"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="0dp"
-                android:gravity="center_vertical"
-                android:minHeight="?android:attr/listPreferredItemHeight"
-                android:orientation="horizontal"
-                android:paddingLeft="@dimen/order_sub_margin_right"
-                android:paddingRight="@dimen/order_sub_margin_right">
+                android:layout_height="50dp"
+                android:minHeight="?android:attr/listPreferredItemHeight">
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
+                    android:layout_centerVertical="true"
+                    android:paddingLeft="@dimen/order_sub_margin_right"
+                    android:paddingRight="@dimen/order_sub_margin_right"
                     android:text="@string/date_notes_header"
                     android:textColor="@android:color/darker_gray"
                     android:textStyle="bold"/>
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="5"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="200dp"
+                    android:paddingLeft="@dimen/order_sub_margin_right"
+                    android:paddingRight="@dimen/order_sub_margin_right"
                     android:text="@string/comment_notes_header"
                     android:textColor="@android:color/darker_gray"
                     android:textStyle="bold"/>
 
-            </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/darker_grey"/>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/darker_grey"/>
+            </RelativeLayout>
+
 
             <com.mozu.mozuandroidinstoreassistant.app.views.LoadingView
                 android:id="@+id/notes_loading_view"

@@ -53,6 +53,8 @@ public class OrderDetailNotesFragment extends Fragment {
     TextView mShowInternalNotes;
     @InjectView(R.id.add_internal_note)
     Button mAddInternalNote;
+    @InjectView(R.id.internal_note_header)
+    View header;
 
 
     @InjectView(R.id.customer_notes)
@@ -114,6 +116,8 @@ public class OrderDetailNotesFragment extends Fragment {
         setCustomerNotes();
         if (mOrder == null || mOrder.getNotes() == null || mOrder.getNotes().size() < 1) {
             mNotesLoadingView.setError(getActivity().getResources().getString(R.string.not_internal_notes_available));
+            mNotesLoadingView.getErrorTextView().setTextColor(getResources().getColor(android.R.color.darker_gray));
+            header.setVisibility(View.GONE);
         } else {
             mNotesLoadingView.success();
         }
@@ -254,12 +258,12 @@ public class OrderDetailNotesFragment extends Fragment {
     private void setCustomerNotes() {
         if (mOrder.getShopperNotes() == null || mOrder.getShopperNotes().getComments() == null) {
             if (mOrder.getStatus().equalsIgnoreCase("Pending")) {
-                mCustomerNote.setHint("Add Customer Notes Here");
+                mCustomerNote.setHint(R.string.add_customer_note_title);
                 mCustomerNote.setEnabled(true);
                 mCustomerNote.setFocusableInTouchMode(true);
                 mCustomerNote.setFocusable(true);
             } else {
-                mCustomerNote.setText("No Customer Notes Available");
+                mCustomerNote.setText(R.string.not_customer_notes_available);
 
             }
         } else {
@@ -307,7 +311,7 @@ public class OrderDetailNotesFragment extends Fragment {
         AndroidObservable.bindFragment(this, NewOrderManager.getInstance().getUpdateOrderObservable(order.getTenantId(), order.getSiteId(), order, order.getId())).subscribe(new Subscriber<Order>() {
             @Override
             public void onCompleted() {
-                Toast.makeText(getActivity(), "Customer Notes Saved Successfully", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), R.string.customer_notes_saved, Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -371,6 +375,8 @@ public class OrderDetailNotesFragment extends Fragment {
                         internalNotesAdapter.notifyDataSetChanged();
                         if (mOrder.getNotes().size() < 1) {
                             mNotesLoadingView.setError(getActivity().getResources().getString(R.string.not_internal_notes_available));
+                            mNotesLoadingView.getErrorTextView().setTextColor(getResources().getColor(android.R.color.darker_gray));
+                            header.setVisibility(View.GONE);
                         }
                     }
                 }, new Action1<Throwable>() {
@@ -392,6 +398,7 @@ public class OrderDetailNotesFragment extends Fragment {
                         internalNotesAdapter.setData(mOrder.getNotes());
                         internalNotesAdapter.notifyDataSetChanged();
                         mNotesLoadingView.success();
+                        header.setVisibility(View.VISIBLE);
                     }
                 }, new Action1<Throwable>() {
                     @Override

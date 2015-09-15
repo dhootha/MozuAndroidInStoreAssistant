@@ -52,21 +52,17 @@ import rx.schedulers.Schedulers;
 
 public class NewOrderCreateFragment extends Fragment implements NewOrderItemEditFragment.onItemEditDoneListener, NewOrderShippingItemLayout.OrderUpdateListener {
 
-    private View mView;
     @InjectView(R.id.product_lookup)
     public CustomerLookupAutoCompleteTextView mProductLookup;
-
     @InjectView(R.id.product_search_loading)
     public ProgressBar mProductSearchLoading;
-
-
     @InjectView(R.id.product_listview)
     public ListView mOrderProducts;
-
-    private int mTenantId;
-    private int mSiteId;
     Subscription mSubscription;
     ProductSuggestionAdapter mAdapter;
+    private View mView;
+    private int mTenantId;
+    private int mSiteId;
     private NewOrderProductAdapter mProductsAdapter;
     private Order mOrder;
     private boolean mIsEditMode;
@@ -77,6 +73,166 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
         return newOrderCreateFragment;
     }
 
+    public static com.mozu.api.contracts.commerceruntime.products.Product convertProduct(Product inProduct) {
+        com.mozu.api.contracts.commerceruntime.products.Product outProduct =
+                new com.mozu.api.contracts.commerceruntime.products.Product();
+
+        outProduct.setImageUrl(inProduct.getContent().getProductImages().get(0).getImageUrl());
+        if (inProduct.getBundledProducts() != null) {
+            List<com.mozu.api.contracts.commerceruntime.products.BundledProduct> outBundledProducts = new ArrayList<>();
+            for (BundledProduct inBundledProduct : inProduct.getBundledProducts()) {
+                outBundledProducts.add(convertBundledProduct(inBundledProduct));
+            }
+            outProduct.setBundledProducts(outBundledProducts);
+        } else {
+            outProduct.setBundledProducts(new ArrayList<com.mozu.api.contracts.commerceruntime.products.BundledProduct>());
+        }
+
+        if (inProduct.getCategories() != null) {
+            List<com.mozu.api.contracts.commerceruntime.products.Category> outCategories = new ArrayList<>();
+            for (Category inCategory : inProduct.getCategories()) {
+                outCategories.add(convertCategory(inCategory));
+            }
+            outProduct.setCategories(outCategories);
+        } else {
+            outProduct.setCategories(new ArrayList<com.mozu.api.contracts.commerceruntime.products.Category>());
+        }
+
+        outProduct.setDescription(inProduct.getContent() != null ? inProduct.getContent().getProductShortDescription() : null);
+        outProduct.setFulfillmentTypesSupported(inProduct.getFulfillmentTypesSupported());
+        outProduct.setIsPackagedStandAlone(inProduct.getIsPackagedStandAlone());
+        outProduct.setIsRecurring(inProduct.getIsRecurring());
+        outProduct.setIsTaxable(inProduct.getIsTaxable());
+        outProduct.setMeasurements(convertMeasurements(inProduct.getMeasurements()));
+        outProduct.setMfgPartNumber(inProduct.getMfgPartNumber());
+        outProduct.setName(inProduct.getContent() != null ? inProduct.getContent().getProductName() : null);
+
+        if (inProduct.getOptions() != null) {
+            List<com.mozu.api.contracts.commerceruntime.products.ProductOption> options = new ArrayList<>();
+            for (com.mozu.api.contracts.productruntime.ProductOption inOption : inProduct.getOptions()) {
+                options.add(convertOptions(inOption));
+            }
+            outProduct.setOptions(options);
+        }
+
+        outProduct.setPrice(convertPrice(inProduct.getPrice()));
+
+        outProduct.setProductCode(inProduct.getProductCode());
+        outProduct.setProductType(inProduct.getProductType());
+        outProduct.setProductUsage(inProduct.getProductUsage());
+
+        if (inProduct.getProperties() != null) {
+            List<com.mozu.api.contracts.commerceruntime.products.ProductProperty> properties = new ArrayList<>();
+            for (ProductProperty inProperty : inProduct.getProperties()) {
+                properties.add(convertProperties(inProperty));
+            }
+            outProduct.setProperties(properties);
+        }
+
+        outProduct.setUpc(inProduct.getUpc());
+        outProduct.setVariationProductCode(inProduct.getVariationProductCode());
+
+        return outProduct;
+    }
+
+    public static com.mozu.api.contracts.commerceruntime.products.ProductProperty convertProperties(
+            ProductProperty inProperty) {
+        com.mozu.api.contracts.commerceruntime.products.ProductProperty outProperty =
+                new com.mozu.api.contracts.commerceruntime.products.ProductProperty();
+        outProperty.setAttributeFQN(inProperty.getAttributeFQN());
+        if (inProperty.getAttributeDetail() != null) {
+            outProperty.setDataType(inProperty.getAttributeDetail().getDataType());
+            outProperty.setName(inProperty.getAttributeDetail().getName());
+        }
+        outProperty.setIsMultiValue(inProperty.getIsMultiValue());
+        List<com.mozu.api.contracts.commerceruntime.products.ProductPropertyValue> values = new ArrayList<>();
+        for (ProductPropertyValue inValue : inProperty.getValues()) {
+            values.add(convertProductPropertyValue(inValue));
+        }
+        outProperty.setValues(values);
+        return outProperty;
+    }
+
+    public static com.mozu.api.contracts.commerceruntime.products.ProductPropertyValue convertProductPropertyValue(
+            ProductPropertyValue inProperty) {
+        com.mozu.api.contracts.commerceruntime.products.ProductPropertyValue outProperty =
+                new com.mozu.api.contracts.commerceruntime.products.ProductPropertyValue();
+        outProperty.setStringValue(inProperty.getStringValue());
+        outProperty.setValue(inProperty.getValue());
+        return outProperty;
+    }
+
+    public static com.mozu.api.contracts.commerceruntime.products.ProductPrice convertPrice(ProductPrice inPrice) {
+        com.mozu.api.contracts.commerceruntime.products.ProductPrice outPrice =
+                new com.mozu.api.contracts.commerceruntime.products.ProductPrice();
+        if (inPrice != null) {
+            outPrice.setMsrp(inPrice.getMsrp());
+            outPrice.setPrice(inPrice.getPrice());
+            outPrice.setSalePrice(inPrice.getSalePrice());
+        }
+        return outPrice;
+    }
+
+    public static com.mozu.api.contracts.commerceruntime.products.ProductOption convertOptions(
+            ProductOption inOption) {
+        com.mozu.api.contracts.commerceruntime.products.ProductOption outOption =
+                new com.mozu.api.contracts.commerceruntime.products.ProductOption();
+        outOption.setAttributeFQN(inOption.getAttributeFQN());
+        if (inOption.getAttributeDetail() != null) {
+            outOption.setDataType(inOption.getAttributeDetail().getDataType());
+            outOption.setName(inOption.getAttributeDetail().getName());
+        }
+        for (ProductOptionValue productOptionValue : inOption.getValues()) {
+            if (productOptionValue.getIsSelected()) {
+                outOption.setShopperEnteredValue(productOptionValue.getShopperEnteredValue());
+                outOption.setValue(productOptionValue.getValue());
+            }
+        }
+
+        return outOption;
+    }
+
+    public static com.mozu.api.contracts.commerceruntime.products.Category convertCategory(
+            Category inCategory) {
+        if (inCategory == null)
+            return null;
+
+        com.mozu.api.contracts.commerceruntime.products.Category outCategory =
+                new com.mozu.api.contracts.commerceruntime.products.Category();
+        outCategory.setId(inCategory.getCategoryId());
+        outCategory.setParent(convertCategory(inCategory.getParentCategory()));
+        return outCategory;
+    }
+
+    public static com.mozu.api.contracts.commerceruntime.products.BundledProduct convertBundledProduct(
+            BundledProduct inBundledProduct) {
+        com.mozu.api.contracts.commerceruntime.products.BundledProduct outBundledProduct =
+                new com.mozu.api.contracts.commerceruntime.products.BundledProduct();
+        outBundledProduct.setIsPackagedStandAlone(inBundledProduct.getIsPackagedStandAlone());
+        outBundledProduct.setMeasurements(convertMeasurements(inBundledProduct.getMeasurements()));
+        if (inBundledProduct.getContent() != null) {
+            outBundledProduct.setDescription(inBundledProduct.getContent().getProductShortDescription());
+            outBundledProduct.setName(inBundledProduct.getContent().getProductName());
+        }
+
+        outBundledProduct.setProductCode(inBundledProduct.getProductCode());
+        outBundledProduct.setQuantity(inBundledProduct.getQuantity());
+        return outBundledProduct;
+    }
+
+    public static PackageMeasurements convertMeasurements(
+            com.mozu.api.contracts.productruntime.PackageMeasurements measurements) {
+        com.mozu.api.contracts.commerceruntime.commerce.PackageMeasurements pkgMeasurements =
+                new com.mozu.api.contracts.commerceruntime.commerce.PackageMeasurements();
+        if (measurements != null) {
+            pkgMeasurements.setHeight(measurements.getPackageHeight());
+            pkgMeasurements.setLength(measurements.getPackageLength());
+            pkgMeasurements.setWeight(measurements.getPackageWeight());
+            pkgMeasurements.setWidth(measurements.getPackageWidth());
+        }
+        return pkgMeasurements;
+    }
+
     public void setOrder(Order order) {
         mOrder = order;
     }
@@ -84,7 +240,6 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
     public void setEditMode(Boolean isEditMode) {
         mIsEditMode = isEditMode;
     }
-
 
     @Override
     public void setUserVisibleHint(final boolean isVisibleToUser) {
@@ -257,166 +412,6 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
             }
         });
         updateEditMode(mIsEditMode);
-    }
-
-    public static com.mozu.api.contracts.commerceruntime.products.Product convertProduct(Product inProduct) {
-        com.mozu.api.contracts.commerceruntime.products.Product outProduct =
-                new com.mozu.api.contracts.commerceruntime.products.Product();
-
-        outProduct.setImageUrl(inProduct.getContent().getProductImages().get(0).getImageUrl());
-        if (inProduct.getBundledProducts() != null) {
-            List<com.mozu.api.contracts.commerceruntime.products.BundledProduct> outBundledProducts = new ArrayList<>();
-            for (BundledProduct inBundledProduct : inProduct.getBundledProducts()) {
-                outBundledProducts.add(convertBundledProduct(inBundledProduct));
-            }
-            outProduct.setBundledProducts(outBundledProducts);
-        } else {
-            outProduct.setBundledProducts(new ArrayList<com.mozu.api.contracts.commerceruntime.products.BundledProduct>());
-        }
-
-        if (inProduct.getCategories() != null) {
-            List<com.mozu.api.contracts.commerceruntime.products.Category> outCategories = new ArrayList<>();
-            for (Category inCategory : inProduct.getCategories()) {
-                outCategories.add(convertCategory(inCategory));
-            }
-            outProduct.setCategories(outCategories);
-        } else {
-            outProduct.setCategories(new ArrayList<com.mozu.api.contracts.commerceruntime.products.Category>());
-        }
-
-        outProduct.setDescription(inProduct.getContent() != null ? inProduct.getContent().getProductShortDescription() : null);
-        outProduct.setFulfillmentTypesSupported(inProduct.getFulfillmentTypesSupported());
-        outProduct.setIsPackagedStandAlone(inProduct.getIsPackagedStandAlone());
-        outProduct.setIsRecurring(inProduct.getIsRecurring());
-        outProduct.setIsTaxable(inProduct.getIsTaxable());
-        outProduct.setMeasurements(convertMeasurements(inProduct.getMeasurements()));
-        outProduct.setMfgPartNumber(inProduct.getMfgPartNumber());
-        outProduct.setName(inProduct.getContent() != null ? inProduct.getContent().getProductName() : null);
-
-        if (inProduct.getOptions() != null) {
-            List<com.mozu.api.contracts.commerceruntime.products.ProductOption> options = new ArrayList<>();
-            for (com.mozu.api.contracts.productruntime.ProductOption inOption : inProduct.getOptions()) {
-                options.add(convertOptions(inOption));
-            }
-            outProduct.setOptions(options);
-        }
-
-        outProduct.setPrice(convertPrice(inProduct.getPrice()));
-
-        outProduct.setProductCode(inProduct.getProductCode());
-        outProduct.setProductType(inProduct.getProductType());
-        outProduct.setProductUsage(inProduct.getProductUsage());
-
-        if (inProduct.getProperties() != null) {
-            List<com.mozu.api.contracts.commerceruntime.products.ProductProperty> properties = new ArrayList<>();
-            for (ProductProperty inProperty : inProduct.getProperties()) {
-                properties.add(convertProperties(inProperty));
-            }
-            outProduct.setProperties(properties);
-        }
-
-        outProduct.setUpc(inProduct.getUpc());
-        outProduct.setVariationProductCode(inProduct.getVariationProductCode());
-
-        return outProduct;
-    }
-
-    public static com.mozu.api.contracts.commerceruntime.products.ProductProperty convertProperties(
-            ProductProperty inProperty) {
-        com.mozu.api.contracts.commerceruntime.products.ProductProperty outProperty =
-                new com.mozu.api.contracts.commerceruntime.products.ProductProperty();
-        outProperty.setAttributeFQN(inProperty.getAttributeFQN());
-        if (inProperty.getAttributeDetail() != null) {
-            outProperty.setDataType(inProperty.getAttributeDetail().getDataType());
-            outProperty.setName(inProperty.getAttributeDetail().getName());
-        }
-        outProperty.setIsMultiValue(inProperty.getIsMultiValue());
-        List<com.mozu.api.contracts.commerceruntime.products.ProductPropertyValue> values = new ArrayList<>();
-        for (ProductPropertyValue inValue : inProperty.getValues()) {
-            values.add(convertProductPropertyValue(inValue));
-        }
-        outProperty.setValues(values);
-        return outProperty;
-    }
-
-    public static com.mozu.api.contracts.commerceruntime.products.ProductPropertyValue convertProductPropertyValue(
-            ProductPropertyValue inProperty) {
-        com.mozu.api.contracts.commerceruntime.products.ProductPropertyValue outProperty =
-                new com.mozu.api.contracts.commerceruntime.products.ProductPropertyValue();
-        outProperty.setStringValue(inProperty.getStringValue());
-        outProperty.setValue(inProperty.getValue());
-        return outProperty;
-    }
-
-    public static com.mozu.api.contracts.commerceruntime.products.ProductPrice convertPrice(ProductPrice inPrice) {
-        com.mozu.api.contracts.commerceruntime.products.ProductPrice outPrice =
-                new com.mozu.api.contracts.commerceruntime.products.ProductPrice();
-        if (inPrice != null) {
-            outPrice.setMsrp(inPrice.getMsrp());
-            outPrice.setPrice(inPrice.getPrice());
-            outPrice.setSalePrice(inPrice.getSalePrice());
-        }
-        return outPrice;
-    }
-
-    public static com.mozu.api.contracts.commerceruntime.products.ProductOption convertOptions(
-            ProductOption inOption) {
-        com.mozu.api.contracts.commerceruntime.products.ProductOption outOption =
-                new com.mozu.api.contracts.commerceruntime.products.ProductOption();
-        outOption.setAttributeFQN(inOption.getAttributeFQN());
-        if (inOption.getAttributeDetail() != null) {
-            outOption.setDataType(inOption.getAttributeDetail().getDataType());
-            outOption.setName(inOption.getAttributeDetail().getName());
-        }
-        for (ProductOptionValue productOptionValue : inOption.getValues()) {
-            if (productOptionValue.getIsSelected()) {
-                outOption.setShopperEnteredValue(productOptionValue.getShopperEnteredValue());
-                outOption.setValue(productOptionValue.getValue());
-            }
-        }
-
-        return outOption;
-    }
-
-    public static com.mozu.api.contracts.commerceruntime.products.Category convertCategory(
-            Category inCategory) {
-        if (inCategory == null)
-            return null;
-
-        com.mozu.api.contracts.commerceruntime.products.Category outCategory =
-                new com.mozu.api.contracts.commerceruntime.products.Category();
-        outCategory.setId(inCategory.getCategoryId());
-        outCategory.setParent(convertCategory(inCategory.getParentCategory()));
-        return outCategory;
-    }
-
-    public static com.mozu.api.contracts.commerceruntime.products.BundledProduct convertBundledProduct(
-            BundledProduct inBundledProduct) {
-        com.mozu.api.contracts.commerceruntime.products.BundledProduct outBundledProduct =
-                new com.mozu.api.contracts.commerceruntime.products.BundledProduct();
-        outBundledProduct.setIsPackagedStandAlone(inBundledProduct.getIsPackagedStandAlone());
-        outBundledProduct.setMeasurements(convertMeasurements(inBundledProduct.getMeasurements()));
-        if (inBundledProduct.getContent() != null) {
-            outBundledProduct.setDescription(inBundledProduct.getContent().getProductShortDescription());
-            outBundledProduct.setName(inBundledProduct.getContent().getProductName());
-        }
-
-        outBundledProduct.setProductCode(inBundledProduct.getProductCode());
-        outBundledProduct.setQuantity(inBundledProduct.getQuantity());
-        return outBundledProduct;
-    }
-
-    public static PackageMeasurements convertMeasurements(
-            com.mozu.api.contracts.productruntime.PackageMeasurements measurements) {
-        com.mozu.api.contracts.commerceruntime.commerce.PackageMeasurements pkgMeasurements =
-                new com.mozu.api.contracts.commerceruntime.commerce.PackageMeasurements();
-        if (measurements != null) {
-            pkgMeasurements.setHeight(measurements.getPackageHeight());
-            pkgMeasurements.setLength(measurements.getPackageLength());
-            pkgMeasurements.setWeight(measurements.getPackageWeight());
-            pkgMeasurements.setWidth(measurements.getPackageWidth());
-        }
-        return pkgMeasurements;
     }
 
     @Override
