@@ -41,14 +41,22 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
     private int mSiteId;
     private CustomerLookupAdapter mAdapter;
     private String mQuery = "";
+    private boolean mCanCreate;
+    private CustomerListener mListener;
 
-    public static CustomerLookupFragment getInstance(int tenantId, int siteId) {
+
+    public static CustomerLookupFragment getInstance(int tenantId, int siteId, boolean canCreate) {
         CustomerLookupFragment fragment = new CustomerLookupFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(CustomerUpdateActivity.CURRENT_TENANT_ID, tenantId);
         bundle.putInt(CustomerUpdateActivity.CURRENT_SITE_ID, siteId);
+        bundle.putBoolean(CustomerUpdateActivity.CAN_CREATE, canCreate);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    public void setListener(CustomerListener listener) {
+        mListener = listener;
     }
 
     @Override
@@ -57,6 +65,7 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
         if (getArguments() != null) {
             mTenantId = getArguments().getInt(CustomerUpdateActivity.CURRENT_TENANT_ID);
             mSiteId = getArguments().getInt(CustomerUpdateActivity.CURRENT_SITE_ID);
+            mCanCreate = getArguments().getBoolean(CustomerUpdateActivity.CAN_CREATE);
 
         }
         getLoaderManager().initLoader(LOADER_CUSTOMER, null, this);
@@ -107,6 +116,9 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
                 //DO NOTHING
             }
         });
+        if (!mCanCreate) {
+            mCreateCustomer.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -138,12 +150,16 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
         launchCreateCustomerDialog(null, false);
     }
 
-
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
         if (adapterView.getItemAtPosition(position) instanceof CustomerAccount) {
             CustomerAccount customerAccount = (CustomerAccount) adapterView.getItemAtPosition(position);
-            launchCreateCustomerDialog(customerAccount, true);
+            if (mCanCreate) {
+                launchCreateCustomerDialog(customerAccount, true);
+            } else {
+                //goto customer
+                mListener.customerSelected(customerAccount);
+            }
         }
     }
 

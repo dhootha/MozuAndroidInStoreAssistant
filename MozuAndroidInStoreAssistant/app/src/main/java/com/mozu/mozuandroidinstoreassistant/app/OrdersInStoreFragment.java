@@ -25,6 +25,7 @@ import com.mozu.mozuandroidinstoreassistant.app.order.OrderListener;
 import com.mozu.mozuandroidinstoreassistant.app.order.adapters.OrderInStoreLookupAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.order.loaders.OrdersLoader;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -168,12 +169,11 @@ public class OrdersInStoreFragment extends Fragment implements AdapterView.OnIte
         mOrderCreateListener.createNewOrder();
     }
 
-
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-        if (adapterView.getItemAtPosition(position) instanceof CustomerAccount) {
-            CustomerAccount customerAccount = (CustomerAccount) adapterView.getItemAtPosition(position);
-            launchCreateCustomerDialog(customerAccount, true);
+        if (adapterView.getItemAtPosition(position) instanceof Order) {
+            Order order = (Order) adapterView.getItemAtPosition(position);
+            mListener.orderSelected(order, new ArrayList<Order>(), 0);
         }
     }
 

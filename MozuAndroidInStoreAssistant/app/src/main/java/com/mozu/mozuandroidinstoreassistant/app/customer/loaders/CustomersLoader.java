@@ -146,15 +146,6 @@ public class CustomersLoader extends InternetConnectedAsyncTaskLoader<List<Custo
         super.onReset();
     }
 
-
-    public void setSearchQuery(String mSearchQuery) {
-        this.mSearchQuery = mSearchQuery;
-    }
-
-    public void setSearchFilter(String mSearchFilter) {
-        this.mSearchFilter = mSearchFilter;
-    }
-
     private List<CustomerAccount> loadCustomersFromWeb() {
         List<CustomerAccount> allCustomers = new ArrayList<CustomerAccount>();
 

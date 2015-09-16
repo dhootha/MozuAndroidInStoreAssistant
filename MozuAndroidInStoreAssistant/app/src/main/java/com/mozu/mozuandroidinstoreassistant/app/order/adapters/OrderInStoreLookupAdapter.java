@@ -53,7 +53,7 @@ public class OrderInStoreLookupAdapter extends ArrayAdapter<Order> {
             @Override
             public CharSequence convertResultToString(Object resultValue) {
                 Order order = (Order) resultValue;
-                return order.getId() + " - " + order.getEmail();
+                return order.getOrderNumber() + " - " + order.getEmail();
             }
         };
 

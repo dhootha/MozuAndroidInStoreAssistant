@@ -22,6 +22,7 @@ import com.mozu.mozuandroidinstoreassistant.app.category.CategoryFragment;
 import com.mozu.mozuandroidinstoreassistant.app.category.CategoryFragmentListener;
 import com.mozu.mozuandroidinstoreassistant.app.category.CategoryProductFragment;
 import com.mozu.mozuandroidinstoreassistant.app.customer.CustomerListener;
+import com.mozu.mozuandroidinstoreassistant.app.customer.CustomerLookupFragment;
 import com.mozu.mozuandroidinstoreassistant.app.customer.CustomersFragment;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
@@ -270,11 +271,17 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
 
     private void initializeCustomersFragment() {
         UserAuthenticationStateMachine userStateMachine = UserAuthenticationStateMachineProducer.getInstance(this);
-        CustomersFragment fragment = new CustomersFragment();
-        fragment.setTenantId(userStateMachine.getTenantId());
-        fragment.setSiteId(userStateMachine.getSiteId());
-        fragment.setListener(this);
-        addMainFragment(fragment, true);
+        if (((MozuApplication) getApplication()).isAdminMode()) {
+            CustomersFragment fragment = new CustomersFragment();
+            fragment.setTenantId(userStateMachine.getTenantId());
+            fragment.setSiteId(userStateMachine.getSiteId());
+            fragment.setListener(this);
+            addMainFragment(fragment, true);
+        } else {
+            CustomerLookupFragment fragment = CustomerLookupFragment.getInstance(userStateMachine.getTenantId(), userStateMachine.getSiteId(), false);
+            fragment.setListener(this);
+            addMainFragment(fragment, true);
+        }
     }
 
     private void initializeProductFragment(Category category) {
