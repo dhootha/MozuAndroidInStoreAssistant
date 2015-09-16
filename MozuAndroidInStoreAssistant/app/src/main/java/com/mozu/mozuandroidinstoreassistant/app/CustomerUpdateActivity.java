@@ -22,6 +22,7 @@ public class CustomerUpdateActivity extends BaseActivity implements CustomerCrea
     public static final String CURRENT_SITE_ID = "curSiteIdWhenActLoaded";
     public static final String ORDER_CUSTOMER_EXTRA_KEY = "order_customer";
     public static final int CREATE_CUSTOMER = 1;
+    public static final String CAN_CREATE = "can create";
     private static String BILLING = "billing";
     private static String SHIPPING = "shipping";
     private Integer mTenantId;

@@ -12,10 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.mozu.api.security.AppAuthenticator;
+import com.mozu.mozuandroidinstoreassistant.MozuApplication;
 import com.mozu.mozuandroidinstoreassistant.app.ChooseTenantAndSiteActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.models.UserPreferences;
@@ -28,11 +31,18 @@ import butterknife.InjectView;
 
 public class SettingsFragment extends DialogFragment {
 
-    @InjectView(R.id.imageView_close) ImageView mImageClose;
-    @InjectView(R.id.default_store_value) TextView mDefaultStore;
-    @InjectView(R.id.website_value) TextView mWebsiteValue;
-    @InjectView(R.id.clear_search) Button mClearSearch;
-    @InjectView(R.id.update_store) Button mUpdateStore;
+    @InjectView(R.id.imageView_close)
+    ImageView mImageClose;
+    @InjectView(R.id.default_store_value)
+    TextView mDefaultStore;
+    @InjectView(R.id.website_value)
+    TextView mWebsiteValue;
+    @InjectView(R.id.clear_search)
+    Button mClearSearch;
+    @InjectView(R.id.update_store)
+    Button mUpdateStore;
+    @InjectView(R.id.mode)
+    Switch mMode;
 
     private UserAuthenticationStateMachine mUserState;
 
@@ -50,7 +60,7 @@ public class SettingsFragment extends DialogFragment {
         return view;
     }
 
-    private void setUpViews(){
+    private void setUpViews() {
         StringBuilder store = new StringBuilder();
         if (mUserState.getTenantName() != null && mUserState.getSiteName() != null) {
             if (mUserState.getTenantName() != null) {
@@ -111,7 +121,7 @@ public class SettingsFragment extends DialogFragment {
                         }
                     });
                     AlertDialog dialog = builder.show();
-                    TextView messageText = (TextView)dialog.findViewById(android.R.id.message);
+                    TextView messageText = (TextView) dialog.findViewById(android.R.id.message);
                     messageText.setGravity(Gravity.CENTER);
                     dialog.show();
                 }
@@ -119,10 +129,18 @@ public class SettingsFragment extends DialogFragment {
         } else {
             mClearSearch.setEnabled(false);
         }
+        mMode.setChecked(((MozuApplication) getActivity().getApplication()).isAdminMode());
+        mMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                ((MozuApplication) getActivity().getApplication()).setIsAdminMode(isChecked);
+
+            }
+        });
     }
 
 
-    private boolean enableClearSearch(){
+    private boolean enableClearSearch() {
         UserPreferences prefs = mUserState.getCurrentUsersPreferences();
         if (prefs.getRecentCustomerSearches().size() > 0) {
             return true;
@@ -140,7 +158,7 @@ public class SettingsFragment extends DialogFragment {
         return false;
     }
 
-    private void clearSearch(){
+    private void clearSearch() {
         UserPreferences prefs = mUserState.getCurrentUsersPreferences();
         prefs.getRecentCustomerSearches().clear();
         prefs.getRecentOrderSearches().clear();
@@ -149,11 +167,13 @@ public class SettingsFragment extends DialogFragment {
         mUserState.updateUserPreferences();
         mClearSearch.setEnabled(false);
     }
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog dialog = super.onCreateDialog(savedInstanceState);
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         return dialog;
     }
+
 
 }
