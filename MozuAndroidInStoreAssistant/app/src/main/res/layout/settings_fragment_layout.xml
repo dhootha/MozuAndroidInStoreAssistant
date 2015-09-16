@@ -44,8 +44,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="false"
-            android:textOff="In Store"
-            android:textOn="Admin"
+            android:textOff="@string/associate"
+            android:textOn="@string/manager"
             />
     </LinearLayout>
 
