@@ -34,12 +34,12 @@ public class OrdersInStoreFragment extends Fragment implements AdapterView.OnIte
 
     public static final int LOADER_CUSTOMER = 452;
     public static final int CREATE_CUSTOMER = 1;
-    @InjectView(R.id.customer_lookup)
-    AutoCompleteTextView customerLookup;
+    @InjectView(R.id.lookup)
+    AutoCompleteTextView orderLookup;
     @InjectView(R.id.create)
-    Button mCreateCustomer;
+    Button mCreateOrder;
     @InjectView(R.id.lookup_spinner)
-    ProgressBar mCustomerProgressBar;
+    ProgressBar mOrderProgressBar;
     private String mQuery = "";
     private Integer mTenantId;
     private Integer mSiteId;
@@ -99,9 +99,9 @@ public class OrdersInStoreFragment extends Fragment implements AdapterView.OnIte
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        customerLookup.setThreshold(0);
-        customerLookup.setOnItemClickListener(this);
-        customerLookup.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        orderLookup.setThreshold(0);
+        orderLookup.setOnItemClickListener(this);
+        orderLookup.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
@@ -112,8 +112,8 @@ public class OrdersInStoreFragment extends Fragment implements AdapterView.OnIte
                 }
             }
         });
-        mCreateCustomer.setOnClickListener(this);
-        customerLookup.addTextChangedListener(new TextWatcher() {
+        mCreateOrder.setOnClickListener(this);
+        orderLookup.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 //DO NOTHING
@@ -121,10 +121,10 @@ public class OrdersInStoreFragment extends Fragment implements AdapterView.OnIte
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                mQuery = customerLookup.getText().toString();
+                mQuery = orderLookup.getText().toString();
                 getLoaderManager().restartLoader(LOADER_CUSTOMER, null, OrdersInStoreFragment.this);
                 Loader<List<Order>> loader = getLoaderManager().getLoader(LOADER_CUSTOMER);
-                mCustomerProgressBar.setVisibility(View.VISIBLE);
+                mOrderProgressBar.setVisibility(View.VISIBLE);
                 mOrdersLoader = (OrdersLoader) loader;
                 mOrdersLoader.forceLoad();
             }
@@ -139,18 +139,18 @@ public class OrdersInStoreFragment extends Fragment implements AdapterView.OnIte
     @Override
     public Loader<List<Order>> onCreateLoader(int id, Bundle args) {
         OrdersLoader loader = new OrdersLoader(getActivity(), mTenantId, mSiteId);
-        if (!TextUtils.isEmpty(mDefaultSearchQuery)) {
-            loader.setQueryFilter(mDefaultSearchQuery);
+        if (!TextUtils.isEmpty(mQuery)) {
+            loader.setQueryFilter(mQuery);
         }
         return loader;
     }
 
     @Override
     public void onLoadFinished(Loader<List<Order>> loader, List<Order> data) {
-        mCustomerProgressBar.setVisibility(View.INVISIBLE);
+        mOrderProgressBar.setVisibility(View.INVISIBLE);
         if (mAdapter == null) {
             mAdapter = new OrderInStoreLookupAdapter(getActivity());
-            customerLookup.setAdapter(mAdapter);
+            orderLookup.setAdapter(mAdapter);
         }
 
         mAdapter.clear();
@@ -165,7 +165,7 @@ public class OrdersInStoreFragment extends Fragment implements AdapterView.OnIte
 
     @Override
     public void onClick(View v) {
-//        launchCreateCustomerDialog(null, false);
+        mOrderCreateListener.createNewOrder();
     }
 
 
