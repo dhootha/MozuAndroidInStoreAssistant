@@ -33,7 +33,8 @@ public class CustomersLoader extends InternetConnectedAsyncTaskLoader<List<Custo
 
     private boolean mIsLoading;
 
-    private String mSearchQueryFilter;
+    private String mSearchQuery;
+    private String mSearchFilter;
     private String mCurrentSort;
 
     public CustomersLoader(Context context, Integer tenantId, Integer siteId) {
@@ -49,7 +50,7 @@ public class CustomersLoader extends InternetConnectedAsyncTaskLoader<List<Custo
         super(context);
         mTenantId = tenantId;
         mSiteId = siteId;
-        mSearchQueryFilter = query;
+        mSearchQuery = query;
         mCurrentSort = SORT_CUSTOMER_DSC;
         mCurrentOrderBy = CUSTOMER_CUSTOMER_NUMBER;
         init();
@@ -67,11 +68,11 @@ public class CustomersLoader extends InternetConnectedAsyncTaskLoader<List<Custo
 
         mIsLoading = false;
 
-        if(mSearchQueryFilter == null) {
-            mSearchQueryFilter = "";
+        if (mSearchQuery == null) {
+            mSearchQuery = "";
         }
 
-        mCustomersList = new ArrayList<CustomerAccount>();
+        mCustomersList = new ArrayList<>();
 
     }
 
@@ -94,7 +95,7 @@ public class CustomersLoader extends InternetConnectedAsyncTaskLoader<List<Custo
 
         mCustomersList = null;
 
-        mCustomersList = new ArrayList<CustomerAccount>(tmpCustomer);
+        mCustomersList = new ArrayList<>(tmpCustomer);
 
         mIsLoading = false;
 
@@ -113,7 +114,7 @@ public class CustomersLoader extends InternetConnectedAsyncTaskLoader<List<Custo
     @Override
     protected void onStartLoading() {
         if (mCustomersList == null) {
-            mCustomersList = new ArrayList<CustomerAccount>();
+            mCustomersList = new ArrayList<>();
         }
 
         if (takeContentChanged())
@@ -145,6 +146,15 @@ public class CustomersLoader extends InternetConnectedAsyncTaskLoader<List<Custo
         super.onReset();
     }
 
+
+    public void setSearchQuery(String mSearchQuery) {
+        this.mSearchQuery = mSearchQuery;
+    }
+
+    public void setSearchFilter(String mSearchFilter) {
+        this.mSearchFilter = mSearchFilter;
+    }
+
     private List<CustomerAccount> loadCustomersFromWeb() {
         List<CustomerAccount> allCustomers = new ArrayList<CustomerAccount>();
 
@@ -153,10 +163,10 @@ public class CustomersLoader extends InternetConnectedAsyncTaskLoader<List<Custo
         CustomerAccountResource customerResource = new CustomerAccountResource(new MozuApiContext(mTenantId, mSiteId));
 
         try {
-            if (!TextUtils.isEmpty(mSearchQueryFilter)) {String filter = "firstName sw " + mSearchQueryFilter + " or lastName sw " + mSearchQueryFilter + " or emailAddress cont " + mSearchQueryFilter;
-                customerCollection = customerResource.getAccounts(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, null, filter, null, null, null, false, null);
+            if (!TextUtils.isEmpty(mSearchQuery)) {
+                customerCollection = customerResource.getAccounts(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, null, null, null, mSearchQuery, null, false, null);
             } else {
-                customerCollection = customerResource.getAccounts(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mCurrentOrderBy +" "+mCurrentSort, null, null, null, null, false, null);
+                customerCollection = customerResource.getAccounts(mCurrentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mCurrentOrderBy + " " + mCurrentSort, null, null, null, null, false, null);
             }
 
             mTotalPages = (int) Math.ceil(customerCollection.getTotalCount() * 1.0f / ITEMS_PER_PAGE * 1.0f);
@@ -183,18 +193,18 @@ public class CustomersLoader extends InternetConnectedAsyncTaskLoader<List<Custo
     }
 
     public void setFilter(String filter) {
-        mSearchQueryFilter = filter;
+        mSearchQuery = filter;
     }
 
     public void removeFilter() {
-        mSearchQueryFilter = "";
+        mSearchQuery = "";
     }
 
-    private void toggleCurrentSortCustomer(){
+    private void toggleCurrentSortCustomer() {
         if (SORT_CUSTOMER_DSC.equalsIgnoreCase(mCurrentSort)) {
             mCurrentSort = SORT_CUSTOMER_ASC;
         } else {
-            mCurrentSort =  SORT_CUSTOMER_DSC;
+            mCurrentSort = SORT_CUSTOMER_DSC;
         }
     }
 
