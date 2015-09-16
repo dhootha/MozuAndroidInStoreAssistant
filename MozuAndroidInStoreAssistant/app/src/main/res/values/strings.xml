@@ -336,6 +336,7 @@
     <string name="clear">Clear</string>
     <string name="address_not_found">Address Not Found</string>
     <string name="customer_notes_saved">Customer note saved successfully</string>
+    <string name="mode_toggle">Toggle Mode</string>
     <string-array name="register_email_address">
         <item>mozumobile@volusion.com</item>
     </string-array>

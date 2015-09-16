@@ -12,6 +12,7 @@ import io.fabric.sdk.android.Fabric;
 public class MozuApplication extends Application {
 
     private ArrayMap<String, String> mLocations = new ArrayMap<>();
+    private boolean isAdminMode = false;
 
     @Override
     public void onCreate() {
@@ -22,14 +23,19 @@ public class MozuApplication extends Application {
         MozuAndroid.initialize(this);
     }
 
+    public ArrayMap<String, String> getLocations() {
+        return mLocations;
+    }
 
     public void setLocations(ArrayMap<String, String> locations) {
         mLocations = locations;
     }
 
-    public ArrayMap<String, String> getLocations() {
-        return mLocations;
+    public boolean isAdminMode() {
+        return isAdminMode;
     }
 
-
+    public void setIsAdminMode(boolean isAdminMode) {
+        this.isAdminMode = isAdminMode;
+    }
 }
