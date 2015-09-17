@@ -51,7 +51,7 @@ public class OrderCreationAddCustomerActivity extends BaseActivity {
             mSiteId = savedInstanceState.getInt(CURRENT_SITE_ID, -1);
         }
 
-        getFragmentManager().beginTransaction().replace(R.id.content_fragment_holder, CustomerLookupFragment.getInstance(mTenantId, mSiteId), "create").commit();
+        getFragmentManager().beginTransaction().replace(R.id.content_fragment_holder, CustomerLookupFragment.getInstance(mTenantId, mSiteId, true), "create").commit();
 
         if (getActionBar() != null) {
             getActionBar().setDisplayShowHomeEnabled(false);

@@ -1,4 +1,4 @@
-package com.mozu.mozuandroidinstoreassistant.app.customer.adapters;
+package com.mozu.mozuandroidinstoreassistant.app.order.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,32 +8,32 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.TextView;
 
-import com.mozu.api.contracts.customer.CustomerAccount;
+import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class CustomerLookupAdapter extends ArrayAdapter<CustomerAccount> {
+public class OrderInStoreLookupAdapter extends ArrayAdapter<Order> {
 
-    public CustomerLookupAdapter(Context context) {
-        super(context, R.layout.customer_list_item);
+    public OrderInStoreLookupAdapter(Context context) {
+        super(context, R.layout.order_lookup_item);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        CustomerLookupViewHolder viewHolder;
+        OrderLookupViewHolder viewHolder;
 
         if (convertView != null) {
-            viewHolder = (CustomerLookupViewHolder) convertView.getTag();
+            viewHolder = (OrderLookupViewHolder) convertView.getTag();
         } else {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.lookup_item, parent, false);
-            viewHolder = new CustomerLookupViewHolder(convertView);
+            viewHolder = new OrderLookupViewHolder(convertView);
             convertView.setTag(viewHolder);
         }
 
-        CustomerAccount customer = getItem(position);
-        viewHolder.customerLookup.setText(buildCustomerLookupItem(customer));
+        Order customer = getItem(position);
+        viewHolder.orderLookup.setText(buildCustomerLookupItem(customer));
         return convertView;
     }
 
@@ -52,31 +52,28 @@ public class CustomerLookupAdapter extends ArrayAdapter<CustomerAccount> {
 
             @Override
             public CharSequence convertResultToString(Object resultValue) {
-                CustomerAccount customerAccount = (CustomerAccount) resultValue;
-                return customerAccount.getFirstName() + " " + customerAccount.getLastName() + "-" + customerAccount.getEmailAddress();
+                Order order = (Order) resultValue;
+                return order.getOrderNumber() + " - " + order.getEmail();
             }
         };
 
     }
 
-    private String buildCustomerLookupItem(CustomerAccount customer) {
+    private String buildCustomerLookupItem(Order order) {
         StringBuilder builder = new StringBuilder();
-        builder.append(customer.getLastName())
-                .append(",")
-                .append(customer.getFirstName())
+        builder.append(order.getEmail())
                 .append(" - (")
-                .append(customer.getId())
-                .append(") ")
-                .append(customer.getEmailAddress());
+                .append(order.getOrderNumber())
+                .append(") ");
         return builder.toString();
 
     }
 
-    class CustomerLookupViewHolder {
+    class OrderLookupViewHolder {
         @InjectView(R.id.lookup)
-        TextView customerLookup;
+        TextView orderLookup;
 
-        public CustomerLookupViewHolder(View view) {
+        public OrderLookupViewHolder(View view) {
             ButterKnife.inject(this, view);
         }
     }
