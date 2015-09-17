@@ -86,6 +86,23 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
         android:fontFamily="sans-serif-light"
+        android:text="@string/default_location"
+        android:textSize="12sp"/>
+
+    <TextView
+        android:id="@+id/location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/default_store"
+        android:textSize="18sp"/>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:fontFamily="sans-serif-light"
         android:text="@string/settings_website"
         android:textSize="12sp"/>
 

@@ -339,6 +339,8 @@
     <string name="mode_toggle">Toggle Mode</string>
     <string name="associate">Associate</string>
     <string name="manager">Manager</string>
+    <string name="location_selection_title">Choose a Location</string>
+    <string name="default_location">Default Location</string>
     <string-array name="register_email_address">
         <item>mozumobile@volusion.com</item>
     </string-array>

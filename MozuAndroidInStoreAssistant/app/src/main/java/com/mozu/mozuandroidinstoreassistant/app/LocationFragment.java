@@ -1,4 +1,4 @@
-package com.mozu.mozuandroidinstoreassistant.app.fragments;
+package com.mozu.mozuandroidinstoreassistant.app;
 
 import android.app.Activity;
 import android.app.DialogFragment;
@@ -11,27 +11,33 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.mozu.api.contracts.tenant.Site;
-import com.mozu.mozuandroidinstoreassistant.app.R;
-import com.mozu.mozuandroidinstoreassistant.app.adapters.SitesAdapter;
-import com.mozu.mozuandroidinstoreassistant.app.serialization.SiteListJsonConverter;
+import com.mozu.api.contracts.location.FulfillmentType;
+import com.mozu.api.contracts.location.Location;
+import com.mozu.mozuandroidinstoreassistant.app.fragments.SiteSelectionFragmentListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class SiteFragment extends DialogFragment implements ListView.OnItemClickListener, DialogInterface.OnKeyListener {
+public class LocationFragment extends DialogFragment implements ListView.OnItemClickListener, DialogInterface.OnKeyListener {
 
-    public static final String SITES_AS_JSON = "LOCATIONS_AS_JSON";
+    public static final String LOCATIONS_AS_JSON = "LOCATIONS_AS_JSON";
+    private List<Location> mLocations;
     private SiteSelectionFragmentListener mListener;
 
     private ListView mListView;
-    private List<Site> mSites;
-    private SitesAdapter mAdapter;
+    private LocationAdapter mAdapter;
 
-    public SiteFragment() {
-        /**
-         * Mandatory empty constructor for the fragment manager to instantiate the
-         * fragment (e.g. upon screen orientation changes).
-         */
+    public void setLocations(List<Location> locations) {
+        //filter
+        List<Location> filteredLocations = new ArrayList<>();
+        for (Location location : locations) {
+            for (FulfillmentType fulfillmentType : location.getFulfillmentTypes()) {
+                if (fulfillmentType.getCode().equalsIgnoreCase("SP") || fulfillmentType.getName().equalsIgnoreCase("in store pickup")) {
+                    filteredLocations.add(location);
+                }
+            }
+        }
+        mLocations = filteredLocations;
     }
 
     @Override
@@ -39,7 +45,7 @@ public class SiteFragment extends DialogFragment implements ListView.OnItemClick
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState != null) {
-            mSites = new SiteListJsonConverter().getSitesFromJson(savedInstanceState.getString(SITES_AS_JSON, ""));
+            mLocations = new LocationListJsonConverter().getLocationsFromJson(savedInstanceState.getString(LOCATIONS_AS_JSON, ""));
         }
     }
 
@@ -47,14 +53,14 @@ public class SiteFragment extends DialogFragment implements ListView.OnItemClick
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_site_list, container, false);
 
-        mAdapter = new SitesAdapter(getActivity());
-        mAdapter.addAll(mSites);
+        mAdapter = new LocationAdapter(getActivity());
+        mAdapter.addAll(mLocations);
 
         mListView = (ListView) view.findViewById(R.id.site_list);
         mListView.setOnItemClickListener(this);
         mListView.setAdapter(mAdapter);
 
-        getDialog().setTitle(getString(R.string.site_selection_dialog_title));
+        getDialog().setTitle(getString(R.string.location_selection_title));
 
         getDialog().setOnKeyListener(this);
 
@@ -69,7 +75,6 @@ public class SiteFragment extends DialogFragment implements ListView.OnItemClick
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-
         mListener = (SiteSelectionFragmentListener) activity;
     }
 
@@ -82,7 +87,7 @@ public class SiteFragment extends DialogFragment implements ListView.OnItemClick
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putString(SITES_AS_JSON, new SiteListJsonConverter().getSitesJsonFromListOfSites(mSites));
+        outState.putString(LOCATIONS_AS_JSON, new LocationListJsonConverter().getJsonFromListOfLocations(mLocations));
 
         super.onSaveInstanceState(outState);
     }
@@ -91,13 +96,9 @@ public class SiteFragment extends DialogFragment implements ListView.OnItemClick
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (mListener != null) {
 
-            mListener.siteWasChosen(mAdapter.getItem(position));
+            mListener.locationWasChosen(mAdapter.getItem(position));
         }
 
-    }
-
-    public void setSites(List<Site> sites) {
-       mSites = sites;
     }
 
     @Override

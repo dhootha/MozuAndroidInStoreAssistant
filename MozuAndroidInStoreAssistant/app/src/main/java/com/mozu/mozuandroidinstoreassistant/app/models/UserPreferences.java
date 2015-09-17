@@ -11,6 +11,9 @@ public class UserPreferences {
     private String mDefaultSiteId;
     private String mDefaultSiteName;
     private String mDefaultSiteDomain;
+    private String mDefaultLocationId;
+    private String mDefaultLocationName;
+
     private boolean mShowAsGrids = true;
 
     private List<RecentSearch> mRecentProductSearches;
@@ -18,7 +21,6 @@ public class UserPreferences {
     private List<RecentSearch> mRecentOrderSearches;
 
     private List<RecentSearch> mRecentCustomerSearches;
-
     private List<RecentSearch> mRecentGlobalSearches;
 
     public String getEmail() {
@@ -41,6 +43,22 @@ public class UserPreferences {
         mDefaultTenantId = tenantId;
     }
 
+    public String getDefaultLocationId() {
+        return mDefaultLocationId;
+    }
+
+    public void setDefaultLocationId(String locationId) {
+        mDefaultLocationId = locationId;
+    }
+
+    public String getDefaultLocationName() {
+        return mDefaultLocationName;
+    }
+
+    public void setDefaultLocationName(String defaultLocationName) {
+        mDefaultLocationName = defaultLocationName;
+    }
+
     public String getDefaultTenantName() {
 
         return mDefaultTenantName;
@@ -49,7 +67,6 @@ public class UserPreferences {
     public void setDefaultTenantName(String tenantName) {
         mDefaultTenantName = tenantName;
     }
-
 
     public String getDefaultSiteId() {
 
@@ -76,15 +93,14 @@ public class UserPreferences {
         mDefaultSiteDomain = siteDomain;
     }
 
+    public boolean getShowAsGrids() {
+
+        return mShowAsGrids;
+    }
 
     public void setShowAsGrids(boolean showAsGrids) {
 
         mShowAsGrids = showAsGrids;
-    }
-
-    public boolean getShowAsGrids() {
-
-        return mShowAsGrids;
     }
 
     public void setRecentProductSearchs(List<RecentSearch> recentProductSearchs) {
@@ -100,11 +116,6 @@ public class UserPreferences {
         return mRecentProductSearches;
     }
 
-    public void setRecentGlobalSearchs(List<RecentSearch> recentGlobalSearchs) {
-
-        mRecentGlobalSearches = recentGlobalSearchs;
-    }
-
     public List<RecentSearch> getRecentGlobalSearchs() {
         if (mRecentGlobalSearches == null) {
             mRecentGlobalSearches = new ArrayList<RecentSearch>();
@@ -113,6 +124,10 @@ public class UserPreferences {
         return mRecentGlobalSearches;
     }
 
+    public void setRecentGlobalSearchs(List<RecentSearch> recentGlobalSearchs) {
+
+        mRecentGlobalSearches = recentGlobalSearchs;
+    }
 
     public void setRecentOrderSearchs(List<RecentSearch> recentOrderSearchs) {
 
