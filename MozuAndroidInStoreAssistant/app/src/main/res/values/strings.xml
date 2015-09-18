@@ -201,8 +201,8 @@
     <string name="refund_payment_cardtype">CardType</string>
     <string name="refund_payment_cardnumber">CardNumber</string>
     <string name="refund_payment_amount_credited">Amount Credited</string>
-    <string name="payment_amount_collected">Amount Collected</string>
-    <string name="payment_amount_authorized">Amount Authorized</string>
+    <string name="payment_amount_collected">"Amount Collected: "</string>
+    <string name="payment_amount_authorized">"Amount Authorized: "</string>
     <string name="pickup_status">Status:</string>
     <string name="pickup_location">Location:</string>
     <string name="empty_items">No Items to display</string>
@@ -289,7 +289,7 @@
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
     <string name="order_label">Order</string>
-    <string name="status">Status</string>
+    <string name="status">"Status: "</string>
     <string name="name_label">Customer Name</string>
     <string name="email_label">Customer Email</string>
     <string name="title_new_order">New Order</string>
@@ -337,6 +337,9 @@
     <string name="address_not_found">Address Not Found</string>
     <string name="customer_notes_saved">Customer note saved successfully</string>
     <string name="mode_toggle">Toggle Mode</string>
+    <string name="capture">Capture</string>
+    <string name="enter_payment_amount">Enter Amount to capture</string>
+    <string name="capture_payment">Capture Payment</string>
     <string-array name="register_email_address">
         <item>mozumobile@volusion.com</item>
     </string-array>

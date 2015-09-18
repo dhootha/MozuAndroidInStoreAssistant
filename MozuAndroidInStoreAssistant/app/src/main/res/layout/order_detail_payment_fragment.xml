@@ -2,83 +2,45 @@
 
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:paddingBottom="16dp"
         android:paddingLeft="@dimen/order_sub_margin_left"
         android:paddingRight="@dimen/order_sub_margin_right"
         android:paddingTop="16dp">
 
-        <LinearLayout
-            android:id="@+id/order_payments_header"
+        <TextView
+            android:id="@+id/payment_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_weight="1"
-            android:gravity="left|center_vertical"
-            android:orientation="vertical">
+            android:layout_alignParentTop="true"
+            android:text="Hello"
+            android:textColor="@color/dark_gray_text"
+            android:textSize="28sp"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
-                android:text="@string/blank_for_alignment"
-                android:textColor="@android:color/transparent"
-                android:textSize="14sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/payments_header"
-                android:textColor="@color/dark_gray_text"
-                android:textSize="28sp" />
-
-        </LinearLayout>
-
-
-        <LinearLayout
+        <Button
+            android:id="@+id/add_payment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/order_payments_header"
-            android:layout_marginTop="4dp"
-            android:layout_toLeftOf="@+id/order_total_layout"
-            android:layout_weight="1"
-            android:gravity="center_horizontal|left"
-            android:orientation="vertical">
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:text="Add Payment"
+            android:textSize="14sp"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
-                android:text="@string/payment_status"
-                android:textAllCaps="true"
-                android:textColor="@android:color/darker_gray"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/dark_gray_text"
-                android:textSize="28sp" />
-
-        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/order_total_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/order_payments_header"
-            android:layout_marginLeft="40dp"
+            android:layout_below="@+id/add_payment"
             android:layout_marginTop="4dp"
             android:layout_toLeftOf="@+id/payments_received_layout"
-            android:layout_weight="1"
             android:gravity="center_horizontal|left"
             android:orientation="vertical">
 
@@ -89,7 +51,7 @@
                 android:layout_marginBottom="4dp"
                 android:text="@string/order_total"
                 android:textColor="@android:color/darker_gray"
-                android:textSize="14sp" />
+                android:textSize="14sp"/>
 
             <TextView
                 android:id="@+id/order_total"
@@ -97,7 +59,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:textColor="@color/dark_gray_text"
-                android:textSize="28sp" />
+                android:textSize="20sp"/>
 
         </LinearLayout>
 
@@ -105,7 +67,7 @@
             android:id="@+id/payments_received_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/order_payments_header"
+            android:layout_below="@id/add_payment"
             android:layout_marginLeft="40dp"
             android:layout_marginTop="4dp"
             android:layout_toLeftOf="@+id/balance_layout"
@@ -120,7 +82,7 @@
                 android:layout_marginBottom="4dp"
                 android:text="@string/payments_received"
                 android:textColor="@android:color/darker_gray"
-                android:textSize="14sp" />
+                android:textSize="14sp"/>
 
             <TextView
                 android:id="@+id/payments_received"
@@ -128,7 +90,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:textColor="@color/dark_gray_text"
-                android:textSize="28sp" />
+                android:textSize="20sp"/>
 
         </LinearLayout>
 
@@ -137,7 +99,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_below="@id/order_payments_header"
+            android:layout_below="@id/add_payment"
             android:layout_marginLeft="40dp"
             android:layout_marginTop="4dp"
             android:layout_weight="1"
@@ -151,7 +113,7 @@
                 android:layout_marginBottom="4dp"
                 android:text="@string/balance"
                 android:textColor="@android:color/darker_gray"
-                android:textSize="14sp" />
+                android:textSize="14sp"/>
 
             <TextView
                 android:id="@+id/balance"
@@ -159,32 +121,18 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:textColor="@color/dark_gray_text"
-                android:textSize="28sp" />
+                android:textSize="20sp"/>
         </LinearLayout>
 
 
     </RelativeLayout>
-
-    <TextView
-        android:id="@+id/empty_payments_message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:paddingLeft="@dimen/order_sub_margin_right"
-        android:paddingRight="@dimen/order_sub_margin_right"
-        android:text="@string/empty_payments_message_string"
-        android:visibility="gone" />
 
     <ListView
         android:id="@+id/payments_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/product_detail_images_background"
-        android:divider="@android:color/transparent"
         android:dividerHeight="0dp"
-        android:paddingLeft="@dimen/order_sub_margin_right"
-        android:paddingRight="@dimen/order_sub_margin_right"
-        android:scrollbars="none" />
+        android:scrollbars="none"/>
 
 </LinearLayout>
