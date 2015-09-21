@@ -337,6 +337,10 @@
     <string name="address_not_found">Address Not Found</string>
     <string name="customer_notes_saved">Customer note saved successfully</string>
     <string name="mode_toggle">Toggle Mode</string>
+    <string name="associate">Associate</string>
+    <string name="manager">Manager</string>
+    <string name="location_selection_title">Choose a Location</string>
+    <string name="default_location">Default Location</string>
     <string name="capture">Capture</string>
     <string name="enter_payment_amount">Enter Amount to capture</string>
     <string name="capture_payment">Capture Payment</string>

@@ -9,20 +9,8 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="28dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/customer_lookup_instructions"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:visibility="gone"/>
-
     <com.mozu.mozuandroidinstoreassistant.app.views.CustomerLookupAutoCompleteTextView
-        android:id="@+id/customer_lookup"
+        android:id="@+id/lookup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -35,7 +23,7 @@
         android:background="@drawable/card_background"
         android:drawableLeft="@drawable/search"
         android:drawableStart="@drawable/search"
-        android:hint="@string/customer_search_hint_text"
+        android:hint="@string/order_search_hint_text"
         android:inputType="text"
         android:padding="8dp"/>
 
@@ -60,6 +48,6 @@
         android:layout_marginLeft="12dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:text="@string/create_new_customer"
+        android:text="@string/create_order"
         android:textColor="@color/divider_white"/>
 </LinearLayout>

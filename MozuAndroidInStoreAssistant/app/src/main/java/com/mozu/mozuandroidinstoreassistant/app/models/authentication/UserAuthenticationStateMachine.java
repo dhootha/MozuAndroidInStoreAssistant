@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.mozu.api.contracts.core.UserAuthInfo;
+import com.mozu.api.contracts.location.Location;
 import com.mozu.api.contracts.tenant.Site;
 import com.mozu.api.security.AuthenticationProfile;
 import com.mozu.api.security.Scope;
@@ -18,11 +19,6 @@ import java.util.Observable;
 
 public class UserAuthenticationStateMachine extends Observable implements RefreshAuthProfileListener, UserPreferencesDiskInteractorListener {
 
-    private UserAuthenticationState mCurrentUserAuthState;
-    private Context mContext;
-    private AuthenticationProfile mAuthProfile;
-    private UserAuthInfo mUserAuthInfo;
-
     protected InitializingStateMachineState initializingStateMachineState;
     protected UserAuthenticatedTenantSet userAuthenticatedTenantSet;
     protected UserAuthenticatedNoTenantSet userAuthenticatedNoTenantSet;
@@ -30,13 +26,19 @@ public class UserAuthenticationStateMachine extends Observable implements Refres
     protected UserNotAuthenticatedNoAuthTicket userNotAuthenticatedNoAuthTicket;
     protected UserAuthenticationFailed userAuthenticationFailed;
     protected UserAuthenticationFailedSessionExpired userAuthenticationFailedSessionExpired;
-
+    private UserAuthenticationState mCurrentUserAuthState;
+    private Context mContext;
+    private AuthenticationProfile mAuthProfile;
+    private UserAuthInfo mUserAuthInfo;
     private List<UserPreferences> mAllUsersPrefs;
     private Integer mTenantId;
     private String mTenantName;
     private Integer mSiteId;
     private String mSiteName;
     private String mSiteDomain;
+    private Location mLocation;
+    private String mLocationName;
+    private String mLocationCode;
 
 
     protected UserAuthenticationStateMachine(Context context) {
@@ -55,6 +57,11 @@ public class UserAuthenticationStateMachine extends Observable implements Refres
         mCurrentUserAuthState = initializingStateMachineState;
     }
 
+    public UserAuthenticationState getCurrentUserAuthState() {
+
+        return mCurrentUserAuthState;
+    }
+
     protected void setCurrentUserAuthState(UserAuthenticationState userAuthState) {
         mCurrentUserAuthState = userAuthState;
         if (mCurrentUserAuthState.isAuthenticatedState()) {
@@ -63,11 +70,6 @@ public class UserAuthenticationStateMachine extends Observable implements Refres
 
         setChanged();
         notifyObservers();
-    }
-
-    public UserAuthenticationState getCurrentUserAuthState() {
-
-        return mCurrentUserAuthState;
     }
 
     public void authenticateUser() {
@@ -161,13 +163,13 @@ public class UserAuthenticationStateMachine extends Observable implements Refres
         mAllUsersPrefs = prefs;
     }
 
-    protected void setAllUserPrefs(List<UserPreferences> prefs) {
-        mAllUsersPrefs = prefs;
-    }
-
     public List<UserPreferences> getAllUserPrefs() {
 
         return mAllUsersPrefs;
+    }
+
+    protected void setAllUserPrefs(List<UserPreferences> prefs) {
+        mAllUsersPrefs = prefs;
     }
 
     @Override
@@ -180,18 +182,7 @@ public class UserAuthenticationStateMachine extends Observable implements Refres
         Log.d("failed to read user prefs", "failed to read user prefs");
     }
 
-
-    public void setTenantId(Scope scope){
-        if (scope != null) {
-            mTenantId = scope.getId();
-            mTenantName = scope.getName();
-        } else {
-            mTenantId = null;
-            mTenantName = null;
-        }
-    }
-
-    public void setCurrentSiteId(Site site){
+    public void setCurrentSiteId(Site site) {
         if (site != null) {
             mSiteId = site.getId();
             mSiteDomain = site.getDomain();
@@ -203,12 +194,22 @@ public class UserAuthenticationStateMachine extends Observable implements Refres
         }
     }
 
+    public void setCurrentLocation(Location location) {
+        if (location != null) {
+            mLocation = location;
+            mLocationCode = location.getCode();
+            mLocationName = location.getName();
+        }
+    }
+
     public void persistSiteTenantId(){
         getCurrentUsersPreferences().setDefaultTenantId(String.valueOf(mTenantId));
         getCurrentUsersPreferences().setDefaultSiteId(String.valueOf(mSiteId));
         getCurrentUsersPreferences().setDefaultSiteDomain(mSiteDomain);
         getCurrentUsersPreferences().setDefaultSiteName(mSiteName);
         getCurrentUsersPreferences().setDefaultTenantName(mTenantName);
+        getCurrentUsersPreferences().setDefaultLocationId(mLocationCode);
+        getCurrentUsersPreferences().setDefaultLocationName(mLocationName);
 
         updateUserPreferences();
     }
@@ -220,6 +221,16 @@ public class UserAuthenticationStateMachine extends Observable implements Refres
             }
         }
         return mTenantId;
+    }
+
+    public void setTenantId(Scope scope) {
+        if (scope != null) {
+            mTenantId = scope.getId();
+            mTenantName = scope.getName();
+        } else {
+            mTenantId = null;
+            mTenantName = null;
+        }
     }
 
     public String getTenantName(){

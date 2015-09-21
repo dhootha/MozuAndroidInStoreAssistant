@@ -12,15 +12,19 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.widget.TextView;
 
+import com.mozu.api.contracts.location.Location;
+import com.mozu.api.contracts.location.LocationCollection;
 import com.mozu.api.contracts.tenant.Site;
 import com.mozu.api.contracts.tenant.Tenant;
 import com.mozu.api.security.Scope;
+import com.mozu.mozuandroidinstoreassistant.app.dialog.ErrorMessageAlertDialog;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.SetDefaultFragment;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.SetDefaultFragmentListener;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.SiteFragment;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.SiteSelectionFragmentListener;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.TenantFragment;
 import com.mozu.mozuandroidinstoreassistant.app.fragments.TenantSelectionFragmentListener;
+import com.mozu.mozuandroidinstoreassistant.app.location.LocationManager;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.tasks.RetrieveTenantAsyncTask;
@@ -31,19 +35,25 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+import rx.Subscriber;
+
 public class ChooseTenantAndSiteActivity extends Activity implements TenantResourceAsyncListener, TenantSelectionFragmentListener, SiteSelectionFragmentListener, SetDefaultFragmentListener, Observer {
 
     public static final String LAUNCH_FROM_SETTINGS = "launchfromSettings";
     private static final String TENANT_FRAGMENT_TAG = "tenants";
     private static final String SITE_FRAGMENT_TAG = "sites";
+    private static final String LOCATION_FRAGMENT_TAG = "locations";
     private static final String SET_DEFAULT_FRAGMENT_TAG = "set_default_tag";
     private static final int EMAIL_NAVIGATION_REQUEST =  10034;
     private TenantFragment mTenantFragment;
     private SiteFragment mSiteFragment;
+    private LocationFragment mLocationFragment;
     private SetDefaultFragment mSetDefaultFragment;
     private UserAuthenticationStateMachine mUserAuthStateMachine;
     private boolean mTenantOrSiteNotChosenAuto = false;
     private boolean isLaunchedFromSettings = false;
+    private Tenant mTenant;
+    private int mCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +110,10 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
     }
 
     private void updateAuthTicketToDefaults() {
-        if (mUserAuthStateMachine.getCurrentUsersPreferences().getDefaultTenantId() == null || mUserAuthStateMachine.getCurrentUsersPreferences().getDefaultTenantId().equalsIgnoreCase("") || mUserAuthStateMachine.getCurrentUsersPreferences().getDefaultTenantId().equalsIgnoreCase("null")) {
+        if (mUserAuthStateMachine.getCurrentUsersPreferences().getDefaultTenantId() == null ||
+                mUserAuthStateMachine.getCurrentUsersPreferences().getDefaultTenantId().equalsIgnoreCase("") ||
+                mUserAuthStateMachine.getCurrentUsersPreferences().getDefaultTenantId().equalsIgnoreCase("null")
+                || mUserAuthStateMachine.getCurrentUsersPreferences().getDefaultLocationId() == null || mUserAuthStateMachine.getCurrentUsersPreferences().getDefaultLocationId().isEmpty()) {
             showTenantChooser();
             return;
         }
@@ -155,7 +168,7 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
     }
 
     private void showSiteChooser(List<Site> sites) {
-        //if only one site then dont show site chooser
+        //if only one site then don't show site chooser
         if (sites.size() == 1) {
             siteWasChosen(sites.get(0));
 
@@ -177,6 +190,33 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
             mSiteFragment.show(getFragmentManager(), SITE_FRAGMENT_TAG);
         }
     }
+
+    private void showLocationChooser(LocationCollection collection) {
+        if (collection.getItems().size() == 1) {
+            locationWasChosen(collection.getItems().get(0));
+            return;
+        }
+        mLocationFragment = (LocationFragment) getFragmentManager().findFragmentByTag(LOCATION_FRAGMENT_TAG);
+
+        if (mLocationFragment == null) {
+            mLocationFragment = new LocationFragment();
+            mLocationFragment.setLocations(collection.getItems());
+            mLocationFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogMozu);
+            mLocationFragment.show(getFragmentManager(), LOCATION_FRAGMENT_TAG);
+        }
+    }
+
+    @Override
+    public void locationWasChosen(final Location location) {
+        //filter sites based on location
+        mUserAuthStateMachine.setCurrentLocation(location);
+        showSiteChooser(mTenant.getSites());
+
+        if (mLocationFragment != null) {
+            mLocationFragment.dismiss();
+        }
+    }
+
 
     @Override
     public void update(Observable observable, Object data) {
@@ -237,8 +277,24 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
             dialog.show();
             return;
         }
+        mTenant = tenant;
+        LocationManager.getInstance().getAllPickupLocations(tenant.getId(), null).subscribe(new Subscriber<LocationCollection>() {
+            @Override
+            public void onCompleted() {
 
-        showSiteChooser(tenant.getSites());
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(ChooseTenantAndSiteActivity.this, e.toString()).show();
+            }
+
+            @Override
+            public void onNext(LocationCollection collection) {
+                showLocationChooser(collection);
+            }
+        });
+        //showSiteChooser(tenant.getSites());
     }
 
     private String getCurrentUserEmail() {

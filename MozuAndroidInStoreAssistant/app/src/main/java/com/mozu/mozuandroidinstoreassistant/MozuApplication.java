@@ -1,24 +1,19 @@
 package com.mozu.mozuandroidinstoreassistant;
 
 import android.app.Application;
+import android.content.SharedPreferences;
 import android.support.v4.util.ArrayMap;
 
 import com.crashlytics.android.Crashlytics;
 import com.mozu.MozuAndroid;
-import com.mozu.api.contracts.commerceruntime.payments.Payment;
 import com.mozu.mozuandroidinstoreassistant.app.BuildConfig;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import io.fabric.sdk.android.Fabric;
 
 public class MozuApplication extends Application {
 
+    private static final String MODE_PREFERENCE = "mode";
     private ArrayMap<String, String> mLocations = new ArrayMap<>();
-    private HashMap<String, List<Payment>> mMockPayments = new HashMap<>();
-    private boolean isAdminMode = false;
 
     @Override
     public void onCreate() {
@@ -38,27 +33,12 @@ public class MozuApplication extends Application {
     }
 
     public boolean isAdminMode() {
-        return isAdminMode;
+        SharedPreferences preferences = getSharedPreferences(MODE_PREFERENCE, MODE_MULTI_PROCESS);
+        return preferences.getBoolean(MODE_PREFERENCE, false);
     }
 
     public void setIsAdminMode(boolean isAdminMode) {
-        this.isAdminMode = isAdminMode;
+        SharedPreferences preferences = getSharedPreferences(MODE_PREFERENCE, MODE_MULTI_PROCESS);
+        preferences.edit().putBoolean(MODE_PREFERENCE, isAdminMode).apply();
     }
-
-    public HashMap<String, List<Payment>> getMockPayments() {
-        return mMockPayments;
-    }
-
-    public HashMap<String, List<Payment>> addMockPayments(String orderId, List<Payment> payments, boolean deleteOlder) {
-        if (!mMockPayments.containsKey(orderId) || deleteOlder) {
-            mMockPayments.put(orderId, payments);
-        } else {
-            List<Payment> paymentList = new ArrayList<>();
-            paymentList.addAll(payments);
-            mMockPayments.put(orderId, paymentList);
-        }
-        return mMockPayments;
-    }
-
-
 }
