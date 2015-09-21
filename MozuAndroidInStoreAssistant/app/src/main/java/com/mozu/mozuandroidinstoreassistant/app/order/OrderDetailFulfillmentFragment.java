@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.mozu.api.contracts.commerceruntime.fulfillment.FulfillmentAction;
 import com.mozu.api.contracts.commerceruntime.fulfillment.Package;
@@ -43,6 +44,8 @@ import com.mozu.mozuandroidinstoreassistant.app.order.loaders.FulfillmentActionO
 import com.mozu.mozuandroidinstoreassistant.app.order.loaders.PickupObservablesManager;
 import com.mozu.mozuandroidinstoreassistant.app.product.ProductDetailOverviewDialogFragment;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -51,22 +54,17 @@ import rx.Subscriber;
 import rx.android.observables.AndroidObservable;
 
 
-public class OrderDetailFullfillmentFragment extends Fragment implements MoveToListener, MarkPickupAsFulfilledListener {
+public class OrderDetailFulfillmentFragment extends Fragment implements MoveToListener, MarkPickupAsFulfilledListener {
 
-    public static final String PENDING = "Pending";
-    public static final String FULFILLED = "Fulfilled";
-    public static final String NOTFULLFILLED = "NotFulfilled";
-
-    public static final String SHIP = "Ship";
-    public static final String PICKUP = "pickup";
-    public static final int FIRST_PICKUP_COUNT = 1;
     private static final String PRODUCT_DIALOG_TAG = "prod_detail_fragment";
     private static final String PACKAGE_DIALOG_TAG = "package_detail_fragment";
     private static final String PICKUP_DIALOG_TAG = "pickup_detail_fragment";
-    List<OrderItem> mShipItems;
-    List<OrderItem> mPickupItems;
+    private List<OrderItem> mShipItems;
+    private List<OrderItem> mPickupItems;
     private Order mOrder;
     private ListView mFullfillmentListview;
+    private TextView mFulfillmentStatus;
+
     private OrderDetailFullfillmentAdapter mOrderDetailFullfillmentAdapter;
     private AdapterView.OnItemClickListener mListClickListener = new AdapterView.OnItemClickListener() {
 
@@ -112,13 +110,26 @@ public class OrderDetailFullfillmentFragment extends Fragment implements MoveToL
                 }
 
                 pickupInfoDialogFragment.show(manager, PICKUP_DIALOG_TAG);
+            } else if (rowType == OrderDetailFullfillmentAdapter.RowType.FULFILLED_ROW) {
+                FulfillmentFulfilledDataItem item = (FulfillmentFulfilledDataItem) mOrderDetailFullfillmentAdapter.getItem(position);
+                FragmentManager manager = getFragmentManager();
+                PickupInfoDialogFragment pickupInfoDialogFragment = (PickupInfoDialogFragment) manager.findFragmentByTag(PICKUP_DIALOG_TAG);
+                UserAuthenticationStateMachine userState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
+
+                if (pickupInfoDialogFragment == null) {
+                    pickupInfoDialogFragment = new PickupInfoDialogFragment();
+                    pickupInfoDialogFragment.setPickup(item.getPickup());
+                    pickupInfoDialogFragment.setTenantAndSiteId(userState.getTenantId(), userState.getSiteId());
+                }
+
+                pickupInfoDialogFragment.show(manager, PICKUP_DIALOG_TAG);
             }
 
         }
 
     };
 
-    public OrderDetailFullfillmentFragment() {
+    public OrderDetailFulfillmentFragment() {
         // Required empty public constructor
         setRetainInstance(true);
     }
@@ -130,9 +141,13 @@ public class OrderDetailFullfillmentFragment extends Fragment implements MoveToL
         mPickupItems = new ArrayList<>();
 
         mFullfillmentListview = (ListView) view.findViewById(R.id.fullfillment_list);
+        mFulfillmentStatus = (TextView) view.findViewById(R.id.order_fulfillment_status);
+        String status = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(mOrder.getFulfillmentStatus()), " ");
+        mFulfillmentStatus.setText("Status: " + status);
         if (mOrder != null) {
             categorizeOrdersByFulfillmentMethod(mOrder);
             List<IData> data = new ArrayList<>();
+
             data.addAll(filterShipment(mShipItems));
             data.addAll(filterPickUp(mPickupItems));
             mOrderDetailFullfillmentAdapter = new OrderDetailFullfillmentAdapter(getActivity(), data, this, this);
@@ -146,9 +161,9 @@ public class OrderDetailFullfillmentFragment extends Fragment implements MoveToL
         if (order == null || order.getItems() == null || order.getItems().size() < 1)
             return;
         for (OrderItem item : order.getItems()) {
-            if (SHIP.equalsIgnoreCase(item.getFulfillmentMethod())) {
+            if (OrderStrings.SHIP.equalsIgnoreCase(item.getFulfillmentMethod())) {
                 mShipItems.add(item);
-            } else if (PICKUP.equalsIgnoreCase(item.getFulfillmentMethod())) {
+            } else if (OrderStrings.PICKUP.equalsIgnoreCase(item.getFulfillmentMethod())) {
                 mPickupItems.add(item);
             }
         }
@@ -164,20 +179,6 @@ public class OrderDetailFullfillmentFragment extends Fragment implements MoveToL
         }
 
         return orderItems;
-    }
-
-    @Override
-    public void setMenuVisibility(final boolean visible) {
-        super.setMenuVisibility(visible);
-        if (getActivity() == null) {
-            return;
-        }
-        if (visible) {
-            ((OrderDetailActivity) getActivity()).setFulfillmentStatus(mOrder.getFulfillmentStatus());
-        } else {
-            ((OrderDetailActivity) getActivity()).clearFulfillmentStatus();
-        }
-
     }
 
     public void setOrder(Order order) {
@@ -210,11 +211,11 @@ public class OrderDetailFullfillmentFragment extends Fragment implements MoveToL
                         itemsNotPickedUp = removeOrderItem(itemsNotPickedUp, pickupItem.getProductCode());
                     }
 
-                    if (pickup.getStatus().equalsIgnoreCase(NOTFULLFILLED)) {
+                    if (pickup.getStatus().equalsIgnoreCase(OrderStrings.NOTFULLFILLED)) {
                         FulfillmentPickupItem item = new FulfillmentPickupItem(pickup, pickUpCount);
                         unFulFilledItems.add(item);
 
-                    } else if (pickup.getStatus().equalsIgnoreCase(FULFILLED)) {
+                    } else if (pickup.getStatus().equalsIgnoreCase(OrderStrings.FULFILLED)) {
                         FulfillmentFulfilledDataItem item = new FulfillmentFulfilledDataItem(pickup, pickUpCount);
                         fulFilledItems.add(item);
                         totalFulfilledCount += fulfilledCount;
@@ -276,8 +277,8 @@ public class OrderDetailFullfillmentFragment extends Fragment implements MoveToL
     }
 
     /**
-     * Filter items fulfilled with the method {@value #SHIP} by fulfilled, pending, and not packaged.
-     * @param shipItems Items already filtered by fulfillment method {@value #SHIP}
+     * Filter items fulfilled with the method  by fulfilled, pending, and not packaged.
+     * @param shipItems Items already filtered by fulfillment method
      * @return filtered list of IData items for
      */
     private List<IData> filterShipment(List<OrderItem> shipItems) {
@@ -304,12 +305,12 @@ public class OrderDetailFullfillmentFragment extends Fragment implements MoveToL
                 fulfillmentItem.setOrderPackage(orderPackage);
                 String status = orderPackage.getStatus();
 
-                if (status.equalsIgnoreCase(NOTFULLFILLED)) {
+                if (status.equalsIgnoreCase(OrderStrings.NOTFULLFILLED)) {
                     fulfillmentItem.setFullfilled(false);
                     fulfillmentItem.setPackageNumber(getActivity().getString(R.string.package_number_string) + String.valueOf(packageCount));
                     fulfillmentItem.setFulfillmentContact(mOrder.getFulfillmentInfo().getFulfillmentContact());
                     pendingItems.add(new FulfillmentPackageDataItem(fulfillmentItem));
-                } else if (status.equalsIgnoreCase(FULFILLED)) {
+                } else if (status.equalsIgnoreCase(OrderStrings.FULFILLED)) {
                     fulfillmentItem.setFullfilled(true);
                     totalFulfilledCount += packageItemCount;
                     for (Shipment shipment : mOrder.getShipments()) {
@@ -333,6 +334,8 @@ public class OrderDetailFullfillmentFragment extends Fragment implements MoveToL
             finalDataList.add(fulfillmentTitleDataItem);
             finalDataList.add(new TopRowItem());
             if (orderItemsNotPackaged.size() > 0) {
+                finalDataList.add(new FulfillmentColumnHeader());
+                finalDataList.add(new FulfillmentDividerRowItem());
                 finalDataList.add(new FullfillmentCategoryHeaderDataItem("Pending Items"));
             }
             for (OrderItem orderItem : orderItemsNotPackaged) {

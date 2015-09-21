@@ -11,7 +11,6 @@ import com.mozu.api.contracts.core.Contact;
 import com.mozu.api.contracts.customer.ContactType;
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.api.contracts.customer.CustomerContact;
-import com.mozu.mozuandroidinstoreassistant.app.customer.CustomerAddressOrderVerification;
 import com.mozu.mozuandroidinstoreassistant.app.customer.CustomerLookupFragment;
 import com.mozu.mozuandroidinstoreassistant.app.order.NewOrderActivity;
 import com.mozu.mozuandroidinstoreassistant.app.order.loaders.NewOrderManager;
@@ -19,16 +18,14 @@ import com.mozu.mozuandroidinstoreassistant.app.order.loaders.NewOrderManager;
 import butterknife.ButterKnife;
 import rx.Subscriber;
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
-public class OrderCreationAddCustomerActivity extends BaseActivity implements CustomerLookupFragment.CustomerSelectionListener, CustomerAddressOrderVerification.VerifyCreateOrderListener {
+public class OrderCreationAddCustomerActivity extends BaseActivity {
 
-    public static final String ORDER_EXTRA_KEY = "ORDER";
-    public static final String CURRENT_TENANT_ID = "curTenantIdWhenActLoaded";
-    public static final String CURRENT_SITE_ID = "curSiteIdWhenActLoaded";
-    public static final String ORDER_CUSTOMER_EXTRA_KEY = "order_customer";
-    public static final int CREATE_CUSTOMER = 1;
+    private static final String ORDER_EXTRA_KEY = "ORDER";
+    private static final String CURRENT_TENANT_ID = "curTenantIdWhenActLoaded";
+    private static final String CURRENT_SITE_ID = "curSiteIdWhenActLoaded";
+    private static final String ORDER_CUSTOMER_EXTRA_KEY = "order_customer";
+    private static final int CREATE_CUSTOMER = 1;
     private static String BILLING = "billing";
     private static String SHIPPING = "shipping";
     private Order mOrder;
@@ -60,17 +57,11 @@ public class OrderCreationAddCustomerActivity extends BaseActivity implements Cu
             getActionBar().setDisplayShowHomeEnabled(false);
             getActionBar().setDisplayHomeAsUpEnabled(true);
             getActionBar().setDisplayShowCustomEnabled(true);
-            getActionBar().setTitle(R.string.create_order);
+            getActionBar().setTitle("  " + getString(R.string.create_order));
         }
 
     }
 
-    @Override
-    public void onCancelClicked() {
-        finish();
-    }
-
-    @Override
     public void onSubmitClicked() {
         mOrder = new Order();
         mOrder.setCustomerAccountId(mCustomerAccount.getId());
@@ -81,14 +72,11 @@ public class OrderCreationAddCustomerActivity extends BaseActivity implements Cu
         fulfillmentInfo.setFulfillmentContact(getDefaultContact(mCustomerAccount, SHIPPING));
         mOrder.setFulfillmentInfo(fulfillmentInfo);
         AndroidObservable.bindActivity(OrderCreationAddCustomerActivity.this, NewOrderManager.getInstance().createOrder(mTenantId, mSiteId, mOrder))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Order>() {
                     @Override
                     public void onCompleted() {
                         Intent intent = new Intent(OrderCreationAddCustomerActivity.this, NewOrderActivity.class);
-                        intent.putExtra(ORDER_CUSTOMER_EXTRA_KEY, mCustomerAccount);
-                        intent.putExtra(ORDER_EXTRA_KEY, mOrder);
+                        intent.putExtra(ORDER_EXTRA_KEY, mOrder.getId());
                         startActivity(intent);
                         finish();
                     }
@@ -114,7 +102,6 @@ public class OrderCreationAddCustomerActivity extends BaseActivity implements Cu
         contact.setPhoneNumbers(customerContact.getPhoneNumbers());
         return contact;
     }
-
 
     private Contact getDefaultContact(CustomerAccount mCustomerAccount, String contactType) {
         Contact defaultContact = null;
@@ -150,17 +137,10 @@ public class OrderCreationAddCustomerActivity extends BaseActivity implements Cu
     }
 
     @Override
-    public void onCustomerSelected(CustomerAccount customerAccount) {
-        mCustomerAccount = customerAccount;
-        CustomerAddressOrderVerification fragment = CustomerAddressOrderVerification.getInstance(mCustomerAccount);
-        fragment.show(getFragmentManager(), "verify");
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CREATE_CUSTOMER && resultCode == RESULT_OK) {
-            mCustomerAccount = (CustomerAccount) data.getSerializableExtra(CustomerCreationActivity.CUSTOMER);
+            mCustomerAccount = (CustomerAccount) data.getSerializableExtra(CustomerUpdateActivity.CUSTOMER);
             onSubmitClicked();
         }
     }

@@ -1,148 +1,186 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <LinearLayout
-        android:layout_marginRight="@dimen/customer_margin_right_total"
-        android:layout_marginLeft="@dimen/customer_margin_left_total"
         android:layout_width="match_parent"
-        android:layout_height="90dp"
-        android:gravity="center_vertical"
-        android:orientation="vertical"
-        android:background="@android:color/transparent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <LinearLayout
-
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@color/darker_grey"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/customer_margin_right_total"
+            android:paddingRight="@dimen/customer_margin_left_total">
 
-            <TextView
-                android:textColor="@color/light_gray_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/order_label"
-                android:layout_marginRight="2dp"
-                android:textSize="12sp"
-                android:textStyle="normal"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                >
 
-            <TextView
-                android:textColor="@color/mozu_color"
-                android:id="@+id/order_id"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:textStyle="normal"/>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/status"
+                        android:textColor="@color/light_gray_text"/>
+
+                    <TextView
+                        android:id="@+id/order_status"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/dark_gray_text"
+                        android:textSize="20sp"/>
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/date_label"
+                        android:textColor="@color/light_gray_text"/>
+
+                    <TextView
+                        android:id="@+id/order_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/dark_gray_text"
+                        android:textSize="20sp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+
+                    <Button
+                        android:id="@+id/cancel_order"
+                        style="@style/ButtonMozu"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cancel"/>
+
+                    <Button
+                        android:id="@+id/submit_order"
+                        style="@style/ButtonMozu"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/submit"/>
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                >
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/customer"
+                        android:textColor="@color/light_gray_text"/>
+
+                    <TextView
+                        android:id="@+id/order_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/mozu_color"
+                        android:textSize="20sp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/email_label"
+                        android:textColor="@color/light_gray_text"/>
+
+                    <TextView
+                        android:id="@+id/order_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/mozu_color"
+                        android:textSize="20sp"/>
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/order_name"
+        <com.viewpagerindicator.TabPageIndicator
+            android:id="@+id/order_tabs"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginLeft="@dimen/customer_tab_margin_left"
+            android:layout_marginRight="@dimen/customer_margin_right_total"/>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider_black"/>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider_white"/>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/order_viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/customer_tab_margin_left"
+            android:layout_marginRight="@dimen/customer_margin_right_total"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/order_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/semi_transparent_image_view_background"
+        android:gravity="center">
+
+        <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/dark_gray_text"
-            android:textSize="34sp"/>
+            android:layout_gravity="center"/>
     </LinearLayout>
-
-    <LinearLayout
-        android:background="@color/darker_grey"
-        android:layout_width="match_parent"
-        android:paddingLeft="@dimen/customer_margin_right_total"
-        android:paddingRight="@dimen/customer_margin_left_total"
-        android:layout_height="64dp">
-
-
-        <LinearLayout
-            android:gravity="center_vertical"
-            android:orientation="vertical"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:text="@string/status"
-                android:layout_width="match_parent"
-                android:textColor="@color/light_gray_text"
-                android:layout_height="wrap_content"/>
-
-            <TextView
-                android:id="@+id/order_status"
-                android:textColor="@color/dark_gray_text"
-                android:textSize="20sp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:gravity="center_vertical"
-            android:orientation="vertical"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:text="@string/date_label"
-                android:layout_width="match_parent"
-                android:textColor="@color/light_gray_text"
-                android:layout_height="wrap_content"/>
-
-            <TextView
-                android:id="@+id/order_date"
-                android:layout_width="match_parent"
-                android:textColor="@color/dark_gray_text"
-                android:textSize="20sp"
-
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:gravity="center_vertical"
-            android:orientation="vertical"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:text="@string/email_label"
-                android:layout_width="match_parent"
-                android:textColor="@color/light_gray_text"
-                android:layout_height="wrap_content"/>
-
-            <TextView
-                android:id="@+id/order_email"
-                android:layout_width="match_parent"
-                android:textColor="@color/dark_gray_text"
-                android:textSize="20sp"
-
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-
-
-    </LinearLayout>
-
-    <com.viewpagerindicator.TabPageIndicator
-        android:layout_marginRight="@dimen/customer_margin_right_total"
-        android:layout_marginLeft="@dimen/customer_tab_margin_left"
-        android:id="@+id/order_tabs"
-        android:layout_height="48dp"
-        android:layout_width="wrap_content"/>
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@color/divider_black"/>
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@color/divider_white"/>
-
-    <android.support.v4.view.ViewPager
-        android:layout_marginRight="@dimen/customer_margin_right_total"
-        android:layout_marginLeft="@dimen/customer_tab_margin_left"
-        android:id="@+id/order_viewpager"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-</LinearLayout>
+</FrameLayout>

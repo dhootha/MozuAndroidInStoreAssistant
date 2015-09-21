@@ -59,7 +59,7 @@ public class SearchFetcher {
                         try {
                             ProductSearchResult result = productSearchResultResource.search(mQueryString, null,
                                     null, null, null, null, null, null, null, null, null, null, null,
-                                    PRODUCT_SORT_BY, ITEMS_PER_PAGE, 0, null, null,null,null,null);
+                                    PRODUCT_SORT_BY, ITEMS_PER_PAGE, 0, null, null, null, null, null, null);
                             subscriber.onNext(result);
                             subscriber.onCompleted();
                         } catch (Exception e) {

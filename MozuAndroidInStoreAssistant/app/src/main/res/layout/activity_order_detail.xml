@@ -43,28 +43,6 @@
             </LinearLayout>
 
             <LinearLayout
-
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginRight="@dimen/order_title_margin_right"
-                android:gravity="center_vertical"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/customer"
-                    android:textColor="@color/light_gray_text"/>
-
-                <TextView
-                    android:id="@+id/customer_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/mozu_color"
-                    android:textSize="20sp"/>
-            </LinearLayout>
-
-            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginRight="@dimen/order_title_margin_right"
@@ -109,7 +87,78 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="right">
+
+                <Button
+                    android:id="@+id/previous_order"
+                    style="@style/ButtonMozu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/previous"/>
+
+                <Button
+                    android:id="@+id/next_order"
+                    style="@style/ButtonMozu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/next"/>
             </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:background="@color/darker_grey"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/order_margin_right_total"
+            android:paddingRight="@dimen/order_margin_left_total">
+
+            <LinearLayout
+
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/order_title_margin_right"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/customer"
+                    android:textColor="@color/light_gray_text"/>
+
+                <TextView
+                    android:id="@+id/customer_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/mozu_color"
+                    android:textSize="20sp"/>
+            </LinearLayout>
+
+            <LinearLayout
+
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/order_title_margin_right"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/customer_email"
+                    android:textColor="@color/light_gray_text"/>
+
+                <TextView
+                    android:id="@+id/customer_email"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/mozu_color"
+                    android:textSize="20sp"/>
+            </LinearLayout>
+
 
         </LinearLayout>
 
@@ -138,21 +187,7 @@
                 android:paddingRight="16dp"
                 android:text="@string/edit"/>
 
-            <TextView
-                android:id="@+id/order_fulfillment_status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:background="@color/text_background_color"
-                android:gravity="center_vertical"
-                android:paddingBottom="5dp"
-                android:paddingLeft="32dp"
-                android:paddingRight="32dp"
-                android:paddingTop="5dp"
-                android:textColor="@color/semi_white_background"
-                android:visibility="gone"
-                />
+
         </RelativeLayout>
 
         <View

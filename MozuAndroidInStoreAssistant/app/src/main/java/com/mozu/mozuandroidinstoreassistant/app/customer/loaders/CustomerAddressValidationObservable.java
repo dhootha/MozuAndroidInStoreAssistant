@@ -9,12 +9,12 @@ import com.mozu.api.resources.commerce.customer.AddressValidationRequestResource
 import rx.Observable;
 import rx.Subscriber;
 
-public class CustomerAddressValidation  {
+public class CustomerAddressValidationObservable {
 
     private Integer mTenantApi;
     private Integer mSiteId;
 
-    public CustomerAddressValidation( Integer tenantApi, Integer siteId) {
+    public CustomerAddressValidationObservable(Integer tenantApi, Integer siteId) {
         this.mTenantApi = tenantApi;
         this.mSiteId = siteId;
     }

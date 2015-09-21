@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.mozu.api.contracts.core.Address;
 import com.mozu.api.contracts.core.Phone;
+import com.mozu.api.contracts.customer.ContactType;
 import com.mozu.api.contracts.customer.CustomerContact;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 
@@ -19,8 +20,11 @@ import butterknife.InjectView;
 
 public class CustomerAddressesAdapter extends RecyclerView.Adapter<CustomerAddressesAdapter.ViewHolder> {
 
+    private static String BILLING = "billing";
+    private static String SHIPPING = "shipping";
     private List<CustomerContact> data;
     private AddressEditListener addressEditListener;
+    private boolean onBind = false;
 
     public CustomerAddressesAdapter(List<CustomerContact> data, AddressEditListener addressEditListener) {
         this.data = data;
@@ -40,7 +44,7 @@ public class CustomerAddressesAdapter extends RecyclerView.Adapter<CustomerAddre
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         CustomerContact customerContact = data.get(position);
         Address address = customerContact.getAddress();
         Phone phone = customerContact.getPhoneNumbers();
@@ -62,21 +66,16 @@ public class CustomerAddressesAdapter extends RecyclerView.Adapter<CustomerAddre
             holder.phoneNumber.setText("Phone: " + phone.getWork());
 
         }
-        holder.delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                data.remove(position);
-                notifyDataSetChanged();
-            }
-        });
-        holder.edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addressEditListener.onEditAddressClicked(position);
-            }
-        });
         holder.email.setText(customerContact.getEmail());
 
+        for (ContactType type : customerContact.getTypes()) {
+            if (type.getIsPrimary() && type.getName().equalsIgnoreCase(BILLING)) {
+                holder.defaultBilling.setVisibility(View.VISIBLE);
+            }
+            if (type.getIsPrimary() && type.getName().equalsIgnoreCase(SHIPPING)) {
+                holder.defaultShipping.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     @Override
@@ -107,10 +106,27 @@ public class CustomerAddressesAdapter extends RecyclerView.Adapter<CustomerAddre
         Button delete;
         @InjectView(R.id.edit)
         Button edit;
+        @InjectView(R.id.customer_default_billing_address)
+        TextView defaultBilling;
+        @InjectView(R.id.customer_default_shipping_address)
+        TextView defaultShipping;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.inject(this, itemView);
+            delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    data.remove(getAdapterPosition());
+                    notifyDataSetChanged();
+                }
+            });
+            edit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addressEditListener.onEditAddressClicked(getAdapterPosition());
+                }
+            });
         }
     }
 }

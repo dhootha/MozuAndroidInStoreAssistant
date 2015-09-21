@@ -6,13 +6,22 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
+import com.mozu.api.contracts.commerceruntime.orders.OrderAttribute;
 import com.mozu.api.contracts.commerceruntime.orders.OrderItem;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.data.IData;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.CouponsRowItem;
+import com.mozu.mozuandroidinstoreassistant.app.data.order.OrderAttributeHeaderItem;
+import com.mozu.mozuandroidinstoreassistant.app.data.order.OrderAttributeRowItem;
+import com.mozu.mozuandroidinstoreassistant.app.data.order.OrderHeaderItemRow;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.OrderItemRow;
+import com.mozu.mozuandroidinstoreassistant.app.data.order.OrderTotalRow;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.ShippingItemRow;
 import com.mozu.mozuandroidinstoreassistant.app.layout.IRowLayout;
+import com.mozu.mozuandroidinstoreassistant.app.layout.order.IEditMode;
+import com.mozu.mozuandroidinstoreassistant.app.layout.order.NewOrderCouponLayout;
+import com.mozu.mozuandroidinstoreassistant.app.layout.order.NewOrderShippingItemLayout;
+import com.mozu.mozuandroidinstoreassistant.app.layout.order.NewOrderTotalLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,16 +29,54 @@ import java.util.List;
 
 public class NewOrderProductAdapter extends BaseAdapter {
 
+    private boolean editMode;
     private List<IData> mData;
+    private NewOrderShippingItemLayout.OrderUpdateListener mUpdateListener;
 
-    public NewOrderProductAdapter() {
+    public NewOrderProductAdapter(NewOrderShippingItemLayout.OrderUpdateListener updateListener) {
+        mUpdateListener = updateListener;
         mData = new ArrayList<IData>();
+        mData.add(new OrderHeaderItemRow());
+    }
+
+    public void setEditMode(boolean editMode) {
+        this.editMode = editMode;
+    }
+
+    @Override
+    public boolean isEnabled(int position) {
+        return getRowType(position) == RowType.ORDER_ITEM_ROW;
     }
 
     public void addData(Order order) {
-        for(OrderItem item: order.getItems()){
+        mData.clear();
+        mData.add(new OrderHeaderItemRow());
+        for (OrderItem item : order.getItems()) {
             mData.add(new OrderItemRow(item));
         }
+        if (order.getItems().size() > 0) {
+            if (editMode) {
+                mData.add(new ShippingItemRow(order, order.getFulfillmentInfo()));
+                mData.add(new CouponsRowItem(order));
+            }
+            mData.add(new OrderTotalRow(order));
+            if (!editMode && (order.getAttributes() != null && order.getAttributes().size() > 0)) {
+                mData.add(new OrderAttributeHeaderItem());
+                mData.addAll(getOrderAttributes(order));
+            }
+        }
+    }
+
+
+    private List<IData> getOrderAttributes(Order order) {
+        List<IData> orderAttributes = new ArrayList<>();
+        if (order == null || order.getAttributes().size() < 1)
+            return orderAttributes;
+        for (OrderAttribute orderAttribute : order.getAttributes()) {
+            OrderAttributeRowItem orderItemRowItem = new OrderAttributeRowItem(orderAttribute);
+            orderAttributes.add(orderItemRowItem);
+        }
+        return orderAttributes;
     }
 
     @Override
@@ -45,6 +92,14 @@ public class NewOrderProductAdapter extends BaseAdapter {
             return RowType.COUPON_ROW;
         } else if (dataItem instanceof ShippingItemRow) {
             return RowType.SHIPPING_ROW;
+        } else if (dataItem instanceof OrderTotalRow) {
+            return RowType.TOTAL_ROW;
+        } else if (dataItem instanceof OrderHeaderItemRow) {
+            return RowType.ORDER_HEADER_ROW;
+        } else if (dataItem instanceof OrderAttributeRowItem) {
+            return RowType.ORDER_ATTRIBUTE_ROW;
+        } else if (dataItem instanceof OrderAttributeHeaderItem) {
+            return RowType.ORDER_ATTRIBUTE_HEADER_ROW;
         } else {
             return RowType.EMPTY_ROW;
         }
@@ -72,26 +127,49 @@ public class NewOrderProductAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup viewGroup) {
+        RowType rowType = getRowType(position);
         if (convertView == null) {
-            if (getRowType(position) == RowType.ORDER_ITEM_ROW) {
+            if (rowType == RowType.ORDER_ITEM_ROW) {
                 convertView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.new_order_product_item, viewGroup, false);
-            } else if (getRowType(position) == RowType.COUPON_ROW) {
-                convertView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.new_order_product_item, viewGroup, false);
-            } else {
-                convertView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.new_order_product_item, viewGroup, false);
-
+            } else if (rowType == RowType.COUPON_ROW) {
+                convertView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.new_order_coupon_item, viewGroup, false);
+                ((NewOrderCouponLayout) convertView).setUpdateListener(mUpdateListener);
+            } else if (rowType == RowType.SHIPPING_ROW) {
+                convertView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.new_order_shipping_item, viewGroup, false);
+                ((NewOrderShippingItemLayout) convertView).setOrderUpdateListener(mUpdateListener);
+            } else if (rowType == RowType.TOTAL_ROW) {
+                convertView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.new_order_summary_item, viewGroup, false);
+                ((NewOrderTotalLayout) convertView).setUpdateListener(mUpdateListener);
+            } else if (rowType == RowType.ORDER_HEADER_ROW) {
+                convertView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.neworder_header_layout, viewGroup, false);
+                return convertView;
+            } else if (rowType == RowType.ORDER_ATTRIBUTE_ROW) {
+                convertView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.order_attribute_list_item, viewGroup, false);
+            } else if (rowType == RowType.ORDER_ATTRIBUTE_HEADER_ROW) {
+                convertView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.order_attribute_header, viewGroup, false);
+                return convertView;
             }
         }
         IData orderItem = getItem(position);
-        ((IRowLayout) convertView).bindData(orderItem);
+
+        if (convertView instanceof IRowLayout) {
+            ((IRowLayout) convertView).bindData(orderItem);
+        }
+        if (convertView instanceof IEditMode) {
+            ((IEditMode) convertView).setEditMode(editMode);
+        }
         return convertView;
     }
 
     public enum RowType {
+        ORDER_HEADER_ROW,
         ORDER_ITEM_ROW,
         COUPON_ROW,
         SHIPPING_ROW,
-        EMPTY_ROW
+        TOTAL_ROW,
+        ORDER_ATTRIBUTE_HEADER_ROW,
+        ORDER_ATTRIBUTE_ROW, EMPTY_ROW
     }
+
 
 }

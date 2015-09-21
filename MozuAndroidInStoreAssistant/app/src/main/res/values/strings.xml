@@ -29,7 +29,7 @@
     <string name="title_activity_image_list">ImageListActivity</string>
 
     <!-- Tabs For Product Detail -->
-    <string name="overview_tab_name">Overview</string>
+    <string name="overview_tab_name">Details</string>
     <string name="properties_tab_name">Properties</string>
     <string name="extras_tab_name">Extras</string>
     <string name="shipping_tab_name">Shipping</string>
@@ -218,7 +218,7 @@
     <string name="cancel">Cancel</string>
     <string name="clear_history_prompt">Are you sure you want to clear search history?</string>
     <string name="customer_id">Customer ID: </string>
-    <string name="customer_email">Email Address</string>
+    <string name="customer_email">Customer Email</string>
     <string name="customer_newsletter">Newsletter Subscriber</string>
     <string name="customer_segments">Customer Segments</string>
     <string name="customer_tax_exmept">Tax Exempt</string>
@@ -226,12 +226,12 @@
     <string name="empty_wishlist_items">No Wishlist Items found</string>
     <string name="signout">Are you sure you want to sign out?</string>
     <string name="order_date">Order Date</string>
-    <string name="customer">Customer</string>
+    <string name="customer">Customer Name</string>
     <string name="order_total_header">Order Total</string>
     <string name="order_status">Order Status</string>
     <string name="attribute_delimiter">~</string>
-    <string name="not_internal_notes_available">No Internal Notes Available</string>
-    <string name="not_customer_notes_available">No Customer Notes Available</string>
+    <string name="not_internal_notes_available">None to display</string>
+    <string name="not_customer_notes_available">None available</string>
     <string name="instore_header">In-Store Pickup Items</string>
     <string name="unshipped_header">Unshipped Items</string>
     <string name="fullfilled_header">Fulfilled Items</string>
@@ -286,14 +286,14 @@
     <string name="state">State</string>
     <string name="type">Type</string>
     <string name="invalid_phone">Invalid Phone Number</string>
-    <string name="edit">EDIT</string>
-    <string name="delete">DELETE</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
     <string name="order_label">Order</string>
     <string name="status">Status</string>
-    <string name="name_label">Name</string>
-    <string name="email_label">Email</string>
+    <string name="name_label">Customer Name</string>
+    <string name="email_label">Customer Email</string>
     <string name="title_new_order">New Order</string>
-    <string name="lookup_customer_hint">Lookup existing customer </string>
+    <string name="lookup_customer_hint">Customer Search</string>
     <string name="customer_lookup">Customer Lookup</string>
     <string name="create_new_customer">Create New Customer</string>
     <string name="product_lookuphint">Lookup Product</string>
@@ -302,14 +302,39 @@
     <string name="product_quantity_header">Quantity</string>
     <string name="product_total_header">Item Total</string>
     <string name="add_note">Add Note</string>
-    <string name="new_note">New Note</string>
+    <string name="new_note">Save Note</string>
     <string name="edit_note">Edit Note</string>
-    <string name="exit_edit_mode">Finish Editing</string>
-    <string name="add_internal_note_title">Add New Internal Note</string>
+    <string name="exit_edit_mode">Done</string>
+    <string name="add_internal_note_title">Add Internal Note</string>
     <string name="done">Done</string>
-    <string name="customer_lookup_instructions">Lookup or create a customer to continue</string>
+    <string name="customer_lookup_instructions">Lookup an existing customer or create a customer to continue</string>
+    <string name="product_save">Save</string>
+    <string name="sub_total">Sub Total</string>
+    <string name="tax">Tax</string>
+    <string name="shipping_total">Shipping</string>
+    <string name="add_product">Configure Product</string>
+    <string name="add_coupon">Add Coupon (Order, Item, or Shipping)</string>
+    <string name="select_variation">Select Variation</string>
+    <string name="add_customer_note_title">Add Customer Note</string>
+    <string name="select_coupons">Add Coupons</string>
+    <string name="shipping_method">Add Shipping</string>
     <string name="no_items_selected_error">Please select one or more items to continue</string>
+    <string name="save_customer_note">Save Note</string>
     <string name="standard_error">There was an error completing the request</string>
+    <string name="create_new_pickup">Create New Pickup</string>
+    <string name="move_to">Move to:</string>
+    <string name="submit">Submit</string>
+    <string name="submit_confirm_message">Are you sure want to submit?</string>
+    <string name="cancel_confirm_message">Are you sure you want to cancel this order?</string>
+    <string name="product_delete">Remove</string>
+    <string name="orderitem_remove_confirm">Are you sure you want to remove this item?</string>
+    <string name="remove_coupon_confirm">Are you sure you want to remove this coupon</string>
+    <string name="order_load_failure">Failed to load order. Please try later.</string>
+    <string name="order_fulfillment_error">Failed to fetch fulfillment types</string>
+    <string name="previous">Previous</string>
+    <string name="validate">Validate</string>
+    <string name="clear">Clear</string>
+    <string name="address_not_found">Address Not Found</string>
     <string-array name="register_email_address">
         <item>mozumobile@volusion.com</item>
     </string-array>
