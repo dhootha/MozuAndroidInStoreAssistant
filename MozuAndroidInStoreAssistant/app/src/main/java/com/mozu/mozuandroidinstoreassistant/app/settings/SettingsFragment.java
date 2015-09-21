@@ -43,6 +43,8 @@ public class SettingsFragment extends DialogFragment {
     Button mUpdateStore;
     @InjectView(R.id.mode)
     Switch mMode;
+    @InjectView(R.id.location)
+    TextView mLocaiton;
 
     private UserAuthenticationStateMachine mUserState;
 
@@ -77,6 +79,11 @@ public class SettingsFragment extends DialogFragment {
             store.append(") ");
         } else {
             store.append(getActivity().getResources().getString(R.string.not_set));
+        }
+        if (mUserState.getCurrentUsersPreferences().getDefaultLocationName() != null && !mUserState.getCurrentUsersPreferences().getDefaultLocationName().isEmpty()) {
+            mLocaiton.setText(mUserState.getCurrentUsersPreferences().getDefaultLocationName());
+        } else {
+            mLocaiton.setText(getActivity().getResources().getString(R.string.not_available));
         }
         mDefaultStore.setText(store.toString());
         mUpdateStore.setOnClickListener(new View.OnClickListener() {

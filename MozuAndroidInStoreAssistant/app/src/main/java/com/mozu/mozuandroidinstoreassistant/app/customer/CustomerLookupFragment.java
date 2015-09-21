@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.mozuandroidinstoreassistant.app.CustomerUpdateActivity;
@@ -36,6 +37,8 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
     Button mCreateCustomer;
     @InjectView(R.id.lookup_spinner)
     ProgressBar mCustomerProgressBar;
+    @InjectView(R.id.header)
+    TextView mHeader;
     private CustomersLoader mCustomersLoader;
     private int mTenantId;
     private int mSiteId;
@@ -116,7 +119,9 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
                 //DO NOTHING
             }
         });
-        if (!mCanCreate) {
+        if (mCanCreate) {
+            mHeader.setVisibility(View.VISIBLE);
+        } else {
             mCreateCustomer.setVisibility(View.GONE);
         }
     }
