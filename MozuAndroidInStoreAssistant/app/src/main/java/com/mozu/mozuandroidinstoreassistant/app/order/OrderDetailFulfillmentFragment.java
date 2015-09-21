@@ -1,15 +1,24 @@
 package com.mozu.mozuandroidinstoreassistant.app.order;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.mozu.api.MozuApiContext;
 import com.mozu.api.contracts.commerceruntime.fulfillment.FulfillmentAction;
 import com.mozu.api.contracts.commerceruntime.fulfillment.Package;
 import com.mozu.api.contracts.commerceruntime.fulfillment.PackageItem;
@@ -18,6 +27,9 @@ import com.mozu.api.contracts.commerceruntime.fulfillment.PickupItem;
 import com.mozu.api.contracts.commerceruntime.fulfillment.Shipment;
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.commerceruntime.orders.OrderItem;
+import com.mozu.api.contracts.commerceruntime.payments.Payment;
+import com.mozu.api.contracts.commerceruntime.payments.PaymentAction;
+import com.mozu.api.resources.commerce.orders.PaymentResource;
 import com.mozu.mozuandroidinstoreassistant.app.OrderDetailActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.data.IData;
@@ -50,8 +62,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.observables.AndroidObservable;
+import rx.schedulers.Schedulers;
 
 
 public class OrderDetailFulfillmentFragment extends Fragment implements MoveToListener, MarkPickupAsFulfilledListener {
@@ -128,6 +142,10 @@ public class OrderDetailFulfillmentFragment extends Fragment implements MoveToLi
         }
 
     };
+    private Integer mTenantId;
+    private Integer mSiteId;
+    private LinearLayout mFulFillmentProgress;
+    private TextView mFulFillmentProgressStatus;
 
     public OrderDetailFulfillmentFragment() {
         // Required empty public constructor
@@ -139,9 +157,14 @@ public class OrderDetailFulfillmentFragment extends Fragment implements MoveToLi
         View view = inflater.inflate(R.layout.order_detail_fulfillment_layout, null);
         mShipItems = new ArrayList<>();
         mPickupItems = new ArrayList<>();
+        UserAuthenticationStateMachine userAuthenticationStateMachine = UserAuthenticationStateMachineProducer.getInstance(getActivity());
+        mTenantId = userAuthenticationStateMachine.getTenantId();
+        mSiteId = userAuthenticationStateMachine.getSiteId();
 
         mFullfillmentListview = (ListView) view.findViewById(R.id.fullfillment_list);
         mFulfillmentStatus = (TextView) view.findViewById(R.id.order_fulfillment_status);
+        mFulFillmentProgress = (LinearLayout) view.findViewById(R.id.fulfillment_loading);
+        mFulFillmentProgressStatus = (TextView) view.findViewById(R.id.progress_update);
         String status = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(mOrder.getFulfillmentStatus()), " ");
         mFulfillmentStatus.setText("Status: " + status);
         if (mOrder != null) {
@@ -278,6 +301,7 @@ public class OrderDetailFulfillmentFragment extends Fragment implements MoveToLi
 
     /**
      * Filter items fulfilled with the method  by fulfilled, pending, and not packaged.
+     *
      * @param shipItems Items already filtered by fulfillment method
      * @return filtered list of IData items for
      */
@@ -371,17 +395,188 @@ public class OrderDetailFulfillmentFragment extends Fragment implements MoveToLi
 
     @Override
     public void markPickUpAsFulfilled(Pickup pickup) {
-        FulfillmentAction action = new FulfillmentAction();
+        final FulfillmentAction fulfillmentAction = new FulfillmentAction();
         List<String> pickups = new ArrayList<>();
+        pickup.getItems();
         pickups.add(pickup.getId());
-        action.setPickupIds(pickups);
-        action.setActionName("PickUp");
+        fulfillmentAction.setPickupIds(pickups);
+        fulfillmentAction.setActionName("PickUp");
 
+        List<OrderItem> pickupOrderItems = new ArrayList<>();
+        Double total = 0.00;
+        Double taxTotal = 0.00;
+        for (PickupItem pickupItem : pickup.getItems()) {
+            for (OrderItem orderItem : mOrder.getItems()) {
+                String productCode = orderItem.getProduct().getVariationProductCode();
+                if (productCode == null)
+                    productCode = orderItem.getProduct().getProductCode();
+                if (productCode.equals(pickupItem.getProductCode())) {
+                    pickupOrderItems.add(orderItem);
+                    total = total + orderItem.getDiscountedTotal();
+                    taxTotal = taxTotal + orderItem.getItemTaxTotal();
+                }
+            }
+        }
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+        View confirmView = inflater.inflate(R.layout.fulfillment_payment_confirm, null);
+        final EditText captureAmount = (EditText) confirmView.findViewById(R.id.capture_amount);
+        final EditText captureTax = (EditText) confirmView.findViewById(R.id.capture_tax);
+        final TextView pickupTotal = (TextView) confirmView.findViewById(R.id.pickup_total);
+
+        captureAmount.setText(total.toString());
+        captureTax.setText(taxTotal.toString());
+        pickupTotal.setText(String.valueOf(total + taxTotal));
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                Double subTotal = 0.00;
+                Double tax = 0.00;
+                if (!TextUtils.isEmpty(captureAmount.getText().toString())) {
+                    subTotal = Double.parseDouble(captureAmount.getText().toString());
+                }
+                if (!TextUtils.isEmpty(captureTax.getText().toString())) {
+                    tax = Double.parseDouble(captureTax.getText().toString());
+                }
+                pickupTotal.setText(String.valueOf(subTotal + tax));
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        };
+
+        captureAmount.addTextChangedListener(textWatcher);
+        captureTax.addTextChangedListener(textWatcher);
+
+        new AlertDialog.Builder(getActivity())
+                .setView(confirmView)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Payment payment = getAuthorizedPayment(mOrder);
+                        if (payment != null) {
+                            Double pickupAmount = Double.parseDouble(pickupTotal.getText().toString());
+                            Double balance = mOrder.getTotal() - getTotalPayment(mOrder.getPayments());
+                            captureAndAuthorizePayment(pickupAmount, payment, balance - pickupAmount, fulfillmentAction);
+                        } else {
+                            Toast.makeText(getActivity(), " No Authorizations available", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+                        dialog.dismiss();
+                    }
+                })
+                .create().show();
+
+
+
+    /*
         AndroidObservable.bindFragment(this, FulfillmentActionObservablesManager.getInstance(
                 mOrder.getTenantId(), mOrder.getSiteId())
                 .performFulfillmentAction(action, mOrder.getId()))
                 .subscribe(getUpdatePickupSubscriber());
+                */
     }
+
+    private Double getTotalPayment(List<Payment> payments) {
+        Double total = 0.0;
+        for (Payment payment : payments) {
+            total += payment.getAmountCollected();
+        }
+        return total;
+    }
+
+
+    private Payment getAuthorizedPayment(Order mOrder) {
+        for (Payment payment : mOrder.getPayments()) {
+            if (payment.getStatus().equalsIgnoreCase("authorized")) {
+                return payment;
+            }
+        }
+
+        return null;
+    }
+
+
+    private void captureAndAuthorizePayment(Double captureAmount, final Payment mPayment, final Double remainingAmount, final FulfillmentAction fulfillmentAction) {
+        final PaymentAction action = new PaymentAction();
+        action.setActionName("CapturePayment");
+        action.setAmount(captureAmount);
+        action.setCurrencyCode("USD");
+        action.setExternalTransactionId(mPayment.getExternalTransactionId());
+        mFulFillmentProgress.setVisibility(View.VISIBLE);
+        AndroidObservable.bindFragment(OrderDetailFulfillmentFragment.this,
+                Observable
+                        .create(new Observable.OnSubscribe<Order>() {
+                            @Override
+                            public void call(Subscriber<? super Order> subscriber) {
+                                try {
+                                    mFulFillmentProgressStatus.setText("Capturing Payment");
+                                    PaymentResource paymentResource = new PaymentResource(new MozuApiContext(mTenantId, mSiteId));
+                                    Order capturedOrder = paymentResource.performPaymentAction(action, mPayment.getOrderId(), mPayment.getId());
+                                    if (remainingAmount > 0) {
+                                        PaymentAction paymentAction = new PaymentAction();
+                                        paymentAction.setActionName("CreatePayment");
+                                        paymentAction.setAmount(remainingAmount);
+                                        paymentAction.setCurrencyCode("USD");
+                                        paymentAction.setNewBillingInfo(mPayment.getBillingInfo());
+                                        Order updatedOrder = paymentResource.createPaymentAction(paymentAction, mOrder.getId());
+
+                                        if (!subscriber.isUnsubscribed()) {
+                                            subscriber.onNext(updatedOrder);
+                                            subscriber.onCompleted();
+                                        }
+                                    } else {
+
+                                        if (!subscriber.isUnsubscribed()) {
+                                            subscriber.onNext(capturedOrder);
+                                            subscriber.onCompleted();
+                                        }
+                                    }
+
+                                } catch (Exception e) {
+                                    if (!subscriber.isUnsubscribed()) {
+                                        subscriber.onError(e);
+                                    }
+                                }
+                            }
+                        }).subscribeOn(Schedulers.io()))
+                .subscribe(new Subscriber<Order>() {
+                    @Override
+                    public void onCompleted() {
+                        // mFulFillmentProgressStatus.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Toast.makeText(getActivity(), "Failed to Capture payment" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        mFulFillmentProgressStatus.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onNext(Order order) {
+                        mFulFillmentProgressStatus.setText("Payment Successfully captured. Marking Item as fulfilled");
+                        AndroidObservable.bindFragment(OrderDetailFulfillmentFragment.this, FulfillmentActionObservablesManager.getInstance(
+                                mOrder.getTenantId(), mOrder.getSiteId())
+                                .performFulfillmentAction(fulfillmentAction, mOrder.getId()))
+                                .subscribe(getUpdatePickupSubscriber());
+                        //((OrderDetailActivity) getActivity()).onRefresh();
+                    }
+                });
+
+
+    }
+
 
     @Override
     public void cancelPickup(Pickup pickup) {
@@ -395,6 +590,9 @@ public class OrderDetailFulfillmentFragment extends Fragment implements MoveToLi
         return new Subscriber<Order>() {
             @Override
             public void onCompleted() {
+                if (mFulFillmentProgress.getVisibility() == View.VISIBLE) {
+                    mFulFillmentProgress.setVisibility(View.GONE);
+                }
             }
 
             @Override
@@ -422,7 +620,7 @@ public class OrderDetailFulfillmentFragment extends Fragment implements MoveToLi
             public void onError(Throwable e) {
                 ErrorMessageAlertDialog
                         .getStandardErrorMessageAlertDialog(getActivity(), getResources().getString(R.string.standard_error))
-                                .show();
+                        .show();
             }
 
             @Override

@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="product_overflow_options"><item>Inventory</item></string-array>
+    <string-array name="card_types">
+        <item>Visa</item>
+        <item>Master Card</item>
+    </string-array>
 </resources>

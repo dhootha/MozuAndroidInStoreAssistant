@@ -1,5 +1,6 @@
 package com.mozu.mozuandroidinstoreassistant.app.order;
 
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,21 +12,16 @@ import android.widget.TextView;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.commerceruntime.payments.Payment;
-import com.mozu.api.contracts.paymentservice.PublicCard;
 import com.mozu.mozuandroidinstoreassistant.app.OrderDetailActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.order.adapters.OrderDetailPaymentsAdapter;
-import com.mozu.mozuandroidinstoreassistant.app.order.loaders.OrderPaymentManager;
 
 import java.text.NumberFormat;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
-import rx.Subscriber;
-import rx.android.observables.AndroidObservable;
 
 
 public class OrderDetailPaymentFragment extends Fragment implements OrderDetailPaymentsAdapter.CapturePaymentListener, CapturePaymentDialogFragment.onCaptureDoneListener {
@@ -105,33 +101,9 @@ public class OrderDetailPaymentFragment extends Fragment implements OrderDetailP
         addPaymentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PublicCard card = new PublicCard();
-                card.setCardHolderName("Test Best");
-                card.setCardNumber("4111111111111111");
-                card.setExpireMonth(1);
-                card.setExpireYear(2020);
-                card.setCardType("VISA");
-                card.setCvv("123");
-
-                AndroidObservable.bindFragment(OrderDetailPaymentFragment.this, OrderPaymentManager.getInstance().getPaymentCreateObservable(mTenantId, mSiteId, card, mOrder, 27.00)).subscribe(new Subscriber<Order>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Order order) {
-                        Order updatedOrder = order;
-                        int k = 0;
-
-                    }
-                });
-
+                AddPaymentDialogFragment newOrderItemEditFragment = AddPaymentDialogFragment.getInstance(mOrder);
+                newOrderItemEditFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.ActivityDialogMozu);
+                newOrderItemEditFragment.show(getFragmentManager(), "");
             }
         });
         TextView balance = (TextView) view.findViewById(R.id.balance);

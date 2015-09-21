@@ -1,1 +1,1 @@
-include ':app', ':mozu-java/mozu-android-sdk'
+include ':app'

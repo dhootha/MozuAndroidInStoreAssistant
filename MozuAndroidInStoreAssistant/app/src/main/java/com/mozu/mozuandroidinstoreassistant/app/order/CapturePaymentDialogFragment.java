@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.commerceruntime.payments.Payment;
@@ -36,6 +37,8 @@ public class CapturePaymentDialogFragment extends DialogFragment {
     Button mCaptureButton;
     @InjectView(R.id.cancel_button)
     Button mCancelButton;
+    @InjectView(R.id.payment_loading)
+    LinearLayout mPaymentLoading;
     private Payment mPayment;
     private onCaptureDoneListener onCaptureDoneListener;
 
@@ -67,22 +70,25 @@ public class CapturePaymentDialogFragment extends DialogFragment {
         mCaptureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 PaymentAction action = new PaymentAction();
                 action.setActionName("CapturePayment");
                 action.setAmount(Double.parseDouble(captureAmount.getText().toString()));
                 action.setCurrencyCode("USD");
                 action.setExternalTransactionId(mPayment.getExternalTransactionId());
+                mPaymentLoading.setVisibility(View.VISIBLE);
                 AndroidObservable.bindFragment(CapturePaymentDialogFragment.this, OrderPaymentManager.getInstance().capturePaymentObservable(mTenantId, mSiteId, mPayment.getOrderId(), action, mPayment.getId()))
                         .subscribe(new Subscriber<Order>() {
                             @Override
                             public void onCompleted() {
+                                mPaymentLoading.setVisibility(View.VISIBLE);
                                 getDialog().dismiss();
                             }
 
                             @Override
                             public void onError(Throwable e) {
+                                mPaymentLoading.setVisibility(View.VISIBLE);
                                 getDialog().dismiss();
-
                             }
 
                             @Override

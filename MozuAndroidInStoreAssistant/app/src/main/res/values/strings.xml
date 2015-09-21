@@ -340,6 +340,15 @@
     <string name="capture">Capture</string>
     <string name="enter_payment_amount">Enter Amount to capture</string>
     <string name="capture_payment">Capture Payment</string>
+    <string name="prompt_card_number">Card Number</string>
+    <string name="prompt_exp_month">Exp Month</string>
+    <string name="prompt_expire_year">Exp Year</string>
+    <string name="prompt_exp_cvv">CVV</string>
+    <string name="prompt_card_name">Name on Card</string>
+    <string name="prompt_amount">Amount</string>
+    <string name="prompt_card_type">Card Type</string>
+    <string name="add_payment">Add Payment</string>
+    <string name="add">Add</string>
     <string-array name="register_email_address">
         <item>mozumobile@volusion.com</item>
     </string-array>

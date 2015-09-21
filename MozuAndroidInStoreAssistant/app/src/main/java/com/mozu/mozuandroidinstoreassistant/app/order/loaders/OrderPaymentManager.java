@@ -12,7 +12,6 @@ import com.mozu.api.resources.commerce.payments.PublicCardResource;
 
 import rx.Observable;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 
@@ -39,25 +38,23 @@ public class OrderPaymentManager {
                             PublicCardResource publicCardResource = new PublicCardResource(new MozuApiContext(tenantId, siteId));
                             SyncResponse response = publicCardResource.create(publicCard);
 
-
                             PaymentAction action = new PaymentAction();
                             action.setActionName("CreatePayment");
                             action.setAmount(amount);
                             action.setCurrencyCode("USD");
-                            action.setNewBillingInfo(new BillingInfo());
-                            PaymentCard paymentCard = new PaymentCard();
 
+                            PaymentCard paymentCard = new PaymentCard();
                             paymentCard.setCardNumberPartOrMask(response.getNumberPart());
                             paymentCard.setPaymentServiceCardId(response.getId());
+
                             paymentCard.setExpireMonth(Short.parseShort(publicCard.getExpireMonth().toString()));
                             paymentCard.setExpireYear(Short.parseShort(publicCard.getExpireYear().toString()));
                             paymentCard.setPaymentOrCardType(publicCard.getCardType());
-                            BillingInfo billingInfo = order.getBillingInfo();
 
+                            BillingInfo billingInfo = order.getBillingInfo();
                             billingInfo.setCard(paymentCard);
                             billingInfo.setPaymentType("CreditCard");
                             action.setNewBillingInfo(billingInfo);
-
                             PaymentResource paymentResource = new PaymentResource(new MozuApiContext(tenantId, siteId));
                             Order updatedOrder = paymentResource.createPaymentAction(action, order.getId());
                             if (!subscriber.isUnsubscribed()) {
@@ -70,8 +67,7 @@ public class OrderPaymentManager {
                             }
                         }
                     }
-                }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                }).subscribeOn(Schedulers.io());
     }
 
 
@@ -94,7 +90,6 @@ public class OrderPaymentManager {
                             }
                         }
                     }
-                }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                }).subscribeOn(Schedulers.io());
     }
 }
