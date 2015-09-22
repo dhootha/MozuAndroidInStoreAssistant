@@ -77,7 +77,7 @@
 
             <LinearLayout
                 android:id="@+id/product_variation_layout"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="64dp"
                 android:orientation="vertical">
 
@@ -107,7 +107,7 @@
 
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="64dp"
                 android:orientation="vertical">
 
@@ -135,7 +135,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="64dp"
                 android:layout_marginTop="8dp"
                 android:orientation="vertical">
@@ -153,7 +153,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="64dp"
                 android:orientation="vertical">
 
@@ -170,7 +170,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="64dp"
                 android:layout_marginTop="8dp"
                 android:orientation="vertical">
@@ -189,7 +189,7 @@
 
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="64dp"
                 android:weightSum="2">
 
