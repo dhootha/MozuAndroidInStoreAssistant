@@ -510,7 +510,12 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
         if (mSearchView != null) {
             mSearchView.setQuery("", false);
         }
-        mListener.orderSelected((Order) mOrdersList.getAdapter().getItem(position), mAdapter.getData(), position);
+        ArrayList<String> orderList = new ArrayList<>();
+        for (Order order : mAdapter.getData()) {
+            orderList.add(order.getId());
+
+        }
+        mListener.orderSelected((Order) mOrdersList.getAdapter().getItem(position), orderList, position);
     }
 
     public void setListener(OrderListener listener) {
