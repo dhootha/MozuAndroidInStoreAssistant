@@ -317,7 +317,7 @@
     <string name="select_variation">Select Variation</string>
     <string name="add_customer_note_title">Add Customer Note</string>
     <string name="select_coupons">Add Coupons</string>
-    <string name="shipping_method">Add Shipping</string>
+    <string name="shipping_method">Select Shipping</string>
     <string name="no_items_selected_error">Please select one or more items to continue</string>
     <string name="save_customer_note">Save Note</string>
     <string name="standard_error">There was an error completing the request</string>
