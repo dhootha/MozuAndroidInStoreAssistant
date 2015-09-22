@@ -71,7 +71,7 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
     private TextView mOrderFulfillmentStatus;
     private Boolean mIsEditMode = false;
     private TextView mCustomerEmail;
-    private ArrayList<Order> mOrderList;
+    private ArrayList<String> mOrderList;
     private int mOrderPosition;
 
     @Override
@@ -90,7 +90,7 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
             mOrderNumber = getIntent().getStringExtra(ORDER_NUMBER_EXTRA_KEY);
             mTenantId = getIntent().getIntExtra(CURRENT_TENANT_ID, -1);
             mSiteId = getIntent().getIntExtra(CURRENT_SITE_ID, -1);
-            mOrderList = (ArrayList<Order>) (getIntent().getSerializableExtra(OrderDetailActivity.ORDER_LIST));
+            mOrderList = (ArrayList<String>) (getIntent().getSerializableExtra(OrderDetailActivity.ORDER_LIST));
             mOrderPosition = getIntent().getIntExtra(OrderDetailActivity.ORDER_LIST_POSITION, -1);
         } else if (savedInstanceState != null) {
             mOrderNumber = savedInstanceState.getString(ORDER_NUMBER_EXTRA_KEY);
@@ -132,9 +132,9 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
             mPreviousOrder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Order order = mOrderList.get(mOrderPosition - 1);
+                    String orderId = mOrderList.get(mOrderPosition - 1);
                     Intent intent = new Intent(OrderDetailActivity.this, OrderDetailActivity.class);
-                    intent.putExtra(OrderDetailActivity.ORDER_NUMBER_EXTRA_KEY, order.getId());
+                    intent.putExtra(OrderDetailActivity.ORDER_NUMBER_EXTRA_KEY, orderId);
                     intent.putExtra(OrderDetailActivity.ORDER_LIST, mOrderList);
                     intent.putExtra(OrderDetailActivity.ORDER_LIST_POSITION, mOrderPosition - 1);
                     intent.putExtra(OrderDetailActivity.CURRENT_TENANT_ID, mTenantId);
@@ -146,9 +146,9 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
             mNextOrder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Order order = mOrderList.get(mOrderPosition + 1);
+                    String orderId = mOrderList.get(mOrderPosition + 1);
                     Intent intent = new Intent(OrderDetailActivity.this, OrderDetailActivity.class);
-                    intent.putExtra(OrderDetailActivity.ORDER_NUMBER_EXTRA_KEY, order.getId());
+                    intent.putExtra(OrderDetailActivity.ORDER_NUMBER_EXTRA_KEY, orderId);
                     intent.putExtra(OrderDetailActivity.ORDER_LIST, mOrderList);
                     intent.putExtra(OrderDetailActivity.ORDER_LIST_POSITION, mOrderPosition + 1);
                     intent.putExtra(OrderDetailActivity.CURRENT_TENANT_ID, mTenantId);

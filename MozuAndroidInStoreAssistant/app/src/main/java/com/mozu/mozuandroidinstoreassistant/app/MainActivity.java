@@ -415,7 +415,7 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
     }
 
     @Override
-    public void orderSelected(Order order, ArrayList<Order> orderList, int position) {
+    public void orderSelected(Order order, ArrayList<String> orderList, int position) {
         UserAuthenticationStateMachine userAuthenticationStateMachine = UserAuthenticationStateMachineProducer.getInstance(this);
         if (order.getStatus().equalsIgnoreCase(OrderStrings.PENDING)) {
             Intent intent = new Intent(this, NewOrderActivity.class);
