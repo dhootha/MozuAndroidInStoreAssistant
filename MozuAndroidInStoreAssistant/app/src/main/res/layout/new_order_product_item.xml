@@ -59,10 +59,10 @@
         <TextView
             android:id="@+id/product_quantity"
             android:layout_width="0dp"
-            android:gravity="right"
-            android:layout_marginRight="56dp"
             android:layout_height="wrap_content"
+            android:layout_marginRight="56dp"
             android:layout_weight="1"
+            android:gravity="right"
             android:paddingLeft="5dp"/>
 
         <LinearLayout

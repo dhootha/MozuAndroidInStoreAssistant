@@ -29,11 +29,11 @@ import rx.subscriptions.CompositeSubscription;
 
 public class NewOrderTotalLayout extends LinearLayout implements IRowLayout, IEditMode {
     TextView mSubTotalText;
-    private boolean mIsEditMode;
-    private NewOrderShippingItemLayout.OrderUpdateListener mOrderUpdateListener;
     LinearLayout mShippingAdjustment;
     LinearLayout mOrderAdjustment;
     LinearLayout mDiscountAdjustment;
+    private boolean mIsEditMode;
+    private NewOrderShippingItemLayout.OrderUpdateListener mOrderUpdateListener;
     private CompositeSubscription mCompositeSubscription;
 
 

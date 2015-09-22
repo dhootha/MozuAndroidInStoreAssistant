@@ -23,6 +23,7 @@ import com.mozu.mozuandroidinstoreassistant.app.customer.adapters.CustomerAddres
 import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.AddCustomerContactObservable;
 import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.CustomerAccountCreationObserver;
 import com.mozu.mozuandroidinstoreassistant.app.dialog.ErrorMessageAlertDialog;
+import com.mozu.mozuandroidinstoreassistant.app.utils.CustomerUtils;
 import com.mozu.mozuandroidinstoreassistant.app.views.LoadingView;
 
 import java.util.Set;
@@ -97,7 +98,7 @@ public class CustomerAddAddressFragment extends Fragment {
         mSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onSaveClicked();
+                onNextClicked();
             }
         });
         mCancel.setOnClickListener(new View.OnClickListener() {
@@ -137,11 +138,30 @@ public class CustomerAddAddressFragment extends Fragment {
         ((CustomerCreationListener) getActivity()).addNewAddress(mCustomerAccount);
     }
 
-    private void onSaveClicked() {
-        loadingView.setLoading();
+    private void onNextClicked() {
+        //customer requires default shipping and billing
+        if (!CustomerUtils.isCustomerWithDefaultBilling(mCustomerAccount)) {
+            ContactType type = new ContactType();
+            type.setIsPrimary(true);
+            type.setName(CustomerUtils.BILLING);
+            mCustomerAccount.getContacts().get(0).getTypes().add(0, type);
+        }
+        if (!CustomerUtils.isCustomerWithDefaultShipping(mCustomerAccount)) {
+            ContactType type = new ContactType();
+            type.setIsPrimary(true);
+            type.setName(CustomerUtils.SHIPPING);
+            mCustomerAccount.getContacts().get(0).getTypes().add(0, type);
+        }
         if (mIsCusomterCreated) {
-            updateCustomerAddresses(mCustomerAccount.getId());
+            if (CustomerUtils.isCustomerWithPhoneNumberInDefaultAddress(mCustomerAccount)) {
+                updateCustomerAddresses(mCustomerAccount.getId());
+                loadingView.setLoading();
+            } else {
+                ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), "Default shipping and billing addresses require a phone number").show();
+            }
+
         } else {
+            loadingView.setLoading();
             CustomerAccountCreationObserver.getCustomerAccountCreationObserverable(mTenantId, mSiteId, mCustomerAccount)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
