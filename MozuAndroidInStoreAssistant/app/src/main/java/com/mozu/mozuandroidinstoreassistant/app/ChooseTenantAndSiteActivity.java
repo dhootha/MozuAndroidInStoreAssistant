@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.widget.TextView;
 
+import com.mozu.api.contracts.location.FulfillmentType;
 import com.mozu.api.contracts.location.Location;
 import com.mozu.api.contracts.location.LocationCollection;
 import com.mozu.api.contracts.tenant.Site;
@@ -29,6 +30,7 @@ import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthen
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.tasks.RetrieveTenantAsyncTask;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -44,7 +46,7 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
     private static final String SITE_FRAGMENT_TAG = "sites";
     private static final String LOCATION_FRAGMENT_TAG = "locations";
     private static final String SET_DEFAULT_FRAGMENT_TAG = "set_default_tag";
-    private static final int EMAIL_NAVIGATION_REQUEST =  10034;
+    private static final int EMAIL_NAVIGATION_REQUEST = 10034;
     private TenantFragment mTenantFragment;
     private SiteFragment mSiteFragment;
     private LocationFragment mLocationFragment;
@@ -53,7 +55,7 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
     private boolean mTenantOrSiteNotChosenAuto = false;
     private boolean isLaunchedFromSettings = false;
     private Tenant mTenant;
-    private int mCount;
+    private int mCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +65,7 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
         }
 
         setContentView(R.layout.activity_choose_tenant_and_site);
-        isLaunchedFromSettings = getIntent().getBooleanExtra(LAUNCH_FROM_SETTINGS,false);
+        isLaunchedFromSettings = getIntent().getBooleanExtra(LAUNCH_FROM_SETTINGS, false);
         mUserAuthStateMachine = UserAuthenticationStateMachineProducer.getInstance(getApplicationContext());
 
         mUserAuthStateMachine.addObserver(this);
@@ -83,10 +85,10 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if(requestCode == EMAIL_NAVIGATION_REQUEST){
+        if (requestCode == EMAIL_NAVIGATION_REQUEST) {
             showTenantChooser();
 
-        }else {
+        } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
@@ -210,13 +212,53 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
     public void locationWasChosen(final Location location) {
         //filter sites based on location
         mUserAuthStateMachine.setCurrentLocation(location);
-        showSiteChooser(mTenant.getSites());
+        final List<Site> filteredSites = new ArrayList<>();
 
-        if (mLocationFragment != null) {
-            mLocationFragment.dismiss();
+        for (final Site site : mTenant.getSites()) {
+            LocationManager.getInstance().getAllPickupLocations(mTenant.getId(), site.getId()).subscribe(new Subscriber<LocationCollection>() {
+                @Override
+                public void onCompleted() {
+                    mCount++;
+                    if (mCount == mTenant.getSites().size()) {
+                        showSiteChooser(filteredSites);
+                        if (mLocationFragment != null) {
+                            mLocationFragment.dismiss();
+                        }
+                    }
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    mCount++;
+                    if (mCount == mTenant.getSites().size()) {
+                        showSiteChooser(filteredSites);
+                        if (mLocationFragment != null) {
+                            mLocationFragment.dismiss();
+                        }
+                    } else if (filteredSites.size() == 0 && mCount == mTenant.getSites().size()) {
+                        ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(ChooseTenantAndSiteActivity.this, e.toString()).show();
+                    }
+                }
+
+                @Override
+                public void onNext(LocationCollection collection) {
+                    siteLoop:
+                    for (Location filterLocation : collection.getItems()) {
+                        for (FulfillmentType fulfillmentType : filterLocation.getFulfillmentTypes()) {
+                            if (fulfillmentType.getCode().equalsIgnoreCase("SP") || fulfillmentType.getName().equalsIgnoreCase("in store pickup") &&
+                                    filterLocation.getCode().equalsIgnoreCase(location.getCode())) {
+                                filteredSites.add(site);
+                                break siteLoop;
+                            }
+                        }
+                    }
+
+                    onCompleted();
+                }
+            });
         }
     }
-
 
     @Override
     public void update(Observable observable, Object data) {
@@ -278,7 +320,7 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
             return;
         }
         mTenant = tenant;
-        LocationManager.getInstance().getAllPickupLocations(tenant.getId(), null).subscribe(new Subscriber<LocationCollection>() {
+        LocationManager.getInstance().getAllLocations(tenant.getId(), null).subscribe(new Subscriber<LocationCollection>() {
             @Override
             public void onCompleted() {
 
@@ -292,6 +334,7 @@ public class ChooseTenantAndSiteActivity extends Activity implements TenantResou
             @Override
             public void onNext(LocationCollection collection) {
                 showLocationChooser(collection);
+                onCompleted();
             }
         });
         //showSiteChooser(tenant.getSites());
