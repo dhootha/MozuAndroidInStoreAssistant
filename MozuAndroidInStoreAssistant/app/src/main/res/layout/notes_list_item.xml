@@ -23,7 +23,7 @@
         android:layout_marginLeft="200dp"
         android:paddingRight="@dimen/order_sub_margin_right"
         android:text="@string/comment_notes_header"
-        android:textColor="@android:color/darker_gray"
+        android:textColor="@color/dark_black_text"
         android:textStyle="bold"/>
 
 </RelativeLayout>
