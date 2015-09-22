@@ -15,12 +15,10 @@ import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.commerceruntime.returns.Return;
 import com.mozu.api.contracts.commerceruntime.returns.ReturnItem;
 import com.mozu.mozuandroidinstoreassistant.app.R;
-import com.mozu.mozuandroidinstoreassistant.app.order.adapters.OrderDetailReturnsAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.models.ReturnItemForAdapterWrapper;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
-import com.mozu.mozuandroidinstoreassistant.app.order.OrderReturnDetailDialogFragment;
-import com.mozu.mozuandroidinstoreassistant.app.order.OrderReturnFetcher;
+import com.mozu.mozuandroidinstoreassistant.app.order.adapters.OrderDetailReturnsAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.views.LoadingView;
 
 import java.util.ArrayList;
@@ -105,6 +103,7 @@ public class OrderDetailReturnsFragment extends Fragment  {
                 mReturnLoading.success();
             } else {
                 mReturnLoading.setError("No returns data Available");
+                mReturnLoading.getErrorTextView().setTextColor(getResources().getColor(android.R.color.darker_gray));
             }
         }
 

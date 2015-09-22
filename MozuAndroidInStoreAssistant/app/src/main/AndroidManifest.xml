@@ -56,7 +56,7 @@
             android:label="@string/title_activity_customer_detail"/>
         <activity
             android:name=".order.NewOrderActivity"
-            android:windowSoftInputMode="adjustPan|stateVisible"/>
+            android:windowSoftInputMode="adjustPan|stateUnchanged"/>
 
         <activity
             android:name=".ImagePagerActivity"
@@ -65,6 +65,7 @@
             android:theme="@style/Transparent"/>
         <activity
             android:name=".OrderDetailActivity"
+            android:windowSoftInputMode="adjustPan|stateUnchanged"
             android:label="@string/title_activity_order_detail"/>
         <activity
             android:name=".OrderCreationAddCustomerActivity"
