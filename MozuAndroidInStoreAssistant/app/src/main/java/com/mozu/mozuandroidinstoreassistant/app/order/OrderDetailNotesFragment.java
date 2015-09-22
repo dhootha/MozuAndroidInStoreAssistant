@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -262,8 +263,10 @@ public class OrderDetailNotesFragment extends Fragment {
                 mCustomerNote.setEnabled(true);
                 mCustomerNote.setFocusableInTouchMode(true);
                 mCustomerNote.setFocusable(true);
+                mCustomerNote.setGravity(Gravity.LEFT);
             } else {
                 mCustomerNote.setText(R.string.not_customer_notes_available);
+                mCustomerNote.setGravity(Gravity.CENTER_HORIZONTAL);
 
             }
         } else {
