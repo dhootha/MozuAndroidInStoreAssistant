@@ -1,18 +1,21 @@
 package com.mozu.mozuandroidinstoreassistant.app.order;
 
+import android.app.DialogFragment;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.commerceruntime.payments.Payment;
+import com.mozu.mozuandroidinstoreassistant.app.OrderDetailActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
+import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
+import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.order.adapters.OrderDetailPaymentsAdapter;
 
 import java.text.NumberFormat;
@@ -21,9 +24,11 @@ import java.util.Comparator;
 import java.util.List;
 
 
-public class OrderDetailPaymentFragment extends Fragment {
+public class OrderDetailPaymentFragment extends Fragment implements OrderDetailPaymentsAdapter.CapturePaymentListener, CapturePaymentDialogFragment.onCaptureDoneListener {
 
     private Order mOrder;
+    private Integer mTenantId;
+    private Integer mSiteId;
 
     private NumberFormat mNumberFormat;
 
@@ -42,8 +47,23 @@ public class OrderDetailPaymentFragment extends Fragment {
         if (mOrder != null) {
             setOrderToViews(view);
         }
-
+        UserAuthenticationStateMachine mUserState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
+        mSiteId = mUserState.getSiteId();
+        mTenantId = mUserState.getTenantId();
         return view;
+    }
+
+    @Override
+    public void capturePayment(Payment payment) {
+        CapturePaymentDialogFragment newOrderItemEditFragment = CapturePaymentDialogFragment.getInstance(payment);
+        newOrderItemEditFragment.setOnCaptureDoneListener(this);
+        newOrderItemEditFragment.show(getFragmentManager(), "");
+
+    }
+
+    @Override
+    public void onCaptureDone(Order order) {
+        ((OrderDetailActivity) getActivity()).onRefresh();
     }
 
     class PaymentsSort implements Comparator<Payment> {
@@ -59,9 +79,9 @@ public class OrderDetailPaymentFragment extends Fragment {
         }
     }
 
-    private Double getTotalPayment(List<Payment> payments){
+    private Double getTotalPayment(List<Payment> payments) {
         Double total = 0.0;
-        for(Payment payment:payments){
+        for (Payment payment : payments) {
             total += payment.getAmountCollected();
         }
         return total;
@@ -71,42 +91,33 @@ public class OrderDetailPaymentFragment extends Fragment {
     private void setOrderToViews(View view) {
         ListView paymentList = (ListView) view.findViewById(R.id.payments_list);
         List<Payment> payments = mOrder.getPayments();
-        Collections.sort(payments,new PaymentsSort());
-        final OrderDetailPaymentsAdapter adapter = new OrderDetailPaymentsAdapter(getActivity(), payments);
+        Collections.sort(payments, new PaymentsSort());
+        final OrderDetailPaymentsAdapter adapter = new OrderDetailPaymentsAdapter(getActivity(), payments, this);
         paymentList.setAdapter(adapter);
-        TextView emptyView = (TextView) view.findViewById(R.id.empty_payments_message);
-        paymentList.setEmptyView(emptyView);
-
-        if (mOrder.getPayments() == null || mOrder.getPayments().size() < 1) {
-            emptyView.setVisibility(View.VISIBLE);
-        } else {
-            emptyView.setVisibility(View.GONE);
-        }
 
         TextView orderTotal = (TextView) view.findViewById(R.id.order_total);
         TextView paymentsReceived = (TextView) view.findViewById(R.id.payments_received);
+        Button addPaymentButton = (Button) view.findViewById(R.id.add_payment);
+        addPaymentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AddPaymentDialogFragment newOrderItemEditFragment = AddPaymentDialogFragment.getInstance(mOrder);
+                newOrderItemEditFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.ActivityDialogMozu);
+                newOrderItemEditFragment.show(getFragmentManager(), "");
+            }
+        });
         TextView balance = (TextView) view.findViewById(R.id.balance);
-        TextView status = (TextView) view.findViewById(R.id.status);
+        TextView status = (TextView) view.findViewById(R.id.payment_status);
         if (mOrder.getPaymentStatus() != null) {
-            status.setText(mOrder.getPaymentStatus());
+            status.setText("Payment Status: " + mOrder.getPaymentStatus());
         } else {
-            status.setText("N/A");
+            status.setText("Payment Status: N/A");
         }
         orderTotal.setText(mNumberFormat.format(mOrder.getTotal()));
         Double amountCollected = getTotalPayment(payments);
         paymentsReceived.setText(mNumberFormat.format(amountCollected));
         balance.setText(mNumberFormat.format(mOrder.getTotal() - amountCollected));
-        paymentList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                FragmentManager manager = getFragmentManager();
-                Payment payment = adapter.getItem(position);
-                PaymentInfoFragment frag = PaymentInfoFragment.getInstance(payment);
-                frag.show(manager,"payment_info");
-            }
-        });
     }
-
 
 
     public void setOrder(Order order) {

@@ -320,4 +320,9 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
             enterEditMode.setText(getString(R.string.edit));
         }
     }
+
+    public void updateOrder(Order order) {
+        onRefresh();
+    }
+
 }

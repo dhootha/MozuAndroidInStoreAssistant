@@ -11,41 +11,63 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.commerceruntime.payments.BillingInfo;
 import com.mozu.api.contracts.commerceruntime.payments.Payment;
+import com.mozu.api.contracts.commerceruntime.payments.PaymentAction;
 import com.mozu.api.contracts.commerceruntime.payments.PaymentInteraction;
 import com.mozu.api.contracts.core.Address;
 import com.mozu.api.contracts.core.Contact;
 import com.mozu.mozuandroidinstoreassistant.app.R;
+import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
+import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
+import com.mozu.mozuandroidinstoreassistant.app.order.loaders.OrderPaymentManager;
 import com.mozu.mozuandroidinstoreassistant.app.utils.DateUtils;
 
 import java.text.NumberFormat;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import rx.Subscriber;
+import rx.android.observables.AndroidObservable;
 
 public class PaymentInfoFragment extends DialogFragment {
 
     private static final String PAYMENT = "payment";
     private Payment mPayment;
 
-    @InjectView(R.id.payment_bill_to) TextView mPaymentBillTo;
-    @InjectView(R.id.payment_method) TextView mPaymentMethod;
-    @InjectView(R.id.payment_status) TextView mPaymentStatus;
-    @InjectView(R.id.payment_date) TextView mPaymentDate;
-    @InjectView(R.id.payment_amount) TextView mPaymentAmount;
-    @InjectView(R.id.top_payment_type) TextView mTopPaymentType;
-    @InjectView(R.id.top_payment_date) TextView mTopPaymentDate;
-    @InjectView(R.id.top_payment_amount) TextView mTopPaymentAmount;
-    @InjectView(R.id.trans_id_value) TextView mTransId;
-    @InjectView(R.id.auth_id_value) TextView mAuthId;
-    @InjectView(R.id.payment_close) ImageView mPaymentClose;
+    @InjectView(R.id.payment_bill_to)
+    TextView mPaymentBillTo;
+    @InjectView(R.id.capture_amount)
+    TextView mCaptureButton;
+    @InjectView(R.id.payment_method)
+    TextView mPaymentMethod;
+    @InjectView(R.id.payment_status)
+    TextView mPaymentStatus;
+    @InjectView(R.id.payment_date)
+    TextView mPaymentDate;
+    @InjectView(R.id.payment_amount)
+    TextView mPaymentAmount;
+    @InjectView(R.id.top_payment_type)
+    TextView mTopPaymentType;
+    @InjectView(R.id.top_payment_date)
+    TextView mTopPaymentDate;
+    @InjectView(R.id.top_payment_amount)
+    TextView mTopPaymentAmount;
+    @InjectView(R.id.trans_id_value)
+    TextView mTransId;
+    @InjectView(R.id.auth_id_value)
+    TextView mAuthId;
+    @InjectView(R.id.payment_close)
+    ImageView mPaymentClose;
+    private Integer mSiteId;
+    private Integer mTenantId;
 
 
-    public static PaymentInfoFragment getInstance(Payment payment){
+    public static PaymentInfoFragment getInstance(Payment payment) {
         PaymentInfoFragment paymentInfoFragment = new PaymentInfoFragment();
         Bundle b = new Bundle();
-        b.putSerializable(PAYMENT,payment);
+        b.putSerializable(PAYMENT, payment);
         paymentInfoFragment.setArguments(b);
         return paymentInfoFragment;
     }
@@ -61,8 +83,11 @@ public class PaymentInfoFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.payment_info, null);
-        ButterKnife.inject(this,view);
+        ButterKnife.inject(this, view);
         setUpViews();
+        UserAuthenticationStateMachine mUserState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
+        mSiteId = mUserState.getSiteId();
+        mTenantId = mUserState.getTenantId();
         return view;
     }
 
@@ -86,7 +111,38 @@ public class PaymentInfoFragment extends DialogFragment {
         mPaymentMethod.setText(getPaymentMethod(mPayment));
         mPaymentDate.setText(DateUtils.getFormattedDateTime(mPayment.getBillingInfo().getAuditInfo().getCreateDate().getMillis()));
         NumberFormat numberFormat = NumberFormat.getCurrencyInstance();
-        mPaymentAmount.setText(numberFormat.format(mPayment.getAmountCollected()));
+        if (mPayment.getStatus().equalsIgnoreCase("authorized")) {
+            mPaymentAmount.setText(numberFormat.format(mPayment.getAmountRequested()));
+            mCaptureButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    PaymentAction action = new PaymentAction();
+                    action.setActionName("CapturePayment");
+                    action.setAmount(1.00);
+                    action.setCurrencyCode("USD");
+                    action.setExternalTransactionId(mPayment.getExternalTransactionId());
+
+                    AndroidObservable.bindFragment(PaymentInfoFragment.this, OrderPaymentManager.getInstance().capturePaymentObservable(mTenantId, mSiteId, mPayment.getOrderId(), action, mPayment.getId())).subscribe(new Subscriber<Order>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(Order order) {
+
+                        }
+                    });
+                }
+            });
+        } else {
+            mPaymentAmount.setText(numberFormat.format(mPayment.getAmountCollected()));
+        }
         mTopPaymentAmount.setText(numberFormat.format(mPayment.getAmountCollected()));
         mTopPaymentDate.setText(DateUtils.getFormattedDate(mPayment.getBillingInfo().getAuditInfo().getCreateDate().getMillis()));
         if (mPayment.getBillingInfo().getPaymentType().equalsIgnoreCase("CreditCard")) {
@@ -98,9 +154,9 @@ public class PaymentInfoFragment extends DialogFragment {
         if (mPayment.getPaymentServiceTransactionId() != null) {
             for (PaymentInteraction interaction : mPayment.getInteractions()) {
                 if (mPayment.getId().equalsIgnoreCase(interaction.getPaymentId())) {
-                    if(interaction.getGatewayTransactionId() != null && !interaction.getGatewayTransactionId().equals("0")) {
+                    if (interaction.getGatewayTransactionId() != null && !interaction.getGatewayTransactionId().equals("0")) {
                         mTransId.setText(interaction.getGatewayTransactionId());
-                    }else{
+                    } else {
                         mTransId.setText("N/A");
                     }
                     break;
@@ -111,11 +167,11 @@ public class PaymentInfoFragment extends DialogFragment {
         mPayment.getInteractions();
     }
 
-    private String getPaymentMethod(Payment payment){
+    private String getPaymentMethod(Payment payment) {
 
         BillingInfo billingInfo = payment.getBillingInfo();
         StringBuilder str = new StringBuilder();
-        String lineSeparator = System.getProperty ("line.separator");
+        String lineSeparator = System.getProperty("line.separator");
 
         if (billingInfo.getPaymentType().equalsIgnoreCase("CreditCard")) {
             str.append(billingInfo.getCard().getPaymentOrCardType());
@@ -135,14 +191,14 @@ public class PaymentInfoFragment extends DialogFragment {
         return str.toString();
     }
 
-    private String getAddressString(Payment payment){
-        String lineSeparator = System.getProperty ("line.separator");
-        Contact billingContact =  payment.getBillingInfo().getBillingContact();
+    private String getAddressString(Payment payment) {
+        String lineSeparator = System.getProperty("line.separator");
+        Contact billingContact = payment.getBillingInfo().getBillingContact();
         Address address = billingContact.getAddress();
         StringBuilder str = new StringBuilder();
         str.append(billingContact.getFirstName()).append(" ").append(billingContact.getLastNameOrSurname());
         str.append(lineSeparator);
-        if(address != null) {
+        if (address != null) {
             str.append(address.getAddress1());
             str.append(lineSeparator);
             if (!TextUtils.isEmpty(address.getAddress2())) {
@@ -166,7 +222,7 @@ public class PaymentInfoFragment extends DialogFragment {
             str.append(lineSeparator);
             str.append(address.getCountryCode());
             str.append(lineSeparator);
-        }else{
+        } else {
             str.append(getString(R.string.not_available));
         }
 

@@ -201,8 +201,8 @@
     <string name="refund_payment_cardtype">CardType</string>
     <string name="refund_payment_cardnumber">CardNumber</string>
     <string name="refund_payment_amount_credited">Amount Credited</string>
-    <string name="payment_amount_collected">Amount Collected</string>
-    <string name="payment_amount_authorized">Amount Authorized</string>
+    <string name="payment_amount_collected">"Amount Collected: "</string>
+    <string name="payment_amount_authorized">"Amount Authorized: "</string>
     <string name="pickup_status">Status:</string>
     <string name="pickup_location">Location:</string>
     <string name="empty_items">No Items to display</string>
@@ -289,7 +289,7 @@
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
     <string name="order_label">Order</string>
-    <string name="status">Status</string>
+    <string name="status">"Status: "</string>
     <string name="name_label">Customer Name</string>
     <string name="email_label">Customer Email</string>
     <string name="title_new_order">New Order</string>
@@ -341,6 +341,18 @@
     <string name="manager">Manager</string>
     <string name="location_selection_title">Choose a Location</string>
     <string name="default_location">Default Location</string>
+    <string name="capture">Capture</string>
+    <string name="enter_payment_amount">Enter Amount to capture</string>
+    <string name="capture_payment">Capture Payment</string>
+    <string name="prompt_card_number">Card Number</string>
+    <string name="prompt_exp_month">Exp Month</string>
+    <string name="prompt_expire_year">Exp Year</string>
+    <string name="prompt_exp_cvv">CVV</string>
+    <string name="prompt_card_name">Name on Card</string>
+    <string name="prompt_amount">Amount</string>
+    <string name="prompt_card_type">Card Type</string>
+    <string name="add_payment">Add Payment</string>
+    <string name="add">Add</string>
     <string-array name="register_email_address">
         <item>mozumobile@volusion.com</item>
     </string-array>

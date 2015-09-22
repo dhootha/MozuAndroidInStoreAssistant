@@ -10,6 +10,8 @@ import com.mozu.mozuandroidinstoreassistant.app.data.IData;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.FulfillmentDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.layout.IRowLayout;
 
+import java.text.NumberFormat;
+
 public class FullfillmentItemRow extends LinearLayout implements IRowLayout {
     public FullfillmentItemRow(Context context) {
         super(context);
@@ -38,7 +40,8 @@ public class FullfillmentItemRow extends LinearLayout implements IRowLayout {
             mFulfillmentType.setText(fulfillmentDataItem.getOrderItem().getFulfillmentMethod());
             mLocationCode.setText(fulfillmentDataItem.getOrderItem().getFulfillmentLocationCode());
             mQuantity.setText("" + fulfillmentDataItem.getOrderItem().getQuantity());
-            mProductTotal.setText("" + fulfillmentDataItem.getOrderItem().getTotal());
+            NumberFormat format = NumberFormat.getCurrencyInstance();
+            mProductTotal.setText(format.format(fulfillmentDataItem.getOrderItem().getTotal()));
         } else {
             mDataTextView.setText("N/A");
         }

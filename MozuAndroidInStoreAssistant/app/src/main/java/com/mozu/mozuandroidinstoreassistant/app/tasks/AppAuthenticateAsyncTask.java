@@ -31,6 +31,7 @@ public class AppAuthenticateAsyncTask extends InternetConnectedAsyncTask<Void, V
 
         try {
             MozuConfig.setBaseUrl(mBaseUrl);
+            MozuConfig.setBasePciUrl("https://payments-sb.mozu.com");
             AppAuthenticator.initialize(mAppAuthInfo, new RefreshInterval(HOUR_OF_MILLIS, HOUR_OF_MILLIS));
         } catch (ApiException e) {
 

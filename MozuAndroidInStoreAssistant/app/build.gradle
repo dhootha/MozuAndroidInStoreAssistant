@@ -118,7 +118,7 @@ dependencies {
     compile 'com.android.support:support-v13:22.2.1'
     compile 'org.joda:joda-convert:1.6'
     compile 'com.jakewharton:butterknife:5.1.2'
-    compile 'com.netflix.rxjava:rxjava-android:0.17.5'
+    compile 'com.netflix.rxjava:rxjava-android:0.20.7'
 }
 
 def getDate() {

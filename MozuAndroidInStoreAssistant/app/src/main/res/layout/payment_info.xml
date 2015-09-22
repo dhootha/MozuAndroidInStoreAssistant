@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    android:padding="20dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:orientation="vertical"
+    android:layout_height="match_parent"
     android:minWidth="1000dp"
-    android:layout_height="match_parent">
+    android:orientation="vertical"
+    android:padding="20dp">
 
     <ImageView
         android:id="@+id/payment_close"
@@ -13,78 +13,85 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:clickable="true"
-        android:src="@drawable/icon_close" />
+        android:src="@drawable/icon_close"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_marginBottom="20dp"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp">
 
             <TextView
-                android:textStyle="bold"
+                android:id="@+id/top_payment_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/top_payment_date" />
+                android:textStyle="bold"/>
 
             <TextView
+                android:id="@+id/top_payment_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
-                android:textStyle="bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/top_payment_type" />
+                android:textStyle="bold"/>
 
             <TextView
-                android:layout_marginLeft="30dp"
-                android:textStyle="bold"
+                android:id="@+id/top_payment_amount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/top_payment_amount" />
+                android:layout_marginLeft="30dp"
+                android:textStyle="bold"/>
+
+            <Button
+                style="@style/ButtonMozu"
+                android:text="Capture"
+                android:id="@+id/capture_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
         </LinearLayout>
 
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_marginBottom="5dp"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp">
 
             <TextView
-                android:fontFamily="sans-serif-light"
+                android:id="@+id/auth_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/auth_id"
-                android:id="@+id/auth_id" />
+                android:fontFamily="sans-serif-light"
+                android:text="@string/auth_id"/>
 
             <TextView
-                android:layout_marginLeft="5dp"
+                android:id="@+id/auth_id_value"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/auth_id_value" />
+                android:layout_marginLeft="5dp"/>
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_marginBottom="30dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp">
 
             <TextView
-                android:fontFamily="sans-serif-light"
+                android:id="@+id/trans_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/trans_id"
-                android:id="@+id/trans_id" />
+                android:fontFamily="sans-serif-light"
+                android:text="@string/trans_id"/>
 
             <TextView
-                android:layout_marginLeft="5dp"
+                android:id="@+id/trans_id_value"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/not_available"
-                android:id="@+id/trans_id_value" />
+                android:layout_marginLeft="5dp"
+                android:text="@string/not_available"/>
 
         </LinearLayout>
 
@@ -92,118 +99,118 @@
     </LinearLayout>
 
     <LinearLayout
-        android:baselineAligned="false"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:baselineAligned="false">
 
         <LinearLayout
-            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_marginRight="5dp"
-            android:orientation="vertical"
-            android:layout_width="0dp"
-            android:layout_height="match_parent">
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <TextView
-                android:fontFamily="sans-serif-light"
+                android:id="@+id/bill_to_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/bill_to"
-                android:id="@+id/bill_to_header" />
+                android:fontFamily="sans-serif-light"
+                android:text="@string/bill_to"/>
 
             <TextView
+                android:id="@+id/payment_bill_to"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/payment_bill_to" />
+                android:layout_height="wrap_content"/>
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_weight="1"
             android:layout_width="0dp"
-            android:orientation="vertical"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <TextView
-                android:fontFamily="sans-serif-light"
+                android:id="@+id/method_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/payment_method"
-                android:id="@+id/method_header" />
+                android:fontFamily="sans-serif-light"
+                android:text="@string/payment_method"/>
 
             <TextView
+                android:id="@+id/payment_method"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/payment_method" />
+                android:layout_height="wrap_content"/>
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_weight="1"
             android:layout_width="0dp"
-            android:orientation="vertical"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <TextView
-                android:fontFamily="sans-serif-light"
+                android:id="@+id/status_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/payment_status"
-                android:id="@+id/status_header" />
+                android:fontFamily="sans-serif-light"
+                android:text="@string/payment_status"/>
 
             <TextView
+                android:id="@+id/payment_status"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/payment_status" />
+                android:layout_height="wrap_content"/>
 
 
         </LinearLayout>
 
 
         <LinearLayout
-            android:layout_weight="1"
             android:layout_width="0dp"
-            android:orientation="vertical"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <TextView
-                android:fontFamily="sans-serif-light"
+                android:id="@+id/date_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/payment_date"
-                android:id="@+id/date_header" />
+                android:fontFamily="sans-serif-light"
+                android:text="@string/payment_date"/>
 
             <TextView
+                android:id="@+id/payment_date"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/payment_date" />
+                android:layout_height="wrap_content"/>
 
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_weight="1"
             android:layout_width="0dp"
-            android:orientation="vertical"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <TextView
-                android:fontFamily="sans-serif-light"
-                android:layout_marginBottom="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/payment_amount_collected" />
+                android:layout_marginBottom="5dp"
+                android:fontFamily="sans-serif-light"
+                android:text="@string/payment_amount_collected"/>
 
 
             <TextView
-                android:textStyle="bold"
-                android:textSize="25sp"
+                android:id="@+id/payment_amount"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/payment_amount" />
+                android:textSize="25sp"
+                android:textStyle="bold"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
