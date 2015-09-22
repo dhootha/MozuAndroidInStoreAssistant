@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -337,7 +338,9 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
                         mAdapter.clear();
                         mAdapter.addAll(data);
                         mAdapter.notifyDataSetChanged();
-                        mProductLookup.showDropDown();
+                        if (TextUtils.isEmpty(search)) {
+                            mProductLookup.showDropDown();
+                        }
                     }
                 });
     }
@@ -354,15 +357,22 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
 
         mOrderProducts.setAdapter(mProductsAdapter);
         mProductLookup.setThreshold(0);
-        mProductLookup.setOnTouchListener(new View.OnTouchListener() {
+        mProductLookup.post(new Runnable() {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (mProductLookup.getText().length() == 0) {
-                    lookUpProduct(null);
-                }
-                return false;
+            public void run() {
+                mProductLookup.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+                        if (mProductLookup.getText().length() == 0) {
+                            lookUpProduct(null);
+                        }
+                        return false;
+                    }
+                });
+
             }
         });
+
 
         mProductLookup.addTextChangedListener(new TextWatcher() {
             @Override
@@ -372,12 +382,15 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
 
             @Override
             public void onTextChanged(final CharSequence charSequence, int start, int before, int count) {
-                if (mSubscription != null && !mSubscription.isUnsubscribed()) {
-                    mSubscription.unsubscribe();
-                    mProductSearchLoading.setVisibility(View.GONE);
+                if (!TextUtils.isEmpty(charSequence.toString())) {
+                    if (mSubscription != null && !mSubscription.isUnsubscribed()) {
+                        mSubscription.unsubscribe();
+                        mProductSearchLoading.setVisibility(View.GONE);
+                    }
+                    mProductSearchLoading.setVisibility(View.VISIBLE);
+
+                    lookUpProduct(charSequence.toString());
                 }
-                mProductSearchLoading.setVisibility(View.VISIBLE);
-                lookUpProduct(charSequence.toString());
             }
 
             @Override

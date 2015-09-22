@@ -68,7 +68,6 @@ public class OrderDetailNotesFragment extends Fragment {
     private Order mOrder;
     private LoadingView mNotesLoadingView;
     private boolean isCurrentInternalNotes = false;
-    private String CURRENT_IS_INTERNAL = "currentInternal";
     private OrderDetailNotesAdapter internalNotesAdapter;
     private ListView mNoteList;
 
@@ -87,20 +86,24 @@ public class OrderDetailNotesFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            isCurrentInternalNotes = savedInstanceState.getBoolean(CURRENT_IS_INTERNAL);
-        }
         View view = inflater.inflate(R.layout.order_detail_notes_fragment, container, false);
         ButterKnife.inject(this, view);
         mNotesLoadingView = (LoadingView) view.findViewById(R.id.notes_loading_view);
+        isCurrentInternalNotes = false;
         setOrderToViews(view);
         return view;
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putBoolean(CURRENT_IS_INTERNAL, isCurrentInternalNotes);
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        isCurrentInternalNotes = false;
+        showCustomerNotes();
     }
 
     private void setOrderToViews(View view) {
@@ -204,13 +207,17 @@ public class OrderDetailNotesFragment extends Fragment {
     }
 
     private void showCustomerNotes() {
-        mCustomerNotesLayout.setVisibility(View.VISIBLE);
-        mNoteListLayout.setVisibility(View.GONE);
+        if (mCustomerNotesLayout != null)
+            mCustomerNotesLayout.setVisibility(View.VISIBLE);
+        if (mNoteListLayout != null)
+            mNoteListLayout.setVisibility(View.GONE);
     }
 
     private void showInternalNotes() {
-        mCustomerNotesLayout.setVisibility(View.GONE);
-        mNoteListLayout.setVisibility(View.VISIBLE);
+        if (mCustomerNotesLayout != null)
+            mCustomerNotesLayout.setVisibility(View.GONE);
+        if (mNoteListLayout != null)
+            mNoteListLayout.setVisibility(View.VISIBLE);
     }
 
     private void updateItem(String latestNote, OrderNote orderNote) {

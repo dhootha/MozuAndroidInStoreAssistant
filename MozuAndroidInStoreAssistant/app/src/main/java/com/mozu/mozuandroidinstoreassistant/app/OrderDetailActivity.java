@@ -178,6 +178,22 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
 
         mOrderViewPager = (ViewPager) findViewById(R.id.order_detail_sections_viewpager);
         mTabIndicator = (TabPageIndicator) findViewById(R.id.order_detail_sections);
+        mTabIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                setEditModeVisibility(position == 0);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         if (getLoaderManager().getLoader(LOADER_ORDER_DETAIL) == null) {
             getLoaderManager().initLoader(LOADER_ORDER_DETAIL, null, this).forceLoad();
