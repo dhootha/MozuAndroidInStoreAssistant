@@ -300,6 +300,7 @@ public class NewOrderItemEditFragment extends DialogFragment {
                     public void onCompleted() {
                         fulfillmentSpinnerProgress.setVisibility(View.GONE);
                         productSave.setEnabled(true);
+                        setSpinnerSelection(mSpinnerAdapter, mOrderItem.getFulfillmentMethod(), mOrderItem.getFulfillmentLocationCode());
                     }
 
                     @Override
@@ -375,7 +376,9 @@ public class NewOrderItemEditFragment extends DialogFragment {
 
             }
         });
+
         productTotal.setText(format.format(mOrderItem.getQuantity() * productPriceVal));
+
         mSpinnerAdapter = new SpinnerAdapter();
         fulfillmentType.setAdapter(mSpinnerAdapter);
         setImage(mOrderItem.getProduct().getImageUrl());
@@ -456,6 +459,18 @@ public class NewOrderItemEditFragment extends DialogFragment {
         });
     }
 
+    public void setSpinnerSelection(SpinnerAdapter spinnerAdapter, String fulfillmentMethod, String locationCode) {
+        if (spinnerAdapter.getCount() > 1) {
+            for (int i = 1; i < spinnerAdapter.getCount(); i++) {
+                FulfillmentInfo fulfillmentInfo = spinnerAdapter.getItem(i);
+                if (locationCode.equalsIgnoreCase(fulfillmentInfo.mLocation) && fulfillmentMethod.equalsIgnoreCase(fulfillmentInfo.mType)) {
+                    fulfillmentType.setSelection(i);
+                    return;
+                }
+            }
+        }
+        fulfillmentType.setSelection(0);
+    }
     public void setOnEditDoneListener(onItemEditDoneListener onEditDoneListener) {
         mEditDoneListener = onEditDoneListener;
 
