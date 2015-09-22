@@ -25,6 +25,7 @@ import com.mozu.mozuandroidinstoreassistant.app.order.loaders.OrderDetailLoader;
 import com.mozu.mozuandroidinstoreassistant.app.settings.SettingsFragment;
 import com.mozu.mozuandroidinstoreassistant.app.tasks.CustomerAsyncListener;
 import com.mozu.mozuandroidinstoreassistant.app.tasks.RetrieveCustomerAsyncTask;
+import com.mozu.mozuandroidinstoreassistant.app.utils.ContactIntentUtil;
 import com.viewpagerindicator.TabPageIndicator;
 
 import java.text.NumberFormat;
@@ -34,6 +35,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 public class OrderDetailActivity extends BaseActivity implements LoaderManager.LoaderCallbacks<Order>, CustomerAsyncListener, SwipeRefreshLayout.OnRefreshListener {
 
@@ -155,6 +157,7 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
                     finish();
                 }
             });
+
         }
         mCustomerName.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -210,6 +213,14 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
                 R.color.third_color_swipe_refresh,
                 R.color.fourth_color_swipe_refresh);
 
+    }
+
+    @OnClick(R.id.customer_email)
+    public void emailCustomer() {
+        if (mCustomerEmail == null || mCustomerEmail.getText().toString().isEmpty()) {
+            return;
+        }
+        ContactIntentUtil.launchEmailIntent(this, mCustomerEmail.getText().toString());
     }
 
     @Override
