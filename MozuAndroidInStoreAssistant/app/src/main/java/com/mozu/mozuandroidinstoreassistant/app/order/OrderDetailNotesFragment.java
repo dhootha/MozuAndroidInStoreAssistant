@@ -262,12 +262,17 @@ public class OrderDetailNotesFragment extends Fragment {
                 mCustomerNote.setEnabled(true);
                 mCustomerNote.setFocusableInTouchMode(true);
                 mCustomerNote.setFocusable(true);
+                mCustomerNote.setTextColor(getResources().getColor(R.color.darker_grey));
+
             } else {
                 mCustomerNote.setText(R.string.not_customer_notes_available);
+                mCustomerNote.setTextColor(getResources().getColor(R.color.darker_grey));
 
             }
         } else {
             mCustomerNote.setText(mOrder.getShopperNotes().getComments());
+            mCustomerNote.setTextColor(getResources().getColor(R.color.dark_black_text));
+
         }
 
         if (mOrder.getStatus().equalsIgnoreCase("Pending")) {
