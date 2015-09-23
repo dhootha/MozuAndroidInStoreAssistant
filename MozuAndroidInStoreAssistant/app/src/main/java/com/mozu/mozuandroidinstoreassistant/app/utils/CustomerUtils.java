@@ -23,10 +23,10 @@ public class CustomerUtils {
         for (CustomerContact customerContact : customerAccount.getContacts()) {
             Phone phone = customerContact.getPhoneNumbers();
             for (ContactType type : customerContact.getTypes()) {
-                if ((type.getName().equalsIgnoreCase(SHIPPING) || type.getName().equalsIgnoreCase(BILLING)) && type.getIsPrimary()) {
+                if ((SHIPPING.equalsIgnoreCase(type.getName()) || BILLING.equalsIgnoreCase(type.getName())) && type.getIsPrimary()) {
                     if (phone == null || ((phone.getHome() == null || phone.getHome().isEmpty()) &&
-                            phone.getMobile() == null || phone.getMobile().isEmpty() &&
-                            phone.getWork() == null || phone.getWork().isEmpty())) {
+                            (phone.getMobile() == null || phone.getMobile().isEmpty()) &&
+                            (phone.getWork() == null || phone.getWork().isEmpty()))) {
                         return false;
                     }
                 }
