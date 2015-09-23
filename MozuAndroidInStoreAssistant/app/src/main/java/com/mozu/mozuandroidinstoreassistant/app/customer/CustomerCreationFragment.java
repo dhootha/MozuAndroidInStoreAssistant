@@ -191,7 +191,12 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
         mCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().finish();
+                if (mCustomerAccount != null && mCustomerAccount.getContacts() != null && mCustomerAccount.getContacts().size() > 0) {
+                    //go back to add addresses
+                    ((CustomerCreationListener) getActivity()).onNextClicked(mCustomerAccount);
+                } else {
+                    getActivity().finish();
+                }
             }
         });
         if (mEditing > -1) {
