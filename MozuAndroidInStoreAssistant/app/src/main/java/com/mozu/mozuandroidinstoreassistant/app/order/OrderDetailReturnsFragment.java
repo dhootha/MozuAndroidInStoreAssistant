@@ -102,7 +102,7 @@ public class OrderDetailReturnsFragment extends Fragment  {
                 mReturnAdapter.notifyDataSetChanged();
                 mReturnLoading.success();
             } else {
-                mReturnLoading.setError("No returns data Available");
+                mReturnLoading.setError("No returns data available");
                 mReturnLoading.getErrorTextView().setTextColor(getResources().getColor(android.R.color.darker_gray));
             }
         }
