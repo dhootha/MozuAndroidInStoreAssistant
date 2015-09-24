@@ -160,9 +160,9 @@ public class ProductDetailOverviewFragment extends Fragment implements ProductOp
                     }
 
                     @Override
-                    public void onNext(ProductVariationPagedCollection product) {
+                    public void onNext(ProductVariationPagedCollection productVariationPagedCollection) {
                         variationMap = new HashMap<ProductOptionsContainer, Double>();
-                        List<ProductVariation> productVariations = product.getItems();
+                        List<ProductVariation> productVariations = productVariationPagedCollection.getItems();
                         for (ProductVariation productVariation : productVariations) {
                             ProductOptionsContainer productOptionsContainer = new ProductOptionsContainer();
                             for (ProductVariationOption option : productVariation.getOptions()) {

@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,6 +30,7 @@ import com.mozu.api.contracts.commerceruntime.products.ProductOption;
 import com.mozu.api.contracts.productadmin.ProductVariation;
 import com.mozu.api.contracts.productadmin.ProductVariationOption;
 import com.mozu.api.contracts.productadmin.ProductVariationPagedCollection;
+import com.mozu.api.contracts.productruntime.ProductOptionValue;
 import com.mozu.mozuandroidinstoreassistant.MozuApplication;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.data.product.FulfillmentInfo;
@@ -40,13 +40,17 @@ import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthen
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.order.loaders.NewOrderManager;
 import com.mozu.mozuandroidinstoreassistant.app.utils.ProductUtils;
+import com.mozu.mozuandroidinstoreassistant.app.views.ProductOptionsLayout;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -54,7 +58,7 @@ import rx.Subscriber;
 import rx.android.observables.AndroidObservable;
 import rx.subscriptions.CompositeSubscription;
 
-public class NewOrderItemEditFragment extends DialogFragment {
+public class NewOrderItemEditFragment extends DialogFragment implements ProductOptionsLayout.onOptionChangeListener {
 
 
     private static final String ORDER_ITEM = "orderItem";
@@ -77,14 +81,16 @@ public class NewOrderItemEditFragment extends DialogFragment {
     public Button orderItemDelete;
     @InjectView(R.id.fulfillment_type)
     public Spinner fulfillmentType;
-    @InjectView(R.id.product_variation)
-    public Spinner productVariationSpinner;
+
     @InjectView(R.id.product_variation_layout)
     public LinearLayout productVariationLayout;
     @InjectView(R.id.product_variation_progress)
     public ProgressBar productVariationProgress;
     @InjectView(R.id.fulfillment_spinner_progress)
     public ProgressBar fulfillmentSpinnerProgress;
+
+    @InjectView(R.id.options_layout)
+    public LinearLayout mOptionsLayout;
 
     @InjectView(R.id.product_loading)
     public LinearLayout mProductLoading;
@@ -102,8 +108,7 @@ public class NewOrderItemEditFragment extends DialogFragment {
     private int mSiteId;
     private onItemEditDoneListener mEditDoneListener;
     private SpinnerAdapter mSpinnerAdapter;
-    private ProductVariationAdapter mProductVariationAdapter;
-
+    private ProductVariationPagedCollection mProductVariationCollection;
     private CompositeSubscription mCompositeSubscription;
     private String mSiteDomain;
 
@@ -146,6 +151,8 @@ public class NewOrderItemEditFragment extends DialogFragment {
             if (!isEditMode) {
                 loadProductVariations(mOrderItem.getProduct().getProductCode());
             } else {
+
+                mProductVariationCollection = new ProductVariationPagedCollection();
                 List<ProductVariation> productVariations = new ArrayList<>();
                 ProductVariation productVariation = new ProductVariation();
                 if (!TextUtils.isEmpty(mOrderItem.getProduct().getVariationProductCode())) {
@@ -163,11 +170,9 @@ public class NewOrderItemEditFragment extends DialogFragment {
 
                 productVariation.setOptions(productVariationOptions);
                 productVariations.add(productVariation);
-                mProductVariationAdapter.setData(productVariations);
-                mProductVariationAdapter.notifyDataSetChanged();
-                productVariationSpinner.setEnabled(false);
-                productVariationSpinner.setClickable(false);
-
+                mProductVariationCollection.setItems(productVariations);
+                setvariations();
+                onOptionChanged();
             }
         } else {
             productVariationLayout.setVisibility(View.GONE);
@@ -216,36 +221,54 @@ public class NewOrderItemEditFragment extends DialogFragment {
                     public void onCompleted() {
                         productVariationProgress.setVisibility(View.GONE);
                         productSave.setEnabled(true);
-                        if (mOrderItem.getProduct().getVariationProductCode() != null) {
-                            setProductSelection();
-                        }
-
+                        setvariations();
+                        onOptionChanged();
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), e.getMessage());
-
                     }
 
                     @Override
                     public void onNext(ProductVariationPagedCollection productVariationPagedCollection) {
                         if (productVariationPagedCollection != null) {
-                            mProductVariationAdapter.setData(productVariationPagedCollection.getItems());
-                            mProductVariationAdapter.notifyDataSetChanged();
+                            mProductVariationCollection = productVariationPagedCollection;
                         }
-
                     }
                 }));
     }
 
-    private void setProductSelection() {
-        for (int i = 0; i < mProductVariationAdapter.getCount(); i++) {
-            if (mProductVariationAdapter.getItem(i).getVariationProductCode().equals(mOrderItem.getProduct().getVariationProductCode())) {
-                productVariationSpinner.setSelection(i);
-                return;
+    private void setvariations() {
+        HashMap<String, Set<String>> optionsMap = new HashMap<>();
+        for (ProductVariation productVariation : mProductVariationCollection.getItems()) {
+            for (ProductVariationOption option : productVariation.getOptions()) {
+                if (optionsMap.containsKey(option.getAttributeFQN())) {
+                    Set<String> optionsList = optionsMap.get(option.getAttributeFQN());
+                    optionsList.add(option.getValue().toString());
+                } else {
+                    Set<String> optionsList = new HashSet<>();
+                    optionsList.add(option.getValue().toString());
+                    optionsMap.put(option.getAttributeFQN(), optionsList);
+                }
             }
         }
+
+        for (String attributeFQN : optionsMap.keySet()) {
+            ProductOptionsLayout optionsLayout = new ProductOptionsLayout(getActivity(), this);
+            optionsLayout.setAttributeFQN(attributeFQN);
+            optionsLayout.setTitle(attributeFQN.substring(attributeFQN.indexOf("~") + 1, attributeFQN.length()));
+            List<ProductOptionValue> productOptionValues = new ArrayList<>();
+
+            for (String value : optionsMap.get(attributeFQN)) {
+                ProductOptionValue productOptionValue = new ProductOptionValue();
+                productOptionValue.setValue(value);
+                productOptionValues.add(productOptionValue);
+            }
+            optionsLayout.setSpinnerOptions(productOptionValues);
+            mOptionsLayout.addView(optionsLayout);
+        }
+
     }
 
     @Override
@@ -362,21 +385,6 @@ public class NewOrderItemEditFragment extends DialogFragment {
         productQuantity.setText(String.valueOf(mOrderItem.getQuantity()));
         productCode.setText(mOrderItem.getProduct().getProductCode());
         productName.setText(mOrderItem.getProduct().getName());
-        mProductVariationAdapter = new ProductVariationAdapter();
-        productVariationSpinner.setAdapter(mProductVariationAdapter);
-        productVariationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                ProductVariation productVariation = (ProductVariation) adapterView.getItemAtPosition(i);
-                loadLocations(productVariation.getVariationProductCode());
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
         productTotal.setText(format.format(mOrderItem.getQuantity() * productPriceVal));
 
         mSpinnerAdapter = new SpinnerAdapter();
@@ -432,7 +440,7 @@ public class NewOrderItemEditFragment extends DialogFragment {
                     mOrderItem.setFulfillmentMethod(updatedFulFillmentType.mType);
                     mOrderItem.setQuantity(Integer.valueOf(productQuantity.getText().toString()));
                     if (ProductUtils.isProductConfigurable(mOrderItem.getProduct())) {
-                        ProductVariation productVariation = ((ProductVariation) productVariationSpinner.getSelectedItem());
+                        ProductVariation productVariation = getSelectedVariation();
                         mOrderItem.getProduct().setVariationProductCode(productVariation.getVariationProductCode());
                         for (ProductOption productOption : mOrderItem.getProduct().getOptions()) {
                             productOption.getAttributeFQN();
@@ -447,7 +455,7 @@ public class NewOrderItemEditFragment extends DialogFragment {
                     } else {
                         mOrderItem.getProduct().setVariationProductCode(mOrderItem.getProduct().getProductCode());
                     }
-
+                    mProductLoading.setVisibility(View.VISIBLE);
                     AndroidObservable.bindFragment(NewOrderItemEditFragment.this, NewOrderManager
                             .getInstance()
                             .getOrderItemCreateObservable(mTenantId, mSiteId, mOrderItem, mOrderId))
@@ -471,9 +479,45 @@ public class NewOrderItemEditFragment extends DialogFragment {
         }
         fulfillmentType.setSelection(0);
     }
+
     public void setOnEditDoneListener(onItemEditDoneListener onEditDoneListener) {
         mEditDoneListener = onEditDoneListener;
+    }
 
+    @Override
+    public void onOptionChanged() {
+        ProductVariation productVariation = getSelectedVariation();
+        loadLocations(productVariation.getVariationProductCode());
+    }
+
+    private ProductVariation getSelectedVariation() {
+        List<ProductVariation> productVariations = new ArrayList<>(mProductVariationCollection.getItems());
+
+        for (int i = 0; i < mOptionsLayout.getChildCount(); i++) {
+            if (mOptionsLayout.getChildAt(i) instanceof ProductOptionsLayout) {
+                ProductOptionsLayout productOptionsLayout = (ProductOptionsLayout) mOptionsLayout.getChildAt(i);
+                String attributeFQN = productOptionsLayout.getAttributeFQN();
+                String attributeOption = productOptionsLayout.getAttributeValue();
+                for (int k = productVariations.size() - 1; k >= 0; k--) {
+                    boolean isValidVariation = false;
+                    List<ProductVariationOption> productOptions = productVariations.get(k).getOptions();
+                    for (ProductVariationOption variationOption : productOptions) {
+                        if (variationOption.getAttributeFQN().equalsIgnoreCase(attributeFQN) && variationOption.getValue().equals(attributeOption)) {
+                            isValidVariation = true;
+                        }
+                    }
+                    if (!isValidVariation) {
+                        productVariations.remove(k);
+                    }
+                }
+            }
+        }
+
+        if (productVariations.size() > 0) {
+            return productVariations.get(0);
+        } else {
+            return null;
+        }
     }
 
     public interface onItemEditDoneListener {

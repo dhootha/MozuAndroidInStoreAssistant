@@ -78,31 +78,21 @@
             <LinearLayout
                 android:id="@+id/product_variation_layout"
                 android:layout_width="wrap_content"
-                android:layout_height="64dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/select_variation"/>
+                android:layout_height="wrap_content"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp">
 
                 <LinearLayout
+                    android:id="@+id/options_layout"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"/>
 
-                    <Spinner
-                        android:id="@+id/product_variation"
-                        style="@style/SpinnerMozu"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
-
-                    <ProgressBar
-                        android:id="@+id/product_variation_progress"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:visibility="gone"/>
-                </LinearLayout>
-
+                <ProgressBar
+                    android:id="@+id/product_variation_progress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"/>
             </LinearLayout>
 
 
@@ -189,7 +179,7 @@
 
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="64dp"
                 android:weightSum="2">
 

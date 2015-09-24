@@ -314,7 +314,7 @@
     <string name="shipping_total">Shipping</string>
     <string name="add_product">Configure Product</string>
     <string name="add_coupon">Add Coupon (Order, Item, or Shipping)</string>
-    <string name="select_variation">Select Variation</string>
+    <string name="select_variation">Variation</string>
     <string name="add_customer_note_title">Add Customer Note</string>
     <string name="select_coupons">Add Coupons</string>
     <string name="shipping_method">Select Shipping</string>
