@@ -436,6 +436,7 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
         if (getActivity() instanceof NewOrderActivity) {
             ((NewOrderActivity) getActivity()).updateOrder(mOrder);
         } else if (getActivity() instanceof OrderDetailActivity) {
+            ((OrderDetailActivity) getActivity()).onRefresh();
 
         }
     }

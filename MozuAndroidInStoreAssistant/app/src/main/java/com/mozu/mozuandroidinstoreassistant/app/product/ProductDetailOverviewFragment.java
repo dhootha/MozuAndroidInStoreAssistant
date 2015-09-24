@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.StrikethroughSpan;
 import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -188,7 +189,15 @@ public class ProductDetailOverviewFragment extends Fragment implements ProductOp
         NumberFormat defaultFormat = NumberFormat.getCurrencyInstance();
         if (hasSalePrice(mProduct)) {
             mainPrice.setVisibility(View.VISIBLE);
-            mainPrice.setText(getSalePriceText(defaultFormat));
+            String regularPrice = getRegularPriceText(defaultFormat);
+            SpannableString strikeThroughSpan = new SpannableString(regularPrice);
+            strikeThroughSpan.setSpan(new StrikethroughSpan(), 0, regularPrice.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            SpannableString salePriceSpan = new SpannableString(getSalePriceText(defaultFormat));
+            salePriceSpan.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.mozu_color)), 0, salePriceSpan.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            SpannableString finalString = new SpannableString(TextUtils.concat(strikeThroughSpan, " ", salePriceSpan));
+            mainPrice.setText(finalString);
         } else {
             mainPrice.setVisibility(View.GONE);
         }
@@ -248,12 +257,14 @@ public class ProductDetailOverviewFragment extends Fragment implements ProductOp
     }
 
     private String getSalePriceText(NumberFormat format) {
-        String saleString = "N/A";
+        StringBuffer saleString = new StringBuffer("N/A");
         if (hasSalePrice(mProduct)) {
-            saleString = format.format(mProduct.getPrice().getSalePrice());
+            saleString = new StringBuffer(mProduct.getPrice().getDiscount().getDiscount().getName());
+            saleString.append(" - ");
+            saleString.append(format.format(mProduct.getPrice().getSalePrice()));
         }
 
-        return saleString;
+        return saleString.toString();
     }
 
     private String getRegularPriceText(NumberFormat format) {

@@ -460,7 +460,7 @@ public class NewOrderItemEditFragment extends DialogFragment {
     }
 
     public void setSpinnerSelection(SpinnerAdapter spinnerAdapter, String fulfillmentMethod, String locationCode) {
-        if (spinnerAdapter.getCount() > 1) {
+        if (locationCode != null && fulfillmentMethod != null && spinnerAdapter.getCount() > 1) {
             for (int i = 1; i < spinnerAdapter.getCount(); i++) {
                 FulfillmentInfo fulfillmentInfo = spinnerAdapter.getItem(i);
                 if (locationCode.equalsIgnoreCase(fulfillmentInfo.mLocation) && fulfillmentMethod.equalsIgnoreCase(fulfillmentInfo.mType)) {
