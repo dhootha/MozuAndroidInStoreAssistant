@@ -3,6 +3,7 @@ package com.mozu.mozuandroidinstoreassistant.app;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -12,6 +13,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
@@ -183,6 +185,7 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (mDrawerToggle != null && mDrawerToggle.onOptionsItemSelected(item)) {
+            hideKeyboard();
             return true;
         } else if (item.getItemId() == R.id.settings) {
             showSettings();
@@ -194,6 +197,12 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
     private void showSettings() {
         SettingsFragment settingsFragment = SettingsFragment.getInstance();
         settingsFragment.show(getFragmentManager(), "main_settings_frag");
+    }
+
+    private void hideKeyboard() {
+        View view = this.getCurrentFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     @Override
