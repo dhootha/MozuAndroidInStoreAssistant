@@ -115,13 +115,26 @@ public class CustomerAddAddressFragment extends Fragment {
         });
         mAddressesRecyclerView.setHasFixedSize(true);
         GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2, LinearLayoutManager.VERTICAL, false);
+        //move primary addresses to front
         for (int i = 0; i < mCustomerAccount.getContacts().size(); i++) {
             CustomerContact customerContact = mCustomerAccount.getContacts().get(i);
             if (customerContact != null && customerContact.getTypes() != null && customerContact.getTypes().size() > 0) {
                 for (ContactType type : customerContact.getTypes()) {
-                    if (type.getIsPrimary() && i != 0) {
+                    if (CustomerUtils.BILLING.equalsIgnoreCase(type.getName()) && type.getIsPrimary() && i != 0) {
                         CustomerContact temp = mCustomerAccount.getContacts().get(0);
                         mCustomerAccount.getContacts().set(0, mCustomerAccount.getContacts().get(i));
+                        mCustomerAccount.getContacts().set(i, temp);
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < mCustomerAccount.getContacts().size(); i++) {
+            CustomerContact customerContact = mCustomerAccount.getContacts().get(i);
+            if (customerContact != null && customerContact.getTypes() != null && customerContact.getTypes().size() > 0) {
+                for (ContactType type : customerContact.getTypes()) {
+                    if (CustomerUtils.SHIPPING.equalsIgnoreCase(type.getName()) && type.getIsPrimary() && i != 0) {
+                        CustomerContact temp = mCustomerAccount.getContacts().get(1);
+                        mCustomerAccount.getContacts().set(1, mCustomerAccount.getContacts().get(i));
                         mCustomerAccount.getContacts().set(i, temp);
                     }
                 }
@@ -132,7 +145,6 @@ public class CustomerAddAddressFragment extends Fragment {
         mAddressesRecyclerView.setAdapter(mRecyclerViewAddressAdapter);
 
     }
-
 
     public void onAddAddressClicked() {
         ((CustomerCreationListener) getActivity()).addNewAddress(mCustomerAccount);
@@ -157,7 +169,7 @@ public class CustomerAddAddressFragment extends Fragment {
                 updateCustomerAddresses(mCustomerAccount.getId());
                 loadingView.setLoading();
             } else {
-                ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), "Default shipping and billing addresses require a phone number").show();
+                ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), getActivity().getString(R.string.phone_required)).show();
             }
 
         } else {
@@ -199,15 +211,13 @@ public class CustomerAddAddressFragment extends Fragment {
         for (int i = 0; i < mCustomerAccount.getContacts().size(); i++) {
             if (alreadyCreatedAddresses.contains(mCustomerAccount.getContacts().get(i).getId())) {
                 AndroidObservable.bindFragment(CustomerAddAddressFragment.this, AddCustomerContactObservable
-                        .getCustomerContactUpdateObserverable(mTenantId, mSiteId, customerId, mCustomerAccount.getContacts().get(i).getId(), mCustomerAccount.getContacts().get(i)))
+                        .getCustomerContactUpdateObservable(mTenantId, mSiteId, customerId, mCustomerAccount.getContacts().get(i).getId(), mCustomerAccount.getContacts().get(i)))
                         .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(getAddCustomerContactSubscriber());
             } else {
                 AndroidObservable.bindFragment(CustomerAddAddressFragment.this, AddCustomerContactObservable
                         .getCustomerContactCreationObserverable(mTenantId, mSiteId, customerId, mCustomerAccount.getContacts().get(i)))
                         .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(getAddCustomerContactSubscriber());
             }
         }

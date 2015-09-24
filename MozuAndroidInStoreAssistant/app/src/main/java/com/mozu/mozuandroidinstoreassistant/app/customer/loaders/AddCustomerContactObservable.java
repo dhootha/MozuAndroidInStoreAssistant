@@ -32,7 +32,7 @@ public class AddCustomerContactObservable {
         });
     }
 
-    public static Observable<CustomerContact> getCustomerContactUpdateObserverable(final Integer tenantId, final Integer siteId, final Integer customerAccountId, final Integer customerContactId, final CustomerContact customerContact) {
+    public static Observable<CustomerContact> getCustomerContactUpdateObservable(final Integer tenantId, final Integer siteId, final Integer customerAccountId, final Integer customerContactId, final CustomerContact customerContact) {
 
         return Observable.create(new Observable.OnSubscribe<CustomerContact>() {
             @Override

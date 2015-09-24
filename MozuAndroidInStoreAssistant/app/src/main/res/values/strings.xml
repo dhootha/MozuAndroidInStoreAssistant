@@ -337,6 +337,7 @@
     <string name="address_not_found">Address Not Found</string>
     <string name="customer_notes_saved">Customer note saved successfully</string>
     <string name="send_email">Send Email</string>
+    <string name="phone_required">Default shipping and billing addresses require a phone number</string>
     <string name="fill_required">Please fill required fields</string>
     <string-array name="register_email_address">
         <item>mozumobile@volusion.com</item>
