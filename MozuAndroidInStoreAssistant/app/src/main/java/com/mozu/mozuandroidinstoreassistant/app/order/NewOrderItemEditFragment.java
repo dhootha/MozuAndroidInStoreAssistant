@@ -171,7 +171,7 @@ public class NewOrderItemEditFragment extends DialogFragment implements ProductO
                 productVariation.setOptions(productVariationOptions);
                 productVariations.add(productVariation);
                 mProductVariationCollection.setItems(productVariations);
-                setvariations();
+                setVariations();
                 onOptionChanged();
             }
         } else {
@@ -221,7 +221,7 @@ public class NewOrderItemEditFragment extends DialogFragment implements ProductO
                     public void onCompleted() {
                         productVariationProgress.setVisibility(View.GONE);
                         productSave.setEnabled(true);
-                        setvariations();
+                        setVariations();
                         onOptionChanged();
                     }
 
@@ -239,7 +239,7 @@ public class NewOrderItemEditFragment extends DialogFragment implements ProductO
                 }));
     }
 
-    private void setvariations() {
+    private void setVariations() {
         HashMap<String, Set<String>> optionsMap = new HashMap<>();
         for (ProductVariation productVariation : mProductVariationCollection.getItems()) {
             for (ProductVariationOption option : productVariation.getOptions()) {
