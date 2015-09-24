@@ -260,6 +260,7 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
     private void createOrUpdateCustomerAccount() {
         CustomerContact customerContact = createCustomerContactFromForm();
         if (mEditing > -1) {
+            customerContact.setId(mCustomerAccount.getContacts().get(mEditing).getId());
             mCustomerAccount.getContacts().set(mEditing, customerContact);
         } else {
             mCustomerAccount = mCustomerAccount == null ? createCustomerAccountFromForm() : mCustomerAccount;
