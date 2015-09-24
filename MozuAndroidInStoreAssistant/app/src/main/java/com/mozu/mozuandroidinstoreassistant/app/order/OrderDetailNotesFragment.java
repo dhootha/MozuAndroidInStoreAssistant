@@ -14,6 +14,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -53,7 +54,7 @@ public class OrderDetailNotesFragment extends Fragment {
     @InjectView(R.id.show_internal_notes)
     TextView mShowInternalNotes;
     @InjectView(R.id.add_internal_note)
-    Button mAddInternalNote;
+    ImageButton mAddInternalNote;
     @InjectView(R.id.internal_note_header)
     View header;
 

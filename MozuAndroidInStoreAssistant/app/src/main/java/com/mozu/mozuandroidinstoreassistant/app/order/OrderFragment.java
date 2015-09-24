@@ -19,7 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -96,7 +96,7 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
     @InjectView(R.id.order_search_query)
     TextView order_search_query;
     @InjectView(R.id.create)
-    Button create;
+    ImageButton create;
     private Integer mTenantId;
     private Integer mSiteId;
     private String mDefaultSearchQuery;

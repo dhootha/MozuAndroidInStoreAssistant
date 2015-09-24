@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
@@ -50,7 +51,7 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
     @InjectView(R.id.order_detail_container)
     SwipeRefreshLayout mOrderSwipeRefresh;
     @InjectView(R.id.edit_mode)
-    Button enterEditMode;
+    ImageButton enterEditMode;
     private String mOrderNumber;
     private TextView mOrderStatus;
     private TextView mOrderDate;
@@ -342,9 +343,9 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
         mRxBus.send(mIsEditMode);
         mAdapter.setIsEditMode(mIsEditMode);
         if (mIsEditMode) {
-            enterEditMode.setText(getString(R.string.exit_edit_mode));
+            enterEditMode.setImageResource(R.drawable.ic_check);
         } else {
-            enterEditMode.setText(getString(R.string.edit));
+            enterEditMode.setImageResource(R.drawable.ic_edit);
         }
     }
 }

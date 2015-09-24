@@ -175,17 +175,17 @@
                 android:layout_height="48dp"
                 android:layout_alignParentLeft="true"/>
 
-            <Button
-                android:id="@+id/edit_mode"
-                style="@style/ButtonMozu"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="5dp"
-                android:paddingLeft="16dp"
-                android:text="@string/edit"/>
+            <!--<Button-->
+            <!--android:id="@+id/edit_mode"-->
+            <!--style="@style/ButtonMozu"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:layout_marginBottom="5dp"-->
+            <!--android:layout_marginTop="5dp"-->
+            <!--android:paddingLeft="16dp"-->
+            <!--android:text="@string/edit"/>-->
 
             <TextView
                 android:id="@+id/order_fulfillment_status"
@@ -207,20 +207,39 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="1dp"
+            android:layout_marginBottom="1dp"
             android:background="@color/divider_black"/>
 
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:background="@color/divider_white"/>
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/order_detail_sections_viewpager"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="0dp"
-            android:paddingLeft="@dimen/order_margin_right"
-            android:paddingRight="@dimen/order_margin_left"/>
+            android:layout_height="wrap_content">
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/order_detail_sections_viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="0dp"
+                android:paddingLeft="@dimen/order_margin_right"
+                android:paddingRight="@dimen/order_margin_left"/>
+
+            <ImageButton
+                android:id="@+id/edit_mode"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="end|bottom"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/floating_action_button"
+                android:contentDescription="@string/edit"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:src="@drawable/ic_edit"
+                android:textSize="25sp"/>
+        </FrameLayout>
 
     </LinearLayout>
+
 </android.support.v4.widget.SwipeRefreshLayout>

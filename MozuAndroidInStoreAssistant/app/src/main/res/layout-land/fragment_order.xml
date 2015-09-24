@@ -2,71 +2,60 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@android:color/white"
+              android:orientation="vertical"
     tools:context="com.mozu.mozuandroidinstoreassistant.app.order.OrderFragment">
 
     <LinearLayout
-        android:visibility="gone"
         android:id="@+id/orders_header"
-        android:layout_marginLeft="50dp"
-        android:layout_marginBottom="25dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="25dp"
+        android:layout_marginLeft="50dp"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
+            android:text="@string/menu_orders_text"
             android:textSize="25sp"
-            android:text="@string/menu_orders_text" />
+            android:textStyle="bold"/>
 
         <TextView
-            android:layout_marginLeft="10dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
             android:id="@+id/order_search_query"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/mozu_color"
-            android:textColor="#ffffff"
             android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:background="@color/mozu_color"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:textColor="#ffffff"
             android:textSize="15sp" />
 
 
     </LinearLayout>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:text="@string/create_order"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:textColor="@color/divider_white"
-        android:id="@+id/create" />
-
     <LinearLayout
-        android:baselineAligned="false"
         android:id="@+id/order_list_header"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="64dp"
-        android:paddingRight="24dp"
-        android:gravity="center_vertical">
+        android:baselineAligned="false"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingRight="24dp">
 
         <LinearLayout
-            android:layout_gravity="center"
             android:layout_width="0dp"
-            android:layout_weight="1.5"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1.5">
 
             <ImageView
-                android:layout_gravity="center"
                 android:id="@+id/order_image"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
+                android:layout_gravity="center"
                 android:background="@android:color/transparent" />
 
         </LinearLayout>
@@ -74,25 +63,25 @@
         <LinearLayout
             android:id="@+id/order_number_header_layout"
             android:layout_width="0dp"
-            android:clickable="true"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:orientation="horizontal"
-            android:gravity="left|center_vertical">
+            android:clickable="true"
+            android:gravity="left|center_vertical"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/order_number_header"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@string/order_list_order_no_header"
                 android:textColor="@color/light_gray_text"
-                android:textSize="14sp"
-                android:text="@string/order_list_order_no_header" />
+                android:textSize="14sp"/>
 
             <ImageView
-                android:layout_marginLeft="@dimen/order_header_margin"
                 android:id="@+id/order_number_header_sort_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/order_header_margin"
                 android:src="@drawable/icon_sort_up"
                 android:visibility="invisible" />
 
@@ -103,23 +92,23 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="4"
-            android:orientation="horizontal"
-            android:gravity="left|center_vertical">
+            android:gravity="left|center_vertical"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/order_date_header"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
+                android:text="@string/order_list_date_header"
                 android:textColor="@color/dark_gray_text"
                 android:textSize="14sp"
-                android:text="@string/order_list_date_header" />
+                android:textStyle="bold"/>
 
             <ImageView
-                android:layout_marginLeft="@dimen/order_header_margin"
                 android:id="@+id/order_date_header_sort_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/order_header_margin"
                 android:src="@drawable/icon_sort_down"
                 android:visibility="visible" />
 
@@ -130,22 +119,22 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="4"
-            android:orientation="horizontal"
-            android:gravity="left|center_vertical">
+            android:gravity="left|center_vertical"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/order_status_header"
-                android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/order_list_order_status_header"
                 android:textColor="@color/light_gray_text"
-                android:textSize="14sp"
-                android:text="@string/order_list_order_status_header" />
+                android:textSize="14sp"/>
 
             <ImageView
-                android:layout_marginLeft="@dimen/order_header_margin"
                 android:id="@+id/order_status_header_sort_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/order_header_margin"
                 android:src="@drawable/icon_sort_up"
                 android:visibility="invisible" />
 
@@ -156,22 +145,22 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="4"
-            android:orientation="horizontal"
-            android:gravity="left|center_vertical">
+            android:gravity="left|center_vertical"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/order_payment_status_header"
-                android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/order_list_order_payment_status_header"
                 android:textColor="@color/light_gray_text"
-                android:textSize="14sp"
-                android:text="@string/order_list_order_payment_status_header" />
+                android:textSize="14sp"/>
 
             <ImageView
-                android:layout_marginLeft="@dimen/order_header_margin"
                 android:id="@+id/order_payment_status_header_sort_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/order_header_margin"
                 android:src="@drawable/icon_sort_down"
                 android:visibility="invisible" />
 
@@ -182,23 +171,23 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2.5"
-            android:orientation="horizontal"
-            android:gravity="right|center_vertical">
+            android:gravity="right|center_vertical"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/order_total_header"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="right"
+                android:text="@string/order_list_order_total_header"
                 android:textColor="@color/light_gray_text"
-                android:textSize="14sp"
-                android:text="@string/order_list_order_total_header" />
+                android:textSize="14sp"/>
 
             <ImageView
-                android:layout_marginLeft="@dimen/order_header_margin"
                 android:id="@+id/order_total_header_sort_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/order_header_margin"
                 android:src="@drawable/icon_sort_up"
                 android:visibility="gone" />
 
@@ -226,8 +215,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/white"
-        android:visibility="visible"
-        android:gravity="center">
+        android:gravity="center"
+        android:visibility="visible">
 
         <ProgressBar
             style="?android:attr/progressBarStyleLarge"
@@ -243,17 +232,34 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ListView
-            android:id="@+id/order_list"
-            android:paddingRight="24dp"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:dividerHeight="0dp"
-            android:scrollbars="none"
-            android:background="@android:color/white"
-            android:divider="@android:color/transparent"
-            android:visibility="gone" />
+            android:layout_height="wrap_content">
 
+            <ListView
+                android:id="@+id/order_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="0dp"
+                android:paddingRight="24dp"
+                android:scrollbars="none"
+                android:visibility="gone"/>
+
+            <ImageButton
+                android:id="@+id/create"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_gravity="end|bottom"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/floating_action_button"
+                android:src="@drawable/ic_content_add"
+                android:textColor="@color/divider_white"/>
+        </FrameLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
 
 </LinearLayout>
