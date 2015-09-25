@@ -20,10 +20,6 @@ public class CustomerUpdateActivity extends BaseActivity implements CustomerCrea
     public static final String CUSTOMER_CREATED = "customer_created";
     public static final String CURRENT_TENANT_ID = "curTenantIdWhenActLoaded";
     public static final String CURRENT_SITE_ID = "curSiteIdWhenActLoaded";
-    public static final String ORDER_CUSTOMER_EXTRA_KEY = "order_customer";
-    public static final int CREATE_CUSTOMER = 1;
-    private static String BILLING = "billing";
-    private static String SHIPPING = "shipping";
     private Integer mTenantId;
     private Integer mSiteId;
     private CustomerAccount mCustomerAccount;
@@ -126,5 +122,7 @@ public class CustomerUpdateActivity extends BaseActivity implements CustomerCrea
                 .replace(R.id.content_fragment_holder, customerCreationFragment)
                 .commit();
     }
+
+
 
 }
