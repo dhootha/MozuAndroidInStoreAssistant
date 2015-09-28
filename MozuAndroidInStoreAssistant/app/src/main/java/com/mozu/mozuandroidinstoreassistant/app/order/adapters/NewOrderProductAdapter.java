@@ -51,18 +51,20 @@ public class NewOrderProductAdapter extends BaseAdapter {
     public void addData(Order order) {
         mData.clear();
         mData.add(new OrderHeaderItemRow());
-        for (OrderItem item : order.getItems()) {
-            mData.add(new OrderItemRow(item));
-        }
-        if (order.getItems().size() > 0) {
-            if (editMode) {
-                mData.add(new ShippingItemRow(order, order.getFulfillmentInfo()));
-                mData.add(new CouponsRowItem(order));
+        if (order != null && order.getItems() != null) {
+            for (OrderItem item : order.getItems()) {
+                mData.add(new OrderItemRow(item));
             }
-            mData.add(new OrderTotalRow(order));
-            if (!editMode && (order.getAttributes() != null && order.getAttributes().size() > 0)) {
-                mData.add(new OrderAttributeHeaderItem());
-                mData.addAll(getOrderAttributes(order));
+            if (order.getItems().size() > 0) {
+                if (editMode) {
+                    mData.add(new ShippingItemRow(order, order.getFulfillmentInfo()));
+                    mData.add(new CouponsRowItem(order));
+                }
+                mData.add(new OrderTotalRow(order));
+                if (!editMode && (order.getAttributes() != null && order.getAttributes().size() > 0)) {
+                    mData.add(new OrderAttributeHeaderItem());
+                    mData.addAll(getOrderAttributes(order));
+                }
             }
         }
     }

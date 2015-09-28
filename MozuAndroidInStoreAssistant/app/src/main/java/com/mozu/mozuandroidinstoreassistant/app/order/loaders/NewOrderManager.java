@@ -152,8 +152,7 @@ public class NewOrderManager {
                             }
                         }
                     }
-                }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                }).subscribeOn(Schedulers.io());
     }
 
     public Observable<Order> getDeleteOrderItemObservable(final Integer tenantId, final Integer siteId, final String orderItemId, final String orderId) {
@@ -175,8 +174,7 @@ public class NewOrderManager {
                             }
                         }
                     }
-                }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                }).subscribeOn(Schedulers.io());
     }
 
     public Observable<Order> createOrder(final Integer tenantId, final Integer siteId, final Order order) {
@@ -232,8 +230,7 @@ public class NewOrderManager {
                         }
                     }
                 })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io());
     }
 
     public Observable<List<FulfillmentInfo>> getInventory(final Integer tenantId, final Integer siteId, final String productCode, final ArrayMap<String, String> locationMap) {
@@ -265,8 +262,8 @@ public class NewOrderManager {
                             subscriber.onError(e);
                         }
                     }
-                }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                }).subscribeOn(Schedulers.io());
+
     }
 
 
@@ -279,15 +276,18 @@ public class NewOrderManager {
                             ArrayMap<String, String> locations = new ArrayMap<String, String>();
                             LocationResource locationResource = new LocationResource(new MozuApiContext(tenantId, siteId));
                             LocationCollection locationCollection = locationResource.getInStorePickupLocations();
-
-                            for (Location location : locationCollection.getItems()) {
-                                if (location.getSupportsInventory()) {
-                                    locations.put(location.getCode(), OrderStrings.PICKUP);
+                            if (locationCollection != null) {
+                                for (Location location : locationCollection.getItems()) {
+                                    if (location.getSupportsInventory()) {
+                                        locations.put(location.getCode(), OrderStrings.PICKUP);
+                                    }
                                 }
                             }
 
                             Location directShipLocation = locationResource.getDirectShipLocation();
-                            locations.put(directShipLocation.getCode(), OrderStrings.SHIP);
+                            if (directShipLocation != null) {
+                                locations.put(directShipLocation.getCode(), OrderStrings.SHIP);
+                            }
 
                             if (!subscriber.isUnsubscribed()) {
                                 subscriber.onNext(locations);
@@ -318,8 +318,7 @@ public class NewOrderManager {
                             subscriber.onError(e);
                         }
                     }
-                }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                }).subscribeOn(Schedulers.io());
     }
 
     public Observable<CustomerAccount> getCustomerInfoObservable(final Integer tenantId, final Integer siteId, final Integer customerId) {
@@ -338,8 +337,7 @@ public class NewOrderManager {
                             subscriber.onError(e);
                         }
                     }
-                }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                }).subscribeOn(Schedulers.io());
     }
 
 
@@ -496,8 +494,7 @@ public class NewOrderManager {
                             }
                         }
                     }
-                }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                }).subscribeOn(Schedulers.io());
     }
 
 
