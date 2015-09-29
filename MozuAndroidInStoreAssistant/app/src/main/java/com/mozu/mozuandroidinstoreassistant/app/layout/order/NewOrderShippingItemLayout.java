@@ -1,13 +1,14 @@
 package com.mozu.mozuandroidinstoreassistant.app.layout.order;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.text.Html;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -39,6 +40,8 @@ public class NewOrderShippingItemLayout extends LinearLayout implements IRowLayo
     private Integer mTenantId;
     private Integer mSiteId;
     private CompositeSubscription mCompositeSubscription;
+    ShippingItemRow shippingItemRow;
+    ProgressBar progressBar;
 
     public NewOrderShippingItemLayout(Context context) {
         super(context);
@@ -74,134 +77,119 @@ public class NewOrderShippingItemLayout extends LinearLayout implements IRowLayo
         }
     }
 
+
+    private void showAlertDialog(final List<ShippingRate> shippingRates, final String mOrderId) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        SpinnerDialogAdapter spinnerAdapter = new SpinnerDialogAdapter();
+        spinnerAdapter.setData(shippingRates);
+        builder.setAdapter(spinnerAdapter, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int position) {
+                applyShipping(shippingRates.get(position));
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+    }
+
+    private void applyShipping(ShippingRate shippingRateSelected) {
+        Order order = shippingItemRow.mOrder;
+        com.mozu.api.contracts.commerceruntime.fulfillment.FulfillmentInfo fulfillmentInfo = order.getFulfillmentInfo();
+        if (fulfillmentInfo == null) {
+            fulfillmentInfo = new com.mozu.api.contracts.commerceruntime.fulfillment.FulfillmentInfo();
+        }
+        fulfillmentInfo.setShippingMethodCode(shippingRateSelected.getShippingMethodCode());
+        fulfillmentInfo.setShippingMethodName(shippingRateSelected.getShippingMethodName());
+
+        order.setFulfillmentInfo(fulfillmentInfo);
+        progressBar.setVisibility(View.VISIBLE);
+        mCompositeSubscription.add(NewOrderManager.getInstance().getUpdateOrderObservable(mTenantId, mSiteId, order, order.getId())
+                .subscribe(new Subscriber<Order>() {
+                    @Override
+                    public void onCompleted() {
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getContext(), getResources().getString(R.string.shipping_update_failure)).show();
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onNext(Order order) {
+                        mOrderUpdateListener.updateOrder(order);
+                }
+                }));
+    }
+
+
     @Override
     public void bindData(IData data) {
         if (data instanceof ShippingItemRow) {
-            final ShippingItemRow shippingItemRow = (ShippingItemRow) data;
+            shippingItemRow = (ShippingItemRow) data;
+            progressBar = (ProgressBar) findViewById(R.id.shipping_progress);
             mSpinner = (Spinner) findViewById(R.id.shipping_spinner);
-            final ProgressBar progressBar = (ProgressBar) findViewById(R.id.shipping_progress);
-            ShippingRate shippingRate = null;
+            mSpinner.setClickable(false);
+            SpinnerAdapter spinnerAdapter = new SpinnerAdapter();
             List<ShippingRate> shipments = new ArrayList<>();
             if (shippingItemRow.mCurrentFulfillmentInfo.getShippingMethodCode() != null) {
-                shippingRate = new ShippingRate();
+                ShippingRate shippingRate = new ShippingRate();
                 shippingRate.setShippingMethodCode(shippingItemRow.mCurrentFulfillmentInfo.getShippingMethodCode());
                 shippingRate.setShippingMethodName(shippingItemRow.mCurrentFulfillmentInfo.getShippingMethodName());
                 shipments.add(shippingRate);
             } else {
                 shipments.add(0, null);
             }
-            final SpinnerAdapter spinnerAdapter = new SpinnerAdapter();
             spinnerAdapter.setData(shipments);
             mSpinner.setAdapter(spinnerAdapter);
-            setSpinnerSelection(spinnerAdapter, shippingItemRow.mCurrentFulfillmentInfo.getShippingMethodCode());
-            mSpinner.setOnTouchListener(new OnTouchListener() {
+            mSpinner.post(new Runnable() {
                 @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
-                    progressBar.setVisibility(VISIBLE);
-                    mCompositeSubscription.add(NewOrderManager.getInstance().getOrderShipments(mTenantId, mSiteId, shippingItemRow.mOrder.getId())
-                            .subscribe(new Subscriber<List<ShippingRate>>() {
-                                @Override
-                                public void onCompleted() {
-                                    progressBar.setVisibility(GONE);
-                                }
+                public void run() {
+                    mSpinner.setOnTouchListener(new OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View view, MotionEvent motionEvent) {
+                            if (motionEvent.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                                progressBar.setVisibility(VISIBLE);
+                                mCompositeSubscription.add(NewOrderManager.getInstance().getOrderShipments(mTenantId, mSiteId, shippingItemRow.mOrder.getId())
+                                        .subscribe(new Subscriber<List<ShippingRate>>() {
+                                            @Override
+                                            public void onCompleted() {
+                                                progressBar.setVisibility(GONE);
+                                            }
 
-                                @Override
-                                public void onError(Throwable e) {
-                                    ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getContext(), "Failed to fetch Shipping information");
-                                    progressBar.setVisibility(GONE);
-                                }
+                                            @Override
+                                            public void onError(Throwable e) {
+                                                ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getContext(), getResources().getString(R.string.shipping_fetch_failure)).show();
+                                                progressBar.setVisibility(GONE);
+                                            }
 
-                                @Override
-                                public void onNext(List<ShippingRate> shippingRates) {
-                                    if (shippingItemRow.mCurrentFulfillmentInfo.getShippingMethodCode() == null) {
-                                        shippingRates.add(0, null);
-                                    }
-                                    spinnerAdapter.setData(shippingRates);
-                                    spinnerAdapter.notifyDataSetChanged();
-
-                                    setSpinnerSelection(spinnerAdapter, shippingItemRow.mCurrentFulfillmentInfo.getShippingMethodCode());
-
-                                }
-                            }));
-                    return false;
-                }
-
-
-            });
-
-            mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-                    if (position == 0)
-                        return;
-
-                    Order order = shippingItemRow.mOrder;
-                    ShippingRate shippingRateSelected = (ShippingRate) adapterView.getItemAtPosition(position);
-                    com.mozu.api.contracts.commerceruntime.fulfillment.FulfillmentInfo fulfillmentInfo = order.getFulfillmentInfo();
-                    if (fulfillmentInfo == null) {
-                        fulfillmentInfo = new com.mozu.api.contracts.commerceruntime.fulfillment.FulfillmentInfo();
-                    }
-                    if (shippingRateSelected == null || shippingRateSelected.getShippingMethodCode().equals(shippingItemRow.mCurrentFulfillmentInfo.getShippingMethodCode()))
-                        return;
-                    fulfillmentInfo.setShippingMethodCode(shippingRateSelected.getShippingMethodCode());
-                    fulfillmentInfo.setShippingMethodName(shippingRateSelected.getShippingMethodName());
-
-                    order.setFulfillmentInfo(fulfillmentInfo);
-                    progressBar.setVisibility(View.VISIBLE);
-                    mCompositeSubscription.add(NewOrderManager.getInstance().getUpdateOrderObservable(mTenantId, mSiteId, order, order.getId())
-                            .subscribe(new Subscriber<Order>() {
-                                @Override
-                                public void onCompleted() {
-
-                                }
-
-                                @Override
-                                public void onError(Throwable e) {
-                                    ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getContext(), "Failed to update shipping");
-                                    progressBar.setVisibility(View.GONE);
-                                }
-
-                                @Override
-                                public void onNext(Order order) {
-                                    progressBar.setVisibility(View.GONE);
-                                    mOrderUpdateListener.updateOrder(order);
-
-                                }
-                            }));
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
+                                            @Override
+                                            public void onNext(List<ShippingRate> shippingRates) {
+                                                if (shippingRates.size() > 0) {
+                                                    showAlertDialog(shippingRates, shippingItemRow.mOrder.getId());
+                                                } else {
+                                                    ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getContext(), getResources().getString(R.string.empty_shipping_rates)).show();
+                                                }
+                                            }
+                                        }));
+                            }
+                            return false;
+                        }
+                    });
 
                 }
             });
 
-
         }
     }
 
-    public void setSpinnerSelection(SpinnerAdapter spinnerAdapter, String spinnerSelection) {
-        if (spinnerAdapter.getCount() > 1) {
-            for (int i = 1; i < spinnerAdapter.getCount(); i++) {
-                String shippingMethod = spinnerAdapter.getItem(i).getShippingMethodCode();
-                if (shippingMethod.equals(spinnerSelection)) {
-                    mSpinner.setSelection(i);
-                    return;
-                }
-            }
-        }
-        mSpinner.setSelection(0);
-    }
-
-
-    @Override
-    public void setEditMode(boolean isEditMode) {
-        mSpinner.setClickable(isEditMode);
-        mSpinner.setEnabled(isEditMode);
-    }
 
     public interface OrderUpdateListener {
         public void updateOrder(Order order);
+    }
+
+    @Override
+    public void setEditMode(boolean isEditMode) {
     }
 
 
@@ -214,7 +202,7 @@ public class NewOrderShippingItemLayout extends LinearLayout implements IRowLayo
         }
 
         public void setData(List<ShippingRate> data) {
-            mData = new ArrayList<>();
+            mData.clear();
             mData.addAll(data);
         }
 
@@ -230,7 +218,7 @@ public class NewOrderShippingItemLayout extends LinearLayout implements IRowLayo
             if (shipment != null) {
                 StringBuffer shipmentDisplay = new StringBuffer(shipment.getShippingMethodName());
                 if (shipment.getPrice() != null) {
-                    shipmentDisplay.append(" &nbsp&nbsp&nbsp <font color='#df3018'>" + numberFormat.format(shipment.getPrice()) + " </font> ");
+                    shipmentDisplay.append(String.format(getResources().getString(R.string.shipping_display_format), numberFormat.format(shipment.getPrice())));
                 }
                 mTextView.setText(Html.fromHtml(shipmentDisplay.toString()));
             } else {
@@ -266,6 +254,58 @@ public class NewOrderShippingItemLayout extends LinearLayout implements IRowLayo
             }
             return textView;
 
+        }
+
+    }
+
+
+    class SpinnerDialogAdapter extends BaseAdapter {
+
+        private List<ShippingRate> mData;
+
+        public SpinnerDialogAdapter() {
+            mData = new ArrayList<>();
+        }
+
+        public void setData(List<ShippingRate> data) {
+            mData.clear();
+            mData.addAll(data);
+        }
+
+        @Override
+        public int getCount() {
+            return mData.size();
+        }
+
+        @Override
+        public ShippingRate getItem(int i) {
+            return mData.get(i);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if (convertView == null) {
+                LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+                convertView = inflater.inflate(R.layout.orderfulfillment_spinner_item, parent, false);
+            }
+            NumberFormat numberFormat = NumberFormat.getCurrencyInstance();
+            TextView mTextView = (TextView) convertView.findViewById(R.id.order_fulfillment);
+            ShippingRate shipment = getItem(position);
+            if (shipment != null) {
+                StringBuffer shipmentDisplay = new StringBuffer(shipment.getShippingMethodName());
+                if (shipment.getPrice() != null) {
+                    shipmentDisplay.append(String.format(getResources().getString(R.string.shipping_display_format), numberFormat.format(shipment.getPrice())));
+                }
+                mTextView.setText(Html.fromHtml(shipmentDisplay.toString()));
+            } else {
+                mTextView.setText(getResources().getString(R.string.shipping_method));
+            }
+            return convertView;
         }
 
     }
