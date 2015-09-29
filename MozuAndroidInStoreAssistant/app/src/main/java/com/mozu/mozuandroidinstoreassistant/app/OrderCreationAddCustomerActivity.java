@@ -51,7 +51,11 @@ public class OrderCreationAddCustomerActivity extends BaseActivity {
             mSiteId = savedInstanceState.getInt(CURRENT_SITE_ID, -1);
         }
 
-        getFragmentManager().beginTransaction().replace(R.id.content_fragment_holder, CustomerLookupFragment.getInstance(mTenantId, mSiteId), "create").commit();
+        if (savedInstanceState == null) {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.content_fragment_holder, CustomerLookupFragment.getInstance(mTenantId, mSiteId), "create")
+                    .commit();
+        }
 
         if (getActionBar() != null) {
             getActionBar().setDisplayShowHomeEnabled(false);

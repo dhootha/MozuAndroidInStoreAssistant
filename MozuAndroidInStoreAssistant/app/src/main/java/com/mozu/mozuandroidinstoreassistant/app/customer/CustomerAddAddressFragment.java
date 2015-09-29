@@ -20,8 +20,10 @@ import com.mozu.api.contracts.customer.CustomerContact;
 import com.mozu.mozuandroidinstoreassistant.app.CustomerUpdateActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.customer.adapters.CustomerAddressesAdapter;
+import com.mozu.mozuandroidinstoreassistant.app.customer.adapters.CustomerAddressesAdapter.AddressDeleteListener;
 import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.AddCustomerContactObservable;
 import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.CustomerAccountCreationObserver;
+import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.CustomerManager;
 import com.mozu.mozuandroidinstoreassistant.app.dialog.ErrorMessageAlertDialog;
 import com.mozu.mozuandroidinstoreassistant.app.utils.CustomerUtils;
 import com.mozu.mozuandroidinstoreassistant.app.views.LoadingView;
@@ -35,7 +37,7 @@ import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class CustomerAddAddressFragment extends Fragment {
+public class CustomerAddAddressFragment extends Fragment implements AddressDeleteListener {
 
 
     private static final String CUSTOMER_ACCOUNT = "customer";
@@ -54,8 +56,7 @@ public class CustomerAddAddressFragment extends Fragment {
     private CustomerAccount mCustomerAccount;
     private CustomerAddressesAdapter mRecyclerViewAddressAdapter;
     private int countdown;
-    private boolean mIsCusomterCreated;
-    private Set<Integer> alreadyCreatedAddresses;
+    private boolean mIsCustomerCreated;
 
 
     public static CustomerAddAddressFragment getInstance(Integer tenantId, Integer siteId, CustomerAccount account, boolean isCustomerCreated) {
@@ -87,7 +88,7 @@ public class CustomerAddAddressFragment extends Fragment {
         mTenantId = getArguments().getInt(CustomerUpdateActivity.CURRENT_TENANT_ID);
         mSiteId = getArguments().getInt(CustomerUpdateActivity.CURRENT_SITE_ID);
         mCustomerAccount = (CustomerAccount) getArguments().getSerializable(CUSTOMER_ACCOUNT);
-        mIsCusomterCreated = getArguments().getBoolean(CustomerUpdateActivity.CUSTOMER_CREATED);
+        mIsCustomerCreated = getArguments().getBoolean(CustomerUpdateActivity.CUSTOMER_CREATED);
         return view;
     }
 
@@ -140,7 +141,7 @@ public class CustomerAddAddressFragment extends Fragment {
                 }
             }
         }
-        mRecyclerViewAddressAdapter = new CustomerAddressesAdapter(mCustomerAccount.getContacts(), (CustomerAddressesAdapter.AddressEditListener) getActivity());
+        mRecyclerViewAddressAdapter = new CustomerAddressesAdapter(mCustomerAccount.getContacts(), (CustomerAddressesAdapter.AddressEditListener) getActivity(), this);
         mAddressesRecyclerView.setLayoutManager(layoutManager);
         mAddressesRecyclerView.setAdapter(mRecyclerViewAddressAdapter);
 
@@ -164,7 +165,7 @@ public class CustomerAddAddressFragment extends Fragment {
             type.setName(CustomerUtils.SHIPPING);
             mCustomerAccount.getContacts().get(0).getTypes().add(0, type);
         }
-        if (mIsCusomterCreated) {
+        if (mIsCustomerCreated) {
             if (CustomerUtils.isCustomerWithPhoneNumberInDefaultAddress(mCustomerAccount)) {
                 updateCustomerAddresses(mCustomerAccount.getId());
                 loadingView.setLoading();
@@ -207,7 +208,7 @@ public class CustomerAddAddressFragment extends Fragment {
         //customer saved goto orders.
         Log.d("Customer created", "created customer");
         countdown = mCustomerAccount.getContacts().size();
-        alreadyCreatedAddresses = ((CustomerUpdateActivity) getActivity()).getAlreadyCreatedAddresses();
+        Set<Integer> alreadyCreatedAddresses = ((CustomerUpdateActivity) getActivity()).getAlreadyCreatedAddresses();
         for (int i = 0; i < mCustomerAccount.getContacts().size(); i++) {
             if (alreadyCreatedAddresses.contains(mCustomerAccount.getContacts().get(i).getId())) {
                 AndroidObservable.bindFragment(CustomerAddAddressFragment.this, AddCustomerContactObservable
@@ -250,5 +251,42 @@ public class CustomerAddAddressFragment extends Fragment {
                 }
             }
         };
+    }
+
+    @Override
+    public void onDeleteAddressClicked(final int position) {
+        if (mCustomerAccount == null || mCustomerAccount.getContacts() == null || mCustomerAccount.getContacts().size() < 1) {
+            return;
+        }
+
+        CustomerContact contact = mCustomerAccount.getContacts().get(position);
+        Set<Integer> alreadyCreatedAddresses = ((CustomerUpdateActivity) getActivity()).getAlreadyCreatedAddresses();
+        if (mIsCustomerCreated && alreadyCreatedAddresses.contains(contact.getId())) {
+            AndroidObservable.bindFragment(this, CustomerManager.getInstance().getDeleteAddressObservable(mTenantId, mSiteId, mCustomerAccount.getId(), contact.getId()))
+                    .subscribe(new Subscriber<Integer>() {
+                        @Override
+                        public void onCompleted() {
+                            mCustomerAccount.getContacts().remove(position);
+                            mRecyclerViewAddressAdapter.setData(mCustomerAccount.getContacts());
+                            mRecyclerViewAddressAdapter.notifyDataSetChanged();
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(CustomerAddAddressFragment.this.getActivity(), getString(R.string.standard_error));
+                        }
+
+                        @Override
+                        public void onNext(Integer integer) {
+
+                        }
+                    });
+
+        } else {
+            mCustomerAccount.getContacts().remove(position);
+            mRecyclerViewAddressAdapter.setData(mCustomerAccount.getContacts());
+            mRecyclerViewAddressAdapter.notifyDataSetChanged();
+        }
+
     }
 }

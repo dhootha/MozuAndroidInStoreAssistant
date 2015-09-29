@@ -26,10 +26,11 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class CustomerLookupFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<CustomerAccount>>, AdapterView.OnItemClickListener, View.OnClickListener, CustomerCreationInterface {
+public class CustomerLookupFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<CustomerAccount>>, AdapterView.OnItemClickListener, View.OnClickListener {
 
     public static final int LOADER_CUSTOMER = 452;
     public static final int CREATE_CUSTOMER = 1;
+    private static String SEARCH = "search";
     @InjectView(R.id.customer_lookup)
     AutoCompleteTextView customerLookup;
     @InjectView(R.id.create)
@@ -107,6 +108,16 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
                 //DO NOTHING
             }
         });
+        if (savedInstanceState != null) {
+            String search = savedInstanceState.getString(SEARCH);
+            customerLookup.setText(search);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString(SEARCH, customerLookup.getText().toString());
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -122,7 +133,6 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
             mAdapter = new CustomerLookupAdapter(getActivity());
             customerLookup.setAdapter(mAdapter);
         }
-
         mAdapter.clear();
         mAdapter.addAll(data);
         mAdapter.notifyDataSetChanged();
@@ -156,9 +166,5 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
         Intent intent = new Intent(getActivity(), CustomerUpdateActivity.class);
         intent.putExtras(bundle);
         getActivity().startActivityForResult(intent, CREATE_CUSTOMER);
-    }
-
-    @Override
-    public void createCustomer() {
     }
 }
