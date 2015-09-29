@@ -339,6 +339,10 @@
     <string name="send_email">Send Email</string>
     <string name="phone_required">Default shipping and billing addresses require a phone number</string>
     <string name="fill_required">Please fill required fields</string>
+    <string name="shipping_update_failure">Failed to update shipping</string>
+    <string name="shipping_fetch_failure">Failed to fetch shipping information</string>
+    <string name="empty_shipping_rates">No shipping information available</string>
+    <string name="shipping_display_format"><![CDATA[ &nbsp&nbsp&nbsp <font color=\'#df3018\'> %1$s </font> ]]></string>
     <string-array name="register_email_address">
         <item>mozumobile@volusion.com</item>
     </string-array>

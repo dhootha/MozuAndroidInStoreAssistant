@@ -72,7 +72,7 @@ public class OrderDetailPaymentFragment extends Fragment {
         ListView paymentList = (ListView) view.findViewById(R.id.payments_list);
         List<Payment> payments = mOrder.getPayments();
         TextView emptyView = (TextView) view.findViewById(R.id.empty_payments_message);
-        if (payments != null && payments.size() > 1) {
+        if (payments != null && payments.size() > 0) {
             Collections.sort(payments, new PaymentsSort());
             final OrderDetailPaymentsAdapter adapter = new OrderDetailPaymentsAdapter(getActivity(), payments);
             paymentList.setAdapter(adapter);
@@ -87,7 +87,7 @@ public class OrderDetailPaymentFragment extends Fragment {
             if (mOrder.getPaymentStatus() != null) {
                 status.setText(mOrder.getPaymentStatus());
             } else {
-                status.setText("N/A");
+                status.setText(getString(R.string.not_available));
             }
             orderTotal.setText(mNumberFormat.format(mOrder.getTotal()));
             Double amountCollected = getTotalPayment(payments);

@@ -79,18 +79,6 @@ public class NewOrderShippingItemLayout extends LinearLayout implements IRowLayo
 
 
     private void showAlertDialog(final List<ShippingRate> shippingRates, final String mOrderId) {
-        String[] shipList = new String[shippingRates.size()];
-        NumberFormat numberFormat = NumberFormat.getCurrencyInstance();
-        for (int i = 0; i < shippingRates.size(); i++) {
-            ShippingRate shipment = shippingRates.get(i);
-            if (shipment != null) {
-                StringBuffer shipmentDisplay = new StringBuffer(shipment.getShippingMethodName());
-                if (shipment.getPrice() != null) {
-                    shipmentDisplay.append(" &nbsp&nbsp&nbsp <font color='#df3018'>" + numberFormat.format(shipment.getPrice()) + " </font> ");
-                }
-                shipList[i] = Html.fromHtml(shipmentDisplay.toString()).toString();
-            }
-        }
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         SpinnerDialogAdapter spinnerAdapter = new SpinnerDialogAdapter();
         spinnerAdapter.setData(shippingRates);
@@ -101,7 +89,6 @@ public class NewOrderShippingItemLayout extends LinearLayout implements IRowLayo
             }
         });
         builder.create().show();
-
     }
 
     private void applyShipping(ShippingRate shippingRateSelected) {
@@ -124,14 +111,14 @@ public class NewOrderShippingItemLayout extends LinearLayout implements IRowLayo
 
                     @Override
                     public void onError(Throwable e) {
-                        ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getContext(), "Failed to update shipping");
+                        ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getContext(), getResources().getString(R.string.shipping_update_failure)).show();
                         progressBar.setVisibility(View.GONE);
                     }
 
                     @Override
                     public void onNext(Order order) {
                         mOrderUpdateListener.updateOrder(order);
-                    }
+                }
                 }));
     }
 
@@ -142,6 +129,7 @@ public class NewOrderShippingItemLayout extends LinearLayout implements IRowLayo
             shippingItemRow = (ShippingItemRow) data;
             progressBar = (ProgressBar) findViewById(R.id.shipping_progress);
             mSpinner = (Spinner) findViewById(R.id.shipping_spinner);
+            mSpinner.setClickable(false);
             SpinnerAdapter spinnerAdapter = new SpinnerAdapter();
             List<ShippingRate> shipments = new ArrayList<>();
             if (shippingItemRow.mCurrentFulfillmentInfo.getShippingMethodCode() != null) {
@@ -171,13 +159,17 @@ public class NewOrderShippingItemLayout extends LinearLayout implements IRowLayo
 
                                             @Override
                                             public void onError(Throwable e) {
-                                                ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getContext(), "Failed to fetch Shipping information").show();
+                                                ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getContext(), getResources().getString(R.string.shipping_fetch_failure)).show();
                                                 progressBar.setVisibility(GONE);
                                             }
 
                                             @Override
                                             public void onNext(List<ShippingRate> shippingRates) {
-                                                showAlertDialog(shippingRates, shippingItemRow.mOrder.getId());
+                                                if (shippingRates.size() > 0) {
+                                                    showAlertDialog(shippingRates, shippingItemRow.mOrder.getId());
+                                                } else {
+                                                    ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getContext(), getResources().getString(R.string.empty_shipping_rates)).show();
+                                                }
                                             }
                                         }));
                             }
@@ -210,7 +202,7 @@ public class NewOrderShippingItemLayout extends LinearLayout implements IRowLayo
         }
 
         public void setData(List<ShippingRate> data) {
-            mData = new ArrayList<>();
+            mData.clear();
             mData.addAll(data);
         }
 
@@ -226,7 +218,7 @@ public class NewOrderShippingItemLayout extends LinearLayout implements IRowLayo
             if (shipment != null) {
                 StringBuffer shipmentDisplay = new StringBuffer(shipment.getShippingMethodName());
                 if (shipment.getPrice() != null) {
-                    shipmentDisplay.append(" &nbsp&nbsp&nbsp <font color='#df3018'>" + numberFormat.format(shipment.getPrice()) + " </font> ");
+                    shipmentDisplay.append(String.format(getResources().getString(R.string.shipping_display_format), numberFormat.format(shipment.getPrice())));
                 }
                 mTextView.setText(Html.fromHtml(shipmentDisplay.toString()));
             } else {
@@ -276,7 +268,7 @@ public class NewOrderShippingItemLayout extends LinearLayout implements IRowLayo
         }
 
         public void setData(List<ShippingRate> data) {
-            mData = new ArrayList<>();
+            mData.clear();
             mData.addAll(data);
         }
 
@@ -307,7 +299,7 @@ public class NewOrderShippingItemLayout extends LinearLayout implements IRowLayo
             if (shipment != null) {
                 StringBuffer shipmentDisplay = new StringBuffer(shipment.getShippingMethodName());
                 if (shipment.getPrice() != null) {
-                    shipmentDisplay.append(" &nbsp&nbsp&nbsp <font color='#df3018'>" + numberFormat.format(shipment.getPrice()) + " </font> ");
+                    shipmentDisplay.append(String.format(getResources().getString(R.string.shipping_display_format), numberFormat.format(shipment.getPrice())));
                 }
                 mTextView.setText(Html.fromHtml(shipmentDisplay.toString()));
             } else {
