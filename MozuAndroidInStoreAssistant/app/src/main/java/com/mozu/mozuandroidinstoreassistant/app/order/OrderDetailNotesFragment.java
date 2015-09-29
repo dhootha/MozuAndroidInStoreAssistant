@@ -37,7 +37,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import rx.Subscriber;
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
@@ -357,7 +356,6 @@ public class OrderDetailNotesFragment extends Fragment {
     private void createAndSubscribeToOrderNoteUpdate(OrderNote updatedNote) {
         AndroidObservable.bindFragment(this, OrderNoteObserverable.getOrderNoteObserverable(mOrder.getTenantId(), mOrder.getSiteId(), mOrder.getId(), updatedNote, OrderNoteObserverable.OrderCallType.UPDATE))
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<OrderNote>() {
                     @Override
                     public void call(OrderNote orderNote) {
@@ -381,7 +379,6 @@ public class OrderDetailNotesFragment extends Fragment {
     private void createAndSubscribeToOrderNoteDelete(final OrderNote orderNote) {
         AndroidObservable.bindFragment(this, OrderNoteObserverable.getOrderNoteObserverable(mOrder.getTenantId(), mOrder.getSiteId(), mOrder.getId(), orderNote, OrderNoteObserverable.OrderCallType.DELETION))
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<OrderNote>() {
                     @Override
                     public void call(OrderNote updatedOrderNote) {
@@ -405,7 +402,6 @@ public class OrderDetailNotesFragment extends Fragment {
     private void createAndSubscribeToOrderNoteCreation(OrderNote orderNote) {
         AndroidObservable.bindFragment(this, OrderNoteObserverable.getOrderNoteObserverable(mOrder.getTenantId(), mOrder.getSiteId(), mOrder.getId(), orderNote, OrderNoteObserverable.OrderCallType.CREATION))
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<OrderNote>() {
                     @Override
                     public void call(OrderNote orderNote) {

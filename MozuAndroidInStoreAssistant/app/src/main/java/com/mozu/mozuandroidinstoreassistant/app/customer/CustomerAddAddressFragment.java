@@ -34,7 +34,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import rx.Subscriber;
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class CustomerAddAddressFragment extends Fragment implements AddressDeleteListener {
@@ -175,9 +174,8 @@ public class CustomerAddAddressFragment extends Fragment implements AddressDelet
 
         } else {
             loadingView.setLoading();
-            CustomerAccountCreationObserver.getCustomerAccountCreationObserverable(mTenantId, mSiteId, mCustomerAccount)
+            AndroidObservable.bindFragment(CustomerAddAddressFragment.this, CustomerAccountCreationObserver.getCustomerAccountCreationObserverable(mTenantId, mSiteId, mCustomerAccount))
                     .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(getCreateCustomerAccountSubscriber());
         }
 

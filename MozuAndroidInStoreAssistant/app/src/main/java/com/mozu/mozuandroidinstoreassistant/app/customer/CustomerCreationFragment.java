@@ -36,7 +36,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import rx.Observable;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
+import rx.android.observables.AndroidObservable;
 import rx.schedulers.Schedulers;
 
 public class CustomerCreationFragment extends Fragment implements CustomerAddressVerifier {
@@ -376,9 +376,8 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
     public void verifyAddressIsValid(Address address) {
         if (validateForm()) {
             addressValidationResponseObservable = new CustomerAddressValidationObservable(mTenantId, mSiteId).getAddressValidationObservable(address);
-            addressValidationResponseObservable
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
+            AndroidObservable.bindFragment(CustomerCreationFragment.this, addressValidationResponseObservable
+                    .subscribeOn(Schedulers.io()))
                     .subscribe(getAddressValidationSubscriber());
         }
 
