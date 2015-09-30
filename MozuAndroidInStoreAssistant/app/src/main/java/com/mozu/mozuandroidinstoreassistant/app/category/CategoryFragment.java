@@ -1,11 +1,11 @@
 package com.mozu.mozuandroidinstoreassistant.app.category;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.app.SearchManager;
 import android.content.Context;
 import android.database.MatrixCursor;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -42,7 +42,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import rx.Observable;
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -144,7 +143,7 @@ public class CategoryFragment extends Fragment implements AdapterView.OnItemClic
 
     public void reloadData(){
         mCategoryPullToRefresh.setRefreshing(true);
-        mCategoryObservable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        mCategoryObservable.subscribeOn(Schedulers.io())
                 .flatMap(new Func1<List<Category>, Observable<Category>>() {
                     @Override
                     public Observable<Category> call(List<Category> categories) {

@@ -15,19 +15,16 @@ import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.commerceruntime.returns.Return;
 import com.mozu.api.contracts.commerceruntime.returns.ReturnItem;
 import com.mozu.mozuandroidinstoreassistant.app.R;
-import com.mozu.mozuandroidinstoreassistant.app.order.adapters.OrderDetailReturnsAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.models.ReturnItemForAdapterWrapper;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
-import com.mozu.mozuandroidinstoreassistant.app.order.OrderReturnDetailDialogFragment;
-import com.mozu.mozuandroidinstoreassistant.app.order.OrderReturnFetcher;
+import com.mozu.mozuandroidinstoreassistant.app.order.adapters.OrderDetailReturnsAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.views.LoadingView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 
@@ -91,7 +88,7 @@ public class OrderDetailReturnsFragment extends Fragment  {
 
     private void loadData(){
         mOrderReturnFetcher.setOrderNumber(mOrder.getId());
-        mOrderReturnObservable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new OrderReturnSubscriber());
+        mOrderReturnObservable.subscribeOn(Schedulers.io()).subscribe(new OrderReturnSubscriber());
     }
 
     private class OrderReturnSubscriber implements rx.Observer<List<Return>> {
@@ -104,7 +101,8 @@ public class OrderDetailReturnsFragment extends Fragment  {
                 mReturnAdapter.notifyDataSetChanged();
                 mReturnLoading.success();
             } else {
-                mReturnLoading.setError("No returns data Available");
+                mReturnLoading.setError("No returns data available");
+                mReturnLoading.getErrorTextView().setTextColor(getResources().getColor(android.R.color.darker_gray));
             }
         }
 

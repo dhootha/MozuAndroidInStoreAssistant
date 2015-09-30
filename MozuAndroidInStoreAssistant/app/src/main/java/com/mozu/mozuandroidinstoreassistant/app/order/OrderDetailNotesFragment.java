@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +37,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import rx.Subscriber;
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
@@ -53,6 +53,8 @@ public class OrderDetailNotesFragment extends Fragment {
     TextView mShowInternalNotes;
     @InjectView(R.id.add_internal_note)
     Button mAddInternalNote;
+    @InjectView(R.id.internal_note_header)
+    View header;
 
 
     @InjectView(R.id.customer_notes)
@@ -65,7 +67,6 @@ public class OrderDetailNotesFragment extends Fragment {
     private Order mOrder;
     private LoadingView mNotesLoadingView;
     private boolean isCurrentInternalNotes = false;
-    private String CURRENT_IS_INTERNAL = "currentInternal";
     private OrderDetailNotesAdapter internalNotesAdapter;
     private ListView mNoteList;
 
@@ -84,20 +85,24 @@ public class OrderDetailNotesFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            isCurrentInternalNotes = savedInstanceState.getBoolean(CURRENT_IS_INTERNAL);
-        }
         View view = inflater.inflate(R.layout.order_detail_notes_fragment, container, false);
         ButterKnife.inject(this, view);
         mNotesLoadingView = (LoadingView) view.findViewById(R.id.notes_loading_view);
+        isCurrentInternalNotes = false;
         setOrderToViews(view);
         return view;
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putBoolean(CURRENT_IS_INTERNAL, isCurrentInternalNotes);
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        isCurrentInternalNotes = false;
+        showCustomerNotes();
     }
 
     private void setOrderToViews(View view) {
@@ -114,6 +119,8 @@ public class OrderDetailNotesFragment extends Fragment {
         setCustomerNotes();
         if (mOrder == null || mOrder.getNotes() == null || mOrder.getNotes().size() < 1) {
             mNotesLoadingView.setError(getActivity().getResources().getString(R.string.not_internal_notes_available));
+            mNotesLoadingView.getErrorTextView().setTextColor(getResources().getColor(android.R.color.darker_gray));
+            header.setVisibility(View.GONE);
         } else {
             mNotesLoadingView.success();
         }
@@ -199,13 +206,17 @@ public class OrderDetailNotesFragment extends Fragment {
     }
 
     private void showCustomerNotes() {
-        mCustomerNotesLayout.setVisibility(View.VISIBLE);
-        mNoteListLayout.setVisibility(View.GONE);
+        if (mCustomerNotesLayout != null)
+            mCustomerNotesLayout.setVisibility(View.VISIBLE);
+        if (mNoteListLayout != null)
+            mNoteListLayout.setVisibility(View.GONE);
     }
 
     private void showInternalNotes() {
-        mCustomerNotesLayout.setVisibility(View.GONE);
-        mNoteListLayout.setVisibility(View.VISIBLE);
+        if (mCustomerNotesLayout != null)
+            mCustomerNotesLayout.setVisibility(View.GONE);
+        if (mNoteListLayout != null)
+            mNoteListLayout.setVisibility(View.VISIBLE);
     }
 
     private void updateItem(String latestNote, OrderNote orderNote) {
@@ -254,16 +265,23 @@ public class OrderDetailNotesFragment extends Fragment {
     private void setCustomerNotes() {
         if (mOrder.getShopperNotes() == null || mOrder.getShopperNotes().getComments() == null) {
             if (mOrder.getStatus().equalsIgnoreCase("Pending")) {
-                mCustomerNote.setHint("Add Customer Notes Here");
+                mCustomerNote.setHint(R.string.add_customer_note_title);
                 mCustomerNote.setEnabled(true);
                 mCustomerNote.setFocusableInTouchMode(true);
                 mCustomerNote.setFocusable(true);
+                mCustomerNote.setGravity(Gravity.LEFT);
+                mCustomerNote.setTextColor(getResources().getColor(R.color.darker_grey));
+
             } else {
-                mCustomerNote.setText("No Customer Notes Available");
+                mCustomerNote.setText(R.string.not_customer_notes_available);
+                mCustomerNote.setGravity(Gravity.CENTER_HORIZONTAL);
+                mCustomerNote.setTextColor(getResources().getColor(R.color.darker_grey));
 
             }
         } else {
             mCustomerNote.setText(mOrder.getShopperNotes().getComments());
+            mCustomerNote.setTextColor(getResources().getColor(R.color.dark_black_text));
+
         }
 
         if (mOrder.getStatus().equalsIgnoreCase("Pending")) {
@@ -307,7 +325,7 @@ public class OrderDetailNotesFragment extends Fragment {
         AndroidObservable.bindFragment(this, NewOrderManager.getInstance().getUpdateOrderObservable(order.getTenantId(), order.getSiteId(), order, order.getId())).subscribe(new Subscriber<Order>() {
             @Override
             public void onCompleted() {
-                Toast.makeText(getActivity(), "Customer Notes Saved Successfully", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), R.string.customer_notes_saved, Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -338,7 +356,6 @@ public class OrderDetailNotesFragment extends Fragment {
     private void createAndSubscribeToOrderNoteUpdate(OrderNote updatedNote) {
         AndroidObservable.bindFragment(this, OrderNoteObserverable.getOrderNoteObserverable(mOrder.getTenantId(), mOrder.getSiteId(), mOrder.getId(), updatedNote, OrderNoteObserverable.OrderCallType.UPDATE))
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<OrderNote>() {
                     @Override
                     public void call(OrderNote orderNote) {
@@ -362,7 +379,6 @@ public class OrderDetailNotesFragment extends Fragment {
     private void createAndSubscribeToOrderNoteDelete(final OrderNote orderNote) {
         AndroidObservable.bindFragment(this, OrderNoteObserverable.getOrderNoteObserverable(mOrder.getTenantId(), mOrder.getSiteId(), mOrder.getId(), orderNote, OrderNoteObserverable.OrderCallType.DELETION))
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<OrderNote>() {
                     @Override
                     public void call(OrderNote updatedOrderNote) {
@@ -371,6 +387,8 @@ public class OrderDetailNotesFragment extends Fragment {
                         internalNotesAdapter.notifyDataSetChanged();
                         if (mOrder.getNotes().size() < 1) {
                             mNotesLoadingView.setError(getActivity().getResources().getString(R.string.not_internal_notes_available));
+                            mNotesLoadingView.getErrorTextView().setTextColor(getResources().getColor(android.R.color.darker_gray));
+                            header.setVisibility(View.GONE);
                         }
                     }
                 }, new Action1<Throwable>() {
@@ -384,7 +402,6 @@ public class OrderDetailNotesFragment extends Fragment {
     private void createAndSubscribeToOrderNoteCreation(OrderNote orderNote) {
         AndroidObservable.bindFragment(this, OrderNoteObserverable.getOrderNoteObserverable(mOrder.getTenantId(), mOrder.getSiteId(), mOrder.getId(), orderNote, OrderNoteObserverable.OrderCallType.CREATION))
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<OrderNote>() {
                     @Override
                     public void call(OrderNote orderNote) {
@@ -392,6 +409,7 @@ public class OrderDetailNotesFragment extends Fragment {
                         internalNotesAdapter.setData(mOrder.getNotes());
                         internalNotesAdapter.notifyDataSetChanged();
                         mNotesLoadingView.success();
+                        header.setVisibility(View.VISIBLE);
                     }
                 }, new Action1<Throwable>() {
                     @Override

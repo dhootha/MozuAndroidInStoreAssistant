@@ -1,5 +1,7 @@
 package com.mozu.mozuandroidinstoreassistant.app.customer.adapters;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,13 +24,14 @@ public class CustomerAddressesAdapter extends RecyclerView.Adapter<CustomerAddre
 
     private static String BILLING = "billing";
     private static String SHIPPING = "shipping";
+    private final AddressDeleteListener addressDeleteListener;
     private List<CustomerContact> data;
     private AddressEditListener addressEditListener;
-    private boolean onBind = false;
 
-    public CustomerAddressesAdapter(List<CustomerContact> data, AddressEditListener addressEditListener) {
+    public CustomerAddressesAdapter(List<CustomerContact> data, AddressEditListener addressEditListener, AddressDeleteListener addressDeleteListener) {
         this.data = data;
         this.addressEditListener = addressEditListener;
+        this.addressDeleteListener = addressDeleteListener;
     }
 
     public void setData(List<CustomerContact> data) {
@@ -85,6 +88,11 @@ public class CustomerAddressesAdapter extends RecyclerView.Adapter<CustomerAddre
 
     public interface AddressEditListener {
         void onEditAddressClicked(int position);
+
+    }
+
+    public interface AddressDeleteListener {
+        void onDeleteAddressClicked(int position);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -111,14 +119,30 @@ public class CustomerAddressesAdapter extends RecyclerView.Adapter<CustomerAddre
         @InjectView(R.id.customer_default_shipping_address)
         TextView defaultShipping;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(final View itemView) {
             super(itemView);
             ButterKnife.inject(this, itemView);
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    data.remove(getAdapterPosition());
-                    notifyDataSetChanged();
+                    new AlertDialog.Builder(itemView.getContext())
+                            .setMessage(R.string.delete_address)
+                            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    addressDeleteListener.onDeleteAddressClicked(getAdapterPosition());
+                                }
+
+
+                            })
+                            .create()
+                            .show();
                 }
             });
             edit.setOnClickListener(new View.OnClickListener() {

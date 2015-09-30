@@ -43,7 +43,6 @@ public class PickupObservablesManager {
                 }
             }
         })
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
     }
 
@@ -78,7 +77,6 @@ public class PickupObservablesManager {
                 }
             }
         })
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
     }
 }

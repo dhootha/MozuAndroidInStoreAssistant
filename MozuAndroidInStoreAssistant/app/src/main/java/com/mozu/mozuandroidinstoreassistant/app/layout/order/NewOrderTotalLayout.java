@@ -1,8 +1,6 @@
 package com.mozu.mozuandroidinstoreassistant.app.layout.order;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -31,11 +29,11 @@ import rx.subscriptions.CompositeSubscription;
 
 public class NewOrderTotalLayout extends LinearLayout implements IRowLayout, IEditMode {
     TextView mSubTotalText;
-    private boolean mIsEditMode;
-    private NewOrderShippingItemLayout.OrderUpdateListener mOrderUpdateListener;
     LinearLayout mShippingAdjustment;
     LinearLayout mOrderAdjustment;
     LinearLayout mDiscountAdjustment;
+    private boolean mIsEditMode;
+    private NewOrderShippingItemLayout.OrderUpdateListener mOrderUpdateListener;
     private CompositeSubscription mCompositeSubscription;
 
 
@@ -79,7 +77,7 @@ public class NewOrderTotalLayout extends LinearLayout implements IRowLayout, IEd
             mDiscountAdjustment = (LinearLayout) findViewById(R.id.discount_adjustment);
             Order order = orderTotalRow.mOrder;
             NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
-            mSubTotalText.setText(currencyFormat.format(order.getSubtotal()));
+            mSubTotalText.setText(currencyFormat.format(order.getDiscountedSubtotal()));
             mShippingTotal.setText(currencyFormat.format(order.getShippingSubTotal()));
             mTax.setText(order.getTaxTotal() != null ? currencyFormat.format(order.getTaxTotal()) : "N/A");
             mTotal.setText(currencyFormat.format(order.getTotal()));
@@ -141,22 +139,7 @@ public class NewOrderTotalLayout extends LinearLayout implements IRowLayout, IEd
         removeButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                new AlertDialog.Builder(getContext())
-                        .setMessage(getResources().getString(R.string.remove_coupon_confirm))
-                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                removeCoupon(orderId, discount.getCouponCode());
-                            }
-                        })
-                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int i) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .create().show();
-
+                removeCoupon(orderId, discount.getCouponCode());
             }
         });
         column_name.setText(discount.getDiscount().getName() + " (" + discount.getCouponCode() + ")");
@@ -197,7 +180,7 @@ public class NewOrderTotalLayout extends LinearLayout implements IRowLayout, IEd
             for (int i = 0; i < discountChildCount; i++) {
                 View view = mDiscountAdjustment.getChildAt(i);
                 View removeView = view.findViewById(R.id.remove_icon);
-                if(removeView != null)
+                if (removeView != null)
                     removeView.setVisibility(isEditMode ? View.VISIBLE : View.GONE);
             }
         }

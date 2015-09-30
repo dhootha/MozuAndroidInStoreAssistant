@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class CustomerWishListFragment extends Fragment {
@@ -85,7 +84,7 @@ public class CustomerWishListFragment extends Fragment {
 
     private void loadData(){
         mCustomerWishListFetcher.setCustomerId(mCustomerAccount.getId());
-        mWishListObservable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new WishlistSubscriber());
+        mWishListObservable.subscribeOn(Schedulers.io()).subscribe(new WishlistSubscriber());
     }
 
     private class WishlistSubscriber implements rx.Observer<List<Wishlist>> {

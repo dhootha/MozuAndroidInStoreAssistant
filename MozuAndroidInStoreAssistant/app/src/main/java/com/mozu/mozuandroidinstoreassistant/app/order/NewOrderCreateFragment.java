@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -52,21 +53,17 @@ import rx.schedulers.Schedulers;
 
 public class NewOrderCreateFragment extends Fragment implements NewOrderItemEditFragment.onItemEditDoneListener, NewOrderShippingItemLayout.OrderUpdateListener {
 
-    private View mView;
     @InjectView(R.id.product_lookup)
     public CustomerLookupAutoCompleteTextView mProductLookup;
-
     @InjectView(R.id.product_search_loading)
     public ProgressBar mProductSearchLoading;
-
-
     @InjectView(R.id.product_listview)
     public ListView mOrderProducts;
-
-    private int mTenantId;
-    private int mSiteId;
     Subscription mSubscription;
     ProductSuggestionAdapter mAdapter;
+    private View mView;
+    private int mTenantId;
+    private int mSiteId;
     private NewOrderProductAdapter mProductsAdapter;
     private Order mOrder;
     private boolean mIsEditMode;
@@ -75,188 +72,6 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
     public static NewOrderCreateFragment getInstance() {
         NewOrderCreateFragment newOrderCreateFragment = new NewOrderCreateFragment();
         return newOrderCreateFragment;
-    }
-
-    public void setOrder(Order order) {
-        mOrder = order;
-    }
-
-    public void setEditMode(Boolean isEditMode) {
-        mIsEditMode = isEditMode;
-    }
-
-
-    @Override
-    public void setUserVisibleHint(final boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                if (getActivity() instanceof OrderDetailActivity) {
-                    ((OrderDetailActivity) getActivity()).setEditModeVisibility(isVisibleToUser);
-                }
-            }
-        });
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        setUpViews();
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-        RxBus.getInstance().toObserverable()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(getEventSubscriber());
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mView = inflater.inflate(R.layout.new_order_details_fragment, null);
-        UserAuthenticationStateMachine mUserState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
-        mSiteId = mUserState.getSiteId();
-        mTenantId = mUserState.getTenantId();
-        ButterKnife.inject(this, mView);
-        NewOrderManager.count = 0;
-        return mView;
-    }
-
-    private Subscriber<Object> getEventSubscriber() {
-        return new Subscriber<Object>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(Object o) {
-                if (o instanceof Boolean) {
-                    mIsEditMode = (Boolean) o;
-                    updateEditMode(mIsEditMode);
-                }
-            }
-        };
-    }
-
-    private void updateEditMode(Boolean editMode) {
-        mProductsAdapter.setEditMode(editMode);
-        mProductsAdapter.addData(mOrder);
-        mProductsAdapter.notifyDataSetChanged();
-        mProductLookup.setVisibility(editMode ? View.VISIBLE : View.GONE);
-    }
-
-    private void lookUpProduct(final String search) {
-        if (mSubscription != null && !mSubscription.isUnsubscribed()) {
-            mSubscription.unsubscribe();
-            mProductSearchLoading.setVisibility(View.GONE);
-        }
-        mProductSearchLoading.setVisibility(View.VISIBLE);
-        mSubscription = AndroidObservable.bindFragment(NewOrderCreateFragment.this, NewOrderManager.getInstance().getProductSuggestion(search, mTenantId, mSiteId))
-                .subscribe(new Subscriber<ProductSearchResult>() {
-                    @Override
-                    public void onCompleted() {
-                        mProductSearchLoading.setVisibility(View.GONE);
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        mProductSearchLoading.setVisibility(View.GONE);
-                        Toast.makeText(getActivity(), "Error Searching for product " + search, Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onNext(ProductSearchResult productSearchResult) {
-                        List<Product> data = productSearchResult.getItems();
-                        mAdapter.clear();
-                        mAdapter.addAll(data);
-                        mAdapter.notifyDataSetChanged();
-                        mProductLookup.showDropDown();
-                    }
-                });
-    }
-
-    private void setUpViews() {
-        mAdapter = new ProductSuggestionAdapter(getActivity());
-        mProductLookup.setAdapter(mAdapter);
-        mProductsAdapter = new NewOrderProductAdapter(this);
-        if (mOrder != null && mOrder.getItems() != null) {
-            mProductsAdapter.addData(mOrder);
-            updateEditMode(mIsEditMode);
-        }
-
-
-        mOrderProducts.setAdapter(mProductsAdapter);
-        mProductLookup.setThreshold(0);
-        mProductLookup.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (mProductLookup.getText().length() == 0) {
-                    lookUpProduct(null);
-                }
-                return false;
-            }
-        });
-
-        mProductLookup.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-
-            }
-
-            @Override
-            public void onTextChanged(final CharSequence charSequence, int start, int before, int count) {
-                if (mSubscription != null && !mSubscription.isUnsubscribed()) {
-                    mSubscription.unsubscribe();
-                    mProductSearchLoading.setVisibility(View.GONE);
-                }
-                mProductSearchLoading.setVisibility(View.VISIBLE);
-                lookUpProduct(charSequence.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-
-        mProductLookup.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Product product = (Product) adapterView.getItemAtPosition(position);
-                OrderItem orderItem = new OrderItem();
-                orderItem.setProduct(convertProduct(product));
-                orderItem.setQuantity(1);
-                NewOrderItemEditFragment newOrderItemEditFragment = NewOrderItemEditFragment.getInstance(orderItem, mOrder.getId(), false);
-
-                newOrderItemEditFragment.setOnEditDoneListener(NewOrderCreateFragment.this);
-                newOrderItemEditFragment.show(getFragmentManager(), "");
-            }
-        });
-
-        mOrderProducts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                if (mIsEditMode && adapterView.getItemAtPosition(position) instanceof OrderItemRow) {
-                    OrderItem orderItem = ((OrderItemRow) adapterView.getItemAtPosition(position)).orderItem;
-                    NewOrderItemEditFragment newOrderItemEditFragment = NewOrderItemEditFragment.getInstance(orderItem, mOrder.getId(), true);
-                    newOrderItemEditFragment.setOnEditDoneListener(NewOrderCreateFragment.this);
-                    newOrderItemEditFragment.show(getFragmentManager(), "");
-                }
-            }
-        });
-        updateEditMode(mIsEditMode);
     }
 
     public static com.mozu.api.contracts.commerceruntime.products.Product convertProduct(Product inProduct) {
@@ -419,6 +234,199 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
         return pkgMeasurements;
     }
 
+    public void setOrder(Order order) {
+        mOrder = order;
+    }
+
+    public void setEditMode(Boolean isEditMode) {
+        mIsEditMode = isEditMode;
+    }
+
+    @Override
+    public void setUserVisibleHint(final boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                if (getActivity() instanceof OrderDetailActivity) {
+                    ((OrderDetailActivity) getActivity()).setEditModeVisibility(isVisibleToUser);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setUpViews();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+        RxBus.getInstance().toObserverable()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(getEventSubscriber());
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        mView = inflater.inflate(R.layout.new_order_details_fragment, null);
+        UserAuthenticationStateMachine mUserState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
+        mSiteId = mUserState.getSiteId();
+        mTenantId = mUserState.getTenantId();
+        ButterKnife.inject(this, mView);
+        NewOrderManager.count = 0;
+        return mView;
+    }
+
+    private Subscriber<Object> getEventSubscriber() {
+        return new Subscriber<Object>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Object o) {
+                if (o instanceof Boolean) {
+                    mIsEditMode = (Boolean) o;
+                    updateEditMode(mIsEditMode);
+                }
+            }
+        };
+    }
+
+    private void updateEditMode(Boolean editMode) {
+        mProductsAdapter.setEditMode(editMode);
+        mProductsAdapter.addData(mOrder);
+        mProductsAdapter.notifyDataSetChanged();
+        mProductLookup.setVisibility(editMode ? View.VISIBLE : View.GONE);
+    }
+
+    private void lookUpProduct(final String search) {
+        if (mSubscription != null && !mSubscription.isUnsubscribed()) {
+            mSubscription.unsubscribe();
+            mProductSearchLoading.setVisibility(View.GONE);
+        }
+        mProductSearchLoading.setVisibility(View.VISIBLE);
+        mSubscription = AndroidObservable.bindFragment(NewOrderCreateFragment.this, NewOrderManager.getInstance().getProductSuggestion(search, mTenantId, mSiteId))
+                .subscribe(new Subscriber<ProductSearchResult>() {
+                    @Override
+                    public void onCompleted() {
+                        mProductSearchLoading.setVisibility(View.GONE);
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        mProductSearchLoading.setVisibility(View.GONE);
+                        Toast.makeText(getActivity(), "Error Searching for product " + search, Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNext(ProductSearchResult productSearchResult) {
+                        List<Product> data = productSearchResult.getItems();
+                        mAdapter.clear();
+                        mAdapter.addAll(data);
+                        mAdapter.notifyDataSetChanged();
+                        if (TextUtils.isEmpty(search)) {
+                            mProductLookup.showDropDown();
+                        }
+                    }
+                });
+    }
+
+    private void setUpViews() {
+        mAdapter = new ProductSuggestionAdapter(getActivity());
+        mProductLookup.setAdapter(mAdapter);
+        mProductsAdapter = new NewOrderProductAdapter(this);
+        if (mOrder != null && mOrder.getItems() != null) {
+            mProductsAdapter.addData(mOrder);
+            updateEditMode(mIsEditMode);
+        }
+
+
+        mOrderProducts.setAdapter(mProductsAdapter);
+        mProductLookup.setThreshold(0);
+        mProductLookup.post(new Runnable() {
+            @Override
+            public void run() {
+                mProductLookup.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+                        if (mProductLookup.getText().length() == 0) {
+                            lookUpProduct(null);
+                        }
+                        return false;
+                    }
+                });
+
+            }
+        });
+
+
+        mProductLookup.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void onTextChanged(final CharSequence charSequence, int start, int before, int count) {
+                if (!TextUtils.isEmpty(charSequence.toString())) {
+                    if (mSubscription != null && !mSubscription.isUnsubscribed()) {
+                        mSubscription.unsubscribe();
+                        mProductSearchLoading.setVisibility(View.GONE);
+                    }
+                    mProductSearchLoading.setVisibility(View.VISIBLE);
+
+                    lookUpProduct(charSequence.toString());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        mProductLookup.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Product product = (Product) adapterView.getItemAtPosition(position);
+                OrderItem orderItem = new OrderItem();
+                orderItem.setProduct(convertProduct(product));
+                orderItem.setQuantity(1);
+                NewOrderItemEditFragment newOrderItemEditFragment = NewOrderItemEditFragment.getInstance(orderItem, mOrder.getId(), false);
+
+                newOrderItemEditFragment.setOnEditDoneListener(NewOrderCreateFragment.this);
+                newOrderItemEditFragment.show(getFragmentManager(), "");
+            }
+        });
+
+        mOrderProducts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                if (mIsEditMode && adapterView.getItemAtPosition(position) instanceof OrderItemRow) {
+                    OrderItem orderItem = ((OrderItemRow) adapterView.getItemAtPosition(position)).orderItem;
+                    NewOrderItemEditFragment newOrderItemEditFragment = NewOrderItemEditFragment.getInstance(orderItem, mOrder.getId(), true);
+                    newOrderItemEditFragment.setOnEditDoneListener(NewOrderCreateFragment.this);
+                    newOrderItemEditFragment.show(getFragmentManager(), "");
+                }
+            }
+        });
+        updateEditMode(mIsEditMode);
+    }
+
     @Override
     public void onEditDone(Order order) {
         mOrder = order;
@@ -428,6 +436,7 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
         if (getActivity() instanceof NewOrderActivity) {
             ((NewOrderActivity) getActivity()).updateOrder(mOrder);
         } else if (getActivity() instanceof OrderDetailActivity) {
+            ((OrderDetailActivity) getActivity()).onRefresh();
 
         }
     }

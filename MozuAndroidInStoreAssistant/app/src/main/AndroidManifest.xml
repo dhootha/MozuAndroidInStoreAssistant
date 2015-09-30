@@ -39,10 +39,9 @@
             android:theme="@style/Theme.Mozu.NoActionBar"/>
         <activity
             android:name=".LoginActivity"
-            android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
             android:theme="@style/Theme.Mozu.NoActionBar"
-            android:windowSoftInputMode="adjustPan|stateVisible">
+            android:windowSoftInputMode="adjustPan|stateUnchanged">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -57,7 +56,7 @@
             android:label="@string/title_activity_customer_detail"/>
         <activity
             android:name=".order.NewOrderActivity"
-            android:windowSoftInputMode="adjustPan|stateVisible"/>
+            android:windowSoftInputMode="adjustPan|stateUnchanged"/>
 
         <activity
             android:name=".ImagePagerActivity"
@@ -66,6 +65,7 @@
             android:theme="@style/Transparent"/>
         <activity
             android:name=".OrderDetailActivity"
+            android:windowSoftInputMode="adjustPan|stateUnchanged"
             android:label="@string/title_activity_order_detail"/>
         <activity
             android:name=".OrderCreationAddCustomerActivity"

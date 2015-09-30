@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class CustomerStoreCreditFragment extends Fragment {
@@ -68,7 +67,7 @@ public class CustomerStoreCreditFragment extends Fragment {
 
     private void loadData(){
         mCreditFetcher.setCustomerId(mCustomerAccount.getId());
-        mCreditObservable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new CreditSubscriber());
+        mCreditObservable.subscribeOn(Schedulers.io()).subscribe(new CreditSubscriber());
     }
 
     private class CreditSubscriber implements rx.Observer<List<Credit>> {

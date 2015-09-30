@@ -38,8 +38,8 @@
             style="?android:attr/progressBarStyleSmall"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:layout_marginRight="32dp"
             android:layout_gravity="right|top"
+            android:layout_marginRight="32dp"
             android:visibility="gone"/>
     </FrameLayout>
 

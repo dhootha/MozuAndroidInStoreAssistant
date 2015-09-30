@@ -36,7 +36,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import rx.Observable;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
+import rx.android.observables.AndroidObservable;
 import rx.schedulers.Schedulers;
 
 public class CustomerCreationFragment extends Fragment implements CustomerAddressVerifier {
@@ -191,7 +191,12 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
         mCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().finish();
+                if (mCustomerAccount != null && mCustomerAccount.getContacts() != null && mCustomerAccount.getContacts().size() > 0) {
+                    //go back to add addresses
+                    ((CustomerCreationListener) getActivity()).onNextClicked(mCustomerAccount);
+                } else {
+                    getActivity().finish();
+                }
             }
         });
         if (mEditing > -1) {
@@ -209,11 +214,11 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
             setSelectedState(customerEditing.getAddress().getStateOrProvince());
             setSelectedAddressType(customerEditing.getAddress().getAddressType());
             mCountry.setText(customerEditing.getAddress().getCountryCode());
-            if (mCustomerAccount.getContacts() != null && mCustomerAccount.getContacts().size() > 0) {
+            if (customerEditing.getTypes() != null && customerEditing.getTypes().size() > 0) {
                 for (ContactType type : customerEditing.getTypes()) {
-                    if (type.getIsPrimary() && type.getName().equals(BILLING)) {
+                    if (type.getIsPrimary() && type.getName().equalsIgnoreCase(BILLING)) {
                         mDefaultBilling.setChecked(true);
-                    } else if (type.getIsPrimary() && type.getName().equals(SHIPPING)) {
+                    } else if (type.getIsPrimary() && type.getName().equalsIgnoreCase(SHIPPING)) {
                         mDefaultShipping.setChecked(true);
                     }
                 }
@@ -260,6 +265,7 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
     private void createOrUpdateCustomerAccount() {
         CustomerContact customerContact = createCustomerContactFromForm();
         if (mEditing > -1) {
+            customerContact.setId(mCustomerAccount.getContacts().get(mEditing).getId());
             mCustomerAccount.getContacts().set(mEditing, customerContact);
         } else {
             mCustomerAccount = mCustomerAccount == null ? createCustomerAccountFromForm() : mCustomerAccount;
@@ -370,9 +376,8 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
     public void verifyAddressIsValid(Address address) {
         if (validateForm()) {
             addressValidationResponseObservable = new CustomerAddressValidationObservable(mTenantId, mSiteId).getAddressValidationObservable(address);
-            addressValidationResponseObservable
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
+            AndroidObservable.bindFragment(CustomerCreationFragment.this, addressValidationResponseObservable
+                    .subscribeOn(Schedulers.io()))
                     .subscribe(getAddressValidationSubscriber());
         }
 
@@ -411,7 +416,6 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
         int position = states.indexOf(state);
         mStateSelected = state;
         mState.setSelection(position);
-
     }
 
     private void setSelectedAddressType(String type) {

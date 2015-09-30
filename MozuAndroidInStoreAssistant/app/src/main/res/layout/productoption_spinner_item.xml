@@ -10,7 +10,7 @@
         android:id="@+id/product_option_name"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fontFamily="sans-serif-light"
+        android:fontFamily="sans-serif"
         android:textSize="20sp" />
 
 </LinearLayout>
