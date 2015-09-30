@@ -15,14 +15,13 @@ import com.mozu.mozuandroidinstoreassistant.app.OrderDetailActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
-import com.mozu.mozuandroidinstoreassistant.app.order.OrderFetcher;
+import com.mozu.mozuandroidinstoreassistant.app.order.loaders.OrderFetcher;
 import com.mozu.mozuandroidinstoreassistant.app.views.LoadingView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class CustomerOrderHistoryFragment extends Fragment {
@@ -83,7 +82,7 @@ public class CustomerOrderHistoryFragment extends Fragment {
 
     private void loadData() {
         mOrderFetcher.setCustomerId(mCustomerAccount.getId());
-        mOrderObservable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new OrderSubscriber());
+        mOrderObservable.subscribeOn(Schedulers.io()).subscribe(new OrderSubscriber());
     }
 
     private class OrderSubscriber implements rx.Observer<List<Order>> {

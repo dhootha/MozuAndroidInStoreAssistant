@@ -17,10 +17,10 @@ import java.util.List;
 
 public class ProductOptionsLayout extends LinearLayout {
 
+    public onOptionChangeListener mOnOptionChangeListener;
     private TextView mTitle;
     private Spinner mSpinner;
     private TextView mValue;
-    public onOptionChangeListener mOnOptionChangeListener;
     private String mAttributeFQN;
 
     public ProductOptionsLayout(Context context, onOptionChangeListener optionChangeListener) {
@@ -36,15 +36,21 @@ public class ProductOptionsLayout extends LinearLayout {
         View v = inflater.inflate(R.layout.product_option, this, true);
         mTitle = (TextView) v.findViewById(R.id.product_option_label);
         mSpinner = (Spinner) v.findViewById(R.id.product_option_spinner);
-        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mSpinner.post(new Runnable() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                mOnOptionChangeListener.onOptionChanged();
-            }
+            public void run() {
+                mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                        mOnOptionChangeListener.onOptionChanged();
+                    }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                //DO NOTHING
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+                        //DO NOTHING
+                    }
+                });
+
             }
         });
         mValue = (TextView) v.findViewById(R.id.product_option_name);
@@ -62,12 +68,12 @@ public class ProductOptionsLayout extends LinearLayout {
         mTitle.setText(title);
     }
 
-    public void setAttributeFQN(String attributeFQN) {
-        mAttributeFQN = attributeFQN;
-    }
-
     public String getAttributeFQN() {
         return mAttributeFQN;
+    }
+
+    public void setAttributeFQN(String attributeFQN) {
+        mAttributeFQN = attributeFQN;
     }
 
     public String getAttributeValue() {
@@ -91,6 +97,10 @@ public class ProductOptionsLayout extends LinearLayout {
             mValue.setText(productOptions.get(0).getValue().toString());
         }
         mSpinner.setAdapter(spinnerAdapter);
+    }
+
+    public interface onOptionChangeListener {
+        public void onOptionChanged();
     }
 
     class SpinnerAdapter extends ArrayAdapter<ProductOptionValue> {
@@ -119,9 +129,5 @@ public class ProductOptionsLayout extends LinearLayout {
 
         }
 
-    }
-
-    public interface onOptionChangeListener {
-        public void onOptionChanged();
     }
 }

@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.mozu.mozuandroidinstoreassistant.app.layout.order.FullfillmentPackageRow xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<com.mozu.mozuandroidinstoreassistant.app.layout.order.FullfillmentPackageRow
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="64dp"
-    android:gravity="center_vertical"
     android:background="@drawable/list_item_background"
-    android:minHeight="64dp">
+    android:gravity="center_vertical"
+    android:minHeight="64dp"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
@@ -17,20 +18,23 @@
             android:id="@+id/package_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="40dp"
-            android:textStyle="bold"
-            android:textColor="@color/dark_gray_text"
             android:text="@string/not_available"
+            android:textColor="@color/dark_gray_text"
             android:textSize="14sp"
+            android:textStyle="bold"
             />
 
         <TextView
             android:id="@+id/package_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="40dp"
-            android:textColor="@color/dark_gray_text"
+            android:layout_toRightOf="@id/package_name"
             android:text="@string/not_available"
+            android:textColor="@color/dark_gray_text"
             android:textSize="14sp"
             />
 
@@ -38,12 +42,14 @@
             android:id="@+id/package_tracking_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="40dp"
-            android:textColor="@color/mozu_color"
+            android:layout_toRightOf="@id/package_count"
             android:text="@string/not_available"
+            android:textColor="@color/mozu_color"
             android:textSize="14sp"
             />
 
-    </LinearLayout>
-    </com.mozu.mozuandroidinstoreassistant.app.layout.order.FullfillmentPackageRow>
+    </RelativeLayout>
+</com.mozu.mozuandroidinstoreassistant.app.layout.order.FullfillmentPackageRow>
 

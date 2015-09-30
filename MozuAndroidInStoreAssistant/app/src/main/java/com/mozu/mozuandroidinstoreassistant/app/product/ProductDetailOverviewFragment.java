@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -11,6 +12,7 @@ import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.StrikethroughSpan;
 import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,13 +27,13 @@ import com.mozu.api.contracts.productadmin.ProductVariationPagedCollection;
 import com.mozu.api.contracts.productruntime.BundledProduct;
 import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.api.contracts.productruntime.ProductOption;
-import com.mozu.api.resources.commerce.catalog.admin.ProductResource;
 import com.mozu.api.resources.commerce.catalog.admin.products.ProductVariationResource;
 import com.mozu.mozuandroidinstoreassistant.app.ProductDetailActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.htmlutils.HTMLTagHandler;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
+import com.mozu.mozuandroidinstoreassistant.app.product.loaders.ProductAdminObservableManager;
 import com.mozu.mozuandroidinstoreassistant.app.views.NoUnderlineClickableSpan;
 import com.mozu.mozuandroidinstoreassistant.app.views.ProductOptionsLayout;
 
@@ -42,59 +44,76 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 
 public class ProductDetailOverviewFragment extends Fragment implements ProductOptionsLayout.onOptionChangeListener {
 
 
-    private Product mProduct;
-
-    TextView mDescription;
-
     private static final int MAX_DESC_LENGTH = 500;
-    private View mView;
-    TextView msrpPrice = null;
-    TextView mapPrice = null;
+    TextView mDescription;
+    private CompositeSubscription mCompositeSubscription;
+
     HashMap<ProductOptionsContainer, Double> variationMap;
+    private Product mProduct;
+    private View mView;
+    private NoUnderlineClickableSpan mContractClickableSpan = new NoUnderlineClickableSpan() {
+
+        @Override
+        public void onClick(View widget) {
+            mDescription.setText(getDescriptionWithSpannableClick(false));
+        }
+
+    };
+    private NoUnderlineClickableSpan mExpandClickableSpan = new NoUnderlineClickableSpan() {
+
+        @Override
+        public void onClick(View widget) {
+            mDescription.setText(getDescriptionWithSpannableClick(true));
+        }
+
+    };
 
     public ProductDetailOverviewFragment() {
         // Required empty public constructor
         setRetainInstance(true);
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.product_detail_overview_fragment, null);
-
+        mCompositeSubscription = new CompositeSubscription();
         if (mProduct != null) {
             setProductOverviewViews(mView);
-            if (mProduct.getVariations() != null && mProduct.getVariations().size() > 0) {
-                buildVariationMap();
-            }
+
         }
 
         return mView;
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (mProduct != null && mProduct.getVariations() != null && mProduct.getVariations().size() > 0) {
+            buildVariationMap();
+        }
+        NumberFormat defaultFormat = NumberFormat.getCurrencyInstance();
+        getMAPPrice(defaultFormat);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (mCompositeSubscription != null && !mCompositeSubscription.isUnsubscribed()) {
+            mCompositeSubscription.unsubscribe();
+        }
+    }
+
     private void getMAPPrice(final NumberFormat format) {
-        AndroidObservable.bindFragment(this, Observable.create(new Observable.OnSubscribe<com.mozu.api.contracts.productadmin.Product>() {
-            @Override
-            public void call(Subscriber<? super com.mozu.api.contracts.productadmin.Product> subscriber) {
-                UserAuthenticationStateMachine mUserState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
-                ProductResource adminProductResource = new ProductResource(new MozuApiContext(mUserState.getTenantId(), mUserState.getSiteId()));
-                try {
-                    com.mozu.api.contracts.productadmin.Product product = adminProductResource.getProduct(mProduct.getProductCode());
-                    subscriber.onNext(product);
-                    subscriber.onCompleted();
-                } catch (Exception e) {
-                    subscriber.onError(e);
-                }
-            }
-        })).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        UserAuthenticationStateMachine mUserState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
+
+        mCompositeSubscription.add(AndroidObservable.bindFragment(this, ProductAdminObservableManager.getInstance().getMAPPriceObservable(mUserState.getTenantId(), mUserState.getSiteId(), mProduct.getProductCode()))
                 .subscribe(new Subscriber<com.mozu.api.contracts.productadmin.Product>() {
                     @Override
                     public void onCompleted() {
@@ -102,33 +121,33 @@ public class ProductDetailOverviewFragment extends Fragment implements ProductOp
 
                     @Override
                     public void onError(Throwable e) {
-                        mapPrice.setText("N/A");
+                        ((TextView) mView.findViewById(R.id.map_price)).setText("N/A");
                     }
 
                     @Override
                     public void onNext(com.mozu.api.contracts.productadmin.Product product) {
-                        mapPrice.setText(format.format(product.getPrice().getMap()));
+                        com.mozu.api.contracts.productadmin.ProductPrice price = product.getPrice();
+                        ((TextView) mView.findViewById(R.id.map_price)).setText(format.format(price.getMap()));
                     }
-                });
+                }));
     }
 
-
     private void buildVariationMap() {
-        AndroidObservable.bindFragment(this, Observable.create(new Observable.OnSubscribe<ProductVariationPagedCollection>() {
-            @Override
-            public void call(Subscriber<? super ProductVariationPagedCollection> subscriber) {
-                UserAuthenticationStateMachine mUserState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
-                ProductVariationResource productVariationResource = new ProductVariationResource(new MozuApiContext(mUserState.getTenantId(), mUserState.getSiteId()));
-                try {
-                    ProductVariationPagedCollection pagedCollection = productVariationResource.getProductVariations(mProduct.getProductCode());
-                    subscriber.onNext(pagedCollection);
-                    subscriber.onCompleted();
-                } catch (Exception e) {
-                    subscriber.onError(e);
-                }
-            }
-        })).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        mCompositeSubscription.add(AndroidObservable.bindFragment(this, Observable.create(new Observable.OnSubscribe<ProductVariationPagedCollection>() {
+                    @Override
+                    public void call(Subscriber<? super ProductVariationPagedCollection> subscriber) {
+                        UserAuthenticationStateMachine mUserState = UserAuthenticationStateMachineProducer.getInstance(getActivity());
+                        ProductVariationResource productVariationResource = new ProductVariationResource(new MozuApiContext(mUserState.getTenantId(), mUserState.getSiteId()));
+                        try {
+                            ProductVariationPagedCollection pagedCollection = productVariationResource.getProductVariations(mProduct.getProductCode());
+                            subscriber.onNext(pagedCollection);
+                            subscriber.onCompleted();
+                        } catch (Exception e) {
+                            subscriber.onError(e);
+                        }
+                    }
+                })
+        ).subscribeOn(Schedulers.io())
                 .subscribe(new Subscriber<ProductVariationPagedCollection>() {
                     @Override
                     public void onCompleted() {
@@ -137,13 +156,13 @@ public class ProductDetailOverviewFragment extends Fragment implements ProductOp
 
                     @Override
                     public void onError(Throwable e) {
-                        msrpPrice.setText("N/A");
+                        ((TextView) mView.findViewById(R.id.msrp_price)).setText("N/A");
                     }
 
                     @Override
-                    public void onNext(ProductVariationPagedCollection product) {
+                    public void onNext(ProductVariationPagedCollection productVariationPagedCollection) {
                         variationMap = new HashMap<ProductOptionsContainer, Double>();
-                        List<ProductVariation> productVariations = product.getItems();
+                        List<ProductVariation> productVariations = productVariationPagedCollection.getItems();
                         for (ProductVariation productVariation : productVariations) {
                             ProductOptionsContainer productOptionsContainer = new ProductOptionsContainer();
                             for (ProductVariationOption option : productVariation.getOptions()) {
@@ -152,14 +171,12 @@ public class ProductDetailOverviewFragment extends Fragment implements ProductOp
                             variationMap.put(productOptionsContainer, productVariation.getDeltaPrice().getMsrp());
                         }
                     }
-                });
+                }));
     }
 
     private void setProductOverviewViews(View view) {
         TextView mainPrice = (TextView) view.findViewById(R.id.main_price);
         TextView regPrice = (TextView) view.findViewById(R.id.regular_price);
-        msrpPrice = (TextView) view.findViewById(R.id.msrp_price);
-        mapPrice = (TextView) view.findViewById(R.id.map_price);
         TextView includes = (TextView) view.findViewById(R.id.includes);
         mDescription = (TextView) view.findViewById(R.id.product_description);
         TextView upc = (TextView) view.findViewById(R.id.upc);
@@ -172,12 +189,20 @@ public class ProductDetailOverviewFragment extends Fragment implements ProductOp
         NumberFormat defaultFormat = NumberFormat.getCurrencyInstance();
         if (hasSalePrice(mProduct)) {
             mainPrice.setVisibility(View.VISIBLE);
-            mainPrice.setText(getSalePriceText(defaultFormat));
+            String regularPrice = getRegularPriceText(defaultFormat);
+            SpannableString strikeThroughSpan = new SpannableString(regularPrice);
+            strikeThroughSpan.setSpan(new StrikethroughSpan(), 0, regularPrice.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            SpannableString salePriceSpan = new SpannableString(getSalePriceText(defaultFormat));
+            salePriceSpan.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.mozu_color)), 0, salePriceSpan.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            SpannableString finalString = new SpannableString(TextUtils.concat(strikeThroughSpan, " ", salePriceSpan));
+            mainPrice.setText(finalString);
         } else {
             mainPrice.setVisibility(View.GONE);
         }
         regPrice.setText(getRegularPriceText(defaultFormat));
-        getMAPPrice(defaultFormat);
+
         if (mProduct.getBundledProducts() == null || mProduct.getBundledProducts().isEmpty()) {
             includesLayout.setVisibility(View.GONE);
         } else {
@@ -232,12 +257,14 @@ public class ProductDetailOverviewFragment extends Fragment implements ProductOp
     }
 
     private String getSalePriceText(NumberFormat format) {
-        String saleString = "N/A";
+        StringBuffer saleString = new StringBuffer("N/A");
         if (hasSalePrice(mProduct)) {
-            saleString = format.format(mProduct.getPrice().getSalePrice());
+            saleString = new StringBuffer(mProduct.getPrice().getDiscount().getDiscount().getName());
+            saleString.append(" - ");
+            saleString.append(format.format(mProduct.getPrice().getSalePrice()));
         }
 
-        return saleString;
+        return saleString.toString();
     }
 
     private String getRegularPriceText(NumberFormat format) {
@@ -261,7 +288,6 @@ public class ProductDetailOverviewFragment extends Fragment implements ProductOp
 
         return msrpPriceString;
     }
-
 
     private SpannableString getBundledProductsStringWithClick(final Product product) {
         SpannableString bundledSpannableString = new SpannableString("");
@@ -363,28 +389,10 @@ public class ProductDetailOverviewFragment extends Fragment implements ProductOp
 
     }
 
-    private NoUnderlineClickableSpan mExpandClickableSpan = new NoUnderlineClickableSpan() {
-
-        @Override
-        public void onClick(View widget) {
-            mDescription.setText(getDescriptionWithSpannableClick(true));
-        }
-
-    };
-
-    private NoUnderlineClickableSpan mContractClickableSpan = new NoUnderlineClickableSpan() {
-
-        @Override
-        public void onClick(View widget) {
-            mDescription.setText(getDescriptionWithSpannableClick(false));
-        }
-
-    };
-
     @Override
     public void onOptionChanged() {
         if (variationMap == null || variationMap.size() < 1) {
-            msrpPrice.setText("N/A");
+            ((TextView) mView.findViewById(R.id.msrp_price)).setText("N/A");
             return;
         }
         if (mProduct.getOptions() != null && !mProduct.getOptions().isEmpty()) {
@@ -399,10 +407,14 @@ public class ProductDetailOverviewFragment extends Fragment implements ProductOp
 
             final NumberFormat format = NumberFormat.getCurrencyInstance();
             if (variationMap.get(productOptionsContainer) != null) {
-                msrpPrice.setText(variationMap.get(productOptionsContainer) + "");
-
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        ((TextView) mView.findViewById(R.id.msrp_price)).setText(format.format(variationMap.get(productOptionsContainer)));
+                    }
+                });
             } else {
-                msrpPrice.setText("N/A");
+                ((TextView) mView.findViewById(R.id.msrp_price)).setText("N/A");
             }
         }
 

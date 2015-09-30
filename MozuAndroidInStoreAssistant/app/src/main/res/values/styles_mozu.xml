@@ -127,6 +127,8 @@
 
     <style name="ButtonMozu" parent="android:Widget.Holo.Light.Button">
         <item name="android:background">@drawable/mozu_btn_default_holo_light</item>
+        <item name="android:textColor">@color/divider_white</item>
+        <item name="android:minWidth">88dp</item>
     </style>
 
     <style name="ImageButtonMozu" parent="android:Widget.Holo.Light.ImageButton">
@@ -192,6 +194,17 @@
     <style name="DialogMozu" parent="@android:style/Theme.Holo.Light.Dialog">
         <item name="android:windowTitleStyle">@style/dialog_title_style</item>
     </style>
+
+    <style name="AppTheme.ActivityDialog" parent="@android:style/Theme.Holo.Light.DialogWhenLarge">
+        <item name="android:windowTitleStyle">@style/dialog_title_style</item>
+        <item name="android:editTextBackground">@drawable/mozu_edit_text_holo_light</item>
+    </style>
+
+    <style name="ActivityDialogMozu" parent="@android:style/Theme.Holo.Light.Dialog">
+        <item name="android:windowTitleStyle">@style/dialog_title_style</item>
+        <item name="android:windowActionBar">true</item>
+    </style>
+
 
     <style name="dialog_title_style" parent="android:Widget.TextView">
         <item name="android:textColor">@color/mozu_color</item>

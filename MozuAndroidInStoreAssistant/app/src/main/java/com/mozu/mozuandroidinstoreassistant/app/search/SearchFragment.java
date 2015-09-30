@@ -30,20 +30,20 @@ import com.mozu.api.contracts.commerceruntime.orders.OrderCollection;
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.api.contracts.customer.CustomerAccountCollection;
 import com.mozu.api.contracts.productruntime.ProductSearchResult;
+import com.mozu.mozuandroidinstoreassistant.app.CustomerDetailActivity;
 import com.mozu.mozuandroidinstoreassistant.app.MainActivity;
 import com.mozu.mozuandroidinstoreassistant.app.OrderDetailActivity;
 import com.mozu.mozuandroidinstoreassistant.app.ProductDetailActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
-import com.mozu.mozuandroidinstoreassistant.app.search.adapters.GlobalSearchCustomerAdapter;
-import com.mozu.mozuandroidinstoreassistant.app.search.adapters.GlobalSearchOrderAdapter;
-import com.mozu.mozuandroidinstoreassistant.app.search.adapters.GlobalSearchProductAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.SearchSuggestionsCursorAdapter;
-import com.mozu.mozuandroidinstoreassistant.app.CustomerDetailActivity;
-import com.mozu.mozuandroidinstoreassistant.app.search.loaders.SearchFetcher;
 import com.mozu.mozuandroidinstoreassistant.app.models.RecentSearch;
 import com.mozu.mozuandroidinstoreassistant.app.models.UserPreferences;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
+import com.mozu.mozuandroidinstoreassistant.app.search.adapters.GlobalSearchCustomerAdapter;
+import com.mozu.mozuandroidinstoreassistant.app.search.adapters.GlobalSearchOrderAdapter;
+import com.mozu.mozuandroidinstoreassistant.app.search.adapters.GlobalSearchProductAdapter;
+import com.mozu.mozuandroidinstoreassistant.app.search.loaders.SearchFetcher;
 import com.mozu.mozuandroidinstoreassistant.app.views.LoadingView;
 
 import java.util.ArrayList;
@@ -429,8 +429,7 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
         mOrdersViewButton.setVisibility(View.INVISIBLE);
         mOrdersResultCount.setVisibility(View.INVISIBLE);
         mOrderObservable.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).
-                subscribe(new Observer<OrderCollection>() {
+                .subscribe(new Observer<OrderCollection>() {
                     @Override
                     public void onCompleted() {
                     }

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_marginLeft="@dimen/customer_tab_margin_left"
+              android:layout_marginRight="@dimen/customer_margin_right_total"
+              android:orientation="vertical">
+
+
+    <TextView
+        android:id="@android:id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.mozu.mozuandroidinstoreassistant.app.views.CustomerLookupAutoCompleteTextView
+            android:id="@+id/product_lookup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/card_background"
+            android:drawableLeft="@drawable/search"
+            android:drawableStart="@drawable/search"
+            android:hint="@string/product_lookuphint"
+            android:padding="8dp"
+            android:singleLine="true"/>
+
+        <ProgressBar
+            android:id="@+id/product_search_loading"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="right|top"
+            android:layout_marginRight="32dp"
+            android:visibility="gone"/>
+    </FrameLayout>
+
+    <ListView
+        android:id="@+id/product_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="64dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:fadeScrollbars="false"/>
+
+
+</LinearLayout>

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Loader;
 import android.database.MatrixCursor;
 import android.os.Bundle;
+import android.support.v4.util.ArrayMap;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.util.Log;
@@ -26,6 +27,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
+import com.mozu.mozuandroidinstoreassistant.MozuApplication;
 import com.mozu.mozuandroidinstoreassistant.app.MainActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.SearchSuggestionsCursorAdapter;
@@ -34,7 +36,7 @@ import com.mozu.mozuandroidinstoreassistant.app.models.UserPreferences;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 import com.mozu.mozuandroidinstoreassistant.app.order.adapters.OrdersAdapter;
-import com.mozu.mozuandroidinstoreassistant.app.order.loaders.OrderCreateLoader;
+import com.mozu.mozuandroidinstoreassistant.app.order.loaders.NewOrderManager;
 import com.mozu.mozuandroidinstoreassistant.app.order.loaders.OrdersLoader;
 
 import java.util.ArrayList;
@@ -43,6 +45,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import rx.Subscriber;
 
 public class OrderFragment extends Fragment implements OrderFilterListener, LoaderManager.LoaderCallbacks<List<Order>>, AbsListView.OnScrollListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, SearchManager.OnCancelListener, SearchManager.OnDismissListener, SearchView.OnSuggestionListener, MenuItem.OnActionExpandListener, AdapterView.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
 
@@ -106,8 +109,8 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
     private boolean mLaunchFromGlobalSearch = false;
     private boolean mCurrentSortIsAsc;
     private String mCurrentSearch;
-    private OrderCreateLoader mOrderCreateLoader;
     private CreateOrderListener mOrderCreateListener;
+    private String[] filterOptions = new String[4];
 
     public OrderFragment() {
 
@@ -152,24 +155,6 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
 
         mOrderRefreshLayout.setRefreshing(true);
         getLoaderManager().initLoader(LOADER_ORDERS, null, this).forceLoad();
-        getLoaderManager().initLoader(LOADER_ORDER_CREATE, null, new LoaderManager.LoaderCallbacks<Order>() {
-            @Override
-            public Loader<Order> onCreateLoader(int id, Bundle args) {
-                OrderCreateLoader loader = new OrderCreateLoader(getActivity(), mTenantId, mSiteId);
-                return loader;
-            }
-
-            @Override
-            public void onLoadFinished(Loader<Order> loader, Order data) {
-                Log.d("Order", data.toString());
-                mOrderCreateListener.createNewOrder(data);
-            }
-
-            @Override
-            public void onLoaderReset(Loader<Order> loader) {
-
-            }
-        });
 
         mOrdersList.setOnItemClickListener(this);
         create.setOnClickListener(new View.OnClickListener() {
@@ -195,6 +180,34 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
         outState.putInt(CURRENT_SORT_COLUMN_EXTRA, mResourceOfCurrentSelectedColumn);
 
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        UserAuthenticationStateMachine userAuthenticationStateMachine = UserAuthenticationStateMachineProducer.getInstance(getActivity());
+        mTenantId = userAuthenticationStateMachine.getTenantId();
+        mSiteId = userAuthenticationStateMachine.getSiteId();
+        loadLocationInformation(mTenantId, mSiteId);
+    }
+
+    private void loadLocationInformation(Integer mTenantId, Integer mSiteId) {
+        NewOrderManager.getInstance().getLocationsData(mTenantId, mSiteId, true).subscribe(new Subscriber<ArrayMap<String, String>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e("Locations Fetch", "Couldn't fetch Locations Information");
+            }
+
+            @Override
+            public void onNext(ArrayMap<String, String> locationMap) {
+                ((MozuApplication) getActivity().getApplication()).setLocations(locationMap);
+            }
+        });
     }
 
     @Override
@@ -241,12 +254,23 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
 
     private void onFilter() {
         OrderFilterDialogFragment filterFragment = new OrderFilterDialogFragment();
+        Bundle bundle = new Bundle();
+        bundle.putStringArray("options", filterOptions);
+        filterFragment.setArguments(bundle);
         filterFragment.setStyle(android.app.DialogFragment.STYLE_NO_FRAME, R.style.DialogMozu);
         filterFragment.setTargetFragment(this, 0);
         filterFragment.show(getFragmentManager(), "filter");
     }
 
+    private void setFilterOptions() {
+        filter(filterOptions[0], filterOptions[1], filterOptions[2], filterOptions[3]);
+    }
+
     public void filter(String start, String end, String status, String paymentStatus) {
+        filterOptions[0] = start;
+        filterOptions[1] = end;
+        filterOptions[2] = status;
+        filterOptions[3] = paymentStatus;
         getOrdersLoader().reset();
         getOrdersLoader().removeFilter();
         String filter = (start != null ? "submittedDate gt " + start : "");
@@ -362,12 +386,10 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
 
         if (loader.getId() == LOADER_ORDERS) {
             if (mAdapter == null) {
-
                 mAdapter = new OrdersAdapter(getActivity());
             }
 
-            mAdapter.clear();
-            mAdapter.addAll(data);
+            mAdapter.setData((ArrayList<Order>) data);
 
             if (mOrdersList.getAdapter() == null) {
                 mOrdersList.setAdapter(mAdapter);
@@ -410,14 +432,6 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
         }
 
         return mOrdersLoader;
-    }
-
-    private OrderCreateLoader getOrderCreateLoader() {
-        if(mOrderCreateLoader == null) {
-            Loader<Order> loader = getLoaderManager().getLoader(LOADER_ORDER_CREATE);
-            mOrderCreateLoader = (OrderCreateLoader) loader;
-        }
-        return mOrderCreateLoader;
     }
 
     @Override
@@ -469,6 +483,15 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
         mOrderRefreshLayout.setRefreshing(true);
     }
 
+    private void reloadKeepFilter() {
+        getOrdersLoader().removeQuery();
+        getOrdersLoader().reset();
+        getOrdersLoader().startLoading();
+        getOrdersLoader().forceLoad();
+
+        mOrderRefreshLayout.setRefreshing(true);
+    }
+
     @Override
     public boolean onMenuItemActionExpand(MenuItem item) {
 
@@ -487,7 +510,12 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
         if (mSearchView != null) {
             mSearchView.setQuery("", false);
         }
-        mListener.orderSelected((Order) mOrdersList.getAdapter().getItem(position));
+        ArrayList<String> orderList = new ArrayList<>();
+        for (Order order : mAdapter.getData()) {
+            orderList.add(order.getId());
+
+        }
+        mListener.orderSelected((Order) mOrdersList.getAdapter().getItem(position), orderList, position);
     }
 
     public void setListener(OrderListener listener) {
@@ -512,7 +540,6 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
         mOrderPaymentStatusHeaderSortImage.setVisibility(View.GONE);
         mOrderStatusHeaderSortImage.setVisibility(View.GONE);
         mOrderTotalHeaderSortImage.setVisibility(View.GONE);
-
 
         if (v.getId() == mOrderNumberHeaderLayout.getId()) {
             getOrdersLoader().orderByNumber();
@@ -581,7 +608,7 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
             return;
         }
 
-        clearSearchReload();
+        reloadKeepFilter();
     }
 
     private void initializeSortColumn() {
@@ -655,8 +682,8 @@ public class OrderFragment extends Fragment implements OrderFilterListener, Load
         textView.setBackgroundResource(android.R.color.transparent);
     }
 
-    public void onCreateOrderClick(){
-        getOrderCreateLoader().forceLoad();
+    public void onCreateOrderClick() {
+        mOrderCreateListener.createNewOrder();
     }
 
     @Override

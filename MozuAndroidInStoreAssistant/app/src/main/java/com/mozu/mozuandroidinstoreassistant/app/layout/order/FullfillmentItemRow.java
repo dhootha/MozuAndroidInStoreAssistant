@@ -7,8 +7,10 @@ import android.widget.TextView;
 
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.data.IData;
-import com.mozu.mozuandroidinstoreassistant.app.data.order.FullfillmentDataItem;
+import com.mozu.mozuandroidinstoreassistant.app.data.order.FulfillmentDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.layout.IRowLayout;
+
+import java.text.NumberFormat;
 
 public class FullfillmentItemRow extends LinearLayout implements IRowLayout {
     public FullfillmentItemRow(Context context) {
@@ -26,9 +28,20 @@ public class FullfillmentItemRow extends LinearLayout implements IRowLayout {
     @Override
     public void bindData(IData data) {
         TextView mDataTextView = (TextView) findViewById(R.id.order_item_name);
-        if (data instanceof FullfillmentDataItem) {
-            FullfillmentDataItem fullfillmentDataItem = (FullfillmentDataItem) data;
-            mDataTextView.setText(fullfillmentDataItem.getOrderItem().getProduct().getName());
+        TextView mItemCode = (TextView) findViewById(R.id.order_item_code);
+        TextView mFulfillmentType = (TextView) findViewById(R.id.fulfillment_type);
+        TextView mLocationCode = (TextView) findViewById(R.id.location_code);
+        TextView mQuantity = (TextView) findViewById(R.id.quantity);
+        TextView mProductTotal = (TextView) findViewById(R.id.ordered_item_total);
+        if (data instanceof FulfillmentDataItem) {
+            FulfillmentDataItem fulfillmentDataItem = (FulfillmentDataItem) data;
+            mDataTextView.setText(fulfillmentDataItem.getOrderItem().getProduct().getName());
+            mItemCode.setText(fulfillmentDataItem.getOrderItem().getProduct().getProductCode());
+            mFulfillmentType.setText(fulfillmentDataItem.getOrderItem().getFulfillmentMethod());
+            mLocationCode.setText(fulfillmentDataItem.getOrderItem().getFulfillmentLocationCode());
+            NumberFormat format = NumberFormat.getCurrencyInstance();
+            mQuantity.setText("" + fulfillmentDataItem.getOrderItem().getQuantity());
+            mProductTotal.setText(format.format(fulfillmentDataItem.getOrderItem().getTotal()));
         } else {
             mDataTextView.setText("N/A");
         }

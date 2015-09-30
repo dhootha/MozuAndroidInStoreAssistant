@@ -1,34 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="64dp"
-    android:padding="0dp"
-    android:layout_margin="0dp"
-    android:gravity="center_vertical"
-    android:minHeight="?android:attr/listPreferredItemHeight">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:minHeight="?android:attr/listPreferredItemHeight">
+
 
     <TextView
         android:id="@+id/note_date"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
-        android:textStyle="bold"
-        />
-    <TextView
-        android:id="@+id/note_employee"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="3"
-        android:textStyle="bold"
-        />
+        android:layout_centerVertical="true"
+        android:text="@string/date_notes_header"
+        android:textColor="@android:color/darker_gray"
+        android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/note_comment"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="5"
-        />
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="200dp"
+        android:paddingRight="@dimen/order_sub_margin_right"
+        android:text="@string/comment_notes_header"
+        android:textColor="@color/dark_black_text"
+        android:textStyle="bold"/>
 
-</LinearLayout>
+</RelativeLayout>

@@ -8,7 +8,6 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,6 +28,7 @@ import com.mozu.api.contracts.core.UserAuthInfo;
 import com.mozu.mozuandroidinstoreassistant.app.loaders.ProfileQuery;
 import com.mozu.mozuandroidinstoreassistant.app.models.UserPreferences;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationFailedSessionExpired;
+import com.mozu.mozuandroidinstoreassistant.app.utils.InputValidation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +43,7 @@ public class LoginActivity extends AuthActivity implements LoaderCallbacks<Curso
     private View mProgressView;
     private View mLoginFormView;
     private View mAppAuthErrorView;
-    private  List<String> mEmails;
+    private List<String> mEmails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,11 +53,14 @@ public class LoginActivity extends AuthActivity implements LoaderCallbacks<Curso
         }
         setContentView(R.layout.activity_login);
         setUpViews();
+        if (savedInstanceState != null) {
+            mEmailView.setText(savedInstanceState.getString("email"));
+            mPasswordView.setText(savedInstanceState.getString("password"));
+        }
         showProgress(true);
     }
 
-    private void setUpViews(){
-
+    private void setUpViews() {
 
         mAppAuthErrorView = findViewById(R.id.app_auth_error_layout);
 
@@ -128,7 +131,7 @@ public class LoginActivity extends AuthActivity implements LoaderCallbacks<Curso
             mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
             cancel = true;
-        } else if (!isEmailValid(email)) {
+        } else if (!InputValidation.isEmailValid(email)) {
             mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
             cancel = true;
@@ -148,10 +151,6 @@ public class LoginActivity extends AuthActivity implements LoaderCallbacks<Curso
             super.setUserAuthInfo(authInfo);
             super.authenticateUser();
         }
-    }
-
-    private boolean isEmailValid(String email) {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
     public void showProgress(final boolean show) {
@@ -187,26 +186,26 @@ public class LoginActivity extends AuthActivity implements LoaderCallbacks<Curso
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new CursorLoader(this, Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
+        return new CursorLoader(this, Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI, ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
 
-            // Select only email addresses.
-            ContactsContract.Contacts.Data.MIMETYPE + " = ?", new String[]{ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE},
+                // Select only email addresses.
+                ContactsContract.Contacts.Data.MIMETYPE + " = ?", new String[]{ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE},
 
-            // Show primary email addresses first. Note that there won't be
-            // a primary email address if the user hasn't specified one.
-            ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
+                // Show primary email addresses first. Note that there won't be
+                // a primary email address if the user hasn't specified one.
+                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        setContentView(R.layout.activity_login);
-        setUpViews();
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString("email", mEmailView.getText().toString());
+        outState.putString("password", mPasswordView.getText().toString());
+        super.onSaveInstanceState(outState);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        mEmails = new ArrayList<String>();
+        mEmails = new ArrayList<>();
         cursor.moveToFirst();
 
         while (!cursor.isAfterLast()) {

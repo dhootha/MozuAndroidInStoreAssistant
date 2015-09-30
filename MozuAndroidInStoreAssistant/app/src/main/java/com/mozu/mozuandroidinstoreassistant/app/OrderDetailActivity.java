@@ -14,15 +14,18 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.customer.CustomerAccount;
+import com.mozu.mozuandroidinstoreassistant.app.bus.RxBus;
 import com.mozu.mozuandroidinstoreassistant.app.order.adapters.OrderDetailSectionPagerAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.order.loaders.OrderDetailLoader;
 import com.mozu.mozuandroidinstoreassistant.app.settings.SettingsFragment;
 import com.mozu.mozuandroidinstoreassistant.app.tasks.CustomerAsyncListener;
 import com.mozu.mozuandroidinstoreassistant.app.tasks.RetrieveCustomerAsyncTask;
+import com.mozu.mozuandroidinstoreassistant.app.utils.ContactIntentUtil;
 import com.viewpagerindicator.TabPageIndicator;
 
 import java.text.NumberFormat;
@@ -32,40 +35,44 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 public class OrderDetailActivity extends BaseActivity implements LoaderManager.LoaderCallbacks<Order>, CustomerAsyncListener, SwipeRefreshLayout.OnRefreshListener {
 
+    public static final String ORDER_LIST = "orderList";
+    public static final String ORDER_LIST_POSITION = "orderListPosition";
     public static final String ORDER_NUMBER_EXTRA_KEY = "ORDER_NUMBER";
     public static final String CURRENT_TENANT_ID = "curTenantIdWhenActLoaded";
     public static final String CURRENT_SITE_ID = "curSiteIdWhenActLoaded";
     public static final int LOADER_ORDER_DETAIL = 45;
-
+    private final String ORDER_SETTINGS_FRAGMENT = "Order_Settings_Fragment";
+    public RxBus mRxBus;
+    @InjectView(R.id.order_detail_container)
+    SwipeRefreshLayout mOrderSwipeRefresh;
+    @InjectView(R.id.edit_mode)
+    Button enterEditMode;
     private String mOrderNumber;
-
     private TextView mOrderStatus;
     private TextView mOrderDate;
     private TextView mCustomerName;
     private TextView mOrderTotal;
 
+    private Button mPreviousOrder;
+    private Button mNextOrder;
+
     private Order mOrder;
-
     private int mTenantId;
-
     private int mSiteId;
-
     private ViewPager mOrderViewPager;
-
     private TabPageIndicator mTabIndicator;
-
     private List<String> mTitles;
-
     private NumberFormat mNumberFormat;
     private OrderDetailSectionPagerAdapter mAdapter;
-
-    @InjectView(R.id.order_detail_container)
-    SwipeRefreshLayout mOrderSwipeRefresh;
-    private final String ORDER_SETTINGS_FRAGMENT = "Order_Settings_Fragment";
     private TextView mOrderFulfillmentStatus;
+    private Boolean mIsEditMode = false;
+    private TextView mCustomerEmail;
+    private ArrayList<String> mOrderList;
+    private int mOrderPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +82,7 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
         }
 
         setContentView(R.layout.activity_order_detail);
+        mRxBus = RxBus.getInstance();
 
         ButterKnife.inject(this);
 
@@ -82,6 +90,8 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
             mOrderNumber = getIntent().getStringExtra(ORDER_NUMBER_EXTRA_KEY);
             mTenantId = getIntent().getIntExtra(CURRENT_TENANT_ID, -1);
             mSiteId = getIntent().getIntExtra(CURRENT_SITE_ID, -1);
+            mOrderList = (ArrayList<String>) (getIntent().getSerializableExtra(OrderDetailActivity.ORDER_LIST));
+            mOrderPosition = getIntent().getIntExtra(OrderDetailActivity.ORDER_LIST_POSITION, -1);
         } else if (savedInstanceState != null) {
             mOrderNumber = savedInstanceState.getString(ORDER_NUMBER_EXTRA_KEY);
             mTenantId = savedInstanceState.getInt(CURRENT_TENANT_ID, -1);
@@ -95,10 +105,60 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
             getActionBar().setTitle(" ");
         }
 
+        enterEditMode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onSwapEditMode();
+            }
+        });
         mOrderStatus = (TextView) findViewById(R.id.order_status_value);
         mOrderDate = (TextView) findViewById(R.id.order_date_value);
         mCustomerName = (TextView) findViewById(R.id.customer_value);
+        mCustomerEmail = (TextView) findViewById(R.id.customer_email);
         mOrderTotal = (TextView) findViewById(R.id.order_total_value);
+        mPreviousOrder = (Button) findViewById(R.id.previous_order);
+        mNextOrder = (Button) findViewById(R.id.next_order);
+        if (mOrderList == null || mOrderPosition == -1) {
+            mPreviousOrder.setVisibility(View.GONE);
+            mNextOrder.setVisibility(View.GONE);
+        } else {
+            if (mOrderPosition == 0) {
+                mPreviousOrder.setVisibility(View.GONE);
+            }
+            if (mOrderPosition == mOrderList.size() - 1) {
+                mNextOrder.setVisibility(View.GONE);
+            }
+
+            mPreviousOrder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String orderId = mOrderList.get(mOrderPosition - 1);
+                    Intent intent = new Intent(OrderDetailActivity.this, OrderDetailActivity.class);
+                    intent.putExtra(OrderDetailActivity.ORDER_NUMBER_EXTRA_KEY, orderId);
+                    intent.putExtra(OrderDetailActivity.ORDER_LIST, mOrderList);
+                    intent.putExtra(OrderDetailActivity.ORDER_LIST_POSITION, mOrderPosition - 1);
+                    intent.putExtra(OrderDetailActivity.CURRENT_TENANT_ID, mTenantId);
+                    intent.putExtra(OrderDetailActivity.CURRENT_SITE_ID, mSiteId);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+            mNextOrder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String orderId = mOrderList.get(mOrderPosition + 1);
+                    Intent intent = new Intent(OrderDetailActivity.this, OrderDetailActivity.class);
+                    intent.putExtra(OrderDetailActivity.ORDER_NUMBER_EXTRA_KEY, orderId);
+                    intent.putExtra(OrderDetailActivity.ORDER_LIST, mOrderList);
+                    intent.putExtra(OrderDetailActivity.ORDER_LIST_POSITION, mOrderPosition + 1);
+                    intent.putExtra(OrderDetailActivity.CURRENT_TENANT_ID, mTenantId);
+                    intent.putExtra(OrderDetailActivity.CURRENT_SITE_ID, mSiteId);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+
+        }
         mCustomerName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -121,6 +181,22 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
 
         mOrderViewPager = (ViewPager) findViewById(R.id.order_detail_sections_viewpager);
         mTabIndicator = (TabPageIndicator) findViewById(R.id.order_detail_sections);
+        mTabIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                setEditModeVisibility(position == 0);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         if (getLoaderManager().getLoader(LOADER_ORDER_DETAIL) == null) {
             getLoaderManager().initLoader(LOADER_ORDER_DETAIL, null, this).forceLoad();
@@ -139,6 +215,14 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
 
     }
 
+    @OnClick(R.id.customer_email)
+    public void emailCustomer() {
+        if (mCustomerEmail == null || mCustomerEmail.getText().toString().isEmpty()) {
+            return;
+        }
+        ContactIntentUtil.launchEmailIntent(this, mCustomerEmail.getText().toString());
+    }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putString(ORDER_NUMBER_EXTRA_KEY, mOrderNumber);
@@ -148,13 +232,8 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
         super.onSaveInstanceState(outState);
     }
 
-    public void setFulfillmentStatus(String fulfillmentStatus) {
-        mOrderFulfillmentStatus.setText(fulfillmentStatus);
-        mOrderFulfillmentStatus.setVisibility(View.VISIBLE);
-    }
-
-    public void clearFulfillmentStatus() {
-        mOrderFulfillmentStatus.setVisibility(View.GONE);
+    public void setEditModeVisibility(boolean isVisible) {
+        enterEditMode.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -183,6 +262,7 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
 
     @Override
     public void onRefresh() {
+        mOrderSwipeRefresh.setRefreshing(true);
         Loader orderLoader = getLoaderManager().getLoader(LOADER_ORDER_DETAIL);
         orderLoader.reset();
         orderLoader.startLoading();
@@ -245,14 +325,26 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
 
 
     @Override
-    public void customerRetreived(CustomerAccount customer) {
+    public void customerRetrieved(CustomerAccount customer) {
         if (mCustomerName != null && customer != null) {
             mCustomerName.setText(customer.getFirstName() + " " + customer.getLastName());
+            mCustomerEmail.setText(customer.getEmailAddress());
         }
     }
 
     @Override
     public void onError(String errorMessage) {
         mCustomerName.setText(getString(R.string.error_message_for_order_customer_name));
+    }
+
+    public void onSwapEditMode() {
+        mIsEditMode = !mIsEditMode;
+        mRxBus.send(mIsEditMode);
+        mAdapter.setIsEditMode(mIsEditMode);
+        if (mIsEditMode) {
+            enterEditMode.setText(getString(R.string.exit_edit_mode));
+        } else {
+            enterEditMode.setText(getString(R.string.edit));
+        }
     }
 }

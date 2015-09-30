@@ -1,18 +1,11 @@
 package com.mozu.mozuandroidinstoreassistant.app.tasks;
 
 import android.content.Context;
-import android.os.AsyncTask;
 
 import com.crashlytics.android.Crashlytics;
 import com.mozu.api.MozuApiContext;
 import com.mozu.api.contracts.customer.CustomerAccount;
-import com.mozu.api.contracts.tenant.Tenant;
 import com.mozu.api.resources.commerce.customer.CustomerAccountResource;
-import com.mozu.api.resources.platform.TenantResource;
-import com.mozu.api.security.Scope;
-import com.mozu.mozuandroidinstoreassistant.app.TenantResourceAsyncListener;
-import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
-import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachineProducer;
 
 public class RetrieveCustomerAsyncTask extends InternetConnectedAsyncTask<Void, Void, CustomerAccount> {
 
@@ -52,6 +45,6 @@ public class RetrieveCustomerAsyncTask extends InternetConnectedAsyncTask<Void, 
     protected void onPostExecute(CustomerAccount customer) {
         super.onPostExecute(customer);
 
-        mListener.customerRetreived(customer);
+        mListener.customerRetrieved(customer);
     }
 }

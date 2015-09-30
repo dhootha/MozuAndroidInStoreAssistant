@@ -14,10 +14,9 @@ import java.util.List;
 
 public class ProductSearchLoader extends InternetConnectedAsyncTaskLoader<List<Product>> {
 
-    private static final int ITEMS_PER_PAGE = 200;
     public static final String SORT_BY = "productname asc";
     public static final String CATEGORY_FILTER = "categoryId eq ";
-
+    private static final int ITEMS_PER_PAGE = 200;
     private List<Product> mProductList;
     private Integer mTenantId;
     private Integer mSiteId;
@@ -125,7 +124,7 @@ public class ProductSearchLoader extends InternetConnectedAsyncTaskLoader<List<P
         try {
             ProductSearchResult result = searchResultResource.search(mQueryString, mCategoryId == -1 || mCategoryId == 0 || mCategoryId == null ? null : CATEGORY_FILTER + String.valueOf(mCategoryId),
                     null, null, null, null, null, null, null, null, null, null, null,
-                    SORT_BY, ITEMS_PER_PAGE, mCurrentPage * ITEMS_PER_PAGE, null,null);
+                    SORT_BY, ITEMS_PER_PAGE, mCurrentPage * ITEMS_PER_PAGE, null,null,null,null,null,null);
 
             mTotalPages = result.getTotalCount() / ITEMS_PER_PAGE;
 

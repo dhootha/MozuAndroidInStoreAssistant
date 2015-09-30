@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.mozu.mozuandroidinstoreassistant.app.layout.order.NewOrderTotalLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="8dp"
+    android:paddingLeft="24dp"
+    android:paddingTop="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="24dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="24dp"
+            android:layout_weight="7"
+            android:gravity="right"
+            android:text="@string/sub_total"/>
+
+        <TextView
+            android:id="@+id/sub_total_id"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/order_adjustment"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/discount_adjustment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="24dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="24dp"
+            android:layout_weight="7"
+            android:gravity="right"
+            android:text="@string/tax"/>
+
+        <TextView
+            android:id="@+id/tax_id"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="24dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="24dp"
+            android:layout_weight="7"
+            android:gravity="right"
+            android:text="@string/shipping_total"/>
+
+        <TextView
+            android:id="@+id/shipping_total_id"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/shipping_adjustment"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="24dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="24dp"
+            android:layout_weight="7"
+            android:gravity="right"
+            android:text="@string/order_total"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/order_total_id"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+</com.mozu.mozuandroidinstoreassistant.app.layout.order.NewOrderTotalLayout>

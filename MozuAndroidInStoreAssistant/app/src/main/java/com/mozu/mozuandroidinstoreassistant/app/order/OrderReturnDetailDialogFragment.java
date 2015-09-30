@@ -22,6 +22,7 @@ import com.mozu.mozuandroidinstoreassistant.app.data.order.OrderReturnDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.OrderReturnHeaderDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.OrderReturnTitleDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.order.TopRowItem;
+import com.mozu.mozuandroidinstoreassistant.app.order.adapters.OrderDetailReturnDialogAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.utils.DateUtils;
 
 import java.util.ArrayList;
