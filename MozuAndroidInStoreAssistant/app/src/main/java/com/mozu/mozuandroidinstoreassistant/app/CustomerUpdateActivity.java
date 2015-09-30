@@ -124,5 +124,4 @@ public class CustomerUpdateActivity extends BaseActivity implements CustomerCrea
     }
 
 
-
 }
