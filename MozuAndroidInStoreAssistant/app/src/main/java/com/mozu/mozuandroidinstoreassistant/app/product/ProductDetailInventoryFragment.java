@@ -35,7 +35,6 @@ import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.Subscriptions;
 
@@ -120,7 +119,7 @@ public class ProductDetailInventoryFragment extends DialogFragment implements Ob
     private void loadData() {
         AndroidObservable.bindFragment(this, new InventoryRetriever().getInventoryData(mVariatonProductCode, mTenantId, mSiteId))
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe(this);
+                .subscribe(this);
     }
 
     public void onPause() {

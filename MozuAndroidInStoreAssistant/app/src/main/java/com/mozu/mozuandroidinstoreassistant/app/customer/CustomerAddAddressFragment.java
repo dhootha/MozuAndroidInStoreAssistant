@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.mozu.api.ApiException;
 import com.mozu.api.contracts.customer.ContactType;
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.api.contracts.customer.CustomerContact;
@@ -29,12 +30,12 @@ import com.mozu.mozuandroidinstoreassistant.app.utils.CustomerUtils;
 import com.mozu.mozuandroidinstoreassistant.app.views.LoadingView;
 
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import rx.Subscriber;
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class CustomerAddAddressFragment extends Fragment implements AddressDeleteListener {
@@ -57,6 +58,7 @@ public class CustomerAddAddressFragment extends Fragment implements AddressDelet
     private CustomerAddressesAdapter mRecyclerViewAddressAdapter;
     private int countdown;
     private boolean mIsCustomerCreated;
+    private CountDownLatch mCountDownLatch;
 
 
     public static CustomerAddAddressFragment getInstance(Integer tenantId, Integer siteId, CustomerAccount account, boolean isCustomerCreated) {
@@ -175,9 +177,8 @@ public class CustomerAddAddressFragment extends Fragment implements AddressDelet
 
         } else {
             loadingView.setLoading();
-            CustomerAccountCreationObserver.getCustomerAccountCreationObserverable(mTenantId, mSiteId, mCustomerAccount)
+            AndroidObservable.bindFragment(CustomerAddAddressFragment.this, CustomerAccountCreationObserver.getCustomerAccountCreationObserverable(mTenantId, mSiteId, mCustomerAccount))
                     .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(getCreateCustomerAccountSubscriber());
         }
 
@@ -208,6 +209,7 @@ public class CustomerAddAddressFragment extends Fragment implements AddressDelet
         //customer saved goto orders.
         Log.d("Customer created", "created customer");
         countdown = mCustomerAccount.getContacts().size();
+        mCountDownLatch = new CountDownLatch(countdown);
         Set<Integer> alreadyCreatedAddresses = ((CustomerUpdateActivity) getActivity()).getAlreadyCreatedAddresses();
         for (int i = 0; i < mCustomerAccount.getContacts().size(); i++) {
             if (alreadyCreatedAddresses.contains(mCustomerAccount.getContacts().get(i).getId())) {
@@ -229,26 +231,30 @@ public class CustomerAddAddressFragment extends Fragment implements AddressDelet
         return new Subscriber<CustomerContact>() {
             @Override
             public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                AlertDialog error = ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), getString(R.string.standard_error));
-                loadingView.success();
-                error.show();
-            }
-
-            @Override
-            public void onNext(CustomerContact customerContact) {
-                countdown--;
-                if (countdown == 0) {
+                if (mCountDownLatch.getCount() == 0) {
                     loadingView.success();
                     Intent intent = new Intent();
                     intent.putExtra(CustomerUpdateActivity.CUSTOMER, mCustomerAccount);
                     getActivity().setResult(Activity.RESULT_OK, intent);
                     getActivity().finish();
                 }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                mCountDownLatch.countDown();
+                if (e instanceof ApiException) {
+                    ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), ((ApiException) e));
+                } else {
+                    ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), getString(R.string.standard_error)).show();
+                }
+                loadingView.success();
+            }
+
+            @Override
+            public void onNext(CustomerContact customerContact) {
+                mCountDownLatch.countDown();
+                onCompleted();
             }
         };
     }

@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 
@@ -89,7 +88,7 @@ public class OrderDetailReturnsFragment extends Fragment  {
 
     private void loadData(){
         mOrderReturnFetcher.setOrderNumber(mOrder.getId());
-        mOrderReturnObservable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new OrderReturnSubscriber());
+        mOrderReturnObservable.subscribeOn(Schedulers.io()).subscribe(new OrderReturnSubscriber());
     }
 
     private class OrderReturnSubscriber implements rx.Observer<List<Return>> {

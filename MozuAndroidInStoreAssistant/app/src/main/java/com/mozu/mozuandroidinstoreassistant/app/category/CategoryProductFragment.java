@@ -52,7 +52,6 @@ import butterknife.InjectView;
 import rx.Observable;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -154,9 +153,8 @@ public class CategoryProductFragment extends Fragment implements AdapterView.OnI
         mCategoryFetcher.setCategoryId(mCategory.getCategoryId());
         mCategoryFetcher.setCurrentPage(mCurrentPage);
         mProductObservable.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).
-                subscribe(new Observer<ProductCollection>() {
-                    List<IData> dataList = new ArrayList<IData>();
+                .subscribe(new Observer<ProductCollection>() {
+                    List<IData> dataList = new ArrayList<>();
                     @Override
                     public void onCompleted() {
                         mCategoryPullToRefresh.setRefreshing(false);
@@ -222,7 +220,7 @@ public class CategoryProductFragment extends Fragment implements AdapterView.OnI
 
     void reloadData() {
         mCategoryPullToRefresh.setRefreshing(true);
-        mCategoryObservable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        mCategoryObservable.subscribeOn(Schedulers.io())
                 .flatMap(new Func1<List<Category>, Observable<Category>>() {
                     @Override
                     public Observable<Category> call(List<Category> categories) {
