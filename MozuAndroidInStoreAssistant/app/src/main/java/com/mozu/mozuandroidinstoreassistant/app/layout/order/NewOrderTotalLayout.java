@@ -77,10 +77,10 @@ public class NewOrderTotalLayout extends LinearLayout implements IRowLayout, IEd
             mDiscountAdjustment = (LinearLayout) findViewById(R.id.discount_adjustment);
             Order order = orderTotalRow.mOrder;
             NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
-            mSubTotalText.setText(currencyFormat.format(order.getDiscountedSubtotal()));
-            mShippingTotal.setText(currencyFormat.format(order.getShippingSubTotal()));
-            mTax.setText(order.getTaxTotal() != null ? currencyFormat.format(order.getTaxTotal()) : "N/A");
-            mTotal.setText(currencyFormat.format(order.getTotal()));
+            mSubTotalText.setText(order.getDiscountedSubtotal() != null ? currencyFormat.format(order.getDiscountedSubtotal()) : currencyFormat.format(0.00));
+            mShippingTotal.setText(order.getShippingSubTotal() != null ? currencyFormat.format(order.getShippingSubTotal()) : currencyFormat.format(0.00));
+            mTax.setText(order.getTaxTotal() != null ? currencyFormat.format(order.getTaxTotal()) : currencyFormat.format(0.00));
+            mTotal.setText(order.getTotal() != null ? currencyFormat.format(order.getTotal()) : currencyFormat.format(0.00));
             if (order.getShippingDiscounts().size() > 0) {
                 mShippingAdjustment.setVisibility(View.VISIBLE);
                 for (ShippingDiscount discount : order.getShippingDiscounts()) {

@@ -155,7 +155,6 @@ public class CategoryProductFragment extends Fragment implements AdapterView.OnI
         mProductObservable.subscribeOn(Schedulers.io())
                 .subscribe(new Observer<ProductCollection>() {
                     List<IData> dataList = new ArrayList<>();
-
                     @Override
                     public void onCompleted() {
                         mCategoryPullToRefresh.setRefreshing(false);

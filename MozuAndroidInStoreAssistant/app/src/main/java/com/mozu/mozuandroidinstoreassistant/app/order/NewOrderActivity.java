@@ -218,14 +218,6 @@ public class NewOrderActivity extends BaseActivity {
             mOrderFragmentAdapter = new NewOrderFragmentAdapter(getFragmentManager(), mOrder);
             mOrderViewPager.setAdapter(mOrderFragmentAdapter);
             mOrderTabs.setViewPager(mOrderViewPager);
-            mOrderViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-                @Override
-                public void onPageSelected(int position) {
-                    if (position == 0) {
-
-                    }
-                }
-            });
             mOrderFragmentAdapter.notifyDataSetChanged();
         } else {
             mOrderFragmentAdapter.notifyDataSetChanged();

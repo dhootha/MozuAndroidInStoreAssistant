@@ -118,7 +118,7 @@ public class NewOrderShippingItemLayout extends LinearLayout implements IRowLayo
                     @Override
                     public void onNext(Order order) {
                         mOrderUpdateListener.updateOrder(order);
-                    }
+                }
                 }));
     }
 
