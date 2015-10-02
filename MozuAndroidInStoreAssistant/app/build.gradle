@@ -27,8 +27,8 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 19
-        versionCode 200
-        versionName "2.0.0 - " + getDate() + " - Build " + System.getenv("BUILD_NUMBER")
+        versionCode 201
+        versionName "2.0.1 - " + getDate() + " - Build " + System.getenv("BUILD_NUMBER")
     }
     signingConfigs {
         release {
