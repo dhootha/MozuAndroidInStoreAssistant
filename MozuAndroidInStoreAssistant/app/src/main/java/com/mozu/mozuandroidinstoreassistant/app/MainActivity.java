@@ -295,26 +295,26 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
 
     public void setProductSelected() {
         resetSelected();
-        getActionBar().setTitle(R.string.menu_products_text);
+        getSupportActionBar().setTitle(R.string.menu_products_text);
         mProductsLayout.setSelected(true);
     }
 
     public void setOrdersSelected() {
         resetSelected();
-        getActionBar().setTitle(R.string.menu_orders_text);
+        getSupportActionBar().setTitle(R.string.menu_orders_text);
         mOrdersLayout.setSelected(true);
     }
 
     public void setCustomersSelected() {
         resetSelected();
-        getActionBar().setTitle(R.string.menu_customers_text);
+        getSupportActionBar().setTitle(R.string.menu_customers_text);
         mCustomersLayout.setSelected(true);
 
     }
 
     public void setSearchSelected() {
         resetSelected();
-        getActionBar().setTitle(R.string.menu_search_text);
+        getSupportActionBar().setTitle(R.string.menu_search_text);
         mSearchMenuLayout.setSelected(true);
     }
 

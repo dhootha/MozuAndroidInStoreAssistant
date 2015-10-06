@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Loader;
 import android.database.MatrixCursor;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -41,7 +42,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class CustomersFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<CustomerAccount>>, AbsListView.OnScrollListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, SearchManager.OnCancelListener, SearchManager.OnDismissListener, SearchView.OnSuggestionListener, MenuItem.OnActionExpandListener, AdapterView.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class CustomersFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<CustomerAccount>>, AbsListView.OnScrollListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, SearchManager.OnCancelListener, SearchManager.OnDismissListener, SearchView.OnSuggestionListener, AdapterView.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener, MenuItemCompat.OnActionExpandListener {
 
     private static final int MAX_NUMBER_OF_ORDER_SEARCHES = 200;
 
@@ -179,7 +180,10 @@ public class CustomersFragment extends Fragment implements LoaderManager.LoaderC
             });
         }
 
-        mSearchMenuItem.setOnActionExpandListener(this);
+        if (mSearchMenuItem != null) {
+            MenuItemCompat.setOnActionExpandListener(mSearchMenuItem, this);
+            MenuItemCompat.setActionView(mSearchMenuItem, mSearchView);
+        }
         searchManager.setOnCancelListener(this);
         searchManager.setOnDismissListener(this);
 

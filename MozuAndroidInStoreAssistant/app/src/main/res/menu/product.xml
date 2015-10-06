@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:id="@+id/toggle_view"
-        android:title="@string/view_as_list_menu_item_text"
+    <item
+        android:id="@+id/toggle_view"
         android:icon="@drawable/icon_listview_actionbar"
-        android:showAsAction="ifRoom" />
+        android:title="@string/view_as_list_menu_item_text"
+        app:showAsAction="ifRoom"/>
 
-    <item android:id="@+id/action_search"
-        android:title="@string/action_search"
+    <item
+        android:id="@+id/action_search"
         android:icon="@drawable/actionbar_search_button"
-        android:showAsAction="ifRoom|collapseActionView"
-        android:actionViewClass="android.widget.SearchView" />
+        android:title="@string/action_search"
+        app:actionViewClass="android.widget.SearchView"
+        app:showAsAction="ifRoom|collapseActionView"/>
 
-    <item android:id="@+id/refresh_product"
+    <item
+        android:id="@+id/refresh_product"
         android:title="@string/refresh_product_menu_item_text"
-        android:showAsAction="never" />
+        app:showAsAction="never"/>
 
 </menu>

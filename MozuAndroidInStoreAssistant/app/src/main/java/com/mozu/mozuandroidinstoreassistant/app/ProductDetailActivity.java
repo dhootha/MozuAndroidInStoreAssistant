@@ -9,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,9 +23,9 @@ import android.widget.TextView;
 
 import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.api.contracts.productruntime.ProductImage;
+import com.mozu.mozuandroidinstoreassistant.app.models.ImageURLConverter;
 import com.mozu.mozuandroidinstoreassistant.app.product.adapter.ProductDetailSectionPagerAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.product.loaders.ProductDetailLoader;
-import com.mozu.mozuandroidinstoreassistant.app.models.ImageURLConverter;
 import com.mozu.mozuandroidinstoreassistant.app.settings.SettingsFragment;
 import com.mozu.mozuandroidinstoreassistant.app.views.LoadingView;
 import com.mozu.mozuandroidinstoreassistant.app.views.ProductDetailImageTransformation;
@@ -48,41 +49,28 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
     public static final int LOADER_PRODUCT_DETAIL = 4;
     public static final int FIRST_SUB_IMAGE = 1;
     public static final int NUM_OF_COLUMNS_DIVISOR = 2;
-
+    @InjectView(R.id.product_detail_container)
+    SwipeRefreshLayout mProductSwipeRefresh;
+    @InjectView(R.id.image_loading)
+    LoadingView mImageLoading;
+    @InjectView(R.id.toolbar)
+    Toolbar mToolbar;
     private String mProductCode;
-
     private ImageView mMainImageView;
     private TextView mProductCodeTextView;
     private TextView mProductName;
-
     private Product mProduct;
-
     private int mTenantId;
-
     private int mSiteId;
     private String mSiteDomain;
-
     private ImageURLConverter mImageUrlConverter;
-
     private LinearLayout mProductImagesLayout;
-
     private List<ProductImage> mImages;
-
     private HorizontalScrollView mHorizontalScrollView;
     private ScrollView mVerticalScrollView;
-
     private ViewPager mProductSectionViewPager;
-
     private TabPageIndicator mTabIndicator;
-
     private List<String> mTitles;
-
-    @InjectView(R.id.product_detail_container)
-    SwipeRefreshLayout mProductSwipeRefresh;
-
-    @InjectView(R.id.image_loading)
-    LoadingView mImageLoading;
-
     private ProductDetailSectionPagerAdapter mAdapter;
 
     @Override
@@ -107,10 +95,11 @@ public class ProductDetailActivity extends BaseActivity implements LoaderManager
             mSiteId = savedInstanceState.getInt(CURRENT_SITE_ID, -1);
             mSiteDomain = savedInstanceState.getString(CURRENT_SITE_DOMAIN);
         }
-        if (getActionBar() != null) {
-            getActionBar().setDisplayShowHomeEnabled(false);
-            getActionBar().setDisplayHomeAsUpEnabled(true);
-            getActionBar().setTitle("");
+        setSupportActionBar(mToolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowHomeEnabled(false);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("");
         }
 
         mMainImageView = (ImageView) findViewById(R.id.mainImageView);

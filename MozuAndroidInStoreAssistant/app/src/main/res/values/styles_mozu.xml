@@ -28,12 +28,7 @@
         <item name="android:src">@drawable/overflow</item>
     </style>
 
-    <!--
-        everything Below This Is Generatedr
-    -->
-
     <style name="Theme.Mozu" parent="Theme.AppCompat.Light">
-        <!--<item name="android:actionBarSize">64dp</item>-->
         <item name="android:homeAsUpIndicator">@drawable/icon_up</item>
         <item name="colorPrimary">@android:color/transparent</item>
         <item name="colorPrimaryDark">#303030</item>
@@ -41,57 +36,7 @@
         <item name="android:windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-
-        <!--<item name="android:windowBackground">@color/main_background</item>-->
-        <!--<item name="android:actionBarItemBackground">@drawable/selectable_background_mozu</item>-->
-        <!--<item name="android:popupMenuStyle">@style/PopupMenu.Mozu</item>-->
-        <!--<item name="android:dropDownListViewStyle">@style/DropDownListView.Mozu</item>-->
-        <!--<item name="android:actionBarTabStyle">@style/ActionBarTabStyle.Mozu</item>-->
-        <!--<item name="android:actionDropDownStyle">@style/DropDownNav.Mozu</item>-->
-        <!--<item name="android:actionBarStyle">@style/ActionBar.Transparent.Mozu</item>-->
-        <!--<item name="android:actionModeBackground">@drawable/cab_background_top_mozu</item>-->
-        <!--<item name="android:actionModeSplitBackground">@drawable/cab_background_bottom_mozu</item>-->
-        <!--<item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Mozu</item>-->
-        <!--<item name="android:actionOverflowButtonStyle">@style/OverFlow</item>-->
-        <!--<item name="android:windowContentOverlay">@null</item>-->
-
-        <!--<item name="android:editTextBackground">@drawable/mozu_edit_text_holo_light</item>-->
-        <!--<item name="android:textColorHighlight">#99df3018</item>-->
-        <!--<item name="android:textSelectHandleLeft">@drawable/mozu_text_select_handle_left</item>-->
-        <!--<item name="android:textSelectHandleRight">@drawable/mozu_text_select_handle_right</item>-->
-        <!--<item name="android:textSelectHandle">@drawable/mozu_text_select_handle_middle</item>-->
-        <!--<item name="android:autoCompleteTextViewStyle">@style/AutoCompleteTextViewMozu</item>-->
-        <!--<item name="android:listChoiceIndicatorMultiple">@drawable/mozu_btn_check_holo_light</item>-->
-        <!--<item name="android:listChoiceIndicatorSingle">@drawable/mozu_btn_radio_holo_light</item>-->
-        <!--<item name="android:buttonStyle">@style/ButtonMozu</item>-->
-        <!--<item name="android:imageButtonStyle">@style/ImageButtonMozu</item>-->
-        <!--<item name="android:dropDownSpinnerStyle">@style/SpinnerMozu</item>-->
-        <!--<item name="android:progressBarStyleHorizontal">@style/ProgressBarMozu</item>-->
-        <!--<item name="android:seekBarStyle">@style/SeekBarMozu</item>-->
-        <!--<item name="android:ratingBarStyle">@style/RatingBarMozu</item>-->
-        <!--<item name="android:ratingBarStyleIndicator">@style/RatingBarBigMozu</item>-->
-        <!--<item name="android:ratingBarStyleSmall">@style/RatingBarSmallMozu</item>-->
-        <!--<item name="android:buttonStyleToggle">@style/ToggleMozu</item>-->
-        <!--<item name="android:listChoiceBackgroundIndicator">@drawable/mozu_list_selector_holo_light</item>-->
-        <!--<item name="android:activatedBackgroundIndicator">@drawable/mozu_activated_background_holo_light</item>-->
-        <!--<item name="android:fastScrollThumbDrawable">@drawable/mozu_fastscroll_thumb_holo</item>-->
-        <!--<item name="vpiTabPageIndicatorStyle">@style/CustomTabPageIndicator</item>-->
-        <!--<item name="android:dialogTheme">@style/DialogMozu</item>-->
-        <!--<item name="android:alertDialogTheme">@style/DialogMozu.Alert</item>-->
-
-    </style>
-
-    <style name="ActionBar.Solid.Mozu" parent="@android:style/Widget.Holo.Light.ActionBar.Solid">
-        <item name="android:background">@drawable/ab_solid_mozu</item>
-        <item name="android:backgroundStacked">@drawable/ab_stacked_solid_mozu</item>
-        <item name="android:backgroundSplit">@drawable/ab_bottom_solid_mozu</item>
-        <item name="android:progressBarStyle">@style/ProgressBar.Mozu</item>
-    </style>
-
-    <style name="ActionBar.Transparent.Mozu" parent="@android:style/Widget.Holo.Light.ActionBar">
-        <item name="android:background">@drawable/ab_transparent_mozu</item>
-        <item name="android:progressBarStyle">@style/ProgressBar.Mozu</item>
-        <item name="android:height">@dimen/action_bar_height</item>
+        <item name="vpiTabPageIndicatorStyle">@style/CustomTabPageIndicator</item>
     </style>
 
     <style name="PopupMenu.Mozu" parent="@android:style/Widget.Holo.Light.ListPopupWindow">
@@ -102,10 +47,6 @@
         <item name="android:listSelector">@drawable/selectable_background_mozu</item>
     </style>
 
-    <style name="ActionBarTabStyle.Mozu" parent="@android:style/Widget.Holo.Light.ActionBar.TabView">
-        <item name="android:background">@drawable/tab_indicator_ab_mozu</item>
-    </style>
-
     <style name="DropDownNav.Mozu" parent="@android:style/Widget.Holo.Light.Spinner">
         <item name="android:background">@drawable/spinner_background_ab_mozu</item>
         <item name="android:popupBackground">@drawable/menu_dropdown_panel_mozu</item>
@@ -114,10 +55,6 @@
 
     <style name="ProgressBar.Mozu" parent="@android:style/Widget.Holo.Light.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/progress_horizontal_mozu</item>
-    </style>
-
-    <style name="ActionButton.CloseMode.Mozu" parent="@android:style/Widget.Holo.Light.ActionButton.CloseMode">
-        <item name="android:background">@drawable/btn_cab_done_mozu</item>
     </style>
 
     <!-- this style is only referenced in a Light.DarkActionBar based theme -->
@@ -131,10 +68,17 @@
         <item name="android:background">@drawable/mozu_edit_text_holo_light</item>
     </style>
 
-    <style name="ButtonMozu" parent="android:Widget.Holo.Light.Button">
-        <item name="android:background">@drawable/mozu_btn_default_holo_light</item>
+    <style name="ButtonMozu" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/mozu_button</item>
         <item name="android:textColor">@color/divider_white</item>
+        <item name="android:maxHeight">36dp</item>
+        <item name="android:minHeight">36dp</item>
         <item name="android:minWidth">88dp</item>
+        <item name="android:paddingRight">8dp</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:layout_marginRight">8dp</item>
+        <item name="android:layout_marginLeft">8dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
     </style>
 
     <style name="ImageButtonMozu" parent="android:Widget.Holo.Light.ImageButton">
@@ -201,23 +145,22 @@
         <item name="android:windowTitleStyle">@style/dialog_title_style</item>
     </style>
 
-    <style name="AppTheme.ActivityDialog" parent="@android:style/Theme.Holo.Light.DialogWhenLarge">
-        <item name="android:windowTitleStyle">@style/dialog_title_style</item>
-        <item name="android:editTextBackground">@drawable/mozu_edit_text_holo_light</item>
+    <style name="AppTheme.ActivityDialog" parent="Theme.AppCompat.Light.DialogWhenLarge">
+        <item name="colorPrimary">@android:color/transparent</item>
+        <item name="colorPrimaryDark">#303030</item>
+        <item name="colorAccent">@color/accent_material_light</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
-
-    <style name="ActivityDialogMozu" parent="@android:style/Theme.Holo.Light.Dialog">
-        <item name="android:windowTitleStyle">@style/dialog_title_style</item>
-        <item name="android:windowActionBar">true</item>
-    </style>
-
 
     <style name="dialog_title_style" parent="android:Widget.TextView">
         <item name="android:textColor">@color/mozu_color</item>
         <item name="android:textSize">24sp</item>
     </style>
 
-    <style name="DialogMozu.Alert" parent="@android:style/Theme.Holo.Light.Dialog">
+    <style name="DialogMozu.Alert" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:windowTitleStyle">@style/dialog_title_style</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowContentOverlay">@null</item>

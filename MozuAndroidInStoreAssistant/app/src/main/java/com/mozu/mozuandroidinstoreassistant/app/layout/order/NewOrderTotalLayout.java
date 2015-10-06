@@ -29,11 +29,11 @@ import rx.subscriptions.CompositeSubscription;
 
 public class NewOrderTotalLayout extends LinearLayout implements IRowLayout, IEditMode {
     TextView mSubTotalText;
-    private boolean mIsEditMode;
-    private NewOrderShippingItemLayout.OrderUpdateListener mOrderUpdateListener;
     LinearLayout mShippingAdjustment;
     LinearLayout mOrderAdjustment;
     LinearLayout mDiscountAdjustment;
+    private boolean mIsEditMode;
+    private NewOrderShippingItemLayout.OrderUpdateListener mOrderUpdateListener;
     private CompositeSubscription mCompositeSubscription;
 
 
@@ -78,7 +78,9 @@ public class NewOrderTotalLayout extends LinearLayout implements IRowLayout, IEd
             Order order = orderTotalRow.mOrder;
             NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
             mSubTotalText.setText(currencyFormat.format(order.getSubtotal()));
-            mShippingTotal.setText(currencyFormat.format(order.getShippingSubTotal()));
+            if (order.getShippingSubTotal() != null) {
+                mShippingTotal.setText(currencyFormat.format(order.getShippingSubTotal()));
+            }
             mTax.setText(order.getTaxTotal() != null ? currencyFormat.format(order.getTaxTotal()) : "N/A");
             mTotal.setText(currencyFormat.format(order.getTotal()));
             if (order.getShippingDiscounts().size() > 0) {

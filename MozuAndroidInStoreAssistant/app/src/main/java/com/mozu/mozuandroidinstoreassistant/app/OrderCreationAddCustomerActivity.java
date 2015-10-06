@@ -2,6 +2,7 @@ package com.mozu.mozuandroidinstoreassistant.app;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.mozu.api.contracts.commerceruntime.fulfillment.FulfillmentInfo;
@@ -16,6 +17,7 @@ import com.mozu.mozuandroidinstoreassistant.app.order.NewOrderActivity;
 import com.mozu.mozuandroidinstoreassistant.app.order.loaders.NewOrderManager;
 
 import butterknife.ButterKnife;
+import butterknife.InjectView;
 import rx.Subscriber;
 import rx.android.observables.AndroidObservable;
 
@@ -28,19 +30,19 @@ public class OrderCreationAddCustomerActivity extends BaseActivity {
     private static final int CREATE_CUSTOMER = 1;
     private static String BILLING = "billing";
     private static String SHIPPING = "shipping";
+    @InjectView(R.id.toolbar)
+    Toolbar mToolbar;
     private Order mOrder;
-
     private int mTenantId;
-
     private int mSiteId;
     private CustomerAccount mCustomerAccount;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_create);
         ButterKnife.inject(this);
+        setSupportActionBar(mToolbar);
         if (getIntent() != null) {
             mOrder = (Order) getIntent().getSerializableExtra(ORDER_EXTRA_KEY);
             mTenantId = getIntent().getIntExtra(CURRENT_TENANT_ID, -1);
@@ -53,11 +55,11 @@ public class OrderCreationAddCustomerActivity extends BaseActivity {
 
         getFragmentManager().beginTransaction().replace(R.id.content_fragment_holder, CustomerLookupFragment.getInstance(mTenantId, mSiteId), "create").commit();
 
-        if (getActionBar() != null) {
-            getActionBar().setDisplayShowHomeEnabled(false);
-            getActionBar().setDisplayHomeAsUpEnabled(true);
-            getActionBar().setDisplayShowCustomEnabled(true);
-            getActionBar().setTitle("  " + getString(R.string.create_order));
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowHomeEnabled(false);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowCustomEnabled(true);
+            getSupportActionBar().setTitle("  " + getString(R.string.create_order));
         }
 
     }

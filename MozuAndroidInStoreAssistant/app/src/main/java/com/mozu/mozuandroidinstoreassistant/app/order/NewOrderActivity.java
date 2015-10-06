@@ -3,14 +3,12 @@ package com.mozu.mozuandroidinstoreassistant.app.order;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -67,6 +65,9 @@ public class NewOrderActivity extends BaseActivity {
     @InjectView(R.id.order_viewpager)
     public ViewPager mOrderViewPager;
 
+    @InjectView(R.id.toolbar)
+    Toolbar mToolbar;
+
     private String mOrderId;
     private CustomerAccount mCustomerAccount;
     private NewOrderFragmentAdapter mOrderFragmentAdapter;
@@ -81,12 +82,13 @@ public class NewOrderActivity extends BaseActivity {
         mTenantId = userStateMachine.getTenantId();
         mSiteId = userStateMachine.getSiteId();
         setContentView(R.layout.neworder_activity);
+        setSupportActionBar(mToolbar);
         ButterKnife.inject(this);
-        if (getActionBar() != null) {
-            getActionBar().setDisplayShowHomeEnabled(false);
-            getActionBar().setDisplayHomeAsUpEnabled(true);
-            getActionBar().setDisplayShowCustomEnabled(true);
-            getActionBar().setTitle(" ");
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowHomeEnabled(false);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowCustomEnabled(true);
+            getSupportActionBar().setTitle(" ");
         }
 
         boolean reloadData = true;
@@ -198,14 +200,7 @@ public class NewOrderActivity extends BaseActivity {
         new Handler().post(new Runnable() {
             @Override
             public void run() {
-                TextView tv = new TextView(NewOrderActivity.this);
-                tv.setText("Order #" + mOrder.getOrderNumber());
-                tv.setPadding(getResources().getDimensionPixelSize(R.dimen.order_actionbar_margin_left), 0, 0, 0);
-                tv.setGravity(Gravity.CENTER);
-                tv.setTextColor(getResources().getColor(R.color.dark_gray_text));
-                tv.setTypeface(null, Typeface.BOLD);
-                tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-                getActionBar().setCustomView(tv);
+                getSupportActionBar().setTitle("Order #" + mOrder.getOrderNumber());
             }
         });
 
@@ -299,10 +294,6 @@ public class NewOrderActivity extends BaseActivity {
             }
         });
 
-
-    }
-
-    public void updateOrder(Order order) {
 
     }
 
