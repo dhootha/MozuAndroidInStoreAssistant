@@ -1,11 +1,11 @@
 package com.mozu.mozuandroidinstoreassistant.app.layout.order;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
+import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -77,12 +77,10 @@ public class NewOrderTotalLayout extends LinearLayout implements IRowLayout, IEd
             mDiscountAdjustment = (LinearLayout) findViewById(R.id.discount_adjustment);
             Order order = orderTotalRow.mOrder;
             NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
-            mSubTotalText.setText(currencyFormat.format(order.getSubtotal()));
-            if (order.getShippingSubTotal() != null) {
-                mShippingTotal.setText(currencyFormat.format(order.getShippingSubTotal()));
-            }
-            mTax.setText(order.getTaxTotal() != null ? currencyFormat.format(order.getTaxTotal()) : "N/A");
-            mTotal.setText(currencyFormat.format(order.getTotal()));
+            mSubTotalText.setText(order.getDiscountedSubtotal() != null ? currencyFormat.format(order.getDiscountedSubtotal()) : currencyFormat.format(0.00));
+            mShippingTotal.setText(order.getShippingSubTotal() != null ? currencyFormat.format(order.getShippingSubTotal()) : currencyFormat.format(0.00));
+            mTax.setText(order.getTaxTotal() != null ? currencyFormat.format(order.getTaxTotal()) : currencyFormat.format(0.00));
+            mTotal.setText(order.getTotal() != null ? currencyFormat.format(order.getTotal()) : currencyFormat.format(0.00));
             if (order.getShippingDiscounts().size() > 0) {
                 mShippingAdjustment.setVisibility(View.VISIBLE);
                 for (ShippingDiscount discount : order.getShippingDiscounts()) {
@@ -95,6 +93,7 @@ public class NewOrderTotalLayout extends LinearLayout implements IRowLayout, IEd
             }
             if (order.getOrderDiscounts().size() > 0) {
                 mDiscountAdjustment.setVisibility(View.VISIBLE);
+                mDiscountAdjustment.removeAllViews();
                 for (AppliedDiscount discount : order.getOrderDiscounts()) {
                     View view = getShippingRowItem(order.getId(), discount);
                     mDiscountAdjustment.addView(view);
@@ -130,26 +129,17 @@ public class NewOrderTotalLayout extends LinearLayout implements IRowLayout, IEd
         TextView column_name = (TextView) view.findViewById(R.id.column_name);
         TextView column_value = (TextView) view.findViewById(R.id.column_value);
         TextView removeButton = (TextView) view.findViewById(R.id.remove_icon);
-        removeButton.setVisibility(View.VISIBLE);
+        if (discount.getExcluded()) {
+            column_name.setPaintFlags(column_name.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            column_value.setPaintFlags(column_name.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            ((ViewGroup) removeButton.getParent()).removeView(removeButton);
+        } else {
+            removeButton.setVisibility(View.VISIBLE);
+        }
         removeButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                new AlertDialog.Builder(getContext())
-                        .setMessage(getResources().getString(R.string.remove_coupon_confirm))
-                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                removeCoupon(orderId, discount.getCouponCode());
-                            }
-                        })
-                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int i) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .create().show();
-
+                removeCoupon(orderId, discount.getCouponCode());
             }
         });
         column_name.setText(discount.getDiscount().getName() + " (" + discount.getCouponCode() + ")");
@@ -189,7 +179,9 @@ public class NewOrderTotalLayout extends LinearLayout implements IRowLayout, IEd
             int discountChildCount = mDiscountAdjustment.getChildCount();
             for (int i = 0; i < discountChildCount; i++) {
                 View view = mDiscountAdjustment.getChildAt(i);
-                view.findViewById(R.id.remove_icon).setVisibility(isEditMode ? View.VISIBLE : View.GONE);
+                View removeView = view.findViewById(R.id.remove_icon);
+                if (removeView != null)
+                    removeView.setVisibility(isEditMode ? View.VISIBLE : View.GONE);
             }
         }
 

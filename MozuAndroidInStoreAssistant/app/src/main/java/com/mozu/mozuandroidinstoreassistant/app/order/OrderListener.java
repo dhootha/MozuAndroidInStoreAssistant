@@ -6,6 +6,6 @@ import java.util.ArrayList;
 
 public interface OrderListener {
 
-    void orderSelected(Order order,ArrayList<Order> orderList,int position);
+    void orderSelected(Order order, ArrayList<String> orderList, int position);
 
 }

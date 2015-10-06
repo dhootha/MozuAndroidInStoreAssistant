@@ -389,8 +389,7 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
         mOrdersViewButton.setVisibility(View.INVISIBLE);
         mOrdersResultCount.setVisibility(View.INVISIBLE);
         mOrderObservable.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).
-                subscribe(new Observer<OrderCollection>() {
+                .subscribe(new Observer<OrderCollection>() {
                     @Override
                     public void onCompleted() {
                     }

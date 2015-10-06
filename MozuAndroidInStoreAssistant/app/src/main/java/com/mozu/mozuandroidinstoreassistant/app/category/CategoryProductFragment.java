@@ -1,12 +1,12 @@
 package com.mozu.mozuandroidinstoreassistant.app.category;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.SearchManager;
 import android.content.Context;
 import android.database.MatrixCursor;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,10 +31,10 @@ import com.mozu.mozuandroidinstoreassistant.app.MainActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.adapters.SearchSuggestionsCursorAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.category.adapters.CategoryProductAdapter;
+import com.mozu.mozuandroidinstoreassistant.app.category.loaders.CategoryFetcher;
 import com.mozu.mozuandroidinstoreassistant.app.data.IData;
 import com.mozu.mozuandroidinstoreassistant.app.data.category.CategoryDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.data.product.ProductDataItem;
-import com.mozu.mozuandroidinstoreassistant.app.category.loaders.CategoryFetcher;
 import com.mozu.mozuandroidinstoreassistant.app.models.RecentSearch;
 import com.mozu.mozuandroidinstoreassistant.app.models.UserPreferences;
 import com.mozu.mozuandroidinstoreassistant.app.models.authentication.UserAuthenticationStateMachine;
@@ -52,11 +52,10 @@ import butterknife.InjectView;
 import rx.Observable;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class CategoryProductFragment extends Fragment implements AdapterView.OnItemClickListener,AbsListView.OnScrollListener, SearchView.OnQueryTextListener, SearchView.OnSuggestionListener, SwipeRefreshLayout.OnRefreshListener,InventoryButtonClickListener {
+public class CategoryProductFragment extends Fragment implements AdapterView.OnItemClickListener, AbsListView.OnScrollListener, SearchView.OnQueryTextListener, SearchView.OnSuggestionListener, SwipeRefreshLayout.OnRefreshListener, InventoryButtonClickListener {
 
     private static final int MAX_NUMBER_OF_SEARCHES = 5;
     private static final int CATEGORY_IMAGELOADER_MENU_ID = 100;
@@ -89,7 +88,7 @@ public class CategoryProductFragment extends Fragment implements AdapterView.OnI
     SwipeRefreshLayout mCategoryPullToRefresh;
     private CategoryFetcher mCategoryFetcher;
     private int mCurrentPage = 0;
-    private Integer mProductCount= 0;
+    private Integer mProductCount = 0;
 
     public static CategoryProductFragment getInstance(Category category) {
         CategoryProductFragment fragment = new CategoryProductFragment();
@@ -147,20 +146,19 @@ public class CategoryProductFragment extends Fragment implements AdapterView.OnI
 
     private void loadProductInformation(final boolean reset) {
         mCategoryPullToRefresh.setRefreshing(true);
-        if( !reset && mCategoryProductAdapter != null){
+        if (!reset && mCategoryProductAdapter != null) {
             mCategoryProductAdapter.setLoadingData();
             mCategoryProductAdapter.notifyDataSetChanged();
         }
         mCategoryFetcher.setCategoryId(mCategory.getCategoryId());
         mCategoryFetcher.setCurrentPage(mCurrentPage);
         mProductObservable.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).
-                subscribe(new Observer<ProductCollection>() {
-                    List<IData> dataList = new ArrayList<IData>();
+                .subscribe(new Observer<ProductCollection>() {
+                    List<IData> dataList = new ArrayList<>();
                     @Override
                     public void onCompleted() {
                         mCategoryPullToRefresh.setRefreshing(false);
-                        if ( reset || mCategoryProductAdapter == null || mCategoryProductAdapter.getCount() == 0) {
+                        if (reset || mCategoryProductAdapter == null || mCategoryProductAdapter.getCount() == 0) {
                             for (Category category : mCategory.getChildrenCategories()) {
                                 CategoryDataItem categoryDataItem = new CategoryDataItem(category);
                                 dataList.add(0, categoryDataItem);
@@ -177,8 +175,10 @@ public class CategoryProductFragment extends Fragment implements AdapterView.OnI
                         if (mCategoryPullToRefresh.isRefreshing()) {
                             mCategoryPullToRefresh.setRefreshing(false);
                         }
-                        mCategoryProductAdapter.removeLoadingData();
-                        mCategoryProductAdapter.notifyDataSetChanged();
+                        if (mCategoryProductAdapter != null) {
+                            mCategoryProductAdapter.removeLoadingData();
+                            mCategoryProductAdapter.notifyDataSetChanged();
+                        }
                     }
 
                     @Override
@@ -220,7 +220,7 @@ public class CategoryProductFragment extends Fragment implements AdapterView.OnI
 
     void reloadData() {
         mCategoryPullToRefresh.setRefreshing(true);
-        mCategoryObservable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        mCategoryObservable.subscribeOn(Schedulers.io())
                 .flatMap(new Func1<List<Category>, Observable<Category>>() {
                     @Override
                     public Observable<Category> call(List<Category> categories) {
@@ -258,7 +258,7 @@ public class CategoryProductFragment extends Fragment implements AdapterView.OnI
 
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        if (visibleItemCount > 0 && firstVisibleItem + visibleItemCount > (int)totalItemCount / 2   && totalItemCount < mProductCount && !mCategoryPullToRefresh.isRefreshing()) {
+        if (visibleItemCount > 0 && firstVisibleItem + visibleItemCount > (int) totalItemCount / 2 && totalItemCount < mProductCount && !mCategoryPullToRefresh.isRefreshing()) {
             mCurrentPage++;
             loadProductInformation(false);
         }
@@ -273,7 +273,7 @@ public class CategoryProductFragment extends Fragment implements AdapterView.OnI
             if (mCategoryPullToRefresh.isRefreshing()) {
                 mCategoryPullToRefresh.setRefreshing(false);
             }
-            updateListGridsToCategory(dataList,false);
+            updateListGridsToCategory(dataList, false);
         }
 
         @Override
@@ -477,12 +477,12 @@ public class CategoryProductFragment extends Fragment implements AdapterView.OnI
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         IData itemAtPosition = mCategoryProductAdapter.getItem(position);
-        if(itemAtPosition instanceof CategoryDataItem) {
-            CategoryDataItem categoryDataItem = (CategoryDataItem)itemAtPosition;
+        if (itemAtPosition instanceof CategoryDataItem) {
+            CategoryDataItem categoryDataItem = (CategoryDataItem) itemAtPosition;
             mListener.onCategoryChosen(categoryDataItem.getCategory());
-        }else if(itemAtPosition instanceof  ProductDataItem){
-            ProductDataItem productDataItem = (ProductDataItem)itemAtPosition;
-            ((MainActivity)getActivity()).onProductChoosentFromProuct(productDataItem.getProduct().getProductCode());
+        } else if (itemAtPosition instanceof ProductDataItem) {
+            ProductDataItem productDataItem = (ProductDataItem) itemAtPosition;
+            ((MainActivity) getActivity()).onProductChoosentFromProuct(productDataItem.getProduct().getProductCode());
         }
     }
 

@@ -28,7 +28,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 22
         versionCode 110
-        versionName "1.1.0 - " + getDate() + " - Build " + System.getenv("BUILD_NUMBER")
+        versionName "2.0.1 - " + getDate() + " - Build " + System.getenv("BUILD_NUMBER")
     }
     signingConfigs {
         release {
@@ -109,7 +109,7 @@ android {
 
 dependencies {
     compile(name: 'viewpager', ext: 'aar')
-    compile 'com.mozu:mozu-api-android:1.18.0-RC6'
+    compile 'com.mozu:mozu-api-android:1.18.0'
     compile('com.crashlytics.sdk.android:crashlytics:2.4.0@aar') {
         transitive = true;
     }

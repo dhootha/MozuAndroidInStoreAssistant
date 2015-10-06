@@ -165,7 +165,7 @@ public class NewOrderActivity extends BaseActivity {
                 @Override
                 public void onNext(CustomerAccount customerAccount) {
                     mCustomerAccount = customerAccount;
-                    mOrderName.setText(mCustomerAccount.getLastName() + " " + mCustomerAccount.getFirstName());
+                    mOrderName.setText(mCustomerAccount.getFirstName() + " " + mCustomerAccount.getLastName());
                     mOrderEmail.setText(mCustomerAccount.getEmailAddress());
                 }
             });

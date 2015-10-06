@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.mozu.api.ApiException;
 import com.mozu.api.contracts.commerceruntime.fulfillment.FulfillmentInfo;
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.commerceruntime.payments.BillingInfo;
@@ -13,6 +14,7 @@ import com.mozu.api.contracts.customer.ContactType;
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.api.contracts.customer.CustomerContact;
 import com.mozu.mozuandroidinstoreassistant.app.customer.CustomerLookupFragment;
+import com.mozu.mozuandroidinstoreassistant.app.dialog.ErrorMessageAlertDialog;
 import com.mozu.mozuandroidinstoreassistant.app.order.NewOrderActivity;
 import com.mozu.mozuandroidinstoreassistant.app.order.loaders.NewOrderManager;
 
@@ -53,7 +55,11 @@ public class OrderCreationAddCustomerActivity extends BaseActivity {
             mSiteId = savedInstanceState.getInt(CURRENT_SITE_ID, -1);
         }
 
-        getFragmentManager().beginTransaction().replace(R.id.content_fragment_holder, CustomerLookupFragment.getInstance(mTenantId, mSiteId), "create").commit();
+        if (savedInstanceState == null) {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.content_fragment_holder, CustomerLookupFragment.getInstance(mTenantId, mSiteId), "create")
+                    .commit();
+        }
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowHomeEnabled(false);
@@ -85,6 +91,11 @@ public class OrderCreationAddCustomerActivity extends BaseActivity {
 
                     @Override
                     public void onError(Throwable e) {
+                        if (e instanceof ApiException) {
+                            ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(OrderCreationAddCustomerActivity.this, ((ApiException) e));
+                        } else {
+                            ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(OrderCreationAddCustomerActivity.this, getString(R.string.standard_error)).show();
+                        }
 
                     }
 

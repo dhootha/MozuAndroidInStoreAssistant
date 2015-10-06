@@ -40,7 +40,9 @@
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginRight="56dp"
         android:layout_weight="1"
+        android:gravity="right"
         android:text="@string/product_quantity_header"
         android:textColor="@color/light_black_text"/>
 

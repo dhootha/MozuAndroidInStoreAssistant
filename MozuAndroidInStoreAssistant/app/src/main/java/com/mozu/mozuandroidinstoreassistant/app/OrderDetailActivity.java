@@ -23,6 +23,7 @@ import com.mozu.mozuandroidinstoreassistant.app.order.loaders.OrderDetailLoader;
 import com.mozu.mozuandroidinstoreassistant.app.settings.SettingsFragment;
 import com.mozu.mozuandroidinstoreassistant.app.tasks.CustomerAsyncListener;
 import com.mozu.mozuandroidinstoreassistant.app.tasks.RetrieveCustomerAsyncTask;
+import com.mozu.mozuandroidinstoreassistant.app.utils.ContactIntentUtil;
 import com.viewpagerindicator.TabPageIndicator;
 
 import java.text.NumberFormat;
@@ -32,6 +33,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 public class OrderDetailActivity extends BaseActivity implements LoaderManager.LoaderCallbacks<Order>, CustomerAsyncListener, SwipeRefreshLayout.OnRefreshListener {
 
@@ -67,7 +69,7 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
     private TextView mOrderFulfillmentStatus;
     private Boolean mIsEditMode = false;
     private TextView mCustomerEmail;
-    private ArrayList<Order> mOrderList;
+    private ArrayList<String> mOrderList;
     private int mOrderPosition;
 
     @Override
@@ -86,7 +88,7 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
             mOrderNumber = getIntent().getStringExtra(ORDER_NUMBER_EXTRA_KEY);
             mTenantId = getIntent().getIntExtra(CURRENT_TENANT_ID, -1);
             mSiteId = getIntent().getIntExtra(CURRENT_SITE_ID, -1);
-            mOrderList = (ArrayList<Order>) (getIntent().getSerializableExtra(OrderDetailActivity.ORDER_LIST));
+            mOrderList = (ArrayList<String>) (getIntent().getSerializableExtra(OrderDetailActivity.ORDER_LIST));
             mOrderPosition = getIntent().getIntExtra(OrderDetailActivity.ORDER_LIST_POSITION, -1);
         } else if (savedInstanceState != null) {
             mOrderNumber = savedInstanceState.getString(ORDER_NUMBER_EXTRA_KEY);
@@ -120,19 +122,19 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
             mPreviousOrder.setVisibility(View.GONE);
             mNextOrder.setVisibility(View.GONE);
         } else {
-            if(mOrderPosition == 0){
+            if (mOrderPosition == 0) {
                 mPreviousOrder.setVisibility(View.GONE);
             }
-            if(mOrderPosition == mOrderList.size()-1){
+            if (mOrderPosition == mOrderList.size() - 1) {
                 mNextOrder.setVisibility(View.GONE);
             }
 
             mPreviousOrder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Order order = mOrderList.get(mOrderPosition - 1);
+                    String orderId = mOrderList.get(mOrderPosition - 1);
                     Intent intent = new Intent(OrderDetailActivity.this, OrderDetailActivity.class);
-                    intent.putExtra(OrderDetailActivity.ORDER_NUMBER_EXTRA_KEY, order.getId());
+                    intent.putExtra(OrderDetailActivity.ORDER_NUMBER_EXTRA_KEY, orderId);
                     intent.putExtra(OrderDetailActivity.ORDER_LIST, mOrderList);
                     intent.putExtra(OrderDetailActivity.ORDER_LIST_POSITION, mOrderPosition - 1);
                     intent.putExtra(OrderDetailActivity.CURRENT_TENANT_ID, mTenantId);
@@ -144,9 +146,9 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
             mNextOrder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Order order = mOrderList.get(mOrderPosition + 1);
+                    String orderId = mOrderList.get(mOrderPosition + 1);
                     Intent intent = new Intent(OrderDetailActivity.this, OrderDetailActivity.class);
-                    intent.putExtra(OrderDetailActivity.ORDER_NUMBER_EXTRA_KEY, order.getId());
+                    intent.putExtra(OrderDetailActivity.ORDER_NUMBER_EXTRA_KEY, orderId);
                     intent.putExtra(OrderDetailActivity.ORDER_LIST, mOrderList);
                     intent.putExtra(OrderDetailActivity.ORDER_LIST_POSITION, mOrderPosition + 1);
                     intent.putExtra(OrderDetailActivity.CURRENT_TENANT_ID, mTenantId);
@@ -155,6 +157,7 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
                     finish();
                 }
             });
+
         }
         mCustomerName.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -178,6 +181,22 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
 
         mOrderViewPager = (ViewPager) findViewById(R.id.order_detail_sections_viewpager);
         mTabIndicator = (TabPageIndicator) findViewById(R.id.order_detail_sections);
+        mTabIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                setEditModeVisibility(position == 0);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         if (getLoaderManager().getLoader(LOADER_ORDER_DETAIL) == null) {
             getLoaderManager().initLoader(LOADER_ORDER_DETAIL, null, this).forceLoad();
@@ -194,6 +213,14 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
                 R.color.third_color_swipe_refresh,
                 R.color.fourth_color_swipe_refresh);
 
+    }
+
+    @OnClick(R.id.customer_email)
+    public void emailCustomer() {
+        if (mCustomerEmail == null || mCustomerEmail.getText().toString().isEmpty()) {
+            return;
+        }
+        ContactIntentUtil.launchEmailIntent(this, mCustomerEmail.getText().toString());
     }
 
     @Override

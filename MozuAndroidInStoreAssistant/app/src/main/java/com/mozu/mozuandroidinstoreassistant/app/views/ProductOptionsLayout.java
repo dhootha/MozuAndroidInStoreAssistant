@@ -17,10 +17,10 @@ import java.util.List;
 
 public class ProductOptionsLayout extends LinearLayout {
 
+    public onOptionChangeListener mOnOptionChangeListener;
     private TextView mTitle;
     private Spinner mSpinner;
     private TextView mValue;
-    public onOptionChangeListener mOnOptionChangeListener;
     private String mAttributeFQN;
 
     public ProductOptionsLayout(Context context, onOptionChangeListener optionChangeListener) {
@@ -68,12 +68,12 @@ public class ProductOptionsLayout extends LinearLayout {
         mTitle.setText(title);
     }
 
-    public void setAttributeFQN(String attributeFQN) {
-        mAttributeFQN = attributeFQN;
-    }
-
     public String getAttributeFQN() {
         return mAttributeFQN;
+    }
+
+    public void setAttributeFQN(String attributeFQN) {
+        mAttributeFQN = attributeFQN;
     }
 
     public String getAttributeValue() {
@@ -97,6 +97,10 @@ public class ProductOptionsLayout extends LinearLayout {
             mValue.setText(productOptions.get(0).getValue().toString());
         }
         mSpinner.setAdapter(spinnerAdapter);
+    }
+
+    public interface onOptionChangeListener {
+        public void onOptionChanged();
     }
 
     class SpinnerAdapter extends ArrayAdapter<ProductOptionValue> {
@@ -125,9 +129,5 @@ public class ProductOptionsLayout extends LinearLayout {
 
         }
 
-    }
-
-    public interface onOptionChangeListener {
-        public void onOptionChanged();
     }
 }

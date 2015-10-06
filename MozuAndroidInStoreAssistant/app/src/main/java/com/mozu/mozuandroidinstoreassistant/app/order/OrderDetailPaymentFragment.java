@@ -59,9 +59,9 @@ public class OrderDetailPaymentFragment extends Fragment {
         }
     }
 
-    private Double getTotalPayment(List<Payment> payments){
+    private Double getTotalPayment(List<Payment> payments) {
         Double total = 0.0;
-        for(Payment payment:payments){
+        for (Payment payment : payments) {
             total += payment.getAmountCollected();
         }
         return total;
@@ -71,42 +71,41 @@ public class OrderDetailPaymentFragment extends Fragment {
     private void setOrderToViews(View view) {
         ListView paymentList = (ListView) view.findViewById(R.id.payments_list);
         List<Payment> payments = mOrder.getPayments();
-        Collections.sort(payments,new PaymentsSort());
-        final OrderDetailPaymentsAdapter adapter = new OrderDetailPaymentsAdapter(getActivity(), payments);
-        paymentList.setAdapter(adapter);
         TextView emptyView = (TextView) view.findViewById(R.id.empty_payments_message);
-        paymentList.setEmptyView(emptyView);
+        if (payments != null && payments.size() > 0) {
+            Collections.sort(payments, new PaymentsSort());
+            final OrderDetailPaymentsAdapter adapter = new OrderDetailPaymentsAdapter(getActivity(), payments);
+            paymentList.setAdapter(adapter);
 
-        if (mOrder.getPayments() == null || mOrder.getPayments().size() < 1) {
-            emptyView.setVisibility(View.VISIBLE);
-        } else {
+            paymentList.setEmptyView(emptyView);
             emptyView.setVisibility(View.GONE);
-        }
 
-        TextView orderTotal = (TextView) view.findViewById(R.id.order_total);
-        TextView paymentsReceived = (TextView) view.findViewById(R.id.payments_received);
-        TextView balance = (TextView) view.findViewById(R.id.balance);
-        TextView status = (TextView) view.findViewById(R.id.status);
-        if (mOrder.getPaymentStatus() != null) {
-            status.setText(mOrder.getPaymentStatus());
-        } else {
-            status.setText("N/A");
-        }
-        orderTotal.setText(mNumberFormat.format(mOrder.getTotal()));
-        Double amountCollected = getTotalPayment(payments);
-        paymentsReceived.setText(mNumberFormat.format(amountCollected));
-        balance.setText(mNumberFormat.format(mOrder.getTotal() - amountCollected));
-        paymentList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                FragmentManager manager = getFragmentManager();
-                Payment payment = adapter.getItem(position);
-                PaymentInfoFragment frag = PaymentInfoFragment.getInstance(payment);
-                frag.show(manager,"payment_info");
+            TextView orderTotal = (TextView) view.findViewById(R.id.order_total);
+            TextView paymentsReceived = (TextView) view.findViewById(R.id.payments_received);
+            TextView balance = (TextView) view.findViewById(R.id.balance);
+            TextView status = (TextView) view.findViewById(R.id.status);
+            if (mOrder.getPaymentStatus() != null) {
+                status.setText(mOrder.getPaymentStatus());
+            } else {
+                status.setText(getString(R.string.not_available));
             }
-        });
+            orderTotal.setText(mNumberFormat.format(mOrder.getTotal()));
+            Double amountCollected = getTotalPayment(payments);
+            paymentsReceived.setText(mNumberFormat.format(amountCollected));
+            balance.setText(mNumberFormat.format(mOrder.getTotal() - amountCollected));
+            paymentList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                    FragmentManager manager = getFragmentManager();
+                    Payment payment = adapter.getItem(position);
+                    PaymentInfoFragment frag = PaymentInfoFragment.getInstance(payment);
+                    frag.show(manager, "payment_info");
+                }
+            });
+        } else {
+            emptyView.setVisibility(View.VISIBLE);
+        }
     }
-
 
 
     public void setOrder(Order order) {

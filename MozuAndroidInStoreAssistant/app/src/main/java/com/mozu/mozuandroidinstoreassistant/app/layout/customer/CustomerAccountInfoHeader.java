@@ -3,6 +3,7 @@ package com.mozu.mozuandroidinstoreassistant.app.layout.customer;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -10,6 +11,7 @@ import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.data.IData;
 import com.mozu.mozuandroidinstoreassistant.app.data.customer.CustomerOverviewDataItem;
 import com.mozu.mozuandroidinstoreassistant.app.layout.IRowLayout;
+import com.mozu.mozuandroidinstoreassistant.app.utils.ContactIntentUtil;
 
 public class CustomerAccountInfoHeader extends LinearLayout implements IRowLayout {
     public CustomerAccountInfoHeader(Context context) {
@@ -25,7 +27,7 @@ public class CustomerAccountInfoHeader extends LinearLayout implements IRowLayou
     }
 
     @Override
-    public void bindData(IData data) {
+    public void bindData(final IData data) {
         TextView header1 = (TextView) findViewById(R.id.header1);
         TextView value1 = (TextView) findViewById(R.id.value1);
         TextView header2 = (TextView) findViewById(R.id.header2);
@@ -53,6 +55,24 @@ public class CustomerAccountInfoHeader extends LinearLayout implements IRowLayou
                 value2.setText(info.getValue2());
             } else {
                 value2.setText(getResources().getString(R.string.not_available));
+            }
+
+            if (header1.getText().toString().contains("Email")) {
+                value1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ContactIntentUtil.launchEmailIntent(getContext(), ((CustomerOverviewDataItem) data).getValue1());
+                    }
+                });
+            }
+
+            if (header2.getText().toString().contains("Email")) {
+                value2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ContactIntentUtil.launchEmailIntent(getContext(), ((CustomerOverviewDataItem) data).getValue1());
+                    }
+                });
             }
 
         } else {
