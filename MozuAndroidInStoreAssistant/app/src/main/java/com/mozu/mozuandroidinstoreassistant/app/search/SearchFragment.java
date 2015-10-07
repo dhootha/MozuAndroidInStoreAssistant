@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.MatrixCursor;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -61,7 +62,9 @@ import rx.subscriptions.Subscriptions;
 public class SearchFragment extends Fragment implements  SearchView.OnSuggestionListener{
 
     public static final int MAX_NUMBER_OF_SEARCHES = 50;
-
+    private static String TENANT_ID = "tenantId";
+    private static String SITE_ID = "siteId";
+    Subscription mSubscription = Subscriptions.empty();
     private View mView;
     private ListView mOrdersSearchView;
     private ListView mProductsSearchView;
@@ -72,7 +75,6 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
     private LoadingView mOrderLoadingView;
     private LoadingView mProductLoadingView;
     private LoadingView mCustomerLoadingView;
-
     private LinearLayout mOrderLayout;
     private LinearLayout mProductLayout;
     private LinearLayout mCustomerLayout;
@@ -84,14 +86,8 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
     private String mCustomerSearchString;
     private String mOrderSearchString;
     private String mProductSearchString;
-
-    private static String TENANT_ID = "tenantId";
-    private static String SITE_ID = "siteId";
-
     private Integer mTenantId;
     private Integer mSiteId;
-    Subscription mSubscription = Subscriptions.empty();
-
     private SearchFetcher mSearchFetcher;
     private GlobalSearchOrderAdapter mOrderAdapter;
     private GlobalSearchProductAdapter mProductAdapter;
@@ -310,60 +306,12 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
         }
     }
 
-    private class OrderViewListener implements View.OnClickListener{
-
-        @Override
-        public void onClick(View view) {
-            if (!TextUtils.isEmpty(mOrderSearchString)) {
-                ((GlobalSearchListener) getActivity()).onOrderLaunch(mOrderSearchString);
-            }
-
-        }
-    }
-
-    private class ProductViewListener implements View.OnClickListener{
-
-        @Override
-        public void onClick(View view) {
-            if(!TextUtils.isEmpty(mProductSearchString)){
-                mSearchMenuItem.collapseActionView();
-                ((GlobalSearchListener) getActivity()).launchProductSearch(mProductSearchString);
-            }
-        }
-    }
-
-    private class CustomerViewListener implements View.OnClickListener{
-
-        @Override
-        public void onClick(View view) {
-            if(!TextUtils.isEmpty(mCustomerSearchString)){
-                mSearchMenuItem.collapseActionView();
-                ((GlobalSearchListener) getActivity()).launchCustomerSearch(mCustomerSearchString);
-            }
-
-        }
-    }
-
-
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.search, menu);
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
         mSearchMenuItem  = menu.findItem(R.id.search);
-       mSearchMenuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem menuItem) {
-                return true;
-            }
-
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem menuItem) {
-                onBackPressed();
-                return true;
-            }
-        });
         mSearchView = (SearchView) mSearchMenuItem.getActionView();
         mSearchView.setQueryHint(getString(R.string.global_search_hint));
         mSearchView.setMaxWidth(1500);
@@ -393,10 +341,24 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
             }
         });
 
+        if (mSearchMenuItem != null) {
+            MenuItemCompat.setOnActionExpandListener(mSearchMenuItem, new MenuItemCompat.OnActionExpandListener() {
+                @Override
+                public boolean onMenuItemActionExpand(MenuItem menuItem) {
+                    return true;
+                }
+
+                @Override
+                public boolean onMenuItemActionCollapse(MenuItem menuItem) {
+                    onBackPressed();
+                    return true;
+                }
+            });
+            MenuItemCompat.setActionView(mSearchMenuItem, mSearchView);
+        }
 
 
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -405,7 +367,6 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
        }
         return super.onOptionsItemSelected(item);
     }
-
 
     @Override
     public void onDestroyView() {
@@ -417,7 +378,6 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
         InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(mSearchView.getWindowToken(), 0);
     }
-
 
     public void performSearch(final String s){
         mSearchView.clearFocus();
@@ -548,6 +508,7 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
                 });
     }
 
+
     public interface GlobalSearchListener {
 
         public void onOrderLaunch(String searchQuery);
@@ -555,6 +516,40 @@ public class SearchFragment extends Fragment implements  SearchView.OnSuggestion
         public void launchProductSearch(String searchQuery);
 
         public void launchCustomerSearch(String searchQuery);
+    }
+
+    private class OrderViewListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View view) {
+            if (!TextUtils.isEmpty(mOrderSearchString)) {
+                ((GlobalSearchListener) getActivity()).onOrderLaunch(mOrderSearchString);
+            }
+
+        }
+    }
+
+    private class ProductViewListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View view) {
+            if (!TextUtils.isEmpty(mProductSearchString)) {
+                mSearchMenuItem.collapseActionView();
+                ((GlobalSearchListener) getActivity()).launchProductSearch(mProductSearchString);
+            }
+        }
+    }
+
+    private class CustomerViewListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View view) {
+            if (!TextUtils.isEmpty(mCustomerSearchString)) {
+                mSearchMenuItem.collapseActionView();
+                ((GlobalSearchListener) getActivity()).launchCustomerSearch(mCustomerSearchString);
+            }
+
+        }
     }
 
 }

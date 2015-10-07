@@ -7,8 +7,9 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -51,6 +52,7 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
     private ActionBarDrawerToggle mDrawerToggle;
     private int mCurrentlySelectedNavItem;
     private boolean mLaunchSettings;
+    private Toolbar mToolbar;
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -66,6 +68,8 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         }
 
         setContentView(R.layout.activity_main);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
         mLaunchSettings = getIntent().getBooleanExtra(LAUNCH_SETTINGS, false);
         mSearchMenuLayout = (LinearLayout) findViewById(R.id.menu_search_layout);
         mSearchMenuLayout.setOnClickListener(this);
@@ -134,14 +138,17 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
 
     private void setupDrawer() {
         //holder, will show whatever fragment is in main content area
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
+        if (getSupportActionBar() == null) {
+            return;
+        }
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,
                 mDrawerLayout,
-                R.drawable.actionbar_menu_button,
+                mToolbar,
                 R.string.drawer_open,
                 R.string.drawer_close
         ) {
@@ -288,26 +295,26 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
 
     public void setProductSelected() {
         resetSelected();
-        getActionBar().setTitle(R.string.menu_products_text);
+        getSupportActionBar().setTitle(R.string.menu_products_text);
         mProductsLayout.setSelected(true);
     }
 
     public void setOrdersSelected() {
         resetSelected();
-        getActionBar().setTitle(R.string.menu_orders_text);
+        getSupportActionBar().setTitle(R.string.menu_orders_text);
         mOrdersLayout.setSelected(true);
     }
 
     public void setCustomersSelected() {
         resetSelected();
-        getActionBar().setTitle(R.string.menu_customers_text);
+        getSupportActionBar().setTitle(R.string.menu_customers_text);
         mCustomersLayout.setSelected(true);
 
     }
 
     public void setSearchSelected() {
         resetSelected();
-        getActionBar().setTitle(R.string.menu_search_text);
+        getSupportActionBar().setTitle(R.string.menu_search_text);
         mSearchMenuLayout.setSelected(true);
     }
 

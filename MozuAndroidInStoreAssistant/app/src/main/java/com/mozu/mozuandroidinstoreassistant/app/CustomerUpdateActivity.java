@@ -14,6 +14,8 @@ import com.mozu.mozuandroidinstoreassistant.app.customer.adapters.CustomerAddres
 import java.util.HashSet;
 import java.util.Set;
 
+import butterknife.ButterKnife;
+
 public class CustomerUpdateActivity extends BaseActivity implements CustomerCreationListener, CustomerAddressesAdapter.AddressEditListener {
 
     public static final String CUSTOMER = "customer";
@@ -28,10 +30,16 @@ public class CustomerUpdateActivity extends BaseActivity implements CustomerCrea
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        if (getActionBar() != null) {
+            getActionBar().hide();
+        }
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_create_customer);
-
+        ButterKnife.inject(this);
         if (savedInstanceState != null) {
             mTenantId = savedInstanceState.getInt(CURRENT_TENANT_ID, -1);
             mSiteId = savedInstanceState.getInt(CURRENT_SITE_ID, -1);
@@ -69,10 +77,6 @@ public class CustomerUpdateActivity extends BaseActivity implements CustomerCrea
                 CustomerCreationFragment customerCreationFragment = CustomerCreationFragment.getInstance(mTenantId, mSiteId);
                 getFragmentManager().beginTransaction().replace(R.id.content_fragment_holder, customerCreationFragment, "create_customer").commit();
             }
-        }
-
-        if (getActionBar() != null) {
-            getActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
 

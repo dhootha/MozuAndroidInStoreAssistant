@@ -4,13 +4,11 @@ import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.pm.ActivityInfo;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -97,12 +95,14 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
             mTenantId = savedInstanceState.getInt(CURRENT_TENANT_ID, -1);
             mSiteId = savedInstanceState.getInt(CURRENT_SITE_ID, -1);
         }
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        if (getActionBar() != null) {
-            getActionBar().setDisplayShowHomeEnabled(false);
-            getActionBar().setDisplayHomeAsUpEnabled(true);
-            getActionBar().setDisplayShowCustomEnabled(true);
-            getActionBar().setTitle(" ");
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowHomeEnabled(false);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowCustomEnabled(true);
+            getSupportActionBar().setTitle(" ");
         }
 
         enterEditMode.setOnClickListener(new View.OnClickListener() {
@@ -172,7 +172,7 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
 
         mOrderFulfillmentStatus = (TextView) findViewById(R.id.order_fulfillment_status);
 
-        mTitles = new ArrayList<String>();
+        mTitles = new ArrayList<>();
         mTitles.add(getString(R.string.overview_tab_name));
         mTitles.add(getString(R.string.fullfillment_tab_name));
         mTitles.add(getString(R.string.payment_tab_name));
@@ -289,15 +289,9 @@ public class OrderDetailActivity extends BaseActivity implements LoaderManager.L
         }
 
         new RetrieveCustomerAsyncTask(this, this, mSiteId, mTenantId, mOrder.getCustomerAccountId()).execute();
-        TextView tv = new TextView(this);
-        tv.setText("Order #" + mOrder.getOrderNumber());
-
-        tv.setPadding(getResources().getDimensionPixelSize(R.dimen.order_actionbar_margin_left), 0, 0, 0);
-        tv.setGravity(Gravity.CENTER);
-        tv.setTextColor(getResources().getColor(R.color.dark_gray_text));
-        tv.setTypeface(null, Typeface.BOLD);
-        tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-        getActionBar().setCustomView(tv);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Order #" + mOrder.getOrderNumber());
+        }
 
         String date = mOrder.getSubmittedDate() != null ? DateFormat.format("MM/dd/yy  hh:mm a", new Date(mOrder.getSubmittedDate().getMillis())).toString() : "";
 

@@ -119,6 +119,7 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         mTenantId = getArguments().getInt(CustomerUpdateActivity.CURRENT_TENANT_ID, -1);

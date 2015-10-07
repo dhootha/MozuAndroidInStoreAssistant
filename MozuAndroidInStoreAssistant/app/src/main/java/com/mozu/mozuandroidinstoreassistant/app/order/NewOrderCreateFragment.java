@@ -372,8 +372,7 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
 
             }
         });
-
-
+        
         mProductLookup.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
