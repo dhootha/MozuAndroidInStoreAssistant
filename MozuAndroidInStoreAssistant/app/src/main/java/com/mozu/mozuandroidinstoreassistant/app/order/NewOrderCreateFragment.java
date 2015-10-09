@@ -432,11 +432,8 @@ public class NewOrderCreateFragment extends Fragment implements NewOrderItemEdit
         mProductsAdapter.addData(mOrder);
         mProductsAdapter.setEditMode(mIsEditMode);
         mProductsAdapter.notifyDataSetChanged();
-        if (getActivity() instanceof NewOrderActivity) {
-            ((NewOrderActivity) getActivity()).updateOrder(mOrder);
-        } else if (getActivity() instanceof OrderDetailActivity) {
+        if (getActivity() instanceof OrderDetailActivity) {
             ((OrderDetailActivity) getActivity()).onRefresh();
-
         }
     }
 
