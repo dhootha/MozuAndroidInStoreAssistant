@@ -268,7 +268,7 @@ public class ProductDetailOverviewFragment extends Fragment implements ProductOp
         if (hasSalePrice(mProduct)) {
             String saleText = getSaleText();
             if (saleText != null) {
-                saleString = new StringBuffer(saleText);
+                saleString.append(saleText);
                 saleString.append(" - ");
             }
             saleString.append(format.format(mProduct.getPrice().getSalePrice()));
