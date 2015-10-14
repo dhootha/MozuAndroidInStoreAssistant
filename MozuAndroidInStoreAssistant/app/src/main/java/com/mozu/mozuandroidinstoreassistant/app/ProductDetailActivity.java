@@ -22,9 +22,9 @@ import android.widget.TextView;
 
 import com.mozu.api.contracts.productruntime.Product;
 import com.mozu.api.contracts.productruntime.ProductImage;
+import com.mozu.mozuandroidinstoreassistant.app.models.ImageURLConverter;
 import com.mozu.mozuandroidinstoreassistant.app.product.adapter.ProductDetailSectionPagerAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.product.loaders.ProductDetailLoader;
-import com.mozu.mozuandroidinstoreassistant.app.models.ImageURLConverter;
 import com.mozu.mozuandroidinstoreassistant.app.settings.SettingsFragment;
 import com.mozu.mozuandroidinstoreassistant.app.views.LoadingView;
 import com.mozu.mozuandroidinstoreassistant.app.views.ProductDetailImageTransformation;
