@@ -256,12 +256,24 @@ public class ProductDetailOverviewFragment extends Fragment implements ProductOp
         return product.getPrice() != null && product.getPrice().getSalePrice() != null;
     }
 
+    private String getSaleText() {
+        if (mProduct.getPrice().getDiscount() != null && mProduct.getPrice().getDiscount().getDiscount() != null) {
+            return mProduct.getPrice().getDiscount().getDiscount().getName();
+        }
+        return null;
+    }
+
     private String getSalePriceText(NumberFormat format) {
-        StringBuffer saleString = new StringBuffer("N/A");
+        StringBuffer saleString = new StringBuffer();
         if (hasSalePrice(mProduct)) {
-            saleString = new StringBuffer(mProduct.getPrice().getDiscount().getDiscount().getName());
-            saleString.append(" - ");
+            String saleText = getSaleText();
+            if (saleText != null) {
+                saleString.append(saleText);
+                saleString.append(" - ");
+            }
             saleString.append(format.format(mProduct.getPrice().getSalePrice()));
+        } else {
+            saleString.append("N/A");
         }
 
         return saleString.toString();
