@@ -40,7 +40,7 @@
     <dimen name="category_grid_horizontal_spacing">3dp</dimen>
     <dimen name="category_grid_vertical_spacing">4dp</dimen>
 
-    <dimen name="product_grid_horizontal_spacing">dp</dimen>
+    <dimen name="product_grid_horizontal_spacing">12dp</dimen>
     <dimen name="product_grid_vertical_spacing">12dp</dimen>
     <dimen name="order_title_margin_right">64dp</dimen>
 

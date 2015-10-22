@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/menu_search_layout"
+            android:icon="@drawable/icon_search_menu"
+            android:title="Search"
+            />
+
+        <item
+            android:id="@+id/menu_products_layout"
+            android:icon="@drawable/icon_products_menu"
+            android:title="Products"
+            />
+
+        <item
+            android:id="@+id/menu_orders_layout"
+            android:icon="@drawable/icon_orders_menu"
+            android:title="Orders"/>
+        <item
+            android:id="@+id/menu_customers_layout"
+            android:icon="@drawable/icon_customers_menu"
+            android:title="Customers"/>
+        <item
+            android:id="@+id/menu_bluetooth_layout"
+            android:icon="@android:drawable/stat_sys_data_bluetooth"
+            android:title="Bluetooth"/>
+    </group>
+
+</menu>

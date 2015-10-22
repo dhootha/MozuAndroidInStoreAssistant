@@ -7,13 +7,16 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.mozu.api.contracts.commerceruntime.orders.Order;
 import com.mozu.api.contracts.customer.CustomerAccount;
@@ -39,20 +42,24 @@ import com.mozu.mozuandroidinstoreassistant.app.settings.SettingsFragment;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AuthActivity implements View.OnClickListener, CategoryFragmentListener, ProductFragmentListener, ProductListListener, OrderListener, CustomerListener, CreateOrderListener, SearchFragment.GlobalSearchListener {
+public class MainActivity extends AuthActivity implements CategoryFragmentListener, ProductFragmentListener, ProductListListener, OrderListener, CustomerListener, CreateOrderListener, SearchFragment.GlobalSearchListener, NavigationView.OnNavigationItemSelectedListener {
 
     private static final String CATEGORY_FRAGMENT = "category_fragment_taggy_tag_tag";
     private static final String CURRENTLY_SELECTED_NAV_VIEW_ID = "CURRENTLY_SELECTED_NAV_VIEW_ID";
+    private static final String SEARCH = "search";
+    private static final String ORDERS = "orders";
+    private static final String PRODUCTS = "products";
+    private static final String CUSTOMERS = "customers";
+    private static final String BLUETOOTH = "bluetooth";
     public static String LAUNCH_SETTINGS = "launchSettings";
-    private LinearLayout mSearchMenuLayout;
-    private LinearLayout mProductsLayout;
-    private LinearLayout mOrdersLayout;
-    private LinearLayout mCustomersLayout;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private int mCurrentlySelectedNavItem;
     private boolean mLaunchSettings;
     private Toolbar mToolbar;
+    private NavigationView mNavigationView;
+    private DrawerLayout mDrawer;
+    private String title;
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -71,17 +78,15 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         mLaunchSettings = getIntent().getBooleanExtra(LAUNCH_SETTINGS, false);
-        mSearchMenuLayout = (LinearLayout) findViewById(R.id.menu_search_layout);
-        mSearchMenuLayout.setOnClickListener(this);
 
-        mProductsLayout = (LinearLayout) findViewById(R.id.menu_products_layout);
-        mProductsLayout.setOnClickListener(this);
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, mDrawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawer.setDrawerListener(toggle);
+        toggle.syncState();
 
-        mOrdersLayout = (LinearLayout) findViewById(R.id.menu_orders_layout);
-        mOrdersLayout.setOnClickListener(this);
-
-        mCustomersLayout = (LinearLayout) findViewById(R.id.menu_customers_layout);
-        mCustomersLayout.setOnClickListener(this);
+        mNavigationView = (NavigationView) findViewById(R.id.nav_view);
+        mNavigationView.setNavigationItemSelectedListener(this);
 
         if (getActionBar() != null) {
             getActionBar().setTitle(R.string.menu_products_text);
@@ -89,19 +94,25 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
             getActionBar().setLogo(getResources().getDrawable(android.R.color.transparent));
             getActionBar().setDisplayUseLogoEnabled(false);
         }
-        mProductsLayout.setSelected(true);
 
         if (savedInstanceState == null) {
             mCurrentlySelectedNavItem = R.id.menu_products_layout;
             initializeCategoryFragment(true);
-        } else {
-            updateNavView(savedInstanceState.getInt(CURRENTLY_SELECTED_NAV_VIEW_ID, R.id.menu_products_layout));
+            mNavigationView.getMenu().getItem(1).setChecked(true);
         }
+
+        setupDrawer();
+
+        View headerView = LayoutInflater.from(this).inflate(R.layout.nav_header_main, null);
+        TextView email = (TextView) headerView.findViewById(R.id.email);
+        email.setText(UserAuthenticationStateMachineProducer.getInstance(this).getAuthProfile().getUserProfile().getEmailAddress());
+        TextView domain = (TextView) headerView.findViewById(R.id.url);
+        domain.setText(UserAuthenticationStateMachineProducer.getInstance(this).getSiteName());
+        mNavigationView.addHeaderView(headerView);
         if (mLaunchSettings) {
             showSettings();
         }
 
-        setupDrawer();
     }
 
 
@@ -201,44 +212,6 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         settingsFragment.show(getFragmentManager(), "main_settings_frag");
     }
 
-    @Override
-    public void onClick(View v) {
-        updateNavView(v.getId());
-
-        if (v.getId() == R.id.menu_search_layout) {
-            initializeSearchFragment();
-        } else if (v.getId() == R.id.menu_products_layout) {
-            initializeCategoryFragment(false);
-        } else if (v.getId() == R.id.menu_orders_layout) {
-            initializeOrdersFragment();
-        } else if (v.getId() == R.id.menu_customers_layout) {
-            initializeCustomersFragment();
-        }
-
-        if (mDrawerLayout != null) {
-            mDrawerLayout.closeDrawers();
-        }
-    }
-
-    private void updateNavView(int viewId) {
-        mCurrentlySelectedNavItem = viewId;
-
-        mSearchMenuLayout.setSelected(false);
-        mProductsLayout.setSelected(false);
-        mOrdersLayout.setSelected(false);
-        mCustomersLayout.setSelected(false);
-
-        if (viewId == R.id.menu_search_layout) {
-            setSearchSelected();
-        } else if (viewId == R.id.menu_products_layout) {
-            setProductSelected();
-        } else if (viewId == R.id.menu_orders_layout) {
-            setOrdersSelected();
-        } else if (viewId == R.id.menu_customers_layout) {
-            setCustomersSelected();
-        }
-    }
-
     private void initializeCategoryFragment(boolean isFirstLaunch) {
         if (isFirstLaunch) {
             FragmentManager fragmentManager = getFragmentManager();
@@ -254,6 +227,25 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         }
     }
 
+    public void setSearchSelected() {
+        getSupportActionBar().setTitle(R.string.menu_search_text);
+        mNavigationView.getMenu().getItem(0);
+    }
+
+    public void setProductSelected() {
+        getSupportActionBar().setTitle(R.string.menu_products_text);
+        mNavigationView.getMenu().getItem(1);
+    }
+
+    public void setOrdersSelected() {
+        getSupportActionBar().setTitle(R.string.menu_orders_text);
+        mNavigationView.getMenu().getItem(2);
+    }
+
+    public void setCustomersSelected() {
+        getSupportActionBar().setTitle(R.string.menu_customers_text);
+        mNavigationView.getMenu().getItem(3);
+    }
 
     private void initializeOrdersFragment() {
         UserAuthenticationStateMachine userStateMachine = UserAuthenticationStateMachineProducer.getInstance(this);
@@ -266,6 +258,7 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
     }
 
     private void initializeCustomersFragment() {
+        getSupportActionBar().setTitle(R.string.customers);
         UserAuthenticationStateMachine userStateMachine = UserAuthenticationStateMachineProducer.getInstance(this);
         CustomersFragment fragment = new CustomersFragment();
         fragment.setTenantId(userStateMachine.getTenantId());
@@ -281,42 +274,12 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
     }
 
     private void initializeSearchFragment() {
+        getSupportActionBar().setTitle(R.string.global_search_hint);
         UserAuthenticationStateMachine userStateMachine = UserAuthenticationStateMachineProducer.getInstance(this);
         SearchFragment fragment = SearchFragment.getInstance(userStateMachine.getTenantId(), userStateMachine.getSiteId());
         addMainFragment(fragment, true);
     }
 
-    private void resetSelected() {
-        mProductsLayout.setSelected(false);
-        mOrdersLayout.setSelected(false);
-        mCustomersLayout.setSelected(false);
-        mSearchMenuLayout.setSelected(false);
-    }
-
-    public void setProductSelected() {
-        resetSelected();
-        getSupportActionBar().setTitle(R.string.menu_products_text);
-        mProductsLayout.setSelected(true);
-    }
-
-    public void setOrdersSelected() {
-        resetSelected();
-        getSupportActionBar().setTitle(R.string.menu_orders_text);
-        mOrdersLayout.setSelected(true);
-    }
-
-    public void setCustomersSelected() {
-        resetSelected();
-        getSupportActionBar().setTitle(R.string.menu_customers_text);
-        mCustomersLayout.setSelected(true);
-
-    }
-
-    public void setSearchSelected() {
-        resetSelected();
-        getSupportActionBar().setTitle(R.string.menu_search_text);
-        mSearchMenuLayout.setSelected(true);
-    }
 
     public void addMainFragment(Fragment newFragment, boolean addToBackStack) {
         FragmentManager fragmentManager = getFragmentManager();
@@ -328,7 +291,7 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out);
         fragmentTransaction.add(R.id.content_fragment_holder, newFragment);
         if (addToBackStack) {
-            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.addToBackStack((String) getSupportActionBar().getTitle());
         }
         fragmentTransaction.commit();
     }
@@ -495,4 +458,31 @@ public class MainActivity extends AuthActivity implements View.OnClickListener, 
         fragment.setLauncedFromSearch();
         addMainFragment(fragment, true);
     }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        int selected = item.getItemId();
+        switch (selected) {
+            case R.id.menu_search_layout:
+                initializeSearchFragment();
+                break;
+            case R.id.menu_orders_layout:
+                initializeOrdersFragment();
+                break;
+            case R.id.menu_products_layout:
+                initializeCategoryFragment(true);
+                break;
+            case R.id.menu_customers_layout:
+                initializeCustomersFragment();
+                break;
+            case R.id.menu_bluetooth_layout:
+            default:
+                initializeSearchFragment();
+                break;
+        }
+
+        mDrawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
 }

@@ -39,6 +39,12 @@
         <item name="vpiTabPageIndicatorStyle">@style/CustomTabPageIndicator</item>
     </style>
 
+    <style name="Theme.Mozu.NavigationView" parent="Theme.AppCompat.Light">
+        <item name="colorPrimary">@color/mozu_color</item>
+        <item name="colorPrimaryDark">#303030</item>
+        <item name="colorAccent">@color/accent_material_light</item>
+    </style>
+
     <style name="PopupMenu.Mozu" parent="@android:style/Widget.Holo.Light.ListPopupWindow">
         <item name="android:popupBackground">@drawable/menu_dropdown_panel_mozu</item>
     </style>

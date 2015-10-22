@@ -344,6 +344,8 @@
     <string name="empty_shipping_rates">No shipping information available</string>
     <string name="shipping_display_format"><![CDATA[ &nbsp&nbsp&nbsp <font color=\'#df3018\'> %1$s </font> ]]></string>
     <string name="delete_address">Are you sure you want to delete this address?</string>
+    <string name="navigation_drawer_open">open</string>
+    <string name="navigation_drawer_close">close</string>
     <string-array name="register_email_address">
         <item>mozumobile@volusion.com</item>
     </string-array>
