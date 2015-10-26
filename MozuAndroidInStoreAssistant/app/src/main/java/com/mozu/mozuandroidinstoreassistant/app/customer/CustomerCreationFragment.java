@@ -284,6 +284,7 @@ public class CustomerCreationFragment extends Fragment implements CustomerAddres
         customerContact.setEmail(mEmail.getText().toString());
         Phone phone = new Phone();
         phone.setMobile(mPhoneNumber.getText().toString());
+        phone.setHome(mPhoneNumber.getText().toString());
         customerContact.setPhoneNumbers(phone);
         List<ContactType> contactTypes = new ArrayList<>();
         if (mDefaultShipping.isChecked()) {
