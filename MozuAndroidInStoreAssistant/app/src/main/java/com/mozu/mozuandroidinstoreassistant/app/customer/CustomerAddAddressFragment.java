@@ -231,13 +231,7 @@ public class CustomerAddAddressFragment extends Fragment implements AddressDelet
         return new Subscriber<CustomerContact>() {
             @Override
             public void onCompleted() {
-                if (mCountDownLatch.getCount() == 0) {
-                    loadingView.success();
-                    Intent intent = new Intent();
-                    intent.putExtra(CustomerUpdateActivity.CUSTOMER, mCustomerAccount);
-                    getActivity().setResult(Activity.RESULT_OK, intent);
-                    getActivity().finish();
-                }
+
             }
 
             @Override
@@ -254,7 +248,14 @@ public class CustomerAddAddressFragment extends Fragment implements AddressDelet
             @Override
             public void onNext(CustomerContact customerContact) {
                 mCountDownLatch.countDown();
-                onCompleted();
+                if (mCountDownLatch.getCount() == 0) {
+                    loadingView.success();
+                    Intent intent = new Intent();
+                    intent.putExtra(CustomerUpdateActivity.CUSTOMER, mCustomerAccount);
+                    getActivity().setResult(Activity.RESULT_OK, intent);
+                    getActivity().finish();
+                    onCompleted();
+                }
             }
         };
     }

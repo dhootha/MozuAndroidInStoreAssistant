@@ -78,12 +78,12 @@ public class NewOrderActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.neworder_activity);
+        ButterKnife.inject(this);
         UserAuthenticationStateMachine userStateMachine = UserAuthenticationStateMachineProducer.getInstance(this);
         mTenantId = userStateMachine.getTenantId();
         mSiteId = userStateMachine.getSiteId();
-        setContentView(R.layout.neworder_activity);
         setSupportActionBar(mToolbar);
-        ButterKnife.inject(this);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowHomeEnabled(false);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
