@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 
 import com.mozu.api.contracts.customer.CustomerAccount;
 import com.mozu.mozuandroidinstoreassistant.app.CustomerUpdateActivity;
+import com.mozu.mozuandroidinstoreassistant.app.OrderCreationAddCustomerActivity;
 import com.mozu.mozuandroidinstoreassistant.app.R;
 import com.mozu.mozuandroidinstoreassistant.app.customer.adapters.CustomerLookupAdapter;
 import com.mozu.mozuandroidinstoreassistant.app.customer.loaders.CustomersLoader;
@@ -29,7 +30,6 @@ import butterknife.InjectView;
 public class CustomerLookupFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<CustomerAccount>>, AdapterView.OnItemClickListener, View.OnClickListener {
 
     public static final int LOADER_CUSTOMER = 452;
-    public static final int CREATE_CUSTOMER = 1;
     private static String SEARCH = "search";
     @InjectView(R.id.customer_lookup)
     AutoCompleteTextView customerLookup;
@@ -165,6 +165,6 @@ public class CustomerLookupFragment extends Fragment implements LoaderManager.Lo
         bundle.putSerializable(CustomerUpdateActivity.CUSTOMER, customerAccount);
         Intent intent = new Intent(getActivity(), CustomerUpdateActivity.class);
         intent.putExtras(bundle);
-        getActivity().startActivityForResult(intent, CREATE_CUSTOMER);
+        getActivity().startActivityForResult(intent, OrderCreationAddCustomerActivity.CREATE_CUSTOMER);
     }
 }

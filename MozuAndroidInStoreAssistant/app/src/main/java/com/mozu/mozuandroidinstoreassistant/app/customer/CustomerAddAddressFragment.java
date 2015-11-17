@@ -169,8 +169,8 @@ public class CustomerAddAddressFragment extends Fragment implements AddressDelet
         }
         if (mIsCustomerCreated) {
             if (CustomerUtils.isCustomerWithPhoneNumberInDefaultAddress(mCustomerAccount)) {
-                updateCustomerAddresses(mCustomerAccount.getId());
                 loadingView.setLoading();
+                updateCustomerAddresses(mCustomerAccount.getId());
             } else {
                 ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), getActivity().getString(R.string.phone_required)).show();
             }
@@ -238,7 +238,7 @@ public class CustomerAddAddressFragment extends Fragment implements AddressDelet
             public void onError(Throwable e) {
                 mCountDownLatch.countDown();
                 if (e instanceof ApiException) {
-                    ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), ((ApiException) e));
+                    ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), ((ApiException) e)).show();
                 } else {
                     ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(getActivity(), getString(R.string.standard_error)).show();
                 }
@@ -255,6 +255,7 @@ public class CustomerAddAddressFragment extends Fragment implements AddressDelet
                     getActivity().setResult(Activity.RESULT_OK, intent);
                     getActivity().finish();
                     onCompleted();
+//                    Toast.makeText(CustomerAddAddressFragment.this.getActivity(), "Addresses Saved", Toast.LENGTH_SHORT).show();
                 }
             }
         };
