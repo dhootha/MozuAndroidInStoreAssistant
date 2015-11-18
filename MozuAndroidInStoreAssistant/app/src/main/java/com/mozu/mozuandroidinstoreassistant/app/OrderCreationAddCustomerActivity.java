@@ -16,20 +16,17 @@ import com.mozu.api.contracts.customer.CustomerContact;
 import com.mozu.mozuandroidinstoreassistant.app.customer.CustomerLookupFragment;
 import com.mozu.mozuandroidinstoreassistant.app.dialog.ErrorMessageAlertDialog;
 import com.mozu.mozuandroidinstoreassistant.app.order.NewOrderActivity;
-import com.mozu.mozuandroidinstoreassistant.app.order.loaders.NewOrderManager;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import rx.Subscriber;
-import rx.android.observables.AndroidObservable;
 
 public class OrderCreationAddCustomerActivity extends BaseActivity {
 
+    public static final int CREATE_CUSTOMER = 1;
     private static final String ORDER_EXTRA_KEY = "ORDER";
     private static final String CURRENT_TENANT_ID = "curTenantIdWhenActLoaded";
     private static final String CURRENT_SITE_ID = "curSiteIdWhenActLoaded";
     private static final String ORDER_CUSTOMER_EXTRA_KEY = "order_customer";
-    private static final int CREATE_CUSTOMER = 1;
     private static String BILLING = "billing";
     private static String SHIPPING = "shipping";
     @InjectView(R.id.toolbar)
@@ -79,31 +76,25 @@ public class OrderCreationAddCustomerActivity extends BaseActivity {
         FulfillmentInfo fulfillmentInfo = new FulfillmentInfo();
         fulfillmentInfo.setFulfillmentContact(getDefaultContact(mCustomerAccount, SHIPPING));
         mOrder.setFulfillmentInfo(fulfillmentInfo);
-        AndroidObservable.bindActivity(OrderCreationAddCustomerActivity.this, NewOrderManager.getInstance().createOrder(mTenantId, mSiteId, mOrder))
-                .subscribe(new Subscriber<Order>() {
-                    @Override
-                    public void onCompleted() {
-                        Intent intent = new Intent(OrderCreationAddCustomerActivity.this, NewOrderActivity.class);
-                        intent.putExtra(ORDER_EXTRA_KEY, mOrder.getId());
-                        startActivity(intent);
-                        finish();
-                    }
+        CreateOrderTask task = new CreateOrderTask(mTenantId, mSiteId, mOrder, new CreateOrderTask.CreateOrderListener() {
+            @Override
+            public void orderCreated(Order order) {
+                Intent intent = new Intent(OrderCreationAddCustomerActivity.this, NewOrderActivity.class);
+                intent.putExtra(ORDER_EXTRA_KEY, order.getId());
+                startActivity(intent);
+                finish();
+            }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        if (e instanceof ApiException) {
-                            ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(OrderCreationAddCustomerActivity.this, ((ApiException) e));
-                        } else {
-                            ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(OrderCreationAddCustomerActivity.this, getString(R.string.standard_error)).show();
-                        }
-
-                    }
-
-                    @Override
-                    public void onNext(Order order) {
-                        mOrder = order;
-                    }
-                });
+            @Override
+            public void errorCreatingOrder(Exception e) {
+                if (e instanceof ApiException) {
+                    ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(OrderCreationAddCustomerActivity.this, ((ApiException) e)).show();
+                } else {
+                    ErrorMessageAlertDialog.getStandardErrorMessageAlertDialog(OrderCreationAddCustomerActivity.this, getString(R.string.standard_error)).show();
+                }
+            }
+        });
+        task.execute();
     }
 
     public Contact getContact(CustomerContact customerContact) {
